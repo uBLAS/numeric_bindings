@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -33,6 +31,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for sysv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -46,50 +50,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void sysv( UpLo, fortran_int_t n, fortran_int_t nrhs, float* a,
-        fortran_int_t lda, fortran_int_t* ipiv, float* b, fortran_int_t ldb,
-        float* work, fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t sysv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        float* a, fortran_int_t lda, fortran_int_t* ipiv, float* b,
+        fortran_int_t ldb, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SSYSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void sysv( UpLo, fortran_int_t n, fortran_int_t nrhs, double* a,
-        fortran_int_t lda, fortran_int_t* ipiv, double* b, fortran_int_t ldb,
-        double* work, fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t sysv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        double* a, fortran_int_t lda, fortran_int_t* ipiv, double* b,
+        fortran_int_t ldb, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DSYSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void sysv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t sysv( UpLo, fortran_int_t n, fortran_int_t nrhs,
         std::complex<float>* a, fortran_int_t lda, fortran_int_t* ipiv,
         std::complex<float>* b, fortran_int_t ldb, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CSYSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void sysv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t sysv( UpLo, fortran_int_t n, fortran_int_t nrhs,
         std::complex<double>* a, fortran_int_t lda, fortran_int_t* ipiv,
         std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        std::complex<double>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZSYSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -118,8 +137,8 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename WORK >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+            detail::workspace1< WORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -137,10 +156,11 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::sysv( uplo(), size_column(a), size_column(b), begin_value(a),
-                stride_major(a), begin_value(ipiv), begin_value(b),
-                stride_major(b), begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+        return detail::sysv( uplo(), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(ipiv),
+                begin_value(b), stride_major(b),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())) );
     }
 
     //
@@ -151,11 +171,11 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+            minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work() );
-        invoke( a, ipiv, b, info, workspace( tmp_work ) );
+        return invoke( a, ipiv, b, workspace( tmp_work ) );
     }
 
     //
@@ -166,16 +186,16 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+            optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
         detail::sysv( uplo(), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b), &opt_size_work, -1, info );
+                begin_value(b), stride_major(b), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, ipiv, b, info, workspace( tmp_work ) );
+        invoke( a, ipiv, b, workspace( tmp_work ) );
     }
 
     //
@@ -204,8 +224,8 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename WORK >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+            detail::workspace1< WORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -223,10 +243,11 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::sysv( uplo(), size_column(a), size_column(b), begin_value(a),
-                stride_major(a), begin_value(ipiv), begin_value(b),
-                stride_major(b), begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+        return detail::sysv( uplo(), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(ipiv),
+                begin_value(b), stride_major(b),
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())) );
     }
 
     //
@@ -237,11 +258,11 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+            minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
-        invoke( a, ipiv, b, info, workspace( tmp_work ) );
+        return invoke( a, ipiv, b, workspace( tmp_work ) );
     }
 
     //
@@ -252,16 +273,16 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+            optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
         detail::sysv( uplo(), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b), &opt_size_work, -1, info );
+                begin_value(b), stride_major(b), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, ipiv, b, info, workspace( tmp_work ) );
+        invoke( a, ipiv, b, workspace( tmp_work ) );
     }
 
     //
@@ -294,10 +315,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
         Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -309,10 +328,8 @@ inline std::ptrdiff_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -326,10 +343,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( const MatrixA& a, VectorIPIV& ipiv,
         MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -342,10 +357,8 @@ inline std::ptrdiff_t sysv( const MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( const MatrixA& a, VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -359,10 +372,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -375,10 +386,8 @@ inline std::ptrdiff_t sysv( MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -392,10 +401,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( const MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -408,10 +415,8 @@ inline std::ptrdiff_t sysv( const MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( const MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -425,10 +430,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -441,10 +444,8 @@ inline std::ptrdiff_t sysv( MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -458,10 +459,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -474,10 +473,8 @@ inline std::ptrdiff_t sysv( const MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -491,10 +488,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -507,10 +502,8 @@ inline std::ptrdiff_t sysv( MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 //
@@ -524,10 +517,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline std::ptrdiff_t sysv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, work );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, work );
 }
 
 //
@@ -540,10 +531,8 @@ inline std::ptrdiff_t sysv( const MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t sysv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    sysv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info, optimal_workspace() );
-    return info;
+    return sysv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, optimal_workspace() );
 }
 
 } // namespace lapack

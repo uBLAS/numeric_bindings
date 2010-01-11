@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for latrs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans, typename Diag >
-inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
-        const float* a, fortran_int_t lda, float* x, float& scale,
-        float* cnorm, fortran_int_t& info ) {
+inline std::ptrdiff_t latrs( char uplo, Trans, Diag, char normin,
+        fortran_int_t n, const float* a, fortran_int_t lda, float* x,
+        float& scale, float* cnorm ) {
+    fortran_int_t info(0);
     LAPACK_SLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans, typename Diag >
-inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
-        const double* a, fortran_int_t lda, double* x, double& scale,
-        double* cnorm, fortran_int_t& info ) {
+inline std::ptrdiff_t latrs( char uplo, Trans, Diag, char normin,
+        fortran_int_t n, const double* a, fortran_int_t lda, double* x,
+        double& scale, double* cnorm ) {
+    fortran_int_t info(0);
     LAPACK_DLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans, typename Diag >
-inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* x, float& scale, float* cnorm,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t latrs( char uplo, Trans, Diag, char normin,
+        fortran_int_t n, const std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* x, float& scale, float* cnorm ) {
+    fortran_int_t info(0);
     LAPACK_CLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans, typename Diag >
-inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* x, double& scale, double* cnorm,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t latrs( char uplo, Trans, Diag, char normin,
+        fortran_int_t n, const std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* x, double& scale, double* cnorm ) {
+    fortran_int_t info(0);
     LAPACK_ZLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
+    return info;
 }
 
 } // namespace detail
@@ -115,9 +133,9 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX, typename VectorCNORM >
-    static void invoke( const char uplo, const char normin, const MatrixA& a,
-            VectorX& x, real_type& scale, VectorCNORM& cnorm,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char uplo, const char normin,
+            const MatrixA& a, VectorX& x, real_type& scale,
+            VectorCNORM& cnorm ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -135,9 +153,9 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= ?MAX );
-        detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
+        return detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
                 trans()), begin_value(a), stride_major(a), begin_value(x),
-                scale, begin_value(cnorm), info );
+                scale, begin_value(cnorm) );
     }
 
 };
@@ -158,9 +176,9 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX, typename VectorCNORM >
-    static void invoke( const char uplo, const char normin, const MatrixA& a,
-            VectorX& x, real_type& scale, VectorCNORM& cnorm,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char uplo, const char normin,
+            const MatrixA& a, VectorX& x, real_type& scale,
+            VectorCNORM& cnorm ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -174,9 +192,9 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= ?MAX );
-        detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
+        return detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
                 trans()), begin_value(a), stride_major(a), begin_value(x),
-                scale, begin_value(cnorm), info );
+                scale, begin_value(cnorm) );
     }
 
 };
@@ -200,10 +218,8 @@ template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, VectorX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale, VectorCNORM& cnorm ) {
-    fortran_int_t info(0);
-    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
-            a, x, scale, cnorm, info );
-    return info;
+    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
+            normin, a, x, scale, cnorm );
 }
 
 //
@@ -215,10 +231,8 @@ template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, const VectorX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale, VectorCNORM& cnorm ) {
-    fortran_int_t info(0);
-    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
-            a, x, scale, cnorm, info );
-    return info;
+    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
+            normin, a, x, scale, cnorm );
 }
 
 //
@@ -231,10 +245,8 @@ inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, VectorX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale,
         const VectorCNORM& cnorm ) {
-    fortran_int_t info(0);
-    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
-            a, x, scale, cnorm, info );
-    return info;
+    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
+            normin, a, x, scale, cnorm );
 }
 
 //
@@ -247,10 +259,8 @@ inline std::ptrdiff_t latrs( const char uplo, const char normin,
         const MatrixA& a, const VectorX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale,
         const VectorCNORM& cnorm ) {
-    fortran_int_t info(0);
-    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
-            a, x, scale, cnorm, info );
-    return info;
+    return latrs_impl< typename value< MatrixA >::type >::invoke( uplo,
+            normin, a, x, scale, cnorm );
 }
 
 } // namespace lapack

@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for tgsen is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,65 +49,82 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void tgsen( fortran_int_t ijob, logical_t wantq, logical_t wantz,
-        const logical_t* select, fortran_int_t n, float* a, fortran_int_t lda,
-        float* b, fortran_int_t ldb, float* alphar, float* alphai,
-        float* beta, float* q, fortran_int_t ldq, float* z, fortran_int_t ldz,
-        fortran_int_t& m, float& pl, float& pr, float* dif, float* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
+        logical_t wantz, const logical_t* select, fortran_int_t n, float* a,
+        fortran_int_t lda, float* b, fortran_int_t ldb, float* alphar,
+        float* alphai, float* beta, float* q, fortran_int_t ldq, float* z,
+        fortran_int_t ldz, fortran_int_t& m, float& pl, float& pr, float* dif,
+        float* work, fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_STGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
             &lwork, iwork, &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void tgsen( fortran_int_t ijob, logical_t wantq, logical_t wantz,
-        const logical_t* select, fortran_int_t n, double* a,
+inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
+        logical_t wantz, const logical_t* select, fortran_int_t n, double* a,
         fortran_int_t lda, double* b, fortran_int_t ldb, double* alphar,
         double* alphai, double* beta, double* q, fortran_int_t ldq, double* z,
         fortran_int_t ldz, fortran_int_t& m, double& pl, double& pr,
         double* dif, double* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork, fortran_int_t& info ) {
+        fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_DTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
             &lwork, iwork, &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void tgsen( fortran_int_t ijob, logical_t wantq, logical_t wantz,
-        const logical_t* select, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* alpha, std::complex<float>* beta,
-        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* z,
-        fortran_int_t ldz, fortran_int_t& m, float& pl, float& pr, float* dif,
-        std::complex<float>* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork, fortran_int_t& info ) {
+inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
+        logical_t wantz, const logical_t* select, fortran_int_t n,
+        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
+        fortran_int_t ldb, std::complex<float>* alpha,
+        std::complex<float>* beta, std::complex<float>* q, fortran_int_t ldq,
+        std::complex<float>* z, fortran_int_t ldz, fortran_int_t& m,
+        float& pl, float& pr, float* dif, std::complex<float>* work,
+        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_CTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb, alpha,
             beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work, &lwork, iwork,
             &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void tgsen( fortran_int_t ijob, logical_t wantq, logical_t wantz,
-        const logical_t* select, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* alpha, std::complex<double>* beta,
-        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* z,
-        fortran_int_t ldz, fortran_int_t& m, double& pl, double& pr,
-        double* dif, std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
+        logical_t wantz, const logical_t* select, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
+        fortran_int_t ldb, std::complex<double>* alpha,
+        std::complex<double>* beta, std::complex<double>* q,
+        fortran_int_t ldq, std::complex<double>* z, fortran_int_t ldz,
+        fortran_int_t& m, double& pl, double& pr, double* dif,
+        std::complex<double>* work, fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_ZTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb, alpha,
             beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work, &lwork, iwork,
             &liwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -134,13 +155,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF,
             typename WORK, typename IWORK >
-    static void invoke( const fortran_int_t ijob, const logical_t wantq,
-            const logical_t wantz, const VectorSELECT& select,
-            const fortran_int_t n, MatrixA& a, MatrixB& b,
-            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
-            MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
+            const logical_t wantq, const logical_t wantz,
+            const VectorSELECT& select, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+            real_type& pl, real_type& pr, VectorDIF& dif, detail::workspace2<
+            WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -191,7 +212,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::tgsen( ijob, wantq, wantz, begin_value(select), n,
+        return detail::tgsen( ijob, wantq, wantz, begin_value(select), n,
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(alphar), begin_value(alphai),
                 begin_value(beta), begin_value(q), stride_major(q),
@@ -199,7 +220,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())), info );
+                size(work.select(fortran_int_t())) );
     }
 
     //
@@ -212,19 +233,19 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF >
-    static void invoke( const fortran_int_t ijob, const logical_t wantq,
-            const logical_t wantz, const VectorSELECT& select,
-            const fortran_int_t n, MatrixA& a, MatrixB& b,
-            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
-            MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
+            const logical_t wantq, const logical_t wantz,
+            const VectorSELECT& select, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+            real_type& pl, real_type& pr, VectorDIF& dif,
             minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( $CALL_MIN_SIZE ) );
-        invoke( ijob, wantq, wantz, select, n, a, b, alphar, alphai, beta, q,
-                z, m, pl, pr, dif, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( ijob, wantq, wantz, select, n, a, b, alphar, alphai,
+                beta, q, z, m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -237,12 +258,12 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF >
-    static void invoke( const fortran_int_t ijob, const logical_t wantq,
-            const logical_t wantz, const VectorSELECT& select,
-            const fortran_int_t n, MatrixA& a, MatrixB& b,
-            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
-            MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
+            const logical_t wantq, const logical_t wantz,
+            const VectorSELECT& select, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, fortran_int_t& m,
+            real_type& pl, real_type& pr, VectorDIF& dif,
             optimal_workspace work ) {
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
@@ -251,13 +272,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 stride_major(b), begin_value(alphar), begin_value(alphai),
                 begin_value(beta), begin_value(q), stride_major(q),
                 begin_value(z), stride_major(z), m, pl, pr, begin_value(dif),
-                &opt_size_work, -1, &opt_size_iwork, -1, info );
+                &opt_size_work, -1, &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
         invoke( ijob, wantq, wantz, select, n, a, b, alphar, alphai, beta, q,
-                z, m, pl, pr, dif, info, workspace( tmp_work, tmp_iwork ) );
+                z, m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -296,13 +317,12 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF, typename WORK,
             typename IWORK >
-    static void invoke( const fortran_int_t ijob, const logical_t wantq,
-            const logical_t wantz, const VectorSELECT& select,
-            const fortran_int_t n, MatrixA& a, MatrixB& b,
-            VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            fortran_int_t& m, real_type& pl, real_type& pr,
-            VectorDIF& dif, fortran_int_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
+            const logical_t wantq, const logical_t wantz,
+            const VectorSELECT& select, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+            MatrixZ& z, fortran_int_t& m, real_type& pl, real_type& pr,
+            VectorDIF& dif, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -343,7 +363,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::tgsen( ijob, wantq, wantz, begin_value(select), n,
+        return detail::tgsen( ijob, wantq, wantz, begin_value(select), n,
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(alpha), begin_value(beta),
                 begin_value(q), stride_major(q), begin_value(z),
@@ -351,7 +371,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
                 begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())), info );
+                size(work.select(fortran_int_t())) );
     }
 
     //
@@ -364,18 +384,18 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF >
-    static void invoke( const fortran_int_t ijob, const logical_t wantq,
-            const logical_t wantz, const VectorSELECT& select,
-            const fortran_int_t n, MatrixA& a, MatrixB& b,
-            VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            fortran_int_t& m, real_type& pl, real_type& pr,
-            VectorDIF& dif, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
+            const logical_t wantq, const logical_t wantz,
+            const VectorSELECT& select, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+            MatrixZ& z, fortran_int_t& m, real_type& pl, real_type& pr,
+            VectorDIF& dif, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( $CALL_MIN_SIZE ) );
-        invoke( ijob, wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl,
-                pr, dif, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( ijob, wantq, wantz, select, n, a, b, alpha, beta, q, z,
+                m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -388,12 +408,12 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF >
-    static void invoke( const fortran_int_t ijob, const logical_t wantq,
-            const logical_t wantz, const VectorSELECT& select,
-            const fortran_int_t n, MatrixA& a, MatrixB& b,
-            VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            fortran_int_t& m, real_type& pl, real_type& pr,
-            VectorDIF& dif, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
+            const logical_t wantq, const logical_t wantz,
+            const VectorSELECT& select, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+            MatrixZ& z, fortran_int_t& m, real_type& pl, real_type& pr,
+            VectorDIF& dif, optimal_workspace work ) {
         value_type opt_size_work;
         fortran_int_t opt_size_iwork;
         detail::tgsen( ijob, wantq, wantz, begin_value(select), n,
@@ -401,13 +421,13 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 stride_major(b), begin_value(alpha), begin_value(beta),
                 begin_value(q), stride_major(q), begin_value(z),
                 stride_major(z), m, pl, pr, begin_value(dif), &opt_size_work,
-                -1, &opt_size_iwork, -1, info );
+                -1, &opt_size_iwork, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
         invoke( ijob, wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl,
-                pr, dif, info, workspace( tmp_work, tmp_iwork ) );
+                pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -462,11 +482,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -492,11 +510,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -524,11 +540,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -554,11 +568,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -586,11 +598,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -616,11 +626,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -648,11 +656,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -678,11 +684,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -710,11 +714,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -740,11 +742,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -772,11 +772,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -802,11 +800,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -834,11 +830,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -864,11 +858,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -896,11 +888,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -926,11 +916,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -958,11 +946,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -988,11 +974,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1020,11 +1004,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1050,11 +1032,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1082,11 +1062,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1112,11 +1090,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1144,11 +1120,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1174,11 +1148,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1206,11 +1178,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1236,11 +1206,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1268,11 +1236,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1298,11 +1264,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1330,11 +1294,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1360,11 +1322,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1392,11 +1352,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1422,11 +1380,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1454,11 +1410,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1484,11 +1438,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1516,11 +1468,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1546,11 +1496,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1578,11 +1526,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1608,11 +1554,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1640,11 +1584,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1670,11 +1612,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1702,11 +1642,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1732,11 +1670,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1764,11 +1700,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1794,11 +1728,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1826,11 +1758,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1856,11 +1786,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1888,11 +1816,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1918,11 +1844,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -1950,11 +1874,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -1980,11 +1902,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2012,11 +1932,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2043,11 +1961,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2075,11 +1991,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2105,11 +2019,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2137,11 +2049,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2168,11 +2078,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2200,11 +2108,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2230,11 +2136,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2262,11 +2166,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2293,11 +2195,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2325,11 +2225,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2356,11 +2254,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2388,11 +2284,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2419,11 +2313,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2451,11 +2343,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2481,11 +2371,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2513,11 +2401,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2543,11 +2429,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2575,11 +2459,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2605,11 +2487,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2637,11 +2517,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2667,11 +2545,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2699,11 +2575,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2729,11 +2603,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2761,11 +2633,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2791,11 +2661,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2823,11 +2691,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2853,11 +2719,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2885,11 +2749,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2915,11 +2777,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -2947,11 +2807,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -2977,11 +2835,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3009,11 +2865,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3040,11 +2894,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3072,11 +2924,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3102,11 +2952,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3134,11 +2982,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3165,11 +3011,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3197,11 +3041,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3227,11 +3069,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3259,11 +3099,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3290,11 +3128,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3322,11 +3158,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3353,11 +3187,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3385,11 +3217,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3416,11 +3246,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3448,11 +3276,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3478,11 +3304,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3510,11 +3334,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3541,11 +3363,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3573,11 +3393,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3603,11 +3421,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3635,11 +3451,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3666,11 +3480,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3698,11 +3510,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3728,11 +3538,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3760,11 +3568,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3791,11 +3597,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3823,11 +3627,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3853,11 +3655,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3885,11 +3685,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3916,11 +3714,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -3948,11 +3744,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -3978,11 +3772,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4010,11 +3802,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4041,11 +3831,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4073,11 +3861,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4103,11 +3889,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4135,11 +3919,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4166,11 +3948,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4198,11 +3978,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4228,11 +4006,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4260,11 +4036,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4291,11 +4065,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4323,11 +4095,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4354,11 +4124,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4386,11 +4154,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4417,11 +4183,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4449,11 +4213,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4479,11 +4241,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4511,11 +4271,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4541,11 +4299,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4573,11 +4329,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4603,11 +4357,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4635,11 +4387,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4665,11 +4415,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4697,11 +4445,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4727,11 +4473,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4759,11 +4503,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4789,11 +4531,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4821,11 +4561,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4851,11 +4589,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4883,11 +4619,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4913,11 +4647,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -4945,11 +4677,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -4975,11 +4705,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5007,11 +4735,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5038,11 +4764,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5070,11 +4794,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5100,11 +4822,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5132,11 +4852,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5163,11 +4881,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5195,11 +4911,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5225,11 +4939,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5257,11 +4969,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5288,11 +4998,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5320,11 +5028,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5351,11 +5057,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5383,11 +5087,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5414,11 +5116,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5446,11 +5146,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5476,11 +5174,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5508,11 +5204,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5539,11 +5233,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5571,11 +5263,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5601,11 +5291,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5633,11 +5321,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5664,11 +5350,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5696,11 +5380,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5726,11 +5408,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5758,11 +5438,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5789,11 +5467,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5821,11 +5497,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5851,11 +5525,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5883,11 +5555,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5914,11 +5584,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -5946,11 +5614,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -5976,11 +5642,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6008,11 +5672,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6039,11 +5701,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6071,11 +5731,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6101,11 +5759,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6133,11 +5789,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6164,11 +5818,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6196,11 +5848,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6226,11 +5876,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6258,11 +5906,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6289,11 +5935,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6321,11 +5965,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6352,11 +5994,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6384,11 +6024,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6415,11 +6053,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6447,11 +6083,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6477,11 +6111,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6509,11 +6141,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6540,11 +6170,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6572,11 +6200,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6602,11 +6228,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6634,11 +6258,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6665,11 +6287,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6697,11 +6317,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6727,11 +6345,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6759,11 +6375,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6790,11 +6404,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6822,11 +6434,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6852,11 +6462,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6884,11 +6492,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6915,11 +6521,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -6947,11 +6551,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -6977,11 +6579,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7009,11 +6609,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7040,11 +6638,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7072,11 +6668,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7102,11 +6696,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7134,11 +6726,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7165,11 +6755,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7197,11 +6785,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7227,11 +6813,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7259,11 +6843,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7290,11 +6872,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7322,11 +6902,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7353,11 +6931,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7385,11 +6961,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7416,11 +6990,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7448,11 +7020,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7478,11 +7048,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7510,11 +7078,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7541,11 +7107,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7573,11 +7137,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7603,11 +7165,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7635,11 +7195,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7666,11 +7224,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7698,11 +7254,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7728,11 +7282,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7760,11 +7312,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7791,11 +7341,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7823,11 +7371,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7853,11 +7399,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7885,11 +7429,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7916,11 +7458,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -7948,11 +7488,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -7978,11 +7516,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8010,11 +7546,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8041,11 +7575,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8073,11 +7605,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8103,11 +7633,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8135,11 +7663,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8166,11 +7692,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8198,11 +7722,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8228,11 +7750,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8260,11 +7780,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8291,11 +7809,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8323,11 +7839,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8354,11 +7868,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8386,11 +7898,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8417,11 +7927,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8449,11 +7957,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8479,11 +7985,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8511,11 +8015,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8541,11 +8043,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8573,11 +8073,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8603,11 +8101,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8635,11 +8131,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8665,11 +8159,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8697,11 +8189,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8727,11 +8217,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8759,11 +8247,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8789,11 +8275,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8821,11 +8305,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8851,11 +8333,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8883,11 +8363,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8913,11 +8391,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -8945,11 +8421,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -8975,11 +8449,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9007,11 +8479,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9037,11 +8507,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9069,11 +8537,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9099,11 +8565,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9131,11 +8595,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9161,11 +8623,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9193,11 +8653,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9223,11 +8681,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9255,11 +8711,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9285,11 +8739,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9317,11 +8769,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9347,11 +8797,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9379,11 +8827,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9409,11 +8855,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9441,11 +8885,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9471,11 +8913,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9503,11 +8943,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9533,11 +8971,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9565,11 +9001,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9595,11 +9029,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9627,11 +9059,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9657,11 +9087,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9689,11 +9117,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9719,11 +9145,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9751,11 +9175,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9781,11 +9203,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9813,11 +9233,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9843,11 +9261,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9875,11 +9291,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9905,11 +9319,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9937,11 +9349,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -9967,11 +9377,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -9999,11 +9407,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10030,11 +9436,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10062,11 +9466,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10092,11 +9494,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10124,11 +9524,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10155,11 +9553,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10187,11 +9583,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10217,11 +9611,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10249,11 +9641,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10280,11 +9670,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10312,11 +9700,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10343,11 +9729,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10375,11 +9759,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10406,11 +9788,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10438,11 +9818,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10468,11 +9846,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10500,11 +9876,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10530,11 +9904,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10562,11 +9934,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10592,11 +9962,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10624,11 +9992,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10654,11 +10020,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10686,11 +10050,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10716,11 +10078,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10748,11 +10108,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10778,11 +10136,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10810,11 +10166,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10840,11 +10194,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10872,11 +10224,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10902,11 +10252,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10934,11 +10282,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -10964,11 +10310,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -10996,11 +10340,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11027,11 +10369,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11059,11 +10399,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11089,11 +10427,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11121,11 +10457,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11152,11 +10486,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11184,11 +10516,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11214,11 +10544,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11246,11 +10574,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11277,11 +10603,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11309,11 +10633,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11340,11 +10662,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11372,11 +10692,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11403,11 +10721,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11435,11 +10751,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11465,11 +10779,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11497,11 +10809,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11528,11 +10838,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11560,11 +10868,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11590,11 +10896,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11622,11 +10926,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11653,11 +10955,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11685,11 +10985,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11715,11 +11013,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11747,11 +11043,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11778,11 +11072,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11810,11 +11102,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11840,11 +11130,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11872,11 +11160,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11903,11 +11189,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11935,11 +11219,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -11965,11 +11247,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -11997,11 +11277,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12028,11 +11306,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12060,11 +11336,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12090,11 +11364,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12122,11 +11394,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12153,11 +11423,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12185,11 +11453,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12215,11 +11481,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12247,11 +11511,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12278,11 +11540,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12310,11 +11570,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12341,11 +11599,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12373,11 +11629,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12404,11 +11658,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12436,11 +11688,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12466,11 +11716,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12498,11 +11746,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12528,11 +11774,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12560,11 +11804,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12590,11 +11832,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12622,11 +11862,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12652,11 +11890,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12684,11 +11920,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12714,11 +11948,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12746,11 +11978,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12776,11 +12006,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12808,11 +12036,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12838,11 +12064,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12870,11 +12094,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12900,11 +12122,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12932,11 +12152,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -12962,11 +12180,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -12994,11 +12210,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13025,11 +12239,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13057,11 +12269,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13087,11 +12297,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13119,11 +12327,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13150,11 +12356,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13182,11 +12386,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13212,11 +12414,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13244,11 +12444,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13275,11 +12473,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13307,11 +12503,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13338,11 +12532,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13370,11 +12562,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13401,11 +12591,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13433,11 +12621,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13463,11 +12649,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13495,11 +12679,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13526,11 +12708,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13558,11 +12738,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13588,11 +12766,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13620,11 +12796,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13651,11 +12825,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13683,11 +12855,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13713,11 +12883,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13745,11 +12913,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13776,11 +12942,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13808,11 +12972,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13838,11 +13000,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13870,11 +13030,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13901,11 +13059,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13933,11 +13089,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -13963,11 +13117,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -13995,11 +13147,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14026,11 +13176,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14058,11 +13206,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14088,11 +13234,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14120,11 +13264,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14151,11 +13293,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14183,11 +13323,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14213,11 +13351,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14245,11 +13381,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14276,11 +13410,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14308,11 +13440,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14339,11 +13469,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14371,11 +13499,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14402,11 +13528,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14434,11 +13558,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14464,11 +13586,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14496,11 +13616,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14527,11 +13645,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14559,11 +13675,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14589,11 +13703,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14621,11 +13733,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14652,11 +13762,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14684,11 +13792,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14714,11 +13820,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14746,11 +13850,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14777,11 +13879,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14809,11 +13909,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14839,11 +13937,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14871,11 +13967,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14902,11 +13996,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14934,11 +14026,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -14964,11 +14054,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -14996,11 +14084,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15027,11 +14113,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15059,11 +14143,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15089,11 +14171,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15121,11 +14201,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15152,11 +14230,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15184,11 +14260,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15214,11 +14288,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15246,11 +14318,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15277,11 +14347,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15309,11 +14377,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15340,11 +14406,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15372,11 +14436,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15403,11 +14465,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15435,11 +14495,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15465,11 +14523,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15497,11 +14553,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15528,11 +14582,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15560,11 +14612,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15590,11 +14640,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15622,11 +14670,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15653,11 +14699,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15685,11 +14729,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15715,11 +14757,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15747,11 +14787,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15778,11 +14816,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15810,11 +14846,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15840,11 +14874,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15872,11 +14904,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15903,11 +14933,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15935,11 +14963,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -15965,11 +14991,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -15997,11 +15021,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16028,11 +15050,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -16060,11 +15080,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16090,11 +15108,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -16122,11 +15138,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16153,11 +15167,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -16185,11 +15197,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16215,11 +15225,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -16247,11 +15255,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16278,11 +15284,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -16310,11 +15314,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16341,11 +15343,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 
 //
@@ -16373,11 +15373,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, work );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, work );
 }
 
 //
@@ -16404,11 +15402,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl, pr,
-            dif, info, optimal_workspace() );
-    return info;
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alphar, alphai, beta, q, z, m, pl,
+            pr, dif, optimal_workspace() );
 }
 //
 // Overloaded function for tgsen. Its overload differs for
@@ -16432,11 +15428,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16461,11 +15455,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16491,11 +15483,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16520,11 +15510,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16549,11 +15537,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16578,11 +15564,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16608,11 +15592,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16637,11 +15619,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16666,11 +15646,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16695,11 +15673,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16725,11 +15701,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16754,11 +15728,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16784,11 +15756,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16813,11 +15783,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16843,11 +15811,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16872,11 +15838,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16901,11 +15865,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16930,11 +15892,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16960,11 +15920,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -16989,11 +15947,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17019,11 +15975,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17048,11 +16002,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17078,11 +16030,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17107,11 +16057,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17137,11 +16085,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17166,11 +16112,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17196,11 +16140,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17225,11 +16167,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17255,11 +16195,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17284,11 +16222,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17314,11 +16250,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17343,11 +16277,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17372,11 +16304,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17401,11 +16331,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17431,11 +16359,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17460,11 +16386,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17490,11 +16414,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17519,11 +16441,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17549,11 +16469,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17578,11 +16496,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17608,11 +16524,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17637,11 +16551,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17667,11 +16579,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17696,11 +16606,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17726,11 +16634,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17755,11 +16661,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17785,11 +16689,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17814,11 +16716,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17844,11 +16744,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17873,11 +16771,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17903,11 +16799,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17932,11 +16826,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17962,11 +16854,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -17991,11 +16881,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18021,11 +16909,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18050,11 +16936,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18080,11 +16964,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18109,11 +16991,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18139,11 +17019,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18168,11 +17046,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18198,11 +17074,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18227,11 +17101,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18257,11 +17129,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18286,11 +17156,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18315,11 +17183,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18344,11 +17210,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18374,11 +17238,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18403,11 +17265,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18432,11 +17292,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18461,11 +17319,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18491,11 +17347,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18520,11 +17374,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18549,11 +17401,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18578,11 +17428,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18608,11 +17456,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18637,11 +17483,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18667,11 +17511,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18696,11 +17538,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18726,11 +17566,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18755,11 +17593,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18784,11 +17620,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18813,11 +17647,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18843,11 +17675,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18872,11 +17702,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18902,11 +17730,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18931,11 +17757,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18961,11 +17785,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -18990,11 +17812,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19020,11 +17840,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19049,11 +17867,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19079,11 +17895,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19108,11 +17922,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19138,11 +17950,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19167,11 +17977,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19197,11 +18005,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19226,11 +18032,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19255,11 +18059,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19284,11 +18086,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19314,11 +18114,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19343,11 +18141,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19373,11 +18169,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19402,11 +18196,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19432,11 +18224,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19461,11 +18251,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19491,11 +18279,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19520,11 +18306,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19550,11 +18334,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19579,11 +18361,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19609,11 +18389,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19638,11 +18416,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19668,11 +18444,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19697,11 +18471,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19727,11 +18499,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19756,11 +18526,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19786,11 +18554,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19815,11 +18581,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19845,11 +18609,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19874,11 +18636,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19904,11 +18664,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19933,11 +18691,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19963,11 +18719,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -19992,11 +18746,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20022,11 +18774,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20051,11 +18801,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20081,11 +18829,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20110,11 +18856,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20140,11 +18884,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20169,11 +18911,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20198,11 +18938,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20227,11 +18965,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20257,11 +18993,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20286,11 +19020,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20315,11 +19047,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20344,11 +19074,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20374,11 +19102,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20403,11 +19129,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20432,11 +19156,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20461,11 +19183,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20491,11 +19211,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20520,11 +19238,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20550,11 +19266,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20579,11 +19293,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20609,11 +19321,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20638,11 +19348,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20667,11 +19375,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20696,11 +19402,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20726,11 +19430,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20755,11 +19457,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20785,11 +19485,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20814,11 +19512,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20844,11 +19540,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20873,11 +19567,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20903,11 +19595,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20932,11 +19622,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20962,11 +19650,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -20991,11 +19677,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21021,11 +19705,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21050,11 +19732,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21080,11 +19760,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21109,11 +19787,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21138,11 +19814,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21167,11 +19841,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21197,11 +19869,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21226,11 +19896,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21256,11 +19924,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21285,11 +19951,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21315,11 +19979,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21344,11 +20006,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21374,11 +20034,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21403,11 +20061,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21433,11 +20089,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21462,11 +20116,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21492,11 +20144,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21521,11 +20171,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21551,11 +20199,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21580,11 +20226,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21610,11 +20254,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21639,11 +20281,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21669,11 +20309,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21698,11 +20336,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21728,11 +20364,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21757,11 +20391,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21787,11 +20419,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21816,11 +20446,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21846,11 +20474,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21875,11 +20501,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21905,11 +20529,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21934,11 +20556,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21964,11 +20584,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -21993,11 +20611,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22023,11 +20639,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22052,11 +20666,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22081,11 +20693,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22110,11 +20720,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22140,11 +20748,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22169,11 +20775,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22198,11 +20802,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22227,11 +20829,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22257,11 +20857,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22286,11 +20884,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22315,11 +20911,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22344,11 +20938,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22374,11 +20966,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22403,11 +20993,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22433,11 +21021,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22462,11 +21048,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22492,11 +21076,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22521,11 +21103,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22550,11 +21130,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22579,11 +21157,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22609,11 +21185,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22638,11 +21212,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22668,11 +21240,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22697,11 +21267,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22727,11 +21295,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22756,11 +21322,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22786,11 +21350,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22815,11 +21377,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22845,11 +21405,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22874,11 +21432,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22904,11 +21460,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22933,11 +21487,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22963,11 +21515,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -22992,11 +21542,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23021,11 +21569,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif, Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23050,11 +21596,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename value< MatrixA >::type >::type& pl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23080,11 +21624,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23109,11 +21651,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23139,11 +21679,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23168,11 +21706,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23198,11 +21734,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23227,11 +21761,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23257,11 +21789,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23286,11 +21816,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23316,11 +21844,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23345,11 +21871,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23375,11 +21899,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23404,11 +21926,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23434,11 +21954,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23463,11 +21981,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23493,11 +22009,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23522,11 +22036,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23552,11 +22064,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23581,11 +22091,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23611,11 +22119,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23640,11 +22146,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23670,11 +22174,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23699,11 +22201,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23729,11 +22229,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23758,11 +22256,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23788,11 +22284,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23817,11 +22311,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23847,11 +22339,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23876,11 +22366,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23906,11 +22394,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             work );
-    return info;
 }
 
 //
@@ -23935,11 +22421,9 @@ inline std::ptrdiff_t tgsen( const fortran_int_t ijob,
         fortran_int_t& m, typename remove_imaginary< typename value<
         MatrixA >::type >::type& pl, typename remove_imaginary<
         typename value< MatrixA >::type >::type& pr, const VectorDIF& dif ) {
-    fortran_int_t info(0);
-    tgsen_impl< typename value< MatrixA >::type >::invoke( ijob, wantq,
-            wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif, info,
+    return tgsen_impl< typename value< MatrixA >::type >::invoke( ijob,
+            wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl, pr, dif,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

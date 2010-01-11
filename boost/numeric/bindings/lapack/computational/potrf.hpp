@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,20 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for potrf is selected by defining a pre-processor
+// variable, which can be one of
+// * for ATLAS's CLAPACK, define BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+// * netlib-compatible LAPACK is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+#include <boost/numeric/bindings/lapack/detail/clapack.h>
+#include <boost/numeric/bindings/lapack/detail/clapack_option.hpp>
+#else
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
@@ -39,42 +51,111 @@ namespace lapack {
 //
 namespace detail {
 
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * float value-type.
 //
-template< typename UpLo >
-inline void potrf( UpLo, fortran_int_t n, float* a, fortran_int_t lda,
-        fortran_int_t& info ) {
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, int n, float* a, int lda ) {
+    return clapack_spotrf( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, int n, double* a, int lda ) {
+    return clapack_dpotrf( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<float> value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, int n, std::complex<float>* a,
+        int lda ) {
+    return clapack_cpotrf( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<double> value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, int n, std::complex<double>* a,
+        int lda ) {
+    return clapack_zpotrf( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, a, lda );
+}
+
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, fortran_int_t n, float* a,
+        fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_SPOTRF( &lapack_option< UpLo >::value, &n, a, &lda, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-template< typename UpLo >
-inline void potrf( UpLo, fortran_int_t n, double* a, fortran_int_t lda,
-        fortran_int_t& info ) {
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, fortran_int_t n, double* a,
+        fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_DPOTRF( &lapack_option< UpLo >::value, &n, a, &lda, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-template< typename UpLo >
-inline void potrf( UpLo, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, fortran_int_t& info ) {
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, fortran_int_t n,
+        std::complex<float>* a, fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_CPOTRF( &lapack_option< UpLo >::value, &n, a, &lda, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-template< typename UpLo >
-inline void potrf( UpLo, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, fortran_int_t& info ) {
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrf( Order, UpLo, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_ZPOTRF( &lapack_option< UpLo >::value, &n, a, &lda, &info );
+    return info;
 }
 
+#endif
 } // namespace detail
 
 //
@@ -94,15 +175,15 @@ struct potrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA >
-    static void invoke( MatrixA& a, fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixA& a ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::potrf( uplo(), size_column(a), begin_value(a),
-                stride_major(a), info );
+        return detail::potrf( order(), uplo(), size_column(a), begin_value(a),
+                stride_major(a) );
     }
 
 };
@@ -123,9 +204,7 @@ struct potrf_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t potrf( MatrixA& a ) {
-    fortran_int_t info(0);
-    potrf_impl< typename value< MatrixA >::type >::invoke( a, info );
-    return info;
+    return potrf_impl< typename value< MatrixA >::type >::invoke( a );
 }
 
 //
@@ -134,9 +213,7 @@ inline std::ptrdiff_t potrf( MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t potrf( const MatrixA& a ) {
-    fortran_int_t info(0);
-    potrf_impl< typename value< MatrixA >::type >::invoke( a, info );
-    return info;
+    return potrf_impl< typename value< MatrixA >::type >::invoke( a );
 }
 
 } // namespace lapack

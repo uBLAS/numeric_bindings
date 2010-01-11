@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +27,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for hprfs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,31 +46,38 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void hprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t hprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* ap, const std::complex<float>* afp,
         const fortran_int_t* ipiv, const std::complex<float>* b,
         fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float* ferr, float* berr, std::complex<float>* work, float* rwork,
-        fortran_int_t& info ) {
+        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CHPRFS( &lapack_option< UpLo >::value, &n, &nrhs, ap, afp, ipiv, b,
             &ldb, x, &ldx, ferr, berr, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void hprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t hprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* ap, const std::complex<double>* afp,
         const fortran_int_t* ipiv, const std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double* ferr, double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        double* ferr, double* berr, std::complex<double>* work,
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZHPRFS( &lapack_option< UpLo >::value, &n, &nrhs, ap, afp, ipiv, b,
             &ldb, x, &ldx, ferr, berr, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -90,10 +101,10 @@ struct hprfs_impl {
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( const fortran_int_t n, const MatrixAP& ap,
-            const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
                 typename remove_const< typename value<
@@ -124,12 +135,12 @@ struct hprfs_impl {
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::hprfs( uplo(), n, size_column(x), begin_value(ap),
+        return detail::hprfs( uplo(), n, size_column(x), begin_value(ap),
                 begin_value(afp), begin_value(ipiv), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x),
                 begin_value(ferr), begin_value(berr),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -142,14 +153,14 @@ struct hprfs_impl {
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const fortran_int_t n, const MatrixAP& ap,
-            const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( n, ap, afp, ipiv, b, x, ferr, berr, info, workspace( tmp_work,
-                tmp_rwork ) );
+        return invoke( n, ap, afp, ipiv, b, x, ferr, berr,
+                workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -162,11 +173,11 @@ struct hprfs_impl {
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const fortran_int_t n, const MatrixAP& ap,
-            const MatrixAFP& afp, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( n, ap, afp, ipiv, b, x, ferr, berr, info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            optimal_workspace work ) {
+        return invoke( n, ap, afp, ipiv, b, x, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -211,10 +222,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -230,10 +239,8 @@ template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
 inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -250,10 +257,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -270,10 +275,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -290,10 +293,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -310,10 +311,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -330,10 +329,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -350,10 +347,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -370,10 +365,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -390,10 +383,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -410,10 +401,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -430,10 +419,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -450,10 +437,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -470,10 +455,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -490,10 +473,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -510,10 +491,8 @@ inline std::ptrdiff_t hprfs( const fortran_int_t n,
         const MatrixAP& ap, const MatrixAFP& afp, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap, afp,
-            ipiv, b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return hprfs_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+            afp, ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

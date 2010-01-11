@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -30,6 +28,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for unmbr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,30 +47,37 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans >
-inline void unmbr( char vect, char side, Trans, fortran_int_t m,
+inline std::ptrdiff_t unmbr( char vect, char side, Trans, fortran_int_t m,
         fortran_int_t n, fortran_int_t k, const std::complex<float>* a,
         fortran_int_t lda, const std::complex<float>* tau,
         std::complex<float>* c, fortran_int_t ldc, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CUNMBR( &vect, &side, &lapack_option< Trans >::value, &m, &n, &k,
             a, &lda, tau, c, &ldc, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans >
-inline void unmbr( char vect, char side, Trans, fortran_int_t m,
+inline std::ptrdiff_t unmbr( char vect, char side, Trans, fortran_int_t m,
         fortran_int_t n, fortran_int_t k, const std::complex<double>* a,
         fortran_int_t lda, const std::complex<double>* tau,
         std::complex<double>* c, fortran_int_t ldc,
-        std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        std::complex<double>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZUNMBR( &vect, &side, &lapack_option< Trans >::value, &m, &n, &k,
             a, &lda, tau, c, &ldc, work, &lwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -89,10 +100,9 @@ struct unmbr_impl {
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( const char vect, const char side,
+    static std::ptrdiff_t invoke( const char vect, const char side,
             const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
-            MatrixC& c, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+            MatrixC& c, detail::workspace1< WORK > work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -115,11 +125,11 @@ struct unmbr_impl {
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 size_row(c)) );
         BOOST_ASSERT( vect == 'Q' || vect == 'P' );
-        detail::unmbr( vect, side, trans(), size_row(c), size_column(c), k,
-                begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c),
+        return detail::unmbr( vect, side, trans(), size_row(c),
+                size_column(c), k, begin_value(a), stride_major(a),
+                begin_value(tau), begin_value(c), stride_major(c),
                 begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -130,13 +140,13 @@ struct unmbr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( const char vect, const char side,
+    static std::ptrdiff_t invoke( const char vect, const char side,
             const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
-            MatrixC& c, fortran_int_t& info, minimal_workspace work ) {
+            MatrixC& c, minimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
                 size_row(c), size_column(c) ) );
-        invoke( vect, side, k, a, tau, c, info, workspace( tmp_work ) );
+        return invoke( vect, side, k, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -147,17 +157,17 @@ struct unmbr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( const char vect, const char side,
+    static std::ptrdiff_t invoke( const char vect, const char side,
             const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
-            MatrixC& c, fortran_int_t& info, optimal_workspace work ) {
+            MatrixC& c, optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         detail::unmbr( vect, side, trans(), size_row(c), size_column(c),
                 k, begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c), &opt_size_work, -1, info );
+                begin_value(c), stride_major(c), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( vect, side, k, a, tau, c, info, workspace( tmp_work ) );
+        invoke( vect, side, k, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -193,10 +203,8 @@ template< typename MatrixA, typename VectorTAU, typename MatrixC,
 inline std::ptrdiff_t unmbr( const char vect, const char side,
         const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    unmbr_impl< typename value< MatrixA >::type >::invoke( vect, side, k,
-            a, tau, c, info, work );
-    return info;
+    return unmbr_impl< typename value< MatrixA >::type >::invoke( vect,
+            side, k, a, tau, c, work );
 }
 
 //
@@ -208,10 +216,8 @@ template< typename MatrixA, typename VectorTAU, typename MatrixC >
 inline std::ptrdiff_t unmbr( const char vect, const char side,
         const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    unmbr_impl< typename value< MatrixA >::type >::invoke( vect, side, k,
-            a, tau, c, info, optimal_workspace() );
-    return info;
+    return unmbr_impl< typename value< MatrixA >::type >::invoke( vect,
+            side, k, a, tau, c, optimal_workspace() );
 }
 
 //
@@ -224,10 +230,8 @@ template< typename MatrixA, typename VectorTAU, typename MatrixC,
 inline std::ptrdiff_t unmbr( const char vect, const char side,
         const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    unmbr_impl< typename value< MatrixA >::type >::invoke( vect, side, k,
-            a, tau, c, info, work );
-    return info;
+    return unmbr_impl< typename value< MatrixA >::type >::invoke( vect,
+            side, k, a, tau, c, work );
 }
 
 //
@@ -239,10 +243,8 @@ template< typename MatrixA, typename VectorTAU, typename MatrixC >
 inline std::ptrdiff_t unmbr( const char vect, const char side,
         const fortran_int_t k, const MatrixA& a, const VectorTAU& tau,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    unmbr_impl< typename value< MatrixA >::type >::invoke( vect, side, k,
-            a, tau, c, info, optimal_workspace() );
-    return info;
+    return unmbr_impl< typename value< MatrixA >::type >::invoke( vect,
+            side, k, a, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

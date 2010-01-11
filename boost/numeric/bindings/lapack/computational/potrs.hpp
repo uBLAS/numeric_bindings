@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,20 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for potrs is selected by defining a pre-processor
+// variable, which can be one of
+// * for ATLAS's CLAPACK, define BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+// * netlib-compatible LAPACK is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+#include <boost/numeric/bindings/lapack/detail/clapack.h>
+#include <boost/numeric/bindings/lapack/detail/clapack_option.hpp>
+#else
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
@@ -39,49 +51,121 @@ namespace lapack {
 //
 namespace detail {
 
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * float value-type.
 //
-template< typename UpLo >
-inline void potrs( UpLo, fortran_int_t n, fortran_int_t nrhs, const float* a,
-        fortran_int_t lda, float* b, fortran_int_t ldb, fortran_int_t& info ) {
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, int n, int nrhs, const float* a,
+        int lda, float* b, int ldb ) {
+    return clapack_spotrs( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, nrhs, a, lda, b, ldb );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, int n, int nrhs, const double* a,
+        int lda, double* b, int ldb ) {
+    return clapack_dpotrs( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, nrhs, a, lda, b, ldb );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<float> value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, int n, int nrhs,
+        const std::complex<float>* a, int lda, std::complex<float>* b,
+        int ldb ) {
+    return clapack_cpotrs( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, nrhs, a, lda, b, ldb );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<double> value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, int n, int nrhs,
+        const std::complex<double>* a, int lda, std::complex<double>* b,
+        int ldb ) {
+    return clapack_zpotrs( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, n, nrhs, a, lda, b, ldb );
+}
+
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, fortran_int_t n, fortran_int_t nrhs,
+        const float* a, fortran_int_t lda, float* b, fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_SPOTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-template< typename UpLo >
-inline void potrs( UpLo, fortran_int_t n, fortran_int_t nrhs, const double* a,
-        fortran_int_t lda, double* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, fortran_int_t n, fortran_int_t nrhs,
+        const double* a, fortran_int_t lda, double* b, fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_DPOTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-template< typename UpLo >
-inline void potrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<float>* b, fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_CPOTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-template< typename UpLo >
-inline void potrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+template< typename Order, typename UpLo >
+inline std::ptrdiff_t potrs( Order, UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<double>* b, fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_ZPOTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,
             &info );
+    return info;
 }
 
+#endif
 } // namespace detail
 
 //
@@ -101,8 +185,7 @@ struct potrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixB >
-    static void invoke( const MatrixA& a, MatrixB& b,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const MatrixA& a, MatrixB& b ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -117,8 +200,9 @@ struct potrs_impl {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::potrs( uplo(), size_column(a), size_column(b), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), info );
+        return detail::potrs( order(), uplo(), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(b),
+                stride_major(b) );
     }
 
 };
@@ -139,9 +223,7 @@ struct potrs_impl {
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t potrs( const MatrixA& a, MatrixB& b ) {
-    fortran_int_t info(0);
-    potrs_impl< typename value< MatrixA >::type >::invoke( a, b, info );
-    return info;
+    return potrs_impl< typename value< MatrixA >::type >::invoke( a, b );
 }
 
 //
@@ -150,9 +232,7 @@ inline std::ptrdiff_t potrs( const MatrixA& a, MatrixB& b ) {
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t potrs( const MatrixA& a, const MatrixB& b ) {
-    fortran_int_t info(0);
-    potrs_impl< typename value< MatrixA >::type >::invoke( a, b, info );
-    return info;
+    return potrs_impl< typename value< MatrixA >::type >::invoke( a, b );
 }
 
 } // namespace lapack

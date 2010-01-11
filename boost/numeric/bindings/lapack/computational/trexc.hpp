@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for trexc is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,39 +48,55 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void trexc( char compq, fortran_int_t n, float* t, fortran_int_t ldt,
-        float* q, fortran_int_t ldq, fortran_int_t& ifst, fortran_int_t& ilst,
-        float* work, fortran_int_t& info ) {
+inline std::ptrdiff_t trexc( char compq, fortran_int_t n, float* t,
+        fortran_int_t ldt, float* q, fortran_int_t ldq, fortran_int_t& ifst,
+        fortran_int_t& ilst, float* work ) {
+    fortran_int_t info(0);
     LAPACK_STREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void trexc( char compq, fortran_int_t n, double* t, fortran_int_t ldt,
-        double* q, fortran_int_t ldq, fortran_int_t& ifst,
-        fortran_int_t& ilst, double* work, fortran_int_t& info ) {
+inline std::ptrdiff_t trexc( char compq, fortran_int_t n, double* t,
+        fortran_int_t ldt, double* q, fortran_int_t ldq, fortran_int_t& ifst,
+        fortran_int_t& ilst, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void trexc( char compq, fortran_int_t n, std::complex<float>* t,
-        fortran_int_t ldt, std::complex<float>* q, fortran_int_t ldq,
-        fortran_int_t ifst, fortran_int_t ilst, fortran_int_t& info ) {
+inline std::ptrdiff_t trexc( char compq, fortran_int_t n,
+        std::complex<float>* t, fortran_int_t ldt, std::complex<float>* q,
+        fortran_int_t ldq, fortran_int_t ifst, fortran_int_t ilst ) {
+    fortran_int_t info(0);
     LAPACK_CTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void trexc( char compq, fortran_int_t n, std::complex<double>* t,
-        fortran_int_t ldt, std::complex<double>* q, fortran_int_t ldq,
-        fortran_int_t ifst, fortran_int_t ilst, fortran_int_t& info ) {
+inline std::ptrdiff_t trexc( char compq, fortran_int_t n,
+        std::complex<double>* t, fortran_int_t ldt, std::complex<double>* q,
+        fortran_int_t ldq, fortran_int_t ifst, fortran_int_t ilst ) {
+    fortran_int_t info(0);
     LAPACK_ZTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, &info );
+    return info;
 }
 
 } // namespace detail
@@ -104,9 +124,8 @@ struct trexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixT, typename MatrixQ >
-    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
-            fortran_int_t& ifst, fortran_int_t& ilst,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
+            fortran_int_t& ifst, fortran_int_t& ilst ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
@@ -123,9 +142,9 @@ struct trexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_column(t)) );
         BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
                 size_column(t)) );
-        detail::trexc( compq, size_column(t), begin_value(t), stride_major(t),
-                begin_value(q), stride_major(q), ifst, ilst,
-                begin_value(work.select(real_type())), info );
+        return detail::trexc( compq, size_column(t), begin_value(t),
+                stride_major(t), begin_value(q), stride_major(q), ifst, ilst,
+                begin_value(work.select(real_type())) );
     }
 
 };
@@ -146,10 +165,9 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixT, typename MatrixQ, $WORKSPACE_TYPENAMES >
-    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
+    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
-            fortran_int_t& info, detail::workspace$WORKSPACE_SIZE<
-            $WORKSPACE_TYPES > work ) {
+            detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
@@ -164,8 +182,8 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column(t)) );
         BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
                 size_column(t)) );
-        detail::trexc( compq, size_column(t), begin_value(t), stride_major(t),
-                begin_value(q), stride_major(q), ifst, ilst, info );
+        return detail::trexc( compq, size_column(t), begin_value(t),
+                stride_major(t), begin_value(q), stride_major(q), ifst, ilst );
     }
 
     //
@@ -176,11 +194,11 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixT, typename MatrixQ >
-    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
+    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
 $SETUP_MIN_WORKARRAYS_POST
-        invoke( compq, t, q, ifst, ilst, info, workspace( $TMP_WORKARRAYS ) );
+        return invoke( compq, t, q, ifst, ilst, workspace( $TMP_WORKARRAYS ) );
     }
 
     //
@@ -191,9 +209,9 @@ $SETUP_MIN_WORKARRAYS_POST
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixT, typename MatrixQ >
-    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
+    static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
 $OPT_WORKSPACE_FUNC
     }
 
@@ -218,10 +236,8 @@ $MIN_SIZE_FUNCS
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
         fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst );
 }
 
 //
@@ -232,10 +248,8 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst );
 }
 
 //
@@ -246,10 +260,8 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
         const MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst );
 }
 
 //
@@ -260,10 +272,8 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         const MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst );
 }
 //
 // Overloaded function for trexc. Its overload differs for
@@ -275,10 +285,8 @@ template< typename MatrixT, typename MatrixQ, typename Workspace >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
         const fortran_int_t ifst, const fortran_int_t ilst,
         Workspace work ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, work );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, work );
 }
 
 //
@@ -290,10 +298,8 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
         const fortran_int_t ifst, const fortran_int_t ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, optimal_workspace() );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, optimal_workspace() );
 }
 
 //
@@ -306,10 +312,8 @@ template< typename MatrixT, typename MatrixQ, typename Workspace >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         MatrixQ& q, const fortran_int_t ifst,
         const fortran_int_t ilst, Workspace work ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, work );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, work );
 }
 
 //
@@ -322,10 +326,8 @@ template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         MatrixQ& q, const fortran_int_t ifst,
         const fortran_int_t ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, optimal_workspace() );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, optimal_workspace() );
 }
 
 //
@@ -338,10 +340,8 @@ template< typename MatrixT, typename MatrixQ, typename Workspace >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
         const MatrixQ& q, const fortran_int_t ifst,
         const fortran_int_t ilst, Workspace work ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, work );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, work );
 }
 
 //
@@ -354,10 +354,8 @@ template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
         const MatrixQ& q, const fortran_int_t ifst,
         const fortran_int_t ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, optimal_workspace() );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, optimal_workspace() );
 }
 
 //
@@ -370,10 +368,8 @@ template< typename MatrixT, typename MatrixQ, typename Workspace >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         const MatrixQ& q, const fortran_int_t ifst,
         const fortran_int_t ilst, Workspace work ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, work );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, work );
 }
 
 //
@@ -386,10 +382,8 @@ template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         const MatrixQ& q, const fortran_int_t ifst,
         const fortran_int_t ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info, optimal_workspace() );
-    return info;
+    return trexc_impl< typename value< MatrixT >::type >::invoke( compq,
+            t, q, ifst, ilst, optimal_workspace() );
 }
 
 } // namespace lapack

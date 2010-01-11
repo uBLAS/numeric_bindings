@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -30,6 +28,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for pttrs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,37 +47,53 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void pttrs( fortran_int_t n, fortran_int_t nrhs, const float* d,
-        const float* e, float* b, fortran_int_t ldb, fortran_int_t& info ) {
+inline std::ptrdiff_t pttrs( fortran_int_t n, fortran_int_t nrhs,
+        const float* d, const float* e, float* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_SPTTRS( &n, &nrhs, d, e, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void pttrs( fortran_int_t n, fortran_int_t nrhs, const double* d,
-        const double* e, double* b, fortran_int_t ldb, fortran_int_t& info ) {
+inline std::ptrdiff_t pttrs( fortran_int_t n, fortran_int_t nrhs,
+        const double* d, const double* e, double* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_DPTTRS( &n, &nrhs, d, e, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void pttrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t pttrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
         const float* d, const std::complex<float>* e, std::complex<float>* b,
-        fortran_int_t ldb, fortran_int_t& info ) {
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_CPTTRS( &uplo, &n, &nrhs, d, e, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void pttrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t pttrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
         const double* d, const std::complex<double>* e,
-        std::complex<double>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<double>* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_ZPTTRS( &uplo, &n, &nrhs, d, e, b, &ldb, &info );
+    return info;
 }
 
 } // namespace detail
@@ -101,8 +121,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const fortran_int_t n, const VectorD& d,
-            const VectorE& e, MatrixB& b, fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -118,8 +138,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::pttrs( n, size_column(b), begin_value(d), begin_value(e),
-                begin_value(b), stride_major(b), info );
+        return detail::pttrs( n, size_column(b), begin_value(d),
+                begin_value(e), begin_value(b), stride_major(b) );
     }
 
 };
@@ -140,9 +160,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const char uplo, const fortran_int_t n,
-            const VectorD& d, const VectorE& e, MatrixB& b,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
+            const VectorD& d, const VectorE& e, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorE >::type >::type,
                 typename remove_const< typename value<
@@ -153,8 +172,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::pttrs( uplo, n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(b), stride_major(b), info );
+        return detail::pttrs( uplo, n, size_column(b), begin_value(d),
+                begin_value(e), begin_value(b), stride_major(b) );
     }
 
 };
@@ -176,10 +195,8 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixB& b ) {
-    fortran_int_t info(0);
-    pttrs_impl< typename value< VectorE >::type >::invoke( n, d, e, b,
-            info );
-    return info;
+    return pttrs_impl< typename value< VectorE >::type >::invoke( n, d,
+            e, b );
 }
 
 //
@@ -189,10 +206,8 @@ inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const MatrixB& b ) {
-    fortran_int_t info(0);
-    pttrs_impl< typename value< VectorE >::type >::invoke( n, d, e, b,
-            info );
-    return info;
+    return pttrs_impl< typename value< VectorE >::type >::invoke( n, d,
+            e, b );
 }
 //
 // Overloaded function for pttrs. Its overload differs for
@@ -201,10 +216,8 @@ inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixB& b ) {
-    fortran_int_t info(0);
-    pttrs_impl< typename value< VectorE >::type >::invoke( uplo, n, d, e,
-            b, info );
-    return info;
+    return pttrs_impl< typename value< VectorE >::type >::invoke( uplo,
+            n, d, e, b );
 }
 
 //
@@ -214,10 +227,8 @@ inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixB& b ) {
-    fortran_int_t info(0);
-    pttrs_impl< typename value< VectorE >::type >::invoke( uplo, n, d, e,
-            b, info );
-    return info;
+    return pttrs_impl< typename value< VectorE >::type >::invoke( uplo,
+            n, d, e, b );
 }
 
 } // namespace lapack

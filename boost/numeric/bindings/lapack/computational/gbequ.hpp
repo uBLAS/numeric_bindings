@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -29,6 +27,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gbequ is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,47 +46,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const float* ab, fortran_int_t ldab, float* r,
-        float* c, float& rowcnd, float& colcnd, float& amax,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, const float* ab,
+        fortran_int_t ldab, float* r, float* c, float& rowcnd, float& colcnd,
+        float& amax ) {
+    fortran_int_t info(0);
     LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const double* ab, fortran_int_t ldab, double* r,
-        double* c, double& rowcnd, double& colcnd, double& amax,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, const double* ab,
+        fortran_int_t ldab, double* r, double* c, double& rowcnd,
+        double& colcnd, double& amax ) {
+    fortran_int_t info(0);
     LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const std::complex<float>* ab, fortran_int_t ldab,
-        float* r, float* c, float& rowcnd, float& colcnd, float& amax,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, const std::complex<float>* ab,
+        fortran_int_t ldab, float* r, float* c, float& rowcnd, float& colcnd,
+        float& amax ) {
+    fortran_int_t info(0);
     LAPACK_CGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const std::complex<double>* ab, fortran_int_t ldab,
-        double* r, double* c, double& rowcnd, double& colcnd, double& amax,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, const std::complex<double>* ab,
+        fortran_int_t ldab, double* r, double* c, double& rowcnd,
+        double& colcnd, double& amax ) {
+    fortran_int_t info(0);
     LAPACK_ZGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -110,9 +130,8 @@ struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
-            real_type& rowcnd, real_type& colcnd, real_type& amax,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -130,9 +149,10 @@ struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(ab) >= 0 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
                 bandwidth_upper(ab)+1 );
-        detail::gbequ( size_row(ab), size_column(ab), bandwidth_lower(ab),
-                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
-                begin_value(r), begin_value(c), rowcnd, colcnd, amax, info );
+        return detail::gbequ( size_row(ab), size_column(ab),
+                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(r), begin_value(c), rowcnd,
+                colcnd, amax );
     }
 
 };
@@ -153,9 +173,8 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
-            real_type& rowcnd, real_type& colcnd, real_type& amax,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorR >::type >::type,
                 typename remove_const< typename value<
@@ -169,9 +188,10 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(ab) >= 0 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
                 bandwidth_upper(ab)+1 );
-        detail::gbequ( size_row(ab), size_column(ab), bandwidth_lower(ab),
-                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
-                begin_value(r), begin_value(c), rowcnd, colcnd, amax, info );
+        return detail::gbequ( size_row(ab), size_column(ab),
+                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(r), begin_value(c), rowcnd,
+                colcnd, amax );
     }
 
 };
@@ -198,10 +218,8 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r, VectorC& c,
         typename value< MatrixAB >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& amax ) {
-    fortran_int_t info(0);
-    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
+            c, rowcnd, colcnd, amax );
 }
 
 //
@@ -216,10 +234,8 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
         typename value< MatrixAB >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& amax ) {
-    fortran_int_t info(0);
-    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
+            c, rowcnd, colcnd, amax );
 }
 
 //
@@ -234,10 +250,8 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r,
         typename value< MatrixAB >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& amax ) {
-    fortran_int_t info(0);
-    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
+            c, rowcnd, colcnd, amax );
 }
 
 //
@@ -252,10 +266,8 @@ inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
         typename value< MatrixAB >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& amax ) {
-    fortran_int_t info(0);
-    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r,
+            c, rowcnd, colcnd, amax );
 }
 
 } // namespace lapack

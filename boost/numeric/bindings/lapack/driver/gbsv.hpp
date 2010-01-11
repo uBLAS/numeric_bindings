@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for gbsv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -40,43 +44,57 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gbsv( fortran_int_t n, fortran_int_t kl, fortran_int_t ku,
-        fortran_int_t nrhs, float* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, float* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, fortran_int_t nrhs, float* ab, fortran_int_t ldab,
+        fortran_int_t* ipiv, float* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_SGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gbsv( fortran_int_t n, fortran_int_t kl, fortran_int_t ku,
-        fortran_int_t nrhs, double* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, double* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, fortran_int_t nrhs, double* ab, fortran_int_t ldab,
+        fortran_int_t* ipiv, double* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_DGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gbsv( fortran_int_t n, fortran_int_t kl, fortran_int_t ku,
-        fortran_int_t nrhs, std::complex<float>* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, std::complex<float>* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, fortran_int_t nrhs, std::complex<float>* ab,
+        fortran_int_t ldab, fortran_int_t* ipiv, std::complex<float>* b,
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_CGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gbsv( fortran_int_t n, fortran_int_t kl, fortran_int_t ku,
-        fortran_int_t nrhs, std::complex<double>* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, std::complex<double>* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, fortran_int_t nrhs, std::complex<double>* ab,
+        fortran_int_t ldab, fortran_int_t* ipiv, std::complex<double>* b,
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_ZGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
+    return info;
 }
 
 } // namespace detail
@@ -98,8 +116,7 @@ struct gbsv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -117,10 +134,10 @@ struct gbsv_impl {
         BOOST_ASSERT( stride_major(ab) >= 2 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(ab)) );
-        detail::gbsv( size_column(ab), bandwidth_lower(ab),
+        return detail::gbsv( size_column(ab), bandwidth_lower(ab),
                 bandwidth_upper(ab), size_column(b), begin_value(ab),
                 stride_major(ab), begin_value(ipiv), begin_value(b),
-                stride_major(b), info );
+                stride_major(b) );
     }
 
 };
@@ -142,12 +159,9 @@ struct gbsv_impl {
 // * MatrixB&
 //
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv,
-        MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -159,10 +173,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -174,10 +186,8 @@ inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -189,10 +199,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -204,10 +212,8 @@ inline std::ptrdiff_t gbsv( const MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -219,10 +225,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -234,10 +238,8 @@ inline std::ptrdiff_t gbsv( const MatrixAB& ab, VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 //
@@ -249,10 +251,8 @@ inline std::ptrdiff_t gbsv( MatrixAB& ab, const VectorIPIV& ipiv,
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gbsv( const MatrixAB& ab, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gbsv_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv, b,
-            info );
-    return info;
+    return gbsv_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv, b );
 }
 
 } // namespace lapack

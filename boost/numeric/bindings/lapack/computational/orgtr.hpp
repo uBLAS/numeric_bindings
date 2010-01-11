@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -30,6 +28,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for orgtr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,25 +47,33 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void orgtr( UpLo, fortran_int_t n, float* a, fortran_int_t lda,
-        const float* tau, float* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t orgtr( UpLo, fortran_int_t n, float* a,
+        fortran_int_t lda, const float* tau, float* work,
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SORGTR( &lapack_option< UpLo >::value, &n, a, &lda, tau, work,
             &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void orgtr( UpLo, fortran_int_t n, double* a, fortran_int_t lda,
-        const double* tau, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t orgtr( UpLo, fortran_int_t n, double* a,
+        fortran_int_t lda, const double* tau, double* work,
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DORGTR( &lapack_option< UpLo >::value, &n, a, &lda, tau, work,
             &lwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -83,9 +95,8 @@ struct orgtr_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( const fortran_int_t n, MatrixA& a,
-            const VectorTAU& tau, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, MatrixA& a,
+            const VectorTAU& tau, detail::workspace1< WORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -97,9 +108,9 @@ struct orgtr_impl {
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::orgtr( uplo(), n, begin_value(a), stride_major(a),
+        return detail::orgtr( uplo(), n, begin_value(a), stride_major(a),
                 begin_value(tau), begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -110,12 +121,11 @@ struct orgtr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( const fortran_int_t n, MatrixA& a,
-            const VectorTAU& tau, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, MatrixA& a,
+            const VectorTAU& tau, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        invoke( n, a, tau, info, workspace( tmp_work ) );
+        return invoke( n, a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -126,16 +136,15 @@ struct orgtr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( const fortran_int_t n, MatrixA& a,
-            const VectorTAU& tau, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, MatrixA& a,
+            const VectorTAU& tau, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
         detail::orgtr( uplo(), n, begin_value(a), stride_major(a),
-                begin_value(tau), &opt_size_work, -1, info );
+                begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( n, a, tau, info, workspace( tmp_work ) );
+        invoke( n, a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -165,10 +174,8 @@ struct orgtr_impl {
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline std::ptrdiff_t orgtr( const fortran_int_t n, MatrixA& a,
         const VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
-            info, work );
-    return info;
+    return orgtr_impl< typename value< MatrixA >::type >::invoke( n, a,
+            tau, work );
 }
 
 //
@@ -179,10 +186,8 @@ inline std::ptrdiff_t orgtr( const fortran_int_t n, MatrixA& a,
 template< typename MatrixA, typename VectorTAU >
 inline std::ptrdiff_t orgtr( const fortran_int_t n, MatrixA& a,
         const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
-            info, optimal_workspace() );
-    return info;
+    return orgtr_impl< typename value< MatrixA >::type >::invoke( n, a,
+            tau, optimal_workspace() );
 }
 
 //
@@ -193,10 +198,8 @@ inline std::ptrdiff_t orgtr( const fortran_int_t n, MatrixA& a,
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline std::ptrdiff_t orgtr( const fortran_int_t n, const MatrixA& a,
         const VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
-            info, work );
-    return info;
+    return orgtr_impl< typename value< MatrixA >::type >::invoke( n, a,
+            tau, work );
 }
 
 //
@@ -207,10 +210,8 @@ inline std::ptrdiff_t orgtr( const fortran_int_t n, const MatrixA& a,
 template< typename MatrixA, typename VectorTAU >
 inline std::ptrdiff_t orgtr( const fortran_int_t n, const MatrixA& a,
         const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
-            info, optimal_workspace() );
-    return info;
+    return orgtr_impl< typename value< MatrixA >::type >::invoke( n, a,
+            tau, optimal_workspace() );
 }
 
 } // namespace lapack

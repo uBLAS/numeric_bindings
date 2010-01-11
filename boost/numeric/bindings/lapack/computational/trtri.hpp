@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -28,6 +26,20 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for trtri is selected by defining a pre-processor
+// variable, which can be one of
+// * for ATLAS's CLAPACK, define BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+// * netlib-compatible LAPACK is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+#include <boost/numeric/bindings/lapack/detail/clapack.h>
+#include <boost/numeric/bindings/lapack/detail/clapack_option.hpp>
+#else
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
@@ -40,46 +52,115 @@ namespace lapack {
 //
 namespace detail {
 
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * float value-type.
 //
-template< typename UpLo, typename Diag >
-inline void trtri( UpLo, Diag, fortran_int_t n, float* a, fortran_int_t lda,
-        fortran_int_t& info ) {
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, int n, float* a, int lda ) {
+    return clapack_strtri( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, clapack_option< Diag >::value, n, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * double value-type.
+//
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, int n, double* a, int lda ) {
+    return clapack_dtrtri( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, clapack_option< Diag >::value, n, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<float> value-type.
+//
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, int n, std::complex<float>* a,
+        int lda ) {
+    return clapack_ctrtri( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, clapack_option< Diag >::value, n, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<double> value-type.
+//
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, int n, std::complex<double>* a,
+        int lda ) {
+    return clapack_ztrtri( clapack_option< Order >::value, clapack_option<
+            UpLo >::value, clapack_option< Diag >::value, n, a, lda );
+}
+
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, fortran_int_t n, float* a,
+        fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_STRTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, a, &lda, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-template< typename UpLo, typename Diag >
-inline void trtri( UpLo, Diag, fortran_int_t n, double* a, fortran_int_t lda,
-        fortran_int_t& info ) {
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, fortran_int_t n, double* a,
+        fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_DTRTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, a, &lda, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-template< typename UpLo, typename Diag >
-inline void trtri( UpLo, Diag, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, fortran_int_t& info ) {
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, fortran_int_t n,
+        std::complex<float>* a, fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_CTRTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, a, &lda, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-template< typename UpLo, typename Diag >
-inline void trtri( UpLo, Diag, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, fortran_int_t& info ) {
+template< typename Order, typename UpLo, typename Diag >
+inline std::ptrdiff_t trtri( Order, UpLo, Diag, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_ZTRTRI( &lapack_option< UpLo >::value, &lapack_option<
             Diag >::value, &n, a, &lda, &info );
+    return info;
 }
 
+#endif
 } // namespace detail
 
 //
@@ -99,7 +180,7 @@ struct trtri_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA >
-    static void invoke( MatrixA& a, fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixA& a ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
@@ -107,8 +188,8 @@ struct trtri_impl {
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::trtri( uplo(), diag(), size_column(a), begin_value(a),
-                stride_major(a), info );
+        return detail::trtri( order(), uplo(), diag(), size_column(a),
+                begin_value(a), stride_major(a) );
     }
 
 };
@@ -129,9 +210,7 @@ struct trtri_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t trtri( MatrixA& a ) {
-    fortran_int_t info(0);
-    trtri_impl< typename value< MatrixA >::type >::invoke( a, info );
-    return info;
+    return trtri_impl< typename value< MatrixA >::type >::invoke( a );
 }
 
 //
@@ -140,9 +219,7 @@ inline std::ptrdiff_t trtri( MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t trtri( const MatrixA& a ) {
-    fortran_int_t info(0);
-    trtri_impl< typename value< MatrixA >::type >::invoke( a, info );
-    return info;
+    return trtri_impl< typename value< MatrixA >::type >::invoke( a );
 }
 
 } // namespace lapack

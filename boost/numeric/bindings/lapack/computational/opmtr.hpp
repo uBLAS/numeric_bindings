@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -30,6 +28,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for opmtr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,25 +47,33 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans >
-inline void opmtr( char side, char uplo, Trans, fortran_int_t m,
+inline std::ptrdiff_t opmtr( char side, char uplo, Trans, fortran_int_t m,
         fortran_int_t n, const float* ap, const float* tau, float* c,
-        fortran_int_t ldc, float* work, fortran_int_t& info ) {
+        fortran_int_t ldc, float* work ) {
+    fortran_int_t info(0);
     LAPACK_SOPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
             tau, c, &ldc, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans >
-inline void opmtr( char side, char uplo, Trans, fortran_int_t m,
+inline std::ptrdiff_t opmtr( char side, char uplo, Trans, fortran_int_t m,
         fortran_int_t n, const double* ap, const double* tau, double* c,
-        fortran_int_t ldc, double* work, fortran_int_t& info ) {
+        fortran_int_t ldc, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DOPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
             tau, c, &ldc, work, &info );
+    return info;
 }
 
 } // namespace detail
@@ -84,8 +96,8 @@ struct opmtr_impl {
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( const char side, const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char side, const char uplo,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorAP >::type >::type,
@@ -104,9 +116,10 @@ struct opmtr_impl {
         BOOST_ASSERT( size_row(c) >= 0 );
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 size_row(c)) );
-        detail::opmtr( side, uplo, trans(), size_row(c), size_column(c),
-                begin_value(ap), begin_value(tau), begin_value(c),
-                stride_major(c), begin_value(work.select(real_type())), info );
+        return detail::opmtr( side, uplo, trans(), size_row(c),
+                size_column(c), begin_value(ap), begin_value(tau),
+                begin_value(c), stride_major(c),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -117,12 +130,12 @@ struct opmtr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( const char side, const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char side, const char uplo,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
                 size_row(c), size_column(c) ) );
-        invoke( side, uplo, ap, tau, c, info, workspace( tmp_work ) );
+        return invoke( side, uplo, ap, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -133,10 +146,10 @@ struct opmtr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( const char side, const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char side, const char uplo,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
-        invoke( side, uplo, ap, tau, c, info, minimal_workspace() );
+        return invoke( side, uplo, ap, tau, c, minimal_workspace() );
     }
 
     //
@@ -172,10 +185,8 @@ template< typename VectorAP, typename VectorTAU, typename MatrixC,
 inline std::ptrdiff_t opmtr( const char side, const char uplo,
         const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    opmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
-            ap, tau, c, info, work );
-    return info;
+    return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
+            uplo, ap, tau, c, work );
 }
 
 //
@@ -186,10 +197,8 @@ inline std::ptrdiff_t opmtr( const char side, const char uplo,
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
 inline std::ptrdiff_t opmtr( const char side, const char uplo,
         const VectorAP& ap, const VectorTAU& tau, MatrixC& c ) {
-    fortran_int_t info(0);
-    opmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
-            ap, tau, c, info, optimal_workspace() );
-    return info;
+    return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
+            uplo, ap, tau, c, optimal_workspace() );
 }
 
 //
@@ -202,10 +211,8 @@ template< typename VectorAP, typename VectorTAU, typename MatrixC,
 inline std::ptrdiff_t opmtr( const char side, const char uplo,
         const VectorAP& ap, const VectorTAU& tau, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    opmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
-            ap, tau, c, info, work );
-    return info;
+    return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
+            uplo, ap, tau, c, work );
 }
 
 //
@@ -216,10 +223,8 @@ inline std::ptrdiff_t opmtr( const char side, const char uplo,
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
 inline std::ptrdiff_t opmtr( const char side, const char uplo,
         const VectorAP& ap, const VectorTAU& tau, const MatrixC& c ) {
-    fortran_int_t info(0);
-    opmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
-            ap, tau, c, info, optimal_workspace() );
-    return info;
+    return opmtr_impl< typename value< VectorAP >::type >::invoke( side,
+            uplo, ap, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

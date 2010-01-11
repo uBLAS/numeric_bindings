@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +27,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for stevd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,23 +46,31 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void stevd( char jobz, fortran_int_t n, float* d, float* e, float* z,
-        fortran_int_t ldz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+inline std::ptrdiff_t stevd( char jobz, fortran_int_t n, float* d, float* e,
+        float* z, fortran_int_t ldz, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_SSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void stevd( char jobz, fortran_int_t n, double* d, double* e,
+inline std::ptrdiff_t stevd( char jobz, fortran_int_t n, double* d, double* e,
         double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+        fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_DSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -81,9 +93,9 @@ struct stevd_impl {
     //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK, typename IWORK >
-    static void invoke( const char jobz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -103,12 +115,12 @@ struct stevd_impl {
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( jobz,
                 n ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        detail::stevd( jobz, n, begin_value(d), begin_value(e),
+        return detail::stevd( jobz, n, begin_value(d), begin_value(e),
                 begin_value(z), stride_major(z),
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())), info );
+                size(work.select(fortran_int_t())) );
     }
 
     //
@@ -119,14 +131,13 @@ struct stevd_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( const char jobz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
                 n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( jobz, n ) );
-        invoke( jobz, n, d, e, z, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, n, d, e, z, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -137,19 +148,18 @@ struct stevd_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( const char jobz, const fortran_int_t n,
-            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
         detail::stevd( jobz, n, begin_value(d), begin_value(e),
                 begin_value(z), stride_major(z), &opt_size_work, -1,
-                &opt_size_iwork, -1, info );
+                &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, n, d, e, z, info, workspace( tmp_work, tmp_iwork ) );
+        invoke( jobz, n, d, e, z, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -198,10 +208,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -214,10 +222,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -231,10 +237,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -247,10 +251,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -264,10 +266,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -280,10 +280,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -297,10 +295,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -313,10 +309,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -330,10 +324,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -346,10 +338,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -363,10 +353,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -379,10 +367,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -396,10 +382,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -412,10 +396,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 //
@@ -430,10 +412,8 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixZ& z,
         Workspace work ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, work );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, work );
 }
 
 //
@@ -446,10 +426,8 @@ inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    stevd_impl< typename value< VectorD >::type >::invoke( jobz, n, d, e,
-            z, info, optimal_workspace() );
-    return info;
+    return stevd_impl< typename value< VectorD >::type >::invoke( jobz,
+            n, d, e, z, optimal_workspace() );
 }
 
 } // namespace lapack

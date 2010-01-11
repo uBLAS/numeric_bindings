@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +27,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for hpgvx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,33 +46,41 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void hpgvx( fortran_int_t itype, char jobz, char range, UpLo,
+inline std::ptrdiff_t hpgvx( fortran_int_t itype, char jobz, char range, UpLo,
         fortran_int_t n, std::complex<float>* ap, std::complex<float>* bp,
         float vl, float vu, fortran_int_t il, fortran_int_t iu, float abstol,
         fortran_int_t& m, float* w, std::complex<float>* z, fortran_int_t ldz,
         std::complex<float>* work, float* rwork, fortran_int_t* iwork,
-        fortran_int_t* ifail, fortran_int_t& info ) {
+        fortran_int_t* ifail ) {
+    fortran_int_t info(0);
     LAPACK_CHPGVX( &itype, &jobz, &range, &lapack_option< UpLo >::value, &n,
             ap, bp, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, rwork,
             iwork, ifail, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void hpgvx( fortran_int_t itype, char jobz, char range, UpLo,
+inline std::ptrdiff_t hpgvx( fortran_int_t itype, char jobz, char range, UpLo,
         fortran_int_t n, std::complex<double>* ap, std::complex<double>* bp,
         double vl, double vu, fortran_int_t il, fortran_int_t iu,
         double abstol, fortran_int_t& m, double* w, std::complex<double>* z,
         fortran_int_t ldz, std::complex<double>* work, double* rwork,
-        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t& info ) {
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
+    fortran_int_t info(0);
     LAPACK_ZHPGVX( &itype, &jobz, &range, &lapack_option< UpLo >::value, &n,
             ap, bp, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, rwork,
             iwork, ifail, &info );
+    return info;
 }
 
 } // namespace detail
@@ -92,12 +104,12 @@ struct hpgvx_impl {
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename RWORK, typename IWORK >
-    static void invoke( const fortran_int_t itype, const char jobz,
-            const char range, const fortran_int_t n, MatrixAP& ap,
-            MatrixBP& bp, const real_type vl, const real_type vu,
-            const fortran_int_t il, const fortran_int_t iu,
-            const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t itype,
+            const char jobz, const char range, const fortran_int_t n,
+            MatrixAP& ap, MatrixBP& bp, const real_type vl,
+            const real_type vu, const fortran_int_t il,
+            const fortran_int_t iu, const real_type abstol,
+            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -122,13 +134,13 @@ struct hpgvx_impl {
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        detail::hpgvx( itype, jobz, range, uplo(), n, begin_value(ap),
+        return detail::hpgvx( itype, jobz, range, uplo(), n, begin_value(ap),
                 begin_value(bp), vl, vu, il, iu, abstol, m, begin_value(w),
                 begin_value(z), stride_major(z),
                 begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                begin_value(ifail), info );
+                begin_value(ifail) );
     }
 
     //
@@ -140,20 +152,20 @@ struct hpgvx_impl {
     //
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( const fortran_int_t itype, const char jobz,
-            const char range, const fortran_int_t n, MatrixAP& ap,
-            MatrixBP& bp, const real_type vl, const real_type vu,
-            const fortran_int_t il, const fortran_int_t iu,
-            const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t itype,
+            const char jobz, const char range, const fortran_int_t n,
+            MatrixAP& ap, MatrixBP& bp, const real_type vl,
+            const real_type vu, const fortran_int_t il,
+            const fortran_int_t iu, const real_type abstol,
+            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w,
-                z, ifail, info, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
+        return invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol,
+                m, w, z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     //
@@ -165,16 +177,16 @@ struct hpgvx_impl {
     //
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( const fortran_int_t itype, const char jobz,
-            const char range, const fortran_int_t n, MatrixAP& ap,
-            MatrixBP& bp, const real_type vl, const real_type vu,
-            const fortran_int_t il, const fortran_int_t iu,
-            const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t itype,
+            const char jobz, const char range, const fortran_int_t n,
+            MatrixAP& ap, MatrixBP& bp, const real_type vl,
+            const real_type vu, const fortran_int_t il,
+            const fortran_int_t iu, const real_type abstol,
+            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w,
-                z, ifail, info, minimal_workspace() );
+        return invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol,
+                m, w, z, ifail, minimal_workspace() );
     }
 
     //
@@ -232,11 +244,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -259,11 +269,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -286,11 +294,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -313,11 +319,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -340,11 +344,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -367,11 +369,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -395,11 +395,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -423,11 +421,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -450,11 +446,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -477,11 +471,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -504,11 +496,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -531,11 +521,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -558,11 +546,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -585,11 +571,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -613,11 +597,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -641,11 +623,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -668,11 +648,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -695,11 +673,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -722,11 +698,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -749,11 +723,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -776,11 +748,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -803,11 +773,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -831,11 +799,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -859,11 +825,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -887,11 +851,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -914,11 +876,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -942,11 +902,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -969,11 +927,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -997,11 +953,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1024,11 +978,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1053,11 +1005,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1081,11 +1031,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1108,11 +1056,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1135,11 +1081,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1162,11 +1106,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1189,11 +1131,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1216,11 +1156,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1243,11 +1181,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1271,11 +1207,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1299,11 +1233,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1327,11 +1259,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1354,11 +1284,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1382,11 +1310,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1409,11 +1335,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1437,11 +1361,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1464,11 +1386,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1493,11 +1413,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1521,11 +1439,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1549,11 +1465,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1576,11 +1490,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1604,11 +1516,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1631,11 +1541,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1659,11 +1567,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1686,11 +1592,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1714,11 +1618,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1742,11 +1644,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1770,11 +1670,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1797,11 +1695,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1825,11 +1721,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1852,11 +1746,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1880,11 +1772,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1907,11 +1797,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1936,11 +1824,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             work );
-    return info;
 }
 
 //
@@ -1964,11 +1850,9 @@ inline std::ptrdiff_t hpgvx( const fortran_int_t itype,
         const typename remove_imaginary< typename value<
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype, jobz,
-            range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+    return hpgvx_impl< typename value< MatrixAP >::type >::invoke( itype,
+            jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

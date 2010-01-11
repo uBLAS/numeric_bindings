@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for ppsv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -40,45 +44,60 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs, float* ap,
-        float* b, fortran_int_t ldb, fortran_int_t& info ) {
+inline std::ptrdiff_t ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        float* ap, float* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_SPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs, double* ap,
-        double* b, fortran_int_t ldb, fortran_int_t& info ) {
+inline std::ptrdiff_t ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        double* ap, double* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_DPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* ap, std::complex<float>* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<float>* ap, std::complex<float>* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_CPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* ap, std::complex<double>* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<double>* ap, std::complex<double>* b,
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_ZPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -100,7 +119,7 @@ struct ppsv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename MatrixB >
-    static void invoke( MatrixAP& ap, MatrixB& b, fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, MatrixB& b ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -113,8 +132,8 @@ struct ppsv_impl {
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(ap)) );
-        detail::ppsv( uplo(), size_column(ap), size_column(b),
-                begin_value(ap), begin_value(b), stride_major(b), info );
+        return detail::ppsv( uplo(), size_column(ap), size_column(b),
+                begin_value(ap), begin_value(b), stride_major(b) );
     }
 
 };
@@ -136,9 +155,8 @@ struct ppsv_impl {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( MatrixAP& ap, MatrixB& b ) {
-    fortran_int_t info(0);
-    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
-    return info;
+    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            b );
 }
 
 //
@@ -148,9 +166,8 @@ inline std::ptrdiff_t ppsv( MatrixAP& ap, MatrixB& b ) {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( const MatrixAP& ap, MatrixB& b ) {
-    fortran_int_t info(0);
-    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
-    return info;
+    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            b );
 }
 
 //
@@ -160,9 +177,8 @@ inline std::ptrdiff_t ppsv( const MatrixAP& ap, MatrixB& b ) {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( MatrixAP& ap, const MatrixB& b ) {
-    fortran_int_t info(0);
-    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
-    return info;
+    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            b );
 }
 
 //
@@ -172,9 +188,8 @@ inline std::ptrdiff_t ppsv( MatrixAP& ap, const MatrixB& b ) {
 //
 template< typename MatrixAP, typename MatrixB >
 inline std::ptrdiff_t ppsv( const MatrixAP& ap, const MatrixB& b ) {
-    fortran_int_t info(0);
-    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
-    return info;
+    return ppsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            b );
 }
 
 } // namespace lapack

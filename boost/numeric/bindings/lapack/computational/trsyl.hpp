@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -29,6 +27,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for trsyl is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,49 +46,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void trsyl( char trana, char tranb, fortran_int_t isgn,
+inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
         fortran_int_t m, fortran_int_t n, const float* a, fortran_int_t lda,
         const float* b, fortran_int_t ldb, float* c, fortran_int_t ldc,
-        float& scale, fortran_int_t& info ) {
+        float& scale ) {
+    fortran_int_t info(0);
     LAPACK_STRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void trsyl( char trana, char tranb, fortran_int_t isgn,
+inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
         fortran_int_t m, fortran_int_t n, const double* a, fortran_int_t lda,
         const double* b, fortran_int_t ldb, double* c, fortran_int_t ldc,
-        double& scale, fortran_int_t& info ) {
+        double& scale ) {
+    fortran_int_t info(0);
     LAPACK_DTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void trsyl( char trana, char tranb, fortran_int_t isgn,
+inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
         fortran_int_t m, fortran_int_t n, const std::complex<float>* a,
         fortran_int_t lda, const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* c, fortran_int_t ldc, float& scale,
-        fortran_int_t& info ) {
+        std::complex<float>* c, fortran_int_t ldc, float& scale ) {
+    fortran_int_t info(0);
     LAPACK_CTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void trsyl( char trana, char tranb, fortran_int_t isgn,
+inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
         fortran_int_t m, fortran_int_t n, const std::complex<double>* a,
         fortran_int_t lda, const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* c, fortran_int_t ldc, double& scale,
-        fortran_int_t& info ) {
+        std::complex<double>* c, fortran_int_t ldc, double& scale ) {
+    fortran_int_t info(0);
     LAPACK_ZTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
+    return info;
 }
 
 } // namespace detail
@@ -112,10 +130,10 @@ struct trsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static void invoke( const char trana, const char tranb,
+    static std::ptrdiff_t invoke( const char trana, const char tranb,
             const fortran_int_t isgn, const fortran_int_t m,
             const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-            MatrixC& c, real_type& scale, fortran_int_t& info ) {
+            MatrixC& c, real_type& scale ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -135,9 +153,9 @@ struct trsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( trana == 'N' || trana == 'T' || trana == 'C' );
         BOOST_ASSERT( tranb == 'N' || tranb == 'T' || tranb == 'C' );
-        detail::trsyl( trana, tranb, isgn, m, n, begin_value(a),
+        return detail::trsyl( trana, tranb, isgn, m, n, begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), scale, info );
+                begin_value(c), stride_major(c), scale );
     }
 
 };
@@ -158,10 +176,10 @@ struct trsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static void invoke( const char trana, const char tranb,
+    static std::ptrdiff_t invoke( const char trana, const char tranb,
             const fortran_int_t isgn, const fortran_int_t m,
             const fortran_int_t n, const MatrixA& a, const MatrixB& b,
-            MatrixC& c, real_type& scale, fortran_int_t& info ) {
+            MatrixC& c, real_type& scale ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -181,9 +199,9 @@ struct trsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( trana == 'N' || trana == 'C' );
         BOOST_ASSERT( tranb == 'N' || tranb == 'C' );
-        detail::trsyl( trana, tranb, isgn, m, n, begin_value(a),
+        return detail::trsyl( trana, tranb, isgn, m, n, begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), scale, info );
+                begin_value(c), stride_major(c), scale );
     }
 
 };
@@ -208,10 +226,8 @@ inline std::ptrdiff_t trsyl( const char trana, const char tranb,
         const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         MatrixC& c, typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale ) {
-    fortran_int_t info(0);
-    trsyl_impl< typename value< MatrixA >::type >::invoke( trana, tranb,
-            isgn, m, n, a, b, c, scale, info );
-    return info;
+    return trsyl_impl< typename value< MatrixA >::type >::invoke( trana,
+            tranb, isgn, m, n, a, b, c, scale );
 }
 
 //
@@ -224,10 +240,8 @@ inline std::ptrdiff_t trsyl( const char trana, const char tranb,
         const fortran_int_t n, const MatrixA& a, const MatrixB& b,
         const MatrixC& c, typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale ) {
-    fortran_int_t info(0);
-    trsyl_impl< typename value< MatrixA >::type >::invoke( trana, tranb,
-            isgn, m, n, a, b, c, scale, info );
-    return info;
+    return trsyl_impl< typename value< MatrixA >::type >::invoke( trana,
+            tranb, isgn, m, n, a, b, c, scale );
 }
 
 } // namespace lapack

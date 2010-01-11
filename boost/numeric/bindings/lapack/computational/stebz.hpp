@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -28,6 +26,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for stebz is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -41,29 +45,35 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void stebz( char range, char order, fortran_int_t n, float vl,
+inline std::ptrdiff_t stebz( char range, char order, fortran_int_t n, float vl,
         float vu, fortran_int_t il, fortran_int_t iu, float abstol,
         const float* d, const float* e, fortran_int_t& m,
         fortran_int_t& nsplit, float* w, fortran_int_t* iblock,
-        fortran_int_t* isplit, float* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        fortran_int_t* isplit, float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e, &m,
             &nsplit, w, iblock, isplit, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void stebz( char range, char order, fortran_int_t n, double vl,
-        double vu, fortran_int_t il, fortran_int_t iu, double abstol,
-        const double* d, const double* e, fortran_int_t& m,
+inline std::ptrdiff_t stebz( char range, char order, fortran_int_t n,
+        double vl, double vu, fortran_int_t il, fortran_int_t iu,
+        double abstol, const double* d, const double* e, fortran_int_t& m,
         fortran_int_t& nsplit, double* w, fortran_int_t* iblock,
-        fortran_int_t* isplit, double* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        fortran_int_t* isplit, double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e, &m,
             &nsplit, w, iblock, isplit, work, iwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -87,13 +97,13 @@ struct stebz_impl {
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename WORK,
             typename IWORK >
-    static void invoke( const char range, const char order,
+    static std::ptrdiff_t invoke( const char range, const char order,
             const fortran_int_t n, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, const VectorD& d, const VectorE& e,
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
-            VectorIBLOCK& iblock, VectorISPLIT& isplit,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            VectorIBLOCK& iblock, VectorISPLIT& isplit, detail::workspace2<
+            WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -119,11 +129,11 @@ struct stebz_impl {
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        detail::stebz( range, order, n, vl, vu, il, iu, abstol,
+        return detail::stebz( range, order, n, vl, vu, il, iu, abstol,
                 begin_value(d), begin_value(e), m, nsplit, begin_value(w),
                 begin_value(iblock), begin_value(isplit),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -135,18 +145,18 @@ struct stebz_impl {
     //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT >
-    static void invoke( const char range, const char order,
+    static std::ptrdiff_t invoke( const char range, const char order,
             const fortran_int_t n, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, const VectorD& d, const VectorE& e,
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w,
-                iblock, isplit, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m,
+                nsplit, w, iblock, isplit, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -158,15 +168,15 @@ struct stebz_impl {
     //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT >
-    static void invoke( const char range, const char order,
+    static std::ptrdiff_t invoke( const char range, const char order,
             const fortran_int_t n, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, const VectorD& d, const VectorE& e,
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w,
-                iblock, isplit, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m,
+                nsplit, w, iblock, isplit, minimal_workspace() );
     }
 
     //
@@ -215,11 +225,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, VectorIBLOCK& iblock, VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -240,11 +248,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -266,11 +272,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, VectorIBLOCK& iblock, VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -291,11 +295,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -317,11 +319,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, const VectorIBLOCK& iblock, VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -342,11 +342,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, const VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -368,11 +366,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, const VectorIBLOCK& iblock, VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -393,11 +389,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, const VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -419,11 +413,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -444,11 +436,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -470,11 +460,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -495,11 +483,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -521,11 +507,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -546,11 +530,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         typename value< VectorD >::type >::type abstol, const VectorD& d,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         VectorW& w, const VectorIBLOCK& iblock, const VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 //
@@ -572,11 +554,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, const VectorIBLOCK& iblock,
         const VectorISPLIT& isplit, Workspace work ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, work );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, work );
 }
 
 //
@@ -598,11 +578,9 @@ inline std::ptrdiff_t stebz( const char range, const char order,
         const VectorE& e, fortran_int_t& m, fortran_int_t& nsplit,
         const VectorW& w, const VectorIBLOCK& iblock,
         const VectorISPLIT& isplit ) {
-    fortran_int_t info(0);
-    stebz_impl< typename value< VectorD >::type >::invoke( range, order,
-            n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit,
-            info, optimal_workspace() );
-    return info;
+    return stebz_impl< typename value< VectorD >::type >::invoke( range,
+            order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock,
+            isplit, optimal_workspace() );
 }
 
 } // namespace lapack

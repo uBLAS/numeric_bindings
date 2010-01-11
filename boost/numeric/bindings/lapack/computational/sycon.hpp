@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for sycon is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,43 +49,59 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void sycon( char uplo, fortran_int_t n, const float* a,
+inline std::ptrdiff_t sycon( char uplo, fortran_int_t n, const float* a,
         fortran_int_t lda, const fortran_int_t* ipiv, float anorm,
-        float& rcond, float* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        float& rcond, float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void sycon( char uplo, fortran_int_t n, const double* a,
+inline std::ptrdiff_t sycon( char uplo, fortran_int_t n, const double* a,
         fortran_int_t lda, const fortran_int_t* ipiv, double anorm,
-        double& rcond, double* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        double& rcond, double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void sycon( char uplo, fortran_int_t n, const std::complex<float>* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, float anorm,
-        float& rcond, std::complex<float>* work, fortran_int_t& info ) {
+inline std::ptrdiff_t sycon( char uplo, fortran_int_t n,
+        const std::complex<float>* a, fortran_int_t lda,
+        const fortran_int_t* ipiv, float anorm, float& rcond,
+        std::complex<float>* work ) {
+    fortran_int_t info(0);
     LAPACK_CSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void sycon( char uplo, fortran_int_t n, const std::complex<double>* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, double anorm,
-        double& rcond, std::complex<double>* work, fortran_int_t& info ) {
+inline std::ptrdiff_t sycon( char uplo, fortran_int_t n,
+        const std::complex<double>* a, fortran_int_t lda,
+        const fortran_int_t* ipiv, double anorm, double& rcond,
+        std::complex<double>* work ) {
+    fortran_int_t info(0);
     LAPACK_ZSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, &info );
+    return info;
 }
 
 } // namespace detail
@@ -110,9 +130,9 @@ struct sycon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorIPIV, typename WORK,
             typename IWORK >
-    static void invoke( const char uplo, const MatrixA& a,
+    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( size(ipiv) >= size_column(a) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( size_column(a) ));
@@ -122,10 +142,10 @@ struct sycon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::sycon( uplo, size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), anorm, rcond,
+        return detail::sycon( uplo, size_column(a), begin_value(a),
+                stride_major(a), begin_value(ipiv), anorm, rcond,
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -136,14 +156,14 @@ struct sycon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( const char uplo, const MatrixA& a,
+    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(a) ) );
-        invoke( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work,
+        return invoke( uplo, a, ipiv, anorm, rcond, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -155,10 +175,10 @@ struct sycon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( const char uplo, const MatrixA& a,
+    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( uplo, a, ipiv, anorm, rcond, minimal_workspace() );
     }
 
     //
@@ -194,9 +214,9 @@ struct sycon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( const char uplo, const MatrixA& a,
+    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+            detail::workspace1< WORK > work ) {
         BOOST_ASSERT( size(ipiv) >= size_column(a) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 size_column(a) ));
@@ -204,9 +224,9 @@ struct sycon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::sycon( uplo, size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), anorm, rcond,
-                begin_value(work.select(value_type())), info );
+        return detail::sycon( uplo, size_column(a), begin_value(a),
+                stride_major(a), begin_value(ipiv), anorm, rcond,
+                begin_value(work.select(value_type())) );
     }
 
     //
@@ -217,12 +237,12 @@ struct sycon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( const char uplo, const MatrixA& a,
+    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        invoke( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
+        return invoke( uplo, a, ipiv, anorm, rcond, workspace( tmp_work ) );
     }
 
     //
@@ -233,10 +253,10 @@ struct sycon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( const char uplo, const MatrixA& a,
+    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
             const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( uplo, a, ipiv, anorm, rcond, minimal_workspace() );
     }
 
     //
@@ -268,10 +288,8 @@ inline std::ptrdiff_t sycon( const char uplo, const MatrixA& a,
         typename value< MatrixA >::type >::type anorm,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, Workspace work ) {
-    fortran_int_t info(0);
-    sycon_impl< typename value< MatrixA >::type >::invoke( uplo, a, ipiv,
-            anorm, rcond, info, work );
-    return info;
+    return sycon_impl< typename value< MatrixA >::type >::invoke( uplo,
+            a, ipiv, anorm, rcond, work );
 }
 
 //
@@ -284,10 +302,8 @@ inline std::ptrdiff_t sycon( const char uplo, const MatrixA& a,
         typename value< MatrixA >::type >::type anorm,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond ) {
-    fortran_int_t info(0);
-    sycon_impl< typename value< MatrixA >::type >::invoke( uplo, a, ipiv,
-            anorm, rcond, info, optimal_workspace() );
-    return info;
+    return sycon_impl< typename value< MatrixA >::type >::invoke( uplo,
+            a, ipiv, anorm, rcond, optimal_workspace() );
 }
 
 } // namespace lapack

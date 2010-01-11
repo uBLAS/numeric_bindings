@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for ggsvp is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,64 +48,79 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
+inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
         fortran_int_t p, fortran_int_t n, float* a, fortran_int_t lda,
         float* b, fortran_int_t ldb, float tola, float tolb, fortran_int_t& k,
         fortran_int_t& l, float* u, fortran_int_t ldu, float* v,
         fortran_int_t ldv, float* q, fortran_int_t ldq, fortran_int_t* iwork,
-        float* tau, float* work, fortran_int_t& info ) {
+        float* tau, float* work ) {
+    fortran_int_t info(0);
     LAPACK_SGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, tau, work,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
+inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
         fortran_int_t p, fortran_int_t n, double* a, fortran_int_t lda,
         double* b, fortran_int_t ldb, double tola, double tolb,
         fortran_int_t& k, fortran_int_t& l, double* u, fortran_int_t ldu,
         double* v, fortran_int_t ldv, double* q, fortran_int_t ldq,
-        fortran_int_t* iwork, double* tau, double* work,
-        fortran_int_t& info ) {
+        fortran_int_t* iwork, double* tau, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, tau, work,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
+inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
         fortran_int_t p, fortran_int_t n, std::complex<float>* a,
         fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
         float tola, float tolb, fortran_int_t& k, fortran_int_t& l,
         std::complex<float>* u, fortran_int_t ldu, std::complex<float>* v,
         fortran_int_t ldv, std::complex<float>* q, fortran_int_t ldq,
         fortran_int_t* iwork, float* rwork, std::complex<float>* tau,
-        std::complex<float>* work, fortran_int_t& info ) {
+        std::complex<float>* work ) {
+    fortran_int_t info(0);
     LAPACK_CGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, rwork, tau, work,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
+inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
         fortran_int_t p, fortran_int_t n, std::complex<double>* a,
         fortran_int_t lda, std::complex<double>* b, fortran_int_t ldb,
         double tola, double tolb, fortran_int_t& k, fortran_int_t& l,
         std::complex<double>* u, fortran_int_t ldu, std::complex<double>* v,
         fortran_int_t ldv, std::complex<double>* q, fortran_int_t ldq,
         fortran_int_t* iwork, double* rwork, std::complex<double>* tau,
-        std::complex<double>* work, fortran_int_t& info ) {
+        std::complex<double>* work ) {
+    fortran_int_t info(0);
     LAPACK_ZGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, rwork, tau, work,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -131,11 +150,11 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename MatrixU,
             typename MatrixV, typename MatrixQ, typename IWORK, typename TAU,
             typename WORK >
-    static void invoke( const char jobu, const char jobv, const char jobq,
-            MatrixA& a, MatrixB& b, const real_type tola,
+    static std::ptrdiff_t invoke( const char jobu, const char jobv,
+            const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& info,
-            detail::workspace3< IWORK, TAU, WORK > work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, detail::workspace3< IWORK,
+            TAU, WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -178,14 +197,14 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::ggsvp( jobu, jobv, jobq, size_row(a), size_row(b),
+        return detail::ggsvp( jobu, jobv, jobq, size_row(a), size_row(b),
                 size_column(b), begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), tola, tolb, k, l,
                 begin_value(u), stride_major(u), begin_value(v),
                 stride_major(v), begin_value(q), stride_major(q),
                 begin_value(work.select(fortran_int_t())),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -197,18 +216,17 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename MatrixU,
             typename MatrixV, typename MatrixQ >
-    static void invoke( const char jobu, const char jobv, const char jobq,
-            MatrixA& a, MatrixB& b, const real_type tola,
+    static std::ptrdiff_t invoke( const char jobu, const char jobv,
+            const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(b) ) );
         bindings::detail::array<
                 real_type > tmp_tau( min_size_tau( size_column(b) ) );
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(b), size_row(a), size_row(b) ) );
-        invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q, info,
+        return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 workspace( tmp_iwork, tmp_tau, tmp_work ) );
     }
 
@@ -221,12 +239,11 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename MatrixU,
             typename MatrixV, typename MatrixQ >
-    static void invoke( const char jobu, const char jobv, const char jobq,
-            MatrixA& a, MatrixB& b, const real_type tola,
+    static std::ptrdiff_t invoke( const char jobu, const char jobv,
+            const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q, info,
+            MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace work ) {
+        return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 minimal_workspace() );
     }
 
@@ -274,11 +291,11 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename MatrixU,
             typename MatrixV, typename MatrixQ, typename IWORK,
             typename RWORK, typename TAU, typename WORK >
-    static void invoke( const char jobu, const char jobv, const char jobq,
-            MatrixA& a, MatrixB& b, const real_type tola,
+    static std::ptrdiff_t invoke( const char jobu, const char jobv,
+            const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& info,
-            detail::workspace4< IWORK, RWORK, TAU, WORK > work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, detail::workspace4< IWORK,
+            RWORK, TAU, WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -323,7 +340,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::ggsvp( jobu, jobv, jobq, size_row(a), size_row(b),
+        return detail::ggsvp( jobu, jobv, jobq, size_row(a), size_row(b),
                 size_column(b), begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), tola, tolb, k, l,
                 begin_value(u), stride_major(u), begin_value(v),
@@ -331,7 +348,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(work.select(fortran_int_t())),
                 begin_value(work.select(real_type())),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(value_type())), info );
+                begin_value(work.select(value_type())) );
     }
 
     //
@@ -343,11 +360,10 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename MatrixU,
             typename MatrixV, typename MatrixQ >
-    static void invoke( const char jobu, const char jobv, const char jobq,
-            MatrixA& a, MatrixB& b, const real_type tola,
+    static std::ptrdiff_t invoke( const char jobu, const char jobv,
+            const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -356,7 +372,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 value_type > tmp_tau( min_size_tau( size_column(b) ) );
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(b), size_row(a), size_row(b) ) );
-        invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q, info,
+        return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 workspace( tmp_iwork, tmp_rwork, tmp_tau, tmp_work ) );
     }
 
@@ -369,12 +385,11 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename MatrixU,
             typename MatrixV, typename MatrixQ >
-    static void invoke( const char jobu, const char jobv, const char jobq,
-            MatrixA& a, MatrixB& b, const real_type tola,
+    static std::ptrdiff_t invoke( const char jobu, const char jobv,
+            const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
-            MatrixU& u, MatrixV& v, MatrixQ& q, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q, info,
+            MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace work ) {
+        return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 minimal_workspace() );
     }
 
@@ -440,10 +455,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -463,10 +476,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -487,10 +498,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -510,10 +519,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -534,10 +541,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -557,10 +562,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -581,10 +584,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -604,10 +605,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -628,10 +627,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -651,10 +648,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -675,10 +670,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -698,10 +691,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -722,10 +713,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -745,10 +734,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -769,10 +756,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -792,10 +777,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -816,10 +799,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -839,10 +820,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -863,10 +842,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -886,10 +863,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -910,10 +885,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -933,10 +906,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -957,10 +928,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -980,10 +949,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1004,10 +971,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1028,10 +993,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1052,10 +1015,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1076,10 +1037,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1100,10 +1059,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1124,10 +1081,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1148,10 +1103,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v, MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1172,10 +1125,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1196,10 +1147,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1219,10 +1168,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1243,10 +1190,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1266,10 +1211,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1290,10 +1233,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1313,10 +1254,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1337,10 +1276,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1360,10 +1297,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         MatrixA >::type >::type tola, const typename remove_imaginary<
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, MatrixV& v, const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1384,10 +1319,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1408,10 +1341,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1432,10 +1363,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1456,10 +1385,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1480,10 +1407,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1504,10 +1429,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1528,10 +1451,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1552,10 +1473,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1576,10 +1495,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1600,10 +1517,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1624,10 +1539,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1648,10 +1561,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1672,10 +1583,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1696,10 +1605,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1720,10 +1627,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v, const MatrixQ& q,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1744,10 +1649,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1768,10 +1671,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1792,10 +1693,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1816,10 +1715,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1840,10 +1737,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1864,10 +1759,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1888,10 +1781,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 //
@@ -1912,10 +1803,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q, Workspace work ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, work );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, work );
 }
 
 //
@@ -1936,10 +1825,8 @@ inline std::ptrdiff_t ggsvp( const char jobu, const char jobv,
         typename value< MatrixA >::type >::type tolb, fortran_int_t& k,
         fortran_int_t& l, const MatrixU& u, const MatrixV& v,
         const MatrixQ& q ) {
-    fortran_int_t info(0);
-    ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu, jobv,
-            jobq, a, b, tola, tolb, k, l, u, v, q, info, optimal_workspace() );
-    return info;
+    return ggsvp_impl< typename value< MatrixA >::type >::invoke( jobu,
+            jobv, jobq, a, b, tola, tolb, k, l, u, v, q, optimal_workspace() );
 }
 
 } // namespace lapack

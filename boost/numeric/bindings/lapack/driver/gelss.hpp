@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gelss is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gelss( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* s,
-        float rcond, fortran_int_t& rank, float* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gelss( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, float* a, fortran_int_t lda, float* b,
+        fortran_int_t ldb, float* s, float rcond, fortran_int_t& rank,
+        float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gelss( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* s,
-        double rcond, fortran_int_t& rank, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gelss( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, double* a, fortran_int_t lda, double* b,
+        fortran_int_t ldb, double* s, double rcond, fortran_int_t& rank,
+        double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gelss( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, float* s, float rcond, fortran_int_t& rank,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gelss( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* b, fortran_int_t ldb, float* s, float rcond,
+        fortran_int_t& rank, std::complex<float>* work, fortran_int_t lwork,
+        float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gelss( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, double* s, double rcond, fortran_int_t& rank,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gelss( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* b, fortran_int_t ldb, double* s, double rcond,
+        fortran_int_t& rank, std::complex<double>* work, fortran_int_t lwork,
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,9 +136,9 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -143,11 +163,11 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,std::max<
                 std::ptrdiff_t >(size_row(a),size_column(a))) );
-        detail::gelss( size_row(a), size_column(a), size_column(b),
+        return detail::gelss( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(s), rcond, rank,
                 begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -158,12 +178,12 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row(a), size_column(a), size_column(b) ) );
-        invoke( a, b, s, rcond, rank, info, workspace( tmp_work ) );
+        return invoke( a, b, s, rcond, rank, workspace( tmp_work ) );
     }
 
     //
@@ -174,17 +194,17 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         real_type opt_size_work;
         detail::gelss( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(s), rcond, rank, &opt_size_work,
-                -1, info );
+                -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, s, rcond, rank, info, workspace( tmp_work ) );
+        invoke( a, b, s, rcond, rank, workspace( tmp_work ) );
     }
 
     //
@@ -217,9 +237,9 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK, typename RWORK >
-    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -244,12 +264,12 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,std::max<
                 std::ptrdiff_t >(size_row(a),size_column(a))) );
-        detail::gelss( size_row(a), size_column(a), size_column(b),
+        return detail::gelss( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(s), rcond, rank,
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -260,16 +280,17 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_row(a), size_column(a), size_column(b), minmn ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 minmn ) );
-        invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork ) );
+        return invoke( a, b, s, rcond, rank, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //
@@ -280,9 +301,9 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         value_type opt_size_work;
@@ -291,10 +312,10 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         detail::gelss( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(s), rcond, rank, &opt_size_work,
-                -1, begin_value(tmp_rwork), info );
+                -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork ) );
+        invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -340,10 +361,8 @@ inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -357,10 +376,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -376,10 +393,8 @@ inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -393,10 +408,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -412,10 +425,8 @@ inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -429,10 +440,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b, VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -448,10 +457,8 @@ inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
         VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -465,10 +472,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
         VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -484,10 +489,8 @@ inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, const VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -501,10 +504,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, const VectorS& s,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -520,10 +521,8 @@ inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -537,10 +536,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -556,10 +553,8 @@ inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -573,10 +568,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -592,10 +585,8 @@ inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, work );
 }
 
 //
@@ -609,10 +600,8 @@ template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
+    return gelss_impl< typename value< MatrixA >::type >::invoke( a, b,
+            s, rcond, rank, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for ppsvx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,61 +49,76 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void ppsvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        float* ap, float* afp, char& equed, float* s, float* b,
-        fortran_int_t ldb, float* x, fortran_int_t ldx, float& rcond,
-        float* ferr, float* berr, float* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t ppsvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, float* ap, float* afp, char& equed, float* s,
+        float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
+        float& rcond, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SPPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void ppsvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        double* ap, double* afp, char& equed, double* s, double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, double* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t ppsvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, double* ap, double* afp, char& equed, double* s,
+        double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
+        double& rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DPPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void ppsvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* ap, std::complex<float>* afp, char& equed,
-        float* s, std::complex<float>* b, fortran_int_t ldb,
+inline std::ptrdiff_t ppsvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<float>* ap, std::complex<float>* afp,
+        char& equed, float* s, std::complex<float>* b, fortran_int_t ldb,
         std::complex<float>* x, fortran_int_t ldx, float& rcond, float* ferr,
-        float* berr, std::complex<float>* work, float* rwork,
-        fortran_int_t& info ) {
+        float* berr, std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CPPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, rwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void ppsvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* ap, std::complex<double>* afp, char& equed,
-        double* s, std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t ppsvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<double>* ap,
+        std::complex<double>* afp, char& equed, double* s,
+        std::complex<double>* b, fortran_int_t ldb, std::complex<double>* x,
+        fortran_int_t ldx, double& rcond, double* ferr, double* berr,
+        std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZPPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, rwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -129,9 +148,9 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( const char fact, MatrixAP& ap, VectorAFP& afp,
-            char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char fact, MatrixAP& ap,
+            VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+            real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -181,12 +200,12 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_column(ap)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(ap)) );
-        detail::ppsvx( fact, uplo(), size_column(ap), size_column(x),
+        return detail::ppsvx( fact, uplo(), size_column(ap), size_column(x),
                 begin_value(ap), begin_value(afp), equed, begin_value(s),
                 begin_value(b), stride_major(b), begin_value(x),
                 stride_major(x), rcond, begin_value(ferr), begin_value(berr),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -199,16 +218,16 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixAP& ap, VectorAFP& afp,
-            char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char fact, MatrixAP& ap,
+            VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+            real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(ap) ) );
-        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -222,12 +241,12 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixAP& ap, VectorAFP& afp,
-            char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char fact, MatrixAP& ap,
+            VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+            real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -266,9 +285,9 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( const char fact, MatrixAP& ap, VectorAFP& afp,
-            char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char fact, MatrixAP& ap,
+            VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+            real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -314,12 +333,12 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column(ap)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(ap)) );
-        detail::ppsvx( fact, uplo(), size_column(ap), size_column(x),
+        return detail::ppsvx( fact, uplo(), size_column(ap), size_column(x),
                 begin_value(ap), begin_value(afp), equed, begin_value(s),
                 begin_value(b), stride_major(b), begin_value(x),
                 stride_major(x), rcond, begin_value(ferr), begin_value(berr),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -332,16 +351,16 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixAP& ap, VectorAFP& afp,
-            char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char fact, MatrixAP& ap,
+            VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+            real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(ap) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(ap) ) );
-        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -355,12 +374,12 @@ struct ppsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixAP& ap, VectorAFP& afp,
-            char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char fact, MatrixAP& ap,
+            VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
+            real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -410,10 +429,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -434,11 +451,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -460,10 +474,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -484,11 +496,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -510,10 +519,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -534,11 +541,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -560,10 +564,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -584,11 +586,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -610,10 +609,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -634,11 +631,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -660,10 +654,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -684,11 +676,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -710,10 +699,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -734,11 +721,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -760,10 +744,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -784,11 +766,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -810,10 +789,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -834,11 +811,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -860,10 +834,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -884,11 +856,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -910,10 +879,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -934,11 +901,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -960,10 +924,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -984,11 +946,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1010,10 +969,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1034,11 +991,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1060,10 +1014,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1084,11 +1036,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1110,10 +1059,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1134,11 +1081,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1160,10 +1104,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1184,11 +1126,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1210,10 +1149,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1234,11 +1171,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1260,10 +1194,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1284,11 +1216,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1310,10 +1239,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1334,11 +1261,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1360,10 +1284,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1384,11 +1306,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1410,10 +1329,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1434,11 +1351,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1460,10 +1374,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1484,11 +1396,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1510,10 +1419,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1534,11 +1441,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1560,10 +1464,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1584,11 +1486,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1610,10 +1509,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1634,11 +1531,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1660,10 +1554,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1684,11 +1576,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1710,10 +1599,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1734,11 +1621,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1760,10 +1644,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1784,11 +1666,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1810,10 +1689,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1834,11 +1711,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1860,10 +1734,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1884,11 +1756,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1910,10 +1779,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1934,11 +1801,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1960,10 +1824,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1984,11 +1846,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const VectorAFP& afp, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2010,10 +1869,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2035,11 +1892,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2061,10 +1915,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2086,11 +1938,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2112,10 +1961,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2137,11 +1984,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2163,10 +2007,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2188,11 +2030,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2214,10 +2053,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2239,11 +2076,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2265,10 +2099,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2290,11 +2122,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2316,10 +2145,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2341,11 +2168,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2367,10 +2191,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2392,11 +2214,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2418,10 +2237,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2443,11 +2260,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2469,10 +2283,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2494,11 +2306,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2520,10 +2329,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2545,11 +2352,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2571,10 +2375,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2596,11 +2398,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2622,10 +2421,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2647,11 +2444,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2673,10 +2467,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2698,11 +2490,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2724,10 +2513,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2749,11 +2536,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2775,10 +2559,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2800,11 +2582,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2826,10 +2605,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2851,11 +2628,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2877,10 +2651,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2902,11 +2674,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2928,10 +2697,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2953,11 +2720,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2979,10 +2743,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3004,11 +2766,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3030,10 +2789,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3055,11 +2812,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3081,10 +2835,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3106,11 +2858,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3132,10 +2881,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3157,11 +2904,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3183,10 +2927,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3208,11 +2950,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3234,10 +2973,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3259,11 +2996,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3285,10 +3019,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3310,11 +3042,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3336,10 +3065,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3361,11 +3088,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3387,10 +3111,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3412,11 +3134,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3438,10 +3157,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3463,11 +3180,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3489,10 +3203,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3514,11 +3226,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3540,10 +3249,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3565,11 +3272,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3591,10 +3295,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3616,11 +3318,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3642,10 +3341,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3667,11 +3364,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3693,10 +3387,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3718,11 +3410,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3744,10 +3433,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3769,11 +3456,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3795,10 +3479,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3820,11 +3502,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3846,10 +3525,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3871,11 +3548,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3897,10 +3571,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3922,11 +3594,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3948,10 +3617,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3973,11 +3640,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3999,10 +3663,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4024,11 +3686,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4050,10 +3709,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4075,11 +3732,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4101,10 +3755,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4126,11 +3778,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4152,10 +3801,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4177,11 +3824,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4203,10 +3847,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4228,11 +3870,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4254,10 +3893,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4279,11 +3916,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4305,10 +3939,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4330,11 +3962,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4356,10 +3985,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4381,11 +4008,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4407,10 +4031,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4432,11 +4054,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4458,10 +4077,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4483,11 +4100,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4509,10 +4123,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4534,11 +4146,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4560,10 +4169,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4585,11 +4192,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4611,10 +4215,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4636,11 +4238,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4662,10 +4261,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4687,11 +4284,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4713,10 +4307,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4738,11 +4330,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4764,10 +4353,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4789,11 +4376,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4815,10 +4399,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4840,11 +4422,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4866,10 +4445,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4891,11 +4468,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4917,10 +4491,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4942,11 +4514,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4968,10 +4537,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4993,11 +4560,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5019,10 +4583,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5044,11 +4606,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5070,10 +4629,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5095,11 +4652,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5121,10 +4675,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5146,11 +4698,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5172,10 +4721,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5197,11 +4744,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5223,10 +4767,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5248,11 +4790,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5274,10 +4813,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5299,11 +4836,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5325,10 +4859,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5350,11 +4882,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5376,10 +4905,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5401,11 +4928,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5427,10 +4951,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5452,11 +4974,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5478,10 +4997,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5503,11 +5020,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5529,10 +5043,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5554,11 +5066,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5580,10 +5089,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5605,11 +5112,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5631,10 +5135,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5656,11 +5158,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5682,10 +5181,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5707,11 +5204,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5733,10 +5227,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5758,11 +5250,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5784,10 +5273,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5809,11 +5296,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5835,10 +5319,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5860,11 +5342,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5886,10 +5365,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5911,11 +5388,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5937,10 +5411,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5962,11 +5434,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5988,10 +5457,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6013,11 +5480,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6039,10 +5503,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6064,11 +5526,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6090,10 +5549,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6115,11 +5572,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6141,10 +5595,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6166,11 +5618,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6192,10 +5641,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6217,11 +5664,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6243,10 +5687,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6268,11 +5710,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6294,10 +5733,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6319,11 +5756,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6345,10 +5779,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6370,11 +5802,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6396,10 +5825,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6421,11 +5848,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6447,10 +5871,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6472,11 +5894,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6498,10 +5917,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6523,11 +5940,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6549,10 +5963,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6574,11 +5986,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6600,10 +6009,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6625,11 +6032,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6651,10 +6055,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6676,11 +6078,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6702,10 +6101,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6727,11 +6124,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6753,10 +6147,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6778,11 +6170,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6804,10 +6193,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6829,11 +6216,8 @@ inline std::ptrdiff_t ppsvx( const char fact, MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6855,10 +6239,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6880,11 +6262,8 @@ inline std::ptrdiff_t ppsvx( const char fact, const MatrixAP& ap,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixAP >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact, ap,
-            afp, equed, s, b, x, rcond, ferr, berr, info,
-            optimal_workspace() );
-    return info;
+    return ppsvx_impl< typename value< MatrixAP >::type >::invoke( fact,
+            ap, afp, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

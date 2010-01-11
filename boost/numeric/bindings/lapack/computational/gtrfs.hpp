@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gtrfs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,69 +49,83 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans >
-inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const float* dl, const float* d, const float* du, const float* dlf,
         const float* df, const float* duf, const float* du2,
         const fortran_int_t* ipiv, const float* b, fortran_int_t ldb,
         float* x, fortran_int_t ldx, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans >
-inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const double* dl, const double* d, const double* du,
         const double* dlf, const double* df, const double* duf,
         const double* du2, const fortran_int_t* ipiv, const double* b,
         fortran_int_t ldb, double* x, fortran_int_t ldx, double* ferr,
-        double* berr, double* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        double* berr, double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans >
-inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* dl, const std::complex<float>* d,
         const std::complex<float>* du, const std::complex<float>* dlf,
         const std::complex<float>* df, const std::complex<float>* duf,
         const std::complex<float>* du2, const fortran_int_t* ipiv,
         const std::complex<float>* b, fortran_int_t ldb,
         std::complex<float>* x, fortran_int_t ldx, float* ferr, float* berr,
-        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+        std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans >
-inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* dl, const std::complex<double>* d,
         const std::complex<double>* du, const std::complex<double>* dlf,
         const std::complex<double>* df, const std::complex<double>* duf,
         const std::complex<double>* du2, const fortran_int_t* ipiv,
         const std::complex<double>* b, fortran_int_t ldb,
         std::complex<double>* x, fortran_int_t ldx, double* ferr,
-        double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        double* berr, std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -139,11 +157,11 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
-            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
-            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorDL >::type >::type,
@@ -206,13 +224,13 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::gtrfs( trans(), n, size_column(b), begin_value(dl),
+        return detail::gtrfs( trans(), n, size_column(b), begin_value(dl),
                 begin_value(d), begin_value(du), begin_value(dlf),
                 begin_value(df), begin_value(duf), begin_value(du2),
                 begin_value(ipiv), begin_value(b), stride_major(b),
                 begin_value(x), stride_major(x), begin_value(ferr),
                 begin_value(berr), begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -226,17 +244,17 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
-            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
-            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
-                workspace( tmp_work, tmp_iwork ) );
+        return invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+                berr, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -250,14 +268,14 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
-            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
-            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
-        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
-                minimal_workspace() );
+        return invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+                berr, minimal_workspace() );
     }
 
     //
@@ -297,11 +315,11 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
-            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
-            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
@@ -359,13 +377,13 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::gtrfs( trans(), n, size_column(b), begin_value(dl),
+        return detail::gtrfs( trans(), n, size_column(b), begin_value(dl),
                 begin_value(d), begin_value(du), begin_value(dlf),
                 begin_value(df), begin_value(duf), begin_value(du2),
                 begin_value(ipiv), begin_value(b), stride_major(b),
                 begin_value(x), stride_major(x), begin_value(ferr),
                 begin_value(berr), begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -379,16 +397,16 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
-            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
-            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
-                workspace( tmp_work, tmp_rwork ) );
+        return invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+                berr, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -402,14 +420,14 @@ struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
-            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
-            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
-        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
-                minimal_workspace() );
+        return invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+                berr, minimal_workspace() );
     }
 
     //
@@ -456,10 +474,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -478,11 +494,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -503,10 +517,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -525,11 +537,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -550,10 +560,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -572,11 +580,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -597,10 +603,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -619,11 +623,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -644,10 +646,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -666,11 +666,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -691,10 +689,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -713,11 +709,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -738,10 +732,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -760,11 +752,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -785,10 +775,8 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
-    return info;
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -807,11 +795,9 @@ inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+    return gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

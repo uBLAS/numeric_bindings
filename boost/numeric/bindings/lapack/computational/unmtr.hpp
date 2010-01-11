@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for unmtr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,31 +48,37 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo, typename Trans >
-inline void unmtr( char side, UpLo, Trans, fortran_int_t m, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda,
+inline std::ptrdiff_t unmtr( char side, UpLo, Trans, fortran_int_t m,
+        fortran_int_t n, const std::complex<float>* a, fortran_int_t lda,
         const std::complex<float>* tau, std::complex<float>* c,
-        fortran_int_t ldc, std::complex<float>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        fortran_int_t ldc, std::complex<float>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CUNMTR( &side, &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &m, &n, a, &lda, tau, c, &ldc, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo, typename Trans >
-inline void unmtr( char side, UpLo, Trans, fortran_int_t m, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda,
+inline std::ptrdiff_t unmtr( char side, UpLo, Trans, fortran_int_t m,
+        fortran_int_t n, const std::complex<double>* a, fortran_int_t lda,
         const std::complex<double>* tau, std::complex<double>* c,
-        fortran_int_t ldc, std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        fortran_int_t ldc, std::complex<double>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZUNMTR( &side, &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &m, &n, a, &lda, tau, c, &ldc, work, &lwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -91,9 +101,9 @@ struct unmtr_impl {
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( const char side, const MatrixA& a,
-            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, detail::workspace1<
+            WORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -114,11 +124,11 @@ struct unmtr_impl {
         BOOST_ASSERT( size_row(c) >= 0 );
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 size_row(c)) );
-        detail::unmtr( side, uplo(), trans(), size_row(c), size_column(c),
-                begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c),
+        return detail::unmtr( side, uplo(), trans(), size_row(c),
+                size_column(c), begin_value(a), stride_major(a),
+                begin_value(tau), begin_value(c), stride_major(c),
                 begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -129,14 +139,13 @@ struct unmtr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( const char side, const MatrixA& a,
-            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
                 size_row(c), size_column(c) ) );
-        invoke( side, a, tau, c, info, workspace( tmp_work ) );
+        return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -147,19 +156,18 @@ struct unmtr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( const char side, const MatrixA& a,
-            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         detail::unmtr( side, uplo(), trans(), size_row(c),
                 size_column(c), begin_value(a), stride_major(a),
                 begin_value(tau), begin_value(c), stride_major(c),
-                &opt_size_work, -1, info );
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( side, a, tau, c, info, workspace( tmp_work ) );
+        invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -194,10 +202,8 @@ template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
 inline std::ptrdiff_t unmtr( const char side, const MatrixA& a,
         const VectorTAU& tau, MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    unmtr_impl< typename value< MatrixA >::type >::invoke( side, a, tau,
-            c, info, work );
-    return info;
+    return unmtr_impl< typename value< MatrixA >::type >::invoke( side,
+            a, tau, c, work );
 }
 
 //
@@ -208,10 +214,8 @@ inline std::ptrdiff_t unmtr( const char side, const MatrixA& a,
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
 inline std::ptrdiff_t unmtr( const char side, const MatrixA& a,
         const VectorTAU& tau, MatrixC& c ) {
-    fortran_int_t info(0);
-    unmtr_impl< typename value< MatrixA >::type >::invoke( side, a, tau,
-            c, info, optimal_workspace() );
-    return info;
+    return unmtr_impl< typename value< MatrixA >::type >::invoke( side,
+            a, tau, c, optimal_workspace() );
 }
 
 //
@@ -223,10 +227,8 @@ template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
 inline std::ptrdiff_t unmtr( const char side, const MatrixA& a,
         const VectorTAU& tau, const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    unmtr_impl< typename value< MatrixA >::type >::invoke( side, a, tau,
-            c, info, work );
-    return info;
+    return unmtr_impl< typename value< MatrixA >::type >::invoke( side,
+            a, tau, c, work );
 }
 
 //
@@ -237,10 +239,8 @@ inline std::ptrdiff_t unmtr( const char side, const MatrixA& a,
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
 inline std::ptrdiff_t unmtr( const char side, const MatrixA& a,
         const VectorTAU& tau, const MatrixC& c ) {
-    fortran_int_t info(0);
-    unmtr_impl< typename value< MatrixA >::type >::invoke( side, a, tau,
-            c, info, optimal_workspace() );
-    return info;
+    return unmtr_impl< typename value< MatrixA >::type >::invoke( side,
+            a, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

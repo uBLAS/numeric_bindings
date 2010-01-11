@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gglse is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
+inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
         float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* c,
-        float* d, float* x, float* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        float* d, float* x, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
+inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
         double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* c,
-        double* d, double* x, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        double* d, double* x, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
+inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
         std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
         fortran_int_t ldb, std::complex<float>* c, std::complex<float>* d,
         std::complex<float>* x, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
+inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
         std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* c, std::complex<double>* d,
         std::complex<double>* x, std::complex<double>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,9 +134,8 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX, typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
-            VectorX& x, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
+            VectorD& d, VectorX& x, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -153,11 +170,11 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::gglse( size_row(a), size_column(b), size_row(b),
+        return detail::gglse( size_row(a), size_column(b), size_row(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(c), begin_value(d),
                 begin_value(x), begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -169,11 +186,11 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
-    static void invoke( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
-            VectorX& x, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
+            VectorD& d, VectorX& x, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row(a), size_column(b), size_row(b) ) );
-        invoke( a, b, c, d, x, info, workspace( tmp_work ) );
+        return invoke( a, b, c, d, x, workspace( tmp_work ) );
     }
 
     //
@@ -185,16 +202,16 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
-    static void invoke( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
-            VectorX& x, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
+            VectorD& d, VectorX& x, optimal_workspace work ) {
         real_type opt_size_work;
         detail::gglse( size_row(a), size_column(b), size_row(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(c), begin_value(d),
-                begin_value(x), &opt_size_work, -1, info );
+                begin_value(x), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, c, d, x, info, workspace( tmp_work ) );
+        invoke( a, b, c, d, x, workspace( tmp_work ) );
     }
 
     //
@@ -224,9 +241,8 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX, typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
-            VectorX& x, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
+            VectorD& d, VectorX& x, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -261,11 +277,11 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::gglse( size_row(a), size_column(b), size_row(b),
+        return detail::gglse( size_row(a), size_column(b), size_row(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(c), begin_value(d),
                 begin_value(x), begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -277,11 +293,11 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
-    static void invoke( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
-            VectorX& x, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
+            VectorD& d, VectorX& x, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_row(a), size_column(b), size_row(b) ) );
-        invoke( a, b, c, d, x, info, workspace( tmp_work ) );
+        return invoke( a, b, c, d, x, workspace( tmp_work ) );
     }
 
     //
@@ -293,16 +309,16 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorC,
             typename VectorD, typename VectorX >
-    static void invoke( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
-            VectorX& x, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
+            VectorD& d, VectorX& x, optimal_workspace work ) {
         value_type opt_size_work;
         detail::gglse( size_row(a), size_column(b), size_row(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(c), begin_value(d),
-                begin_value(x), &opt_size_work, -1, info );
+                begin_value(x), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, c, d, x, info, workspace( tmp_work ) );
+        invoke( a, b, c, d, x, workspace( tmp_work ) );
     }
 
     //
@@ -338,10 +354,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -357,10 +371,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -376,10 +388,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -395,10 +405,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -414,10 +422,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -433,10 +439,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -452,10 +456,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -471,10 +473,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -490,10 +490,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -509,10 +507,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -528,10 +524,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -547,10 +541,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -566,10 +558,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -585,10 +575,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -604,10 +592,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -623,10 +609,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -642,10 +626,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -661,10 +643,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -680,10 +660,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -699,10 +677,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -718,10 +694,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -737,10 +711,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -756,10 +728,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -775,10 +745,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -794,10 +762,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -813,10 +779,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -832,10 +796,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -851,10 +813,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -870,10 +830,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -889,10 +847,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -908,10 +864,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -927,10 +881,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -946,10 +898,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -965,10 +915,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -984,10 +932,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1003,10 +949,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1022,10 +966,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1041,10 +983,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1060,10 +1000,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1079,10 +1017,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1098,10 +1034,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1117,10 +1051,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1136,10 +1068,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1155,10 +1085,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1174,10 +1102,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1193,10 +1119,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1212,10 +1136,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1231,10 +1153,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1250,10 +1170,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1269,10 +1187,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1288,10 +1204,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1307,10 +1221,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b, VectorC& c,
         const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1326,10 +1238,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         const VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1345,10 +1255,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b, VectorC& c,
         const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1364,10 +1272,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, const VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1383,10 +1289,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         VectorC& c, const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1402,10 +1306,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX, typename Workspace >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         const VectorD& d, const VectorX& x, Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1421,10 +1323,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, MatrixB& b, const VectorC& c,
         const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1441,10 +1341,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, const VectorD& d, const VectorX& x,
         Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1460,10 +1358,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, MatrixB& b,
         const VectorC& c, const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1480,10 +1376,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, const VectorX& x,
         Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1499,10 +1393,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 //
@@ -1519,10 +1411,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, const VectorX& x,
         Workspace work ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, work );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, work );
 }
 
 //
@@ -1538,10 +1428,8 @@ template< typename MatrixA, typename MatrixB, typename VectorC,
         typename VectorD, typename VectorX >
 inline std::ptrdiff_t gglse( const MatrixA& a, const MatrixB& b,
         const VectorC& c, const VectorD& d, const VectorX& x ) {
-    fortran_int_t info(0);
-    gglse_impl< typename value< MatrixA >::type >::invoke( a, b, c, d, x,
-            info, optimal_workspace() );
-    return info;
+    return gglse_impl< typename value< MatrixA >::type >::invoke( a, b,
+            c, d, x, optimal_workspace() );
 }
 
 } // namespace lapack

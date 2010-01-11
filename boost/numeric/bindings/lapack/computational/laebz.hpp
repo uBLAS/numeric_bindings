@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -28,6 +26,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for laebz is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -41,29 +45,37 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void laebz( fortran_int_t ijob, fortran_int_t nitmax, fortran_int_t n,
-        fortran_int_t mmax, fortran_int_t minp, fortran_int_t nbmin,
-        float abstol, float reltol, float pivmin, const float* d,
-        const float* e, const float* e2, fortran_int_t* nval, float* ab,
-        float* c, fortran_int_t& mout, fortran_int_t* nab, float* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+inline std::ptrdiff_t laebz( fortran_int_t ijob, fortran_int_t nitmax,
+        fortran_int_t n, fortran_int_t mmax, fortran_int_t minp,
+        fortran_int_t nbmin, float abstol, float reltol, float pivmin,
+        const float* d, const float* e, const float* e2, fortran_int_t* nval,
+        float* ab, float* c, fortran_int_t& mout, fortran_int_t* nab,
+        float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
             &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void laebz( fortran_int_t ijob, fortran_int_t nitmax, fortran_int_t n,
-        fortran_int_t mmax, fortran_int_t minp, fortran_int_t nbmin,
-        double abstol, double reltol, double pivmin, const double* d,
-        const double* e, const double* e2, fortran_int_t* nval, double* ab,
-        double* c, fortran_int_t& mout, fortran_int_t* nab, double* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+inline std::ptrdiff_t laebz( fortran_int_t ijob, fortran_int_t nitmax,
+        fortran_int_t n, fortran_int_t mmax, fortran_int_t minp,
+        fortran_int_t nbmin, double abstol, double reltol, double pivmin,
+        const double* d, const double* e, const double* e2,
+        fortran_int_t* nval, double* ab, double* c, fortran_int_t& mout,
+        fortran_int_t* nab, double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
             &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -87,14 +99,14 @@ struct laebz_impl {
     template< typename VectorD, typename VectorE, typename VectorE2,
             typename VectorNVAL, typename MatrixAB, typename VectorC,
             typename MatrixNAB, typename WORK, typename IWORK >
-    static void invoke( const fortran_int_t ijob,
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const fortran_int_t nitmax, const fortran_int_t n,
             const fortran_int_t minp, const fortran_int_t nbmin,
             const real_type abstol, const real_type reltol,
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-            fortran_int_t& mout, MatrixNAB& nab, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            fortran_int_t& mout, MatrixNAB& nab, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -127,12 +139,12 @@ struct laebz_impl {
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 stride_major(ab) ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        detail::laebz( ijob, nitmax, n, stride_major(ab), minp, nbmin, abstol,
-                reltol, pivmin, begin_value(d), begin_value(e),
+        return detail::laebz( ijob, nitmax, n, stride_major(ab), minp, nbmin,
+                abstol, reltol, pivmin, begin_value(d), begin_value(e),
                 begin_value(e2), begin_value(nval), begin_value(ab),
                 begin_value(c), mout, begin_value(nab),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -145,20 +157,19 @@ struct laebz_impl {
     template< typename VectorD, typename VectorE, typename VectorE2,
             typename VectorNVAL, typename MatrixAB, typename VectorC,
             typename MatrixNAB >
-    static void invoke( const fortran_int_t ijob,
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const fortran_int_t nitmax, const fortran_int_t n,
             const fortran_int_t minp, const fortran_int_t nbmin,
             const real_type abstol, const real_type reltol,
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-            fortran_int_t& mout, MatrixNAB& nab, fortran_int_t& info,
-            minimal_workspace work ) {
+            fortran_int_t& mout, MatrixNAB& nab, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 stride_major(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( stride_major(ab) ) );
-        invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e,
-                e2, nval, ab, c, mout, nab, info, workspace( tmp_work,
+        return invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin,
+                d, e, e2, nval, ab, c, mout, nab, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -172,16 +183,15 @@ struct laebz_impl {
     template< typename VectorD, typename VectorE, typename VectorE2,
             typename VectorNVAL, typename MatrixAB, typename VectorC,
             typename MatrixNAB >
-    static void invoke( const fortran_int_t ijob,
+    static std::ptrdiff_t invoke( const fortran_int_t ijob,
             const fortran_int_t nitmax, const fortran_int_t n,
             const fortran_int_t minp, const fortran_int_t nbmin,
             const real_type abstol, const real_type reltol,
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-            fortran_int_t& mout, MatrixNAB& nab, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e,
-                e2, nval, ab, c, mout, nab, info, minimal_workspace() );
+            fortran_int_t& mout, MatrixNAB& nab, optimal_workspace work ) {
+        return invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin,
+                d, e, e2, nval, ab, c, mout, nab, minimal_workspace() );
     }
 
     //
@@ -232,11 +242,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -260,11 +268,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -288,11 +294,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -316,11 +320,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -344,11 +346,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -372,11 +372,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -400,11 +398,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         VectorC& c, fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -428,11 +424,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -456,11 +450,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -484,11 +476,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
         fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -513,11 +503,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -541,11 +529,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -570,11 +556,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -598,11 +582,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -627,11 +609,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -655,11 +635,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -683,11 +661,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -711,11 +687,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -739,11 +713,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -767,11 +739,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -795,11 +765,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -823,11 +791,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -852,11 +818,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         VectorC& c, fortran_int_t& mout, const MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -880,11 +844,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -908,11 +870,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -936,11 +896,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
         fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -965,11 +923,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -993,11 +949,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -1022,11 +976,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -1050,11 +1002,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 //
@@ -1079,11 +1029,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab,
         Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, work );
 }
 
 //
@@ -1107,11 +1055,9 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
+    return laebz_impl< typename value< VectorD >::type >::invoke( ijob,
+            nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval,
+            ab, c, mout, nab, optimal_workspace() );
 }
 
 } // namespace lapack

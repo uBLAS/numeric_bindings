@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gesvx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,65 +49,81 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans >
-inline void gesvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        float* a, fortran_int_t lda, float* af, fortran_int_t ldaf,
-        fortran_int_t* ipiv, char& equed, float* r, float* c, float* b,
-        fortran_int_t ldb, float* x, fortran_int_t ldx, float& rcond,
-        float* ferr, float* berr, float* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, float* a, fortran_int_t lda, float* af,
+        fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, float* r,
+        float* c, float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
+        float& rcond, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
             berr, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans >
-inline void gesvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        double* a, fortran_int_t lda, double* af, fortran_int_t ldaf,
-        fortran_int_t* ipiv, char& equed, double* r, double* c, double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, double* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, double* a, fortran_int_t lda, double* af,
+        fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, double* r,
+        double* c, double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
+        double& rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
             berr, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans >
-inline void gesvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* af,
-        fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, float* r,
-        float* c, std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* x, fortran_int_t ldx, float& rcond, float* ferr,
-        float* berr, std::complex<float>* work, float* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* af, fortran_int_t ldaf, fortran_int_t* ipiv,
+        char& equed, float* r, float* c, std::complex<float>* b,
+        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
+        float& rcond, float* ferr, float* berr, std::complex<float>* work,
+        float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
             berr, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans >
-inline void gesvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* af,
-        fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, double* r,
-        double* c, std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* af, fortran_int_t ldaf, fortran_int_t* ipiv,
+        char& equed, double* r, double* c, std::complex<double>* b,
+        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
+        double& rcond, double* ferr, double* berr, std::complex<double>* work,
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
             berr, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -134,10 +154,10 @@ struct gesvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
             MatrixX& x, real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            detail::workspace2< WORK, IWORK > work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -198,14 +218,14 @@ struct gesvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_column_op(a, trans())) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column_op(a, trans())) );
-        detail::gesvx( fact, trans(), size_column_op(a, trans()),
+        return detail::gesvx( fact, trans(), size_column_op(a, trans()),
                 size_column(x), begin_value(a), stride_major(a),
                 begin_value(af), stride_major(af), begin_value(ipiv), equed,
                 begin_value(r), begin_value(c), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x), rcond,
                 begin_value(ferr), begin_value(berr),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -218,17 +238,17 @@ struct gesvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
             MatrixX& x, real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column_op(a, trans()) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column_op(a, trans()) ) );
-        invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
-                workspace( tmp_work, tmp_iwork ) );
+        return invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr,
+                berr, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -241,13 +261,13 @@ struct gesvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
             MatrixX& x, real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
-        invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
-                minimal_workspace() );
+        return invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr,
+                berr, minimal_workspace() );
     }
 
     //
@@ -286,10 +306,10 @@ struct gesvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
             MatrixX& x, real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+            detail::workspace2< WORK, RWORK > work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorR >::type >::type,
@@ -346,14 +366,14 @@ struct gesvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column_op(a, trans())) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column_op(a, trans())) );
-        detail::gesvx( fact, trans(), size_column_op(a, trans()),
+        return detail::gesvx( fact, trans(), size_column_op(a, trans()),
                 size_column(x), begin_value(a), stride_major(a),
                 begin_value(af), stride_major(af), begin_value(ipiv), equed,
                 begin_value(r), begin_value(c), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x), rcond,
                 begin_value(ferr), begin_value(berr),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -366,17 +386,17 @@ struct gesvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
             MatrixX& x, real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column_op(a, trans()) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column_op(a, trans()) ) );
-        invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
-                workspace( tmp_work, tmp_rwork ) );
+        return invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr,
+                berr, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -389,13 +409,13 @@ struct gesvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
             MatrixX& x, real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
-        invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
-                minimal_workspace() );
+        return invoke( fact, a, af, ipiv, equed, r, c, b, x, rcond, ferr,
+                berr, minimal_workspace() );
     }
 
     //
@@ -447,10 +467,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -473,11 +491,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -502,10 +518,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -528,11 +542,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -557,10 +569,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -584,11 +594,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -613,10 +621,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -640,11 +646,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -669,10 +673,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -695,11 +697,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -724,10 +724,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -751,11 +749,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -780,10 +776,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -807,11 +801,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -836,10 +828,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -863,11 +853,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -892,10 +880,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -918,11 +904,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -947,10 +931,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -974,11 +956,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1003,10 +983,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1030,11 +1008,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1059,10 +1035,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1086,11 +1060,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1115,10 +1087,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1141,11 +1111,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorIPIV& ipiv, char& equed, const VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1170,10 +1138,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1197,11 +1163,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1227,10 +1191,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1254,11 +1216,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1284,10 +1244,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1311,11 +1269,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1340,10 +1296,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1366,11 +1320,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1395,10 +1347,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1422,11 +1372,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1451,10 +1399,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1478,11 +1424,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1507,10 +1451,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1534,11 +1476,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1563,10 +1503,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1589,11 +1527,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorIPIV& ipiv, char& equed, VectorR& r, const VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1618,10 +1554,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1645,11 +1579,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1674,10 +1606,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1701,11 +1631,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1730,10 +1658,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1757,11 +1683,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1786,10 +1710,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1812,11 +1734,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, char& equed, const VectorR& r, const VectorC& c,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1841,10 +1761,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1868,11 +1786,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1897,10 +1813,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1924,11 +1838,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1953,10 +1865,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1980,11 +1890,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2009,10 +1917,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2036,11 +1942,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2065,10 +1969,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2092,11 +1994,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2122,10 +2022,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2149,11 +2047,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2179,10 +2075,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2206,11 +2100,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, const VectorC& c, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2235,10 +2127,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2262,11 +2152,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2291,10 +2179,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2318,11 +2204,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2347,10 +2231,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2374,11 +2256,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2403,10 +2283,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2430,11 +2308,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2459,10 +2335,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2486,11 +2360,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2515,10 +2387,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2542,11 +2412,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2571,10 +2439,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2598,11 +2464,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2627,10 +2491,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2654,11 +2516,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2683,10 +2543,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2710,11 +2568,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2739,10 +2595,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2766,11 +2620,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2795,10 +2647,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2822,11 +2672,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2851,10 +2699,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2878,11 +2724,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2907,10 +2751,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2934,11 +2776,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2963,10 +2803,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2990,11 +2828,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3020,10 +2856,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3047,11 +2881,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3077,10 +2909,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3104,11 +2934,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3133,10 +2961,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3160,11 +2986,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3190,10 +3014,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3217,11 +3039,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3247,10 +3067,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3274,11 +3092,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3304,10 +3120,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3331,11 +3145,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3360,10 +3172,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3387,11 +3197,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3417,10 +3225,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3444,11 +3250,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3474,10 +3278,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3501,11 +3303,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3531,10 +3331,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3558,11 +3356,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3587,10 +3383,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3614,11 +3408,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3644,10 +3436,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3671,11 +3461,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3701,10 +3489,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3728,11 +3514,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3758,10 +3542,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3785,11 +3567,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3815,10 +3595,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3842,11 +3620,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3872,10 +3648,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3899,11 +3673,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3929,10 +3701,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3956,11 +3726,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3986,10 +3754,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4013,11 +3779,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, const VectorC& c, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4042,10 +3806,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4068,11 +3830,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4097,10 +3857,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4124,11 +3882,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4153,10 +3909,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4180,11 +3934,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4209,10 +3961,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4236,11 +3986,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4265,10 +4013,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4292,11 +4038,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4321,10 +4065,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4348,11 +4090,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4377,10 +4117,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4404,11 +4142,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4433,10 +4169,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4460,11 +4194,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4489,10 +4221,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4516,11 +4246,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4545,10 +4273,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4572,11 +4298,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4601,10 +4325,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4628,11 +4350,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4657,10 +4377,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4684,11 +4402,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4713,10 +4429,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4740,11 +4454,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4769,10 +4481,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4796,11 +4506,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4826,10 +4534,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4853,11 +4559,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4883,10 +4587,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4910,11 +4612,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4939,10 +4639,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4966,11 +4664,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4996,10 +4692,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5023,11 +4717,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5053,10 +4745,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5080,11 +4770,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5110,10 +4798,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5137,11 +4823,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5166,10 +4850,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5193,11 +4875,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5223,10 +4903,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5250,11 +4928,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5280,10 +4956,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5307,11 +4981,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5337,10 +5009,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5364,11 +5034,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5393,10 +5061,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5420,11 +5086,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5450,10 +5114,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5477,11 +5139,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5507,10 +5167,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5534,11 +5192,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5564,10 +5220,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5591,11 +5245,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5621,10 +5273,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5648,11 +5298,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5678,10 +5326,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5705,11 +5351,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5735,10 +5379,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5762,11 +5404,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5792,10 +5432,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5819,11 +5457,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, const VectorC& c, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5848,10 +5484,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5875,11 +5509,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5904,10 +5536,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5931,11 +5561,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5961,10 +5589,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5988,11 +5614,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6018,10 +5642,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6045,11 +5667,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6074,10 +5694,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6101,11 +5719,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6131,10 +5747,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6158,11 +5772,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6188,10 +5800,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6215,11 +5825,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6245,10 +5853,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6272,11 +5878,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6301,10 +5905,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6328,11 +5930,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6358,10 +5958,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6385,11 +5983,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6415,10 +6011,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6442,11 +6036,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6472,10 +6064,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6499,11 +6089,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6528,10 +6116,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6555,11 +6141,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6585,10 +6169,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6612,11 +6194,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6642,10 +6222,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6669,11 +6247,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6699,10 +6275,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6726,11 +6300,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6755,10 +6327,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6782,11 +6352,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6812,10 +6380,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6839,11 +6405,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6869,10 +6433,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6896,11 +6458,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6926,10 +6486,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6953,11 +6511,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6982,10 +6538,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7009,11 +6563,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7039,10 +6591,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7066,11 +6616,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7096,10 +6644,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7123,11 +6669,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7153,10 +6697,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7180,11 +6722,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7209,10 +6749,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7236,11 +6774,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7266,10 +6802,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7293,11 +6827,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7323,10 +6855,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7350,11 +6880,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7380,10 +6908,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7407,11 +6933,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7437,10 +6961,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7464,11 +6986,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7494,10 +7014,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7521,11 +7039,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7551,10 +7067,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7578,11 +7092,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorR& r, const VectorC& c, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7608,10 +7120,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7635,11 +7145,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorR& r, const VectorC& c, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7664,10 +7172,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7691,11 +7197,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7720,10 +7224,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7747,11 +7249,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7776,10 +7276,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7803,11 +7301,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7832,10 +7328,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7859,11 +7353,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7888,10 +7380,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7915,11 +7405,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7944,10 +7432,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -7971,11 +7457,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8000,10 +7484,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8027,11 +7509,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8056,10 +7536,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8083,11 +7561,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8112,10 +7588,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8139,11 +7613,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8168,10 +7640,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8195,11 +7665,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8224,10 +7692,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8251,11 +7717,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8280,10 +7744,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8307,11 +7769,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8336,10 +7796,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8363,11 +7821,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8392,10 +7848,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8419,11 +7873,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8449,10 +7901,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8477,11 +7927,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8507,10 +7955,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8535,11 +7981,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8564,10 +8008,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8591,11 +8033,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8620,10 +8060,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8647,11 +8085,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8676,10 +8112,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8703,11 +8137,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8732,10 +8164,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8759,11 +8189,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8788,10 +8216,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8815,11 +8241,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8844,10 +8268,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8871,11 +8293,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8900,10 +8320,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8927,11 +8345,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8956,10 +8372,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -8983,11 +8397,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9012,10 +8424,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9039,11 +8449,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9068,10 +8476,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9095,11 +8501,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9124,10 +8528,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9151,11 +8553,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9180,10 +8580,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9207,11 +8605,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9236,10 +8632,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9263,11 +8657,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9292,10 +8684,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9319,11 +8709,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9349,10 +8737,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9377,11 +8763,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9407,10 +8791,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9435,11 +8817,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9464,10 +8844,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9491,11 +8869,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9520,10 +8896,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9547,11 +8921,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9576,10 +8948,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9603,11 +8973,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9632,10 +9000,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9659,11 +9025,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9688,10 +9052,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9715,11 +9077,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9744,10 +9104,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9771,11 +9129,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9800,10 +9156,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9827,11 +9181,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9856,10 +9208,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9883,11 +9233,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9912,10 +9260,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9939,11 +9285,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9968,10 +9312,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -9995,11 +9337,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10024,10 +9364,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10051,11 +9389,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10080,10 +9416,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10107,11 +9441,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10136,10 +9468,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10163,11 +9493,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10192,10 +9520,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10219,11 +9545,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10249,10 +9573,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10277,11 +9599,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10307,10 +9627,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10335,11 +9653,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10364,10 +9680,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10391,11 +9705,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10421,10 +9733,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10449,11 +9759,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10479,10 +9787,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10507,11 +9813,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10537,10 +9841,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10565,11 +9867,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10594,10 +9894,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10621,11 +9919,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10651,10 +9947,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10679,11 +9973,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10709,10 +10001,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10737,11 +10027,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10767,10 +10055,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10795,11 +10081,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10824,10 +10108,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10851,11 +10133,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10881,10 +10161,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10909,11 +10187,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10939,10 +10215,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -10967,11 +10241,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10997,10 +10269,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11025,11 +10295,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11055,10 +10323,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11083,11 +10349,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11113,10 +10377,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11141,11 +10403,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11171,10 +10431,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11199,11 +10457,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11229,10 +10485,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11257,11 +10511,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11286,10 +10538,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11313,11 +10563,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11342,10 +10590,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11369,11 +10615,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11398,10 +10642,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11425,11 +10667,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11454,10 +10694,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11481,11 +10719,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11510,10 +10746,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11537,11 +10771,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11566,10 +10798,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11593,11 +10823,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11622,10 +10850,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11649,11 +10875,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11678,10 +10902,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11705,11 +10927,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11734,10 +10954,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11761,11 +10979,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11790,10 +11006,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11817,11 +11031,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11846,10 +11058,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11873,11 +11083,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11902,10 +11110,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11929,11 +11135,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11958,10 +11162,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -11985,11 +11187,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12014,10 +11214,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12041,11 +11239,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12071,10 +11267,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12099,11 +11293,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12129,10 +11321,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12157,11 +11347,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12186,10 +11374,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12213,11 +11399,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12243,10 +11427,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12271,11 +11453,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12301,10 +11481,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12329,11 +11507,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12359,10 +11535,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12387,11 +11561,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12416,10 +11588,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12443,11 +11613,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12473,10 +11641,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12501,11 +11667,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12531,10 +11695,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12559,11 +11721,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12589,10 +11749,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12617,11 +11775,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12646,10 +11802,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12673,11 +11827,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12703,10 +11855,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12731,11 +11881,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12761,10 +11909,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12789,11 +11935,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12819,10 +11963,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12847,11 +11989,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12877,10 +12017,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12905,11 +12043,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12935,10 +12071,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -12963,11 +12097,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12993,10 +12125,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13021,11 +12151,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13051,10 +12179,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13079,11 +12205,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13108,10 +12232,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13135,11 +12257,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13164,10 +12284,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13191,11 +12309,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13221,10 +12337,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13249,11 +12363,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13279,10 +12391,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13307,11 +12417,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13336,10 +12444,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13363,11 +12469,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13393,10 +12497,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13421,11 +12523,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13451,10 +12551,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13479,11 +12577,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13509,10 +12605,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13537,11 +12631,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13566,10 +12658,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13593,11 +12683,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13623,10 +12711,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13651,11 +12737,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13681,10 +12765,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13709,11 +12791,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13739,10 +12819,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13767,11 +12845,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13796,10 +12872,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13823,11 +12897,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13853,10 +12925,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13881,11 +12951,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13911,10 +12979,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13939,11 +13005,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13969,10 +13033,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -13997,11 +13059,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14026,10 +13086,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14053,11 +13111,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14083,10 +13139,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14111,11 +13165,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14141,10 +13193,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14169,11 +13219,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14199,10 +13247,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14227,11 +13273,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14256,10 +13300,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14283,11 +13325,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14313,10 +13353,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14341,11 +13379,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14371,10 +13407,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14399,11 +13433,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14429,10 +13461,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14457,11 +13487,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14486,10 +13514,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14513,11 +13539,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14543,10 +13567,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14571,11 +13593,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14601,10 +13621,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14629,11 +13647,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14659,10 +13675,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14687,11 +13701,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14717,10 +13729,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14745,11 +13755,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14775,10 +13783,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14803,11 +13809,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14833,10 +13837,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14861,11 +13863,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14891,10 +13891,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14919,11 +13917,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14948,10 +13944,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -14975,11 +13969,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15004,10 +13996,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15031,11 +14021,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15060,10 +14048,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15087,11 +14073,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15116,10 +14100,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15143,11 +14125,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15172,10 +14152,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15199,11 +14177,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15228,10 +14204,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15255,11 +14229,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15284,10 +14256,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15311,11 +14281,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15340,10 +14308,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15367,11 +14333,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15396,10 +14360,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15423,11 +14385,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15452,10 +14412,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15479,11 +14437,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15508,10 +14464,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15535,11 +14489,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15564,10 +14516,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15591,11 +14541,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15620,10 +14568,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15647,11 +14593,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15676,10 +14620,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15703,11 +14645,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15733,10 +14673,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15761,11 +14699,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15791,10 +14727,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15819,11 +14753,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15848,10 +14780,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15875,11 +14805,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15904,10 +14832,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15931,11 +14857,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15960,10 +14884,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -15987,11 +14909,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16016,10 +14936,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16043,11 +14961,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16072,10 +14988,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16099,11 +15013,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16128,10 +15040,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16155,11 +15065,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16184,10 +15092,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16211,11 +15117,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16240,10 +15144,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16267,11 +15169,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16296,10 +15196,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16323,11 +15221,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16352,10 +15248,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16379,11 +15273,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16408,10 +15300,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16435,11 +15325,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16464,10 +15352,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16491,11 +15377,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16520,10 +15404,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16547,11 +15429,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16576,10 +15456,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16603,11 +15481,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16633,10 +15509,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16661,11 +15535,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16691,10 +15563,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16719,11 +15589,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16748,10 +15616,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16775,11 +15641,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16804,10 +15668,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16831,11 +15693,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16860,10 +15720,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16887,11 +15745,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16916,10 +15772,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16943,11 +15797,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -16972,10 +15824,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -16999,11 +15849,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17028,10 +15876,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17055,11 +15901,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17084,10 +15928,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17111,11 +15953,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17140,10 +15980,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17167,11 +16005,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17196,10 +16032,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17223,11 +16057,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17252,10 +16084,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17279,11 +16109,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17308,10 +16136,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17335,11 +16161,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17364,10 +16188,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17391,11 +16213,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17420,10 +16240,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17447,11 +16265,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17476,10 +16292,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17503,11 +16317,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17533,10 +16345,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17561,11 +16371,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17591,10 +16399,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17619,11 +16425,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17648,10 +16452,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17675,11 +16477,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17705,10 +16505,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17733,11 +16531,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17763,10 +16559,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17791,11 +16585,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17821,10 +16613,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17849,11 +16639,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17878,10 +16666,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17905,11 +16691,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17935,10 +16719,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -17963,11 +16745,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -17993,10 +16773,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18021,11 +16799,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18051,10 +16827,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18079,11 +16853,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18108,10 +16880,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18135,11 +16905,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18165,10 +16933,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18193,11 +16959,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18223,10 +16987,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18251,11 +17013,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18281,10 +17041,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18309,11 +17067,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18339,10 +17095,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18367,11 +17121,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18397,10 +17149,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18425,11 +17175,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18455,10 +17203,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18483,11 +17229,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18513,10 +17257,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18541,11 +17283,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18570,10 +17310,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18597,11 +17335,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18626,10 +17362,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18653,11 +17387,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18682,10 +17414,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18709,11 +17439,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18738,10 +17466,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18765,11 +17491,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18794,10 +17518,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18821,11 +17543,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18850,10 +17570,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18877,11 +17595,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18906,10 +17622,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18933,11 +17647,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -18962,10 +17674,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -18989,11 +17699,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19018,10 +17726,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19045,11 +17751,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19074,10 +17778,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19101,11 +17803,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19130,10 +17830,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19157,11 +17855,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19186,10 +17882,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19213,11 +17907,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19242,10 +17934,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19269,11 +17959,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19298,10 +17986,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19325,11 +18011,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19355,10 +18039,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19383,11 +18065,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19413,10 +18093,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19441,11 +18119,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19470,10 +18146,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19497,11 +18171,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19527,10 +18199,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19555,11 +18225,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19585,10 +18253,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19613,11 +18279,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19643,10 +18307,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19671,11 +18333,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19700,10 +18360,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19727,11 +18385,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19757,10 +18413,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19785,11 +18439,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19815,10 +18467,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19843,11 +18493,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19873,10 +18521,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19901,11 +18547,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19930,10 +18574,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -19957,11 +18599,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -19987,10 +18627,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20015,11 +18653,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20045,10 +18681,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20073,11 +18707,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20103,10 +18735,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20131,11 +18761,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20161,10 +18789,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20189,11 +18815,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20219,10 +18843,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20247,11 +18869,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20277,10 +18897,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20305,11 +18923,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20335,10 +18951,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20363,11 +18977,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20392,10 +19004,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20419,11 +19029,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20448,10 +19056,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20475,11 +19081,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20505,10 +19109,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20533,11 +19135,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20563,10 +19163,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20591,11 +19189,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20620,10 +19216,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20647,11 +19241,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20677,10 +19269,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20705,11 +19295,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20735,10 +19323,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20763,11 +19349,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20793,10 +19377,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20821,11 +19403,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20850,10 +19430,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20877,11 +19455,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20907,10 +19483,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20935,11 +19509,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -20965,10 +19537,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -20993,11 +19563,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21023,10 +19591,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21051,11 +19617,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21080,10 +19644,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21107,11 +19669,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21137,10 +19697,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21165,11 +19723,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21195,10 +19751,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21223,11 +19777,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21253,10 +19805,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21281,11 +19831,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21310,10 +19858,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21337,11 +19883,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21367,10 +19911,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21395,11 +19937,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21425,10 +19965,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21453,11 +19991,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21483,10 +20019,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21511,11 +20045,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21540,10 +20072,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21567,11 +20097,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21597,10 +20125,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21625,11 +20151,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21655,10 +20179,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21683,11 +20205,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21713,10 +20233,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21741,11 +20259,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21770,10 +20286,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21797,11 +20311,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21827,10 +20339,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21855,11 +20365,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21885,10 +20393,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21913,11 +20419,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -21943,10 +20447,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -21971,11 +20473,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22001,10 +20501,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22029,11 +20527,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22059,10 +20555,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22087,11 +20581,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22117,10 +20609,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22145,11 +20635,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22175,10 +20663,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22203,11 +20689,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22232,10 +20716,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22259,11 +20741,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22288,10 +20768,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22315,11 +20793,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22344,10 +20820,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22371,11 +20845,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22400,10 +20872,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22427,11 +20897,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22456,10 +20924,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22483,11 +20949,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22512,10 +20976,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22539,11 +21001,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22568,10 +21028,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22595,11 +21053,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22624,10 +21080,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22651,11 +21105,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22680,10 +21132,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22707,11 +21157,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22736,10 +21184,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22763,11 +21209,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22792,10 +21236,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22819,11 +21261,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22848,10 +21288,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22875,11 +21313,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22904,10 +21340,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22931,11 +21365,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -22960,10 +21392,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -22987,11 +21417,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23017,10 +21445,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23045,11 +21471,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23075,10 +21499,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23103,11 +21525,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23132,10 +21552,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23159,11 +21577,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23188,10 +21604,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23215,11 +21629,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23244,10 +21656,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23271,11 +21681,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23300,10 +21708,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23327,11 +21733,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23356,10 +21760,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23383,11 +21785,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23412,10 +21812,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23439,11 +21837,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23468,10 +21864,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23495,11 +21889,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23524,10 +21916,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23551,11 +21941,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23580,10 +21968,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23607,11 +21993,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23636,10 +22020,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23663,11 +22045,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23692,10 +22072,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23719,11 +22097,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23748,10 +22124,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23775,11 +22149,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23804,10 +22176,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23831,11 +22201,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23860,10 +22228,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23887,11 +22253,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const VectorC& c, MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23917,10 +22281,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -23945,11 +22307,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -23975,10 +22335,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24003,11 +22361,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24032,10 +22388,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24059,11 +22413,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24088,10 +22440,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24115,11 +22465,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24144,10 +22492,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24171,11 +22517,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24200,10 +22544,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24227,11 +22569,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24256,10 +22596,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24283,11 +22621,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24312,10 +22648,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24339,11 +22673,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24368,10 +22700,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24395,11 +22725,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24424,10 +22752,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24451,11 +22777,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24480,10 +22804,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24507,11 +22829,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24536,10 +22856,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24563,11 +22881,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24592,10 +22908,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24619,11 +22933,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24648,10 +22960,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24675,11 +22985,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24704,10 +23012,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24731,11 +23037,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24760,10 +23064,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24787,11 +23089,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24817,10 +23117,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24845,11 +23143,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24875,10 +23171,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24903,11 +23197,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24932,10 +23224,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -24959,11 +23249,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -24989,10 +23277,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25017,11 +23303,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25047,10 +23331,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25075,11 +23357,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25105,10 +23385,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25133,11 +23411,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25162,10 +23438,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25189,11 +23463,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25219,10 +23491,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25247,11 +23517,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25277,10 +23545,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25305,11 +23571,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25335,10 +23599,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25363,11 +23625,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25392,10 +23652,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25419,11 +23677,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25449,10 +23705,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25477,11 +23731,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25507,10 +23759,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25535,11 +23785,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25565,10 +23813,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25593,11 +23839,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25623,10 +23867,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25651,11 +23893,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25681,10 +23921,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25709,11 +23947,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25739,10 +23975,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25767,11 +24001,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25797,10 +24029,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25825,11 +24055,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25854,10 +24082,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25881,11 +24107,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25910,10 +24134,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25937,11 +24159,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -25966,10 +24186,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -25993,11 +24211,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26022,10 +24238,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26049,11 +24263,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26078,10 +24290,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26105,11 +24315,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26134,10 +24342,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26161,11 +24367,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26190,10 +24394,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26217,11 +24419,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26246,10 +24446,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26273,11 +24471,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26302,10 +24498,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26329,11 +24523,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26358,10 +24550,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26385,11 +24575,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26414,10 +24602,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26441,11 +24627,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26470,10 +24654,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26497,11 +24679,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26526,10 +24706,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26553,11 +24731,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26582,10 +24758,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26609,11 +24783,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         VectorC& c, MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26639,10 +24811,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26667,11 +24837,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26697,10 +24865,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26725,11 +24891,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26754,10 +24918,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26781,11 +24943,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26811,10 +24971,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26839,11 +24997,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26869,10 +25025,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26897,11 +25051,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26927,10 +25079,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -26955,11 +25105,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -26984,10 +25132,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27011,11 +25157,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27041,10 +25185,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27069,11 +25211,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27099,10 +25239,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27127,11 +25265,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27157,10 +25293,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27185,11 +25319,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27214,10 +25346,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27241,11 +25371,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27271,10 +25399,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27299,11 +25425,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27329,10 +25453,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27357,11 +25479,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27387,10 +25507,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27415,11 +25533,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27445,10 +25561,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27473,11 +25587,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27503,10 +25615,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27531,11 +25641,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27561,10 +25669,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27589,11 +25695,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27619,10 +25723,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27647,11 +25749,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27676,10 +25776,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27703,11 +25801,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27732,10 +25828,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27759,11 +25853,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27789,10 +25881,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27817,11 +25907,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27847,10 +25935,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27875,11 +25961,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27904,10 +25988,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27931,11 +26013,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -27961,10 +26041,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -27989,11 +26067,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28019,10 +26095,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28047,11 +26121,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28077,10 +26149,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28105,11 +26175,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28134,10 +26202,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28161,11 +26227,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28191,10 +26255,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28219,11 +26281,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28249,10 +26309,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28277,11 +26335,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28307,10 +26363,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28335,11 +26389,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28364,10 +26416,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28391,11 +26441,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28421,10 +26469,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28449,11 +26495,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28479,10 +26523,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28507,11 +26549,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28537,10 +26577,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28565,11 +26603,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28594,10 +26630,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28621,11 +26655,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28651,10 +26683,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28679,11 +26709,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28709,10 +26737,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28737,11 +26763,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28767,10 +26791,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28795,11 +26817,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28824,10 +26844,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28851,11 +26869,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28881,10 +26897,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28909,11 +26923,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28939,10 +26951,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -28967,11 +26977,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -28997,10 +27005,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29025,11 +27031,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29054,10 +27058,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29081,11 +27083,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< MatrixA >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29111,10 +27111,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29139,11 +27137,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29169,10 +27165,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29197,11 +27191,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29227,10 +27219,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29255,11 +27245,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29285,10 +27273,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29313,11 +27299,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29343,10 +27327,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29371,11 +27353,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29401,10 +27381,8 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29429,11 +27407,9 @@ inline std::ptrdiff_t gesvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -29459,10 +27435,8 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -29487,11 +27461,9 @@ inline std::ptrdiff_t gesvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gesvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+    return gesvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, ipiv, equed, r, c, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for hptrf is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -40,21 +44,29 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void hptrf( UpLo, fortran_int_t n, std::complex<float>* ap,
-        fortran_int_t* ipiv, fortran_int_t& info ) {
+inline std::ptrdiff_t hptrf( UpLo, fortran_int_t n, std::complex<float>* ap,
+        fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
     LAPACK_CHPTRF( &lapack_option< UpLo >::value, &n, ap, ipiv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void hptrf( UpLo, fortran_int_t n, std::complex<double>* ap,
-        fortran_int_t* ipiv, fortran_int_t& info ) {
+inline std::ptrdiff_t hptrf( UpLo, fortran_int_t n, std::complex<double>* ap,
+        fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
     LAPACK_ZHPTRF( &lapack_option< UpLo >::value, &n, ap, ipiv, &info );
+    return info;
 }
 
 } // namespace detail
@@ -76,14 +88,13 @@ struct hptrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static void invoke( MatrixAP& ap, VectorIPIV& ipiv,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, VectorIPIV& ipiv ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
         BOOST_ASSERT( size_column(ap) >= 0 );
-        detail::hptrf( uplo(), size_column(ap), begin_value(ap),
-                begin_value(ipiv), info );
+        return detail::hptrf( uplo(), size_column(ap), begin_value(ap),
+                begin_value(ipiv) );
     }
 
 };
@@ -105,10 +116,8 @@ struct hptrf_impl {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    hptrf_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv,
-            info );
-    return info;
+    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv );
 }
 
 //
@@ -118,10 +127,8 @@ inline std::ptrdiff_t hptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( const MatrixAP& ap, VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    hptrf_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv,
-            info );
-    return info;
+    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv );
 }
 
 //
@@ -131,10 +138,8 @@ inline std::ptrdiff_t hptrf( const MatrixAP& ap, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAP, typename VectorIPIV >
 inline std::ptrdiff_t hptrf( MatrixAP& ap, const VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    hptrf_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv,
-            info );
-    return info;
+    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv );
 }
 
 //
@@ -143,12 +148,9 @@ inline std::ptrdiff_t hptrf( MatrixAP& ap, const VectorIPIV& ipiv ) {
 // * const VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t hptrf( const MatrixAP& ap,
-        const VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    hptrf_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv,
-            info );
-    return info;
+inline std::ptrdiff_t hptrf( const MatrixAP& ap, const VectorIPIV& ipiv ) {
+    return hptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv );
 }
 
 } // namespace lapack

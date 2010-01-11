@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gtsvx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,69 +49,84 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans >
-inline void gtsvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const float* dl, const float* d, const float* du, float* dlf,
-        float* df, float* duf, float* du2, fortran_int_t* ipiv,
+inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, const float* dl, const float* d, const float* du,
+        float* dlf, float* df, float* duf, float* du2, fortran_int_t* ipiv,
         const float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
         float& rcond, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
             work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans >
-inline void gtsvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const double* dl, const double* d, const double* du, double* dlf,
-        double* df, double* duf, double* du2, fortran_int_t* ipiv,
-        const double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, double* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, const double* dl, const double* d,
+        const double* du, double* dlf, double* df, double* duf, double* du2,
+        fortran_int_t* ipiv, const double* b, fortran_int_t ldb, double* x,
+        fortran_int_t ldx, double& rcond, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
             work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans >
-inline void gtsvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<float>* dl, const std::complex<float>* d,
-        const std::complex<float>* du, std::complex<float>* dlf,
-        std::complex<float>* df, std::complex<float>* duf,
-        std::complex<float>* du2, fortran_int_t* ipiv,
-        const std::complex<float>* b, fortran_int_t ldb,
+inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, const std::complex<float>* dl,
+        const std::complex<float>* d, const std::complex<float>* du,
+        std::complex<float>* dlf, std::complex<float>* df,
+        std::complex<float>* duf, std::complex<float>* du2,
+        fortran_int_t* ipiv, const std::complex<float>* b, fortran_int_t ldb,
         std::complex<float>* x, fortran_int_t ldx, float& rcond, float* ferr,
-        float* berr, std::complex<float>* work, float* rwork,
-        fortran_int_t& info ) {
+        float* berr, std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
             work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans >
-inline void gtsvx( char fact, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<double>* dl, const std::complex<double>* d,
-        const std::complex<double>* du, std::complex<double>* dlf,
-        std::complex<double>* df, std::complex<double>* duf,
-        std::complex<double>* du2, fortran_int_t* ipiv,
-        const std::complex<double>* b, fortran_int_t ldb,
+inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
+        fortran_int_t nrhs, const std::complex<double>* dl,
+        const std::complex<double>* d, const std::complex<double>* du,
+        std::complex<double>* dlf, std::complex<double>* df,
+        std::complex<double>* duf, std::complex<double>* du2,
+        fortran_int_t* ipiv, const std::complex<double>* b, fortran_int_t ldb,
         std::complex<double>* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        double* ferr, double* berr, std::complex<double>* work,
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
             work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -139,12 +158,12 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorDL >::type >::type,
                 typename remove_const< typename value<
@@ -207,13 +226,14 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::gtsvx( fact, trans(), n, size_column(b), begin_value(dl),
-                begin_value(d), begin_value(du), begin_value(dlf),
-                begin_value(df), begin_value(duf), begin_value(du2),
-                begin_value(ipiv), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), rcond, begin_value(ferr),
-                begin_value(berr), begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+        return detail::gtsvx( fact, trans(), n, size_column(b),
+                begin_value(dl), begin_value(d), begin_value(du),
+                begin_value(dlf), begin_value(df), begin_value(duf),
+                begin_value(du2), begin_value(ipiv), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x), rcond,
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -227,17 +247,16 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
-                ferr, berr, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
+                rcond, ferr, berr, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -251,14 +270,13 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
-                ferr, berr, info, minimal_workspace() );
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
+                rcond, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -298,12 +316,12 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
+            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
+            RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
                 typename remove_const< typename value<
@@ -361,13 +379,14 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::gtsvx( fact, trans(), n, size_column(b), begin_value(dl),
-                begin_value(d), begin_value(du), begin_value(dlf),
-                begin_value(df), begin_value(duf), begin_value(du2),
-                begin_value(ipiv), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), rcond, begin_value(ferr),
-                begin_value(berr), begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+        return detail::gtsvx( fact, trans(), n, size_column(b),
+                begin_value(dl), begin_value(d), begin_value(du),
+                begin_value(dlf), begin_value(df), begin_value(duf),
+                begin_value(du2), begin_value(ipiv), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x), rcond,
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -381,16 +400,15 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
-                ferr, berr, info, workspace( tmp_work, tmp_rwork ) );
+        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
+                rcond, ferr, berr, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -404,14 +422,13 @@ struct gtsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorDL& dl, const VectorD& d, const VectorDU& du,
             VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
             VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond,
-                ferr, berr, info, minimal_workspace() );
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+        return invoke( fact, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x,
+                rcond, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -465,11 +482,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -494,11 +509,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -525,11 +538,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -554,11 +565,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -585,11 +594,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -614,11 +621,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -645,11 +650,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -674,11 +677,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -705,11 +706,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -734,11 +733,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -765,11 +762,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -794,11 +789,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -825,11 +818,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -854,11 +845,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -885,11 +874,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -914,11 +901,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -945,11 +930,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -974,11 +957,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1005,11 +986,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1034,11 +1013,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1065,11 +1042,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1094,11 +1069,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1125,11 +1098,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1154,11 +1125,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1185,11 +1154,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1214,11 +1181,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1245,11 +1210,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1274,11 +1237,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1305,11 +1266,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1334,11 +1293,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1365,11 +1322,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1394,11 +1349,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1425,11 +1378,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1454,11 +1405,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1485,11 +1434,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1514,11 +1461,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1545,11 +1490,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1574,11 +1517,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1605,11 +1546,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1634,11 +1573,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1665,11 +1602,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1694,11 +1629,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1725,11 +1658,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1754,11 +1685,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1785,11 +1714,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1814,11 +1741,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1845,11 +1770,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1874,11 +1797,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1905,11 +1826,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1934,11 +1853,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1965,11 +1882,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -1994,11 +1909,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2025,11 +1938,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2054,11 +1965,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2085,11 +1994,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2114,11 +2021,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2145,11 +2050,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2174,11 +2077,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2205,11 +2106,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2234,11 +2133,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2265,11 +2162,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2294,11 +2189,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2325,11 +2218,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2354,11 +2245,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2385,11 +2274,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2414,11 +2301,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2445,11 +2330,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2474,11 +2357,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2505,11 +2386,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2534,11 +2413,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2565,11 +2442,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2594,11 +2469,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2625,11 +2498,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2654,11 +2525,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2685,11 +2554,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2714,11 +2581,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2745,11 +2610,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2774,11 +2637,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2805,11 +2666,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2834,11 +2693,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2865,11 +2722,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2894,11 +2749,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2925,11 +2778,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -2954,11 +2805,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2985,11 +2834,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3014,11 +2861,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3045,11 +2890,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3074,11 +2917,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3105,11 +2946,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3134,11 +2973,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3165,11 +3002,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3194,11 +3029,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3225,11 +3058,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3254,11 +3085,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3285,11 +3114,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3314,11 +3141,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3345,11 +3170,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3374,11 +3197,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3405,11 +3226,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3434,11 +3253,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3465,11 +3282,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3494,11 +3309,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3525,11 +3338,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3554,11 +3365,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3585,11 +3394,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3614,11 +3421,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3645,11 +3450,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3674,11 +3477,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3705,11 +3506,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3734,11 +3533,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3765,11 +3562,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3794,11 +3589,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3825,11 +3618,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3854,11 +3645,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3885,11 +3674,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3914,11 +3701,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -3945,11 +3730,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -3974,11 +3757,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4005,11 +3786,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4034,11 +3813,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4065,11 +3842,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4094,11 +3869,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4125,11 +3898,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4154,11 +3925,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4185,11 +3954,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4214,11 +3981,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4245,11 +4010,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4274,11 +4037,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4305,11 +4066,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4335,11 +4094,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4366,11 +4123,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4396,11 +4151,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4427,11 +4180,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4457,11 +4208,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4488,11 +4237,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4518,11 +4265,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4549,11 +4294,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4579,11 +4322,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4610,11 +4351,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4640,11 +4379,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4671,11 +4408,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4701,11 +4436,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4732,11 +4465,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4762,11 +4493,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4793,11 +4522,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4823,11 +4550,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4854,11 +4579,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4884,11 +4607,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4915,11 +4636,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -4945,11 +4664,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -4976,11 +4693,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5006,11 +4721,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5037,11 +4750,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5067,11 +4778,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5098,11 +4807,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5128,11 +4835,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5159,11 +4864,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5189,11 +4892,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5220,11 +4921,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5250,11 +4949,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5281,11 +4978,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5311,11 +5006,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5342,11 +5035,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5372,11 +5063,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5403,11 +5092,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5433,11 +5120,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5464,11 +5149,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5494,11 +5177,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5525,11 +5206,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5555,11 +5234,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5586,11 +5263,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5616,11 +5291,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5647,11 +5320,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5677,11 +5348,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5708,11 +5377,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5738,11 +5405,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5769,11 +5434,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5799,11 +5462,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5830,11 +5491,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5860,11 +5519,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5891,11 +5548,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5921,11 +5576,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -5952,11 +5605,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -5982,11 +5633,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6013,11 +5662,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6043,11 +5690,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6074,11 +5719,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6104,11 +5747,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6135,11 +5776,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6165,11 +5804,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6196,11 +5833,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6226,11 +5861,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6257,11 +5890,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6287,11 +5918,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6318,11 +5947,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6348,11 +5975,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6379,11 +6004,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6409,11 +6032,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6440,11 +6061,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6470,11 +6089,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6501,11 +6118,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6531,11 +6146,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6562,11 +6175,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6592,11 +6203,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6623,11 +6232,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6653,11 +6260,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6684,11 +6289,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6714,11 +6317,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6745,11 +6346,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6775,11 +6374,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6806,11 +6403,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6836,11 +6431,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6867,11 +6460,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6897,11 +6488,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6928,11 +6517,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -6958,11 +6545,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -6989,11 +6574,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7019,11 +6602,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7050,11 +6631,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7080,11 +6659,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7111,11 +6688,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7141,11 +6716,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7172,11 +6745,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7202,11 +6773,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7233,11 +6802,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7263,11 +6830,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7294,11 +6859,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7324,11 +6887,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7355,11 +6916,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7385,11 +6944,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7416,11 +6973,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7446,11 +7001,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7477,11 +7030,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7507,11 +7058,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7538,11 +7087,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7568,11 +7115,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7599,11 +7144,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7629,11 +7172,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7660,11 +7201,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7690,11 +7229,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7721,11 +7258,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7751,11 +7286,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7782,11 +7315,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7812,11 +7343,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7843,11 +7372,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7873,11 +7400,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7904,11 +7429,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7934,11 +7457,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -7965,11 +7486,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -7995,11 +7514,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8026,11 +7543,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8056,11 +7571,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8087,11 +7600,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8117,11 +7628,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8148,11 +7657,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8178,11 +7685,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8209,11 +7714,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8239,11 +7742,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8270,11 +7771,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8300,11 +7799,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8331,11 +7828,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8361,11 +7856,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8392,11 +7885,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8422,11 +7913,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8453,11 +7942,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8483,11 +7970,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8514,11 +7999,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8544,11 +8027,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8575,11 +8056,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8605,11 +8084,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8636,11 +8113,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8666,11 +8141,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8697,11 +8170,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8727,11 +8198,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8758,11 +8227,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8788,11 +8255,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8819,11 +8284,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8849,11 +8312,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8880,11 +8341,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8910,11 +8369,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -8941,11 +8398,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -8971,11 +8426,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9002,11 +8455,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9032,11 +8483,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9063,11 +8512,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9093,11 +8540,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9124,11 +8569,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9154,11 +8597,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9185,11 +8626,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9215,11 +8654,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9246,11 +8683,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9276,11 +8711,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9307,11 +8740,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9337,11 +8768,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9368,11 +8797,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9398,11 +8825,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9429,11 +8854,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9459,11 +8882,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9490,11 +8911,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9520,11 +8939,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9551,11 +8968,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9581,11 +8996,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9612,11 +9025,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9642,11 +9053,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9673,11 +9082,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9703,11 +9110,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9734,11 +9139,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9764,11 +9167,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9795,11 +9196,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9825,11 +9224,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9856,11 +9253,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9886,11 +9281,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9917,11 +9310,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -9947,11 +9338,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -9978,11 +9367,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10008,11 +9395,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10039,11 +9424,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10069,11 +9452,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10100,11 +9481,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10130,11 +9509,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10161,11 +9538,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10191,11 +9566,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10222,11 +9595,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10252,11 +9623,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10283,11 +9652,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10313,11 +9680,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10344,11 +9709,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10374,11 +9737,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10405,11 +9766,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10435,11 +9794,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10466,11 +9823,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10496,11 +9851,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10527,11 +9880,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10557,11 +9908,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10588,11 +9937,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10618,11 +9965,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10649,11 +9994,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10679,11 +10022,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10710,11 +10051,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10740,11 +10079,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10771,11 +10108,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10801,11 +10136,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10832,11 +10165,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10862,11 +10193,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10893,11 +10222,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10923,11 +10250,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -10954,11 +10279,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -10984,11 +10307,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11015,11 +10336,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11045,11 +10364,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11076,11 +10393,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11106,11 +10421,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11137,11 +10450,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11167,11 +10478,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11198,11 +10507,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11228,11 +10535,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11259,11 +10564,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11289,11 +10592,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11320,11 +10621,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11350,11 +10649,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11381,11 +10678,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11411,11 +10706,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11442,11 +10735,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11472,11 +10763,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11503,11 +10792,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11533,11 +10820,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11564,11 +10849,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11594,11 +10877,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11625,11 +10906,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11655,11 +10934,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11686,11 +10963,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11716,11 +10991,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11747,11 +11020,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11777,11 +11048,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11808,11 +11077,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11838,11 +11105,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11869,11 +11134,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11899,11 +11162,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11930,11 +11191,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -11960,11 +11219,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -11991,11 +11248,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12021,11 +11276,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12052,11 +11305,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12082,11 +11333,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12113,11 +11362,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12143,11 +11390,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12174,11 +11419,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12204,11 +11447,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12235,11 +11476,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12265,11 +11504,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12296,11 +11533,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12326,11 +11561,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12357,11 +11590,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12387,11 +11618,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12418,11 +11647,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12448,11 +11675,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12479,11 +11704,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12509,11 +11732,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12540,11 +11761,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12570,11 +11789,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12601,11 +11818,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12631,11 +11846,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12662,11 +11875,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12692,11 +11903,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12723,11 +11932,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12753,11 +11960,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12784,11 +11989,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12814,11 +12017,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12845,11 +12046,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12875,11 +12074,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12906,11 +12103,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12936,11 +12131,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -12967,11 +12160,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -12997,11 +12188,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13028,11 +12217,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13058,11 +12245,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13089,11 +12274,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13119,11 +12302,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13150,11 +12331,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13180,11 +12359,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13211,11 +12388,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13241,11 +12416,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13272,11 +12445,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13302,11 +12473,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13333,11 +12502,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13363,11 +12530,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13394,11 +12559,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13424,11 +12587,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13455,11 +12616,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13485,11 +12644,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13516,11 +12673,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13546,11 +12701,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13577,11 +12730,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13607,11 +12758,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13638,11 +12787,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13668,11 +12815,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13699,11 +12844,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13729,11 +12872,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13760,11 +12901,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13790,11 +12929,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13821,11 +12958,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13851,11 +12986,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13882,11 +13015,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13912,11 +13043,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -13943,11 +13072,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -13973,11 +13100,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14004,11 +13129,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14034,11 +13157,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14065,11 +13186,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14095,11 +13214,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14126,11 +13243,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14156,11 +13271,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14187,11 +13300,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14217,11 +13328,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14248,11 +13357,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14278,11 +13385,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14309,11 +13414,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14339,11 +13442,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14370,11 +13471,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14400,11 +13499,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14431,11 +13528,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14461,11 +13556,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14492,11 +13585,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14522,11 +13613,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14553,11 +13642,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14583,11 +13670,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14614,11 +13699,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14644,11 +13727,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14675,11 +13756,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14705,11 +13784,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14736,11 +13813,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14766,11 +13841,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14797,11 +13870,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14827,11 +13898,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14858,11 +13927,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14888,11 +13955,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14919,11 +13984,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -14949,11 +14012,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -14980,11 +14041,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15010,11 +14069,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15041,11 +14098,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15071,11 +14126,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15102,11 +14155,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15132,11 +14183,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15163,11 +14212,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15193,11 +14240,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15224,11 +14269,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15254,11 +14297,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15285,11 +14326,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15315,11 +14354,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15346,11 +14383,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15376,11 +14411,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15407,11 +14440,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15437,11 +14468,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15468,11 +14497,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15498,11 +14525,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15529,11 +14554,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15559,11 +14582,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15590,11 +14611,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15620,11 +14639,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15651,11 +14668,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15681,11 +14696,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15712,11 +14725,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15742,11 +14753,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15773,11 +14782,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15803,11 +14810,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15834,11 +14839,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15864,11 +14867,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15895,11 +14896,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15925,11 +14924,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -15956,11 +14953,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             work );
-    return info;
 }
 
 //
@@ -15986,11 +14981,9 @@ inline std::ptrdiff_t gtsvx( const char fact, const fortran_int_t n,
         const MatrixX& x, typename remove_imaginary< typename value<
         VectorDL >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    gtsvx_impl< typename value< VectorDL >::type >::invoke( fact, n, dl,
-            d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr, info,
+    return gtsvx_impl< typename value< VectorDL >::type >::invoke( fact,
+            n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, rcond, ferr, berr,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

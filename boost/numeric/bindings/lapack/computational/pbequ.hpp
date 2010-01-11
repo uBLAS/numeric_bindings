@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -30,6 +28,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for pbequ is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,47 +47,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void pbequ( UpLo, fortran_int_t n, fortran_int_t kd, const float* ab,
-        fortran_int_t ldab, float* s, float& scond, float& amax,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
+        const float* ab, fortran_int_t ldab, float* s, float& scond,
+        float& amax ) {
+    fortran_int_t info(0);
     LAPACK_SPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void pbequ( UpLo, fortran_int_t n, fortran_int_t kd, const double* ab,
-        fortran_int_t ldab, double* s, double& scond, double& amax,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
+        const double* ab, fortran_int_t ldab, double* s, double& scond,
+        double& amax ) {
+    fortran_int_t info(0);
     LAPACK_DPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
+inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
         const std::complex<float>* ab, fortran_int_t ldab, float* s,
-        float& scond, float& amax, fortran_int_t& info ) {
+        float& scond, float& amax ) {
+    fortran_int_t info(0);
     LAPACK_CPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
+inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
         const std::complex<double>* ab, fortran_int_t ldab, double* s,
-        double& scond, double& amax, fortran_int_t& info ) {
+        double& scond, double& amax ) {
+    fortran_int_t info(0);
     LAPACK_ZPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
+    return info;
 }
 
 } // namespace detail
@@ -111,9 +131,9 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorS >
-    static void invoke( const fortran_int_t n, const MatrixAB& ab,
-            VectorS& s, real_type& scond, real_type& amax,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const MatrixAB& ab, VectorS& s, real_type& scond,
+            real_type& amax ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -123,8 +143,8 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        detail::pbequ( uplo(), n, bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(s), scond, amax, info );
+        return detail::pbequ( uplo(), n, bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(s), scond, amax );
     }
 
 };
@@ -145,16 +165,16 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorS >
-    static void invoke( const fortran_int_t n, const MatrixAB& ab,
-            VectorS& s, real_type& scond, real_type& amax,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const MatrixAB& ab, VectorS& s, real_type& scond,
+            real_type& amax ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
         BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        detail::pbequ( uplo(), n, bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(s), scond, amax, info );
+        return detail::pbequ( uplo(), n, bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(s), scond, amax );
     }
 
 };
@@ -179,10 +199,8 @@ inline std::ptrdiff_t pbequ( const fortran_int_t n,
         typename value< MatrixAB >::type >::type& scond,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& amax ) {
-    fortran_int_t info(0);
-    pbequ_impl< typename value< MatrixAB >::type >::invoke( n, ab, s,
-            scond, amax, info );
-    return info;
+    return pbequ_impl< typename value< MatrixAB >::type >::invoke( n, ab,
+            s, scond, amax );
 }
 
 //
@@ -195,10 +213,8 @@ inline std::ptrdiff_t pbequ( const fortran_int_t n,
         typename value< MatrixAB >::type >::type& scond,
         typename remove_imaginary< typename value<
         MatrixAB >::type >::type& amax ) {
-    fortran_int_t info(0);
-    pbequ_impl< typename value< MatrixAB >::type >::invoke( n, ab, s,
-            scond, amax, info );
-    return info;
+    return pbequ_impl< typename value< MatrixAB >::type >::invoke( n, ab,
+            s, scond, amax );
 }
 
 } // namespace lapack

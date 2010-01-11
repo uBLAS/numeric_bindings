@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gesdd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gesdd( char jobz, fortran_int_t m, fortran_int_t n, float* a,
-        fortran_int_t lda, float* s, float* u, fortran_int_t ldu, float* vt,
-        fortran_int_t ldvt, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
+        float* a, fortran_int_t lda, float* s, float* u, fortran_int_t ldu,
+        float* vt, fortran_int_t ldvt, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
             &lwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gesdd( char jobz, fortran_int_t m, fortran_int_t n, double* a,
-        fortran_int_t lda, double* s, double* u, fortran_int_t ldu,
+inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
+        double* a, fortran_int_t lda, double* s, double* u, fortran_int_t ldu,
         double* vt, fortran_int_t ldvt, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
             &lwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gesdd( char jobz, fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
         std::complex<float>* a, fortran_int_t lda, float* s,
         std::complex<float>* u, fortran_int_t ldu, std::complex<float>* vt,
         fortran_int_t ldvt, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork, fortran_int_t* iwork, fortran_int_t& info ) {
+        float* rwork, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_CGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
             &lwork, rwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gesdd( char jobz, fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
         std::complex<double>* a, fortran_int_t lda, double* s,
         std::complex<double>* u, fortran_int_t ldu, std::complex<double>* vt,
         fortran_int_t ldvt, std::complex<double>* work, fortran_int_t lwork,
-        double* rwork, fortran_int_t* iwork, fortran_int_t& info ) {
+        double* rwork, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
             &lwork, rwork, iwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,8 +136,8 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT, typename WORK, typename IWORK >
-    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
-            MatrixVT& vt, fortran_int_t& info, detail::workspace2< WORK,
+    static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
+            MatrixU& u, MatrixVT& vt, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -152,12 +172,12 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::gesdd( jobz, size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(s), begin_value(u),
-                stride_major(u), begin_value(vt), stride_major(vt),
-                begin_value(work.select(real_type())),
+        return detail::gesdd( jobz, size_row(a), size_column(a),
+                begin_value(a), stride_major(a), begin_value(s),
+                begin_value(u), stride_major(u), begin_value(vt),
+                stride_major(vt), begin_value(work.select(real_type())),
                 size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -169,15 +189,15 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
-            MatrixVT& vt, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
+            MatrixU& u, MatrixVT& vt, minimal_workspace work ) {
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row(a), size_column(a), jobz, minmn ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn ) );
-        invoke( jobz, a, s, u, vt, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -189,9 +209,9 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
-            MatrixVT& vt, fortran_int_t& info, optimal_workspace work ) {
-        invoke( jobz, a, s, u, vt, info, minimal_workspace() );
+    static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
+            MatrixU& u, MatrixVT& vt, optimal_workspace work ) {
+        return invoke( jobz, a, s, u, vt, minimal_workspace() );
     }
 
     //
@@ -237,9 +257,9 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT, typename WORK, typename RWORK, typename IWORK >
-    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
-            MatrixVT& vt, fortran_int_t& info, detail::workspace3< WORK,
-            RWORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
+            MatrixU& u, MatrixVT& vt, detail::workspace3< WORK, RWORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -271,13 +291,13 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::gesdd( jobz, size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(s), begin_value(u),
-                stride_major(u), begin_value(vt), stride_major(vt),
-                begin_value(work.select(value_type())),
+        return detail::gesdd( jobz, size_row(a), size_column(a),
+                begin_value(a), stride_major(a), begin_value(s),
+                begin_value(u), stride_major(u), begin_value(vt),
+                stride_major(vt), begin_value(work.select(value_type())),
                 size(work.select(value_type())),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -289,8 +309,8 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
-            MatrixVT& vt, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
+            MatrixU& u, MatrixVT& vt, minimal_workspace work ) {
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< value_type > tmp_work( min_size_work(
@@ -299,7 +319,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn ) );
-        invoke( jobz, a, s, u, vt, info, workspace( tmp_work, tmp_rwork,
+        return invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -312,8 +332,8 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
-            MatrixVT& vt, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
+            MatrixU& u, MatrixVT& vt, optimal_workspace work ) {
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         value_type opt_size_work;
@@ -325,10 +345,10 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 stride_major(a), begin_value(s), begin_value(u),
                 stride_major(u), begin_value(vt), stride_major(vt),
                 &opt_size_work, -1, begin_value(tmp_rwork),
-                begin_value(tmp_iwork), info );
+                begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobz, a, s, u, vt, info, workspace( tmp_work, tmp_rwork,
+        invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -387,10 +407,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -405,10 +423,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -423,10 +439,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -441,10 +455,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -459,10 +471,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -477,10 +487,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -495,10 +503,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -513,10 +519,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -531,10 +535,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -549,10 +551,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         const MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -567,10 +567,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -585,10 +583,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, const MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -603,10 +599,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -621,10 +615,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, const MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -639,10 +631,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, const MatrixU& u, MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -657,10 +647,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, const MatrixU& u, MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -675,10 +663,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -693,10 +679,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -711,10 +695,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -729,10 +711,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -747,10 +727,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -765,10 +743,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -783,10 +759,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -801,10 +775,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -819,10 +791,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         const MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -837,10 +807,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         const MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -855,10 +823,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, const MatrixU& u, const MatrixVT& vt, Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -873,10 +839,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         VectorS& s, const MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -892,10 +856,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, const MatrixU& u, const MatrixVT& vt,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -910,10 +872,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, MatrixA& a,
         const VectorS& s, const MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 //
@@ -929,10 +889,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, const MatrixU& u, const MatrixVT& vt,
         Workspace work ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, work );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, work );
 }
 
 //
@@ -947,10 +905,8 @@ template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
 inline std::ptrdiff_t gesdd( const char jobz, const MatrixA& a,
         const VectorS& s, const MatrixU& u, const MatrixVT& vt ) {
-    fortran_int_t info(0);
-    gesdd_impl< typename value< MatrixA >::type >::invoke( jobz, a, s, u,
-            vt, info, optimal_workspace() );
-    return info;
+    return gesdd_impl< typename value< MatrixA >::type >::invoke( jobz,
+            a, s, u, vt, optimal_workspace() );
 }
 
 } // namespace lapack

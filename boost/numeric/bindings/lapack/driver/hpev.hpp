@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +27,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for hpev is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,25 +46,33 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void hpev( char jobz, UpLo, fortran_int_t n, std::complex<float>* ap,
-        float* w, std::complex<float>* z, fortran_int_t ldz,
-        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+inline std::ptrdiff_t hpev( char jobz, UpLo, fortran_int_t n,
+        std::complex<float>* ap, float* w, std::complex<float>* z,
+        fortran_int_t ldz, std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CHPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
             work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void hpev( char jobz, UpLo, fortran_int_t n, std::complex<double>* ap,
-        double* w, std::complex<double>* z, fortran_int_t ldz,
-        std::complex<double>* work, double* rwork, fortran_int_t& info ) {
+inline std::ptrdiff_t hpev( char jobz, UpLo, fortran_int_t n,
+        std::complex<double>* ap, double* w, std::complex<double>* z,
+        fortran_int_t ldz, std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZHPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
             work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -83,9 +95,9 @@ struct hpev_impl {
     //
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename WORK, typename RWORK >
-    static void invoke( const char jobz, const fortran_int_t n,
-            MatrixAP& ap, VectorW& w, MatrixZ& z, fortran_int_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
+    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
+            MatrixAP& ap, VectorW& w, MatrixZ& z, detail::workspace2< WORK,
+            RWORK > work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -99,10 +111,10 @@ struct hpev_impl {
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        detail::hpev( jobz, uplo(), n, begin_value(ap), begin_value(w),
+        return detail::hpev( jobz, uplo(), n, begin_value(ap), begin_value(w),
                 begin_value(z), stride_major(z),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -113,13 +125,12 @@ struct hpev_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( const char jobz, const fortran_int_t n,
-            MatrixAP& ap, VectorW& w, MatrixZ& z, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
+            MatrixAP& ap, VectorW& w, MatrixZ& z, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( jobz, n, ap, w, z, info, workspace( tmp_work, tmp_rwork ) );
+        return invoke( jobz, n, ap, w, z, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -130,11 +141,10 @@ struct hpev_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( const char jobz, const fortran_int_t n,
-            MatrixAP& ap, VectorW& w, MatrixZ& z, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
+            MatrixAP& ap, VectorW& w, MatrixZ& z, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        invoke( jobz, n, ap, w, z, info, minimal_workspace() );
+        return invoke( jobz, n, ap, w, z, minimal_workspace() );
     }
 
     //
@@ -175,10 +185,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, VectorW& w, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -191,10 +199,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, VectorW& w, MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -208,10 +214,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, VectorW& w, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -224,10 +228,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, VectorW& w, MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -241,10 +243,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, const VectorW& w, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -257,10 +257,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, const VectorW& w, MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -274,10 +272,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, const VectorW& w, MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -290,10 +286,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, const VectorW& w, MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -307,10 +301,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, VectorW& w, const MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -323,10 +315,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, VectorW& w, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -340,10 +330,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, VectorW& w, const MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -356,10 +344,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, VectorW& w, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -373,10 +359,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, const VectorW& w, const MatrixZ& z, Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -389,10 +373,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         MatrixAP& ap, const VectorW& w, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 //
@@ -407,10 +389,8 @@ template< typename MatrixAP, typename VectorW, typename MatrixZ,
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, const VectorW& w, const MatrixZ& z,
         Workspace work ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, work );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, work );
 }
 
 //
@@ -423,10 +403,8 @@ inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
 inline std::ptrdiff_t hpev( const char jobz, const fortran_int_t n,
         const MatrixAP& ap, const VectorW& w, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    hpev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
-            w, z, info, optimal_workspace() );
-    return info;
+    return hpev_impl< typename value< MatrixAP >::type >::invoke( jobz,
+            n, ap, w, z, optimal_workspace() );
 }
 
 } // namespace lapack

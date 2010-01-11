@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for pbcon is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,45 +49,59 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
+inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
         const float* ab, fortran_int_t ldab, float anorm, float& rcond,
-        float* work, fortran_int_t* iwork, fortran_int_t& info ) {
+        float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
+inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
         const double* ab, fortran_int_t ldab, double anorm, double& rcond,
-        double* work, fortran_int_t* iwork, fortran_int_t& info ) {
+        double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
+inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
         const std::complex<float>* ab, fortran_int_t ldab, float anorm,
-        float& rcond, std::complex<float>* work, float* rwork,
-        fortran_int_t& info ) {
+        float& rcond, std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, rwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
+inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
         const std::complex<double>* ab, fortran_int_t ldab, double anorm,
-        double& rcond, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        double& rcond, std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, rwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -111,9 +129,9 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename WORK, typename IWORK >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -121,10 +139,10 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        detail::pbcon( uplo, n, bandwidth_upper(ab), begin_value(ab),
+        return detail::pbcon( uplo, n, bandwidth_upper(ab), begin_value(ab),
                 stride_major(ab), anorm, rcond,
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -135,13 +153,13 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAB >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( uplo, n, ab, anorm, rcond, info, workspace( tmp_work,
+        return invoke( uplo, n, ab, anorm, rcond, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -153,10 +171,10 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAB >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, n, ab, anorm, rcond, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( uplo, n, ab, anorm, rcond, minimal_workspace() );
     }
 
     //
@@ -192,19 +210,19 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename WORK, typename RWORK >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        detail::pbcon( uplo, n, bandwidth_upper(ab), begin_value(ab),
+        return detail::pbcon( uplo, n, bandwidth_upper(ab), begin_value(ab),
                 stride_major(ab), anorm, rcond,
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -215,12 +233,12 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAB >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( uplo, n, ab, anorm, rcond, info, workspace( tmp_work,
+        return invoke( uplo, n, ab, anorm, rcond, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -232,10 +250,10 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAB >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, n, ab, anorm, rcond, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( uplo, n, ab, anorm, rcond, minimal_workspace() );
     }
 
     //
@@ -274,10 +292,8 @@ inline std::ptrdiff_t pbcon( const char uplo, const fortran_int_t n,
         const MatrixAB& ab, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixAB >::type >::type& rcond, Workspace work ) {
-    fortran_int_t info(0);
-    pbcon_impl< typename value< MatrixAB >::type >::invoke( uplo, n, ab,
-            anorm, rcond, info, work );
-    return info;
+    return pbcon_impl< typename value< MatrixAB >::type >::invoke( uplo,
+            n, ab, anorm, rcond, work );
 }
 
 //
@@ -289,10 +305,8 @@ inline std::ptrdiff_t pbcon( const char uplo, const fortran_int_t n,
         const MatrixAB& ab, const typename remove_imaginary< typename value<
         MatrixAB >::type >::type anorm, typename remove_imaginary<
         typename value< MatrixAB >::type >::type& rcond ) {
-    fortran_int_t info(0);
-    pbcon_impl< typename value< MatrixAB >::type >::invoke( uplo, n, ab,
-            anorm, rcond, info, optimal_workspace() );
-    return info;
+    return pbcon_impl< typename value< MatrixAB >::type >::invoke( uplo,
+            n, ab, anorm, rcond, optimal_workspace() );
 }
 
 } // namespace lapack

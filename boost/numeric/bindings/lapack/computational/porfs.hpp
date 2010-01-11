@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for porfs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,58 +49,73 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void porfs( UpLo, fortran_int_t n, fortran_int_t nrhs, const float* a,
-        fortran_int_t lda, const float* af, fortran_int_t ldaf,
-        const float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
-        float* ferr, float* berr, float* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t porfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        const float* a, fortran_int_t lda, const float* af,
+        fortran_int_t ldaf, const float* b, fortran_int_t ldb, float* x,
+        fortran_int_t ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SPORFS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, af,
             &ldaf, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void porfs( UpLo, fortran_int_t n, fortran_int_t nrhs, const double* a,
-        fortran_int_t lda, const double* af, fortran_int_t ldaf,
-        const double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double* ferr, double* berr, double* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t porfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        const double* a, fortran_int_t lda, const double* af,
+        fortran_int_t ldaf, const double* b, fortran_int_t ldb, double* x,
+        fortran_int_t ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DPORFS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, af,
             &ldaf, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void porfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t porfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* a, fortran_int_t lda,
         const std::complex<float>* af, fortran_int_t ldaf,
         const std::complex<float>* b, fortran_int_t ldb,
         std::complex<float>* x, fortran_int_t ldx, float* ferr, float* berr,
-        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+        std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CPORFS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, af,
             &ldaf, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void porfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t porfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* a, fortran_int_t lda,
         const std::complex<double>* af, fortran_int_t ldaf,
         const std::complex<double>* b, fortran_int_t ldb,
         std::complex<double>* x, fortran_int_t ldx, double* ferr,
-        double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        double* berr, std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZPORFS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, af,
             &ldaf, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -126,9 +145,9 @@ struct porfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            detail::workspace2< WORK, IWORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -172,12 +191,12 @@ struct porfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::porfs( uplo(), size_column(a), size_column(x), begin_value(a),
-                stride_major(a), begin_value(af), stride_major(af),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), begin_value(ferr), begin_value(berr),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+        return detail::porfs( uplo(), size_column(a), size_column(x),
+                begin_value(a), stride_major(a), begin_value(af),
+                stride_major(af), begin_value(b), stride_major(b),
+                begin_value(x), stride_major(x), begin_value(ferr),
+                begin_value(berr), begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -189,15 +208,15 @@ struct porfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(a) ) );
-        invoke( a, af, b, x, ferr, berr, info, workspace( tmp_work,
+        return invoke( a, af, b, x, ferr, berr, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -210,11 +229,11 @@ struct porfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        invoke( a, af, b, x, ferr, berr, info, minimal_workspace() );
+        return invoke( a, af, b, x, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -252,9 +271,9 @@ struct porfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+            detail::workspace2< WORK, RWORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
@@ -294,12 +313,12 @@ struct porfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::porfs( uplo(), size_column(a), size_column(x), begin_value(a),
-                stride_major(a), begin_value(af), stride_major(af),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), begin_value(ferr), begin_value(berr),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+        return detail::porfs( uplo(), size_column(a), size_column(x),
+                begin_value(a), stride_major(a), begin_value(af),
+                stride_major(af), begin_value(b), stride_major(b),
+                begin_value(x), stride_major(x), begin_value(ferr),
+                begin_value(berr), begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -311,15 +330,15 @@ struct porfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( a, af, b, x, ferr, berr, info, workspace( tmp_work,
+        return invoke( a, af, b, x, ferr, berr, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -332,11 +351,11 @@ struct porfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        invoke( a, af, b, x, ferr, berr, info, minimal_workspace() );
+        return invoke( a, af, b, x, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -379,10 +398,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -396,10 +413,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -415,10 +430,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -433,10 +446,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -452,10 +463,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -470,10 +479,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -489,10 +496,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -507,10 +512,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -526,10 +529,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -544,10 +545,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -563,10 +562,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -581,10 +578,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -600,10 +595,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -618,10 +611,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -637,10 +628,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, work );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, work );
 }
 
 //
@@ -655,10 +644,8 @@ template< typename MatrixA, typename MatrixAF, typename MatrixB,
 inline std::ptrdiff_t porfs( const MatrixA& a, const MatrixAF& af,
         const MatrixB& b, const MatrixX& x, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    porfs_impl< typename value< MatrixA >::type >::invoke( a, af, b, x,
-            ferr, berr, info, optimal_workspace() );
-    return info;
+    return porfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            b, x, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

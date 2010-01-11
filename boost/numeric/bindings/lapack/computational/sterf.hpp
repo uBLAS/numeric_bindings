@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -26,6 +24,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for sterf is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -39,18 +43,25 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void sterf( fortran_int_t n, float* d, float* e, fortran_int_t& info ) {
+inline std::ptrdiff_t sterf( fortran_int_t n, float* d, float* e ) {
+    fortran_int_t info(0);
     LAPACK_SSTERF( &n, d, e, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void sterf( fortran_int_t n, double* d, double* e,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t sterf( fortran_int_t n, double* d, double* e ) {
+    fortran_int_t info(0);
     LAPACK_DSTERF( &n, d, e, &info );
+    return info;
 }
 
 } // namespace detail
@@ -72,8 +83,8 @@ struct sterf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorD, typename VectorE >
-    static void invoke( const fortran_int_t n, VectorD& d, VectorE& e,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorD& d,
+            VectorE& e ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -82,7 +93,7 @@ struct sterf_impl {
         BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(e) >= n-1 );
-        detail::sterf( n, begin_value(d), begin_value(e), info );
+        return detail::sterf( n, begin_value(d), begin_value(e) );
     }
 
 };
@@ -105,10 +116,8 @@ struct sterf_impl {
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
         VectorE& e ) {
-    fortran_int_t info(0);
-    sterf_impl< typename value< VectorD >::type >::invoke( n, d, e,
-            info );
-    return info;
+    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
+            e );
 }
 
 //
@@ -119,10 +128,8 @@ inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
         VectorE& e ) {
-    fortran_int_t info(0);
-    sterf_impl< typename value< VectorD >::type >::invoke( n, d, e,
-            info );
-    return info;
+    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
+            e );
 }
 
 //
@@ -133,10 +140,8 @@ inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
         const VectorE& e ) {
-    fortran_int_t info(0);
-    sterf_impl< typename value< VectorD >::type >::invoke( n, d, e,
-            info );
-    return info;
+    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
+            e );
 }
 
 //
@@ -147,10 +152,8 @@ inline std::ptrdiff_t sterf( const fortran_int_t n, VectorD& d,
 template< typename VectorD, typename VectorE >
 inline std::ptrdiff_t sterf( const fortran_int_t n, const VectorD& d,
         const VectorE& e ) {
-    fortran_int_t info(0);
-    sterf_impl< typename value< VectorD >::type >::invoke( n, d, e,
-            info );
-    return info;
+    return sterf_impl< typename value< VectorD >::type >::invoke( n, d,
+            e );
 }
 
 } // namespace lapack

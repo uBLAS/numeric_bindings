@@ -22,8 +22,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -33,6 +31,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for trcon is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -46,47 +50,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Diag >
-inline void trcon( char norm, char uplo, Diag, fortran_int_t n,
+inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
         const float* a, fortran_int_t lda, float& rcond, float* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_STRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Diag >
-inline void trcon( char norm, char uplo, Diag, fortran_int_t n,
+inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
         const double* a, fortran_int_t lda, double& rcond, double* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DTRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Diag >
-inline void trcon( char norm, char uplo, Diag, fortran_int_t n,
+inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
         const std::complex<float>* a, fortran_int_t lda, float& rcond,
-        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+        std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CTRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Diag >
-inline void trcon( char norm, char uplo, Diag, fortran_int_t n,
+inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
         const std::complex<double>* a, fortran_int_t lda, double& rcond,
-        std::complex<double>* work, double* rwork, fortran_int_t& info ) {
+        std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZTRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -114,9 +134,9 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename WORK, typename IWORK >
-    static void invoke( const char norm, const char uplo, const MatrixA& a,
-            real_type& rcond, fortran_int_t& info, detail::workspace2<
-            WORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixA& a, real_type& rcond, detail::workspace2< WORK,
+            IWORK > work ) {
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -127,9 +147,10 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::trcon( norm, uplo, diag(), size_column(a), begin_value(a),
-                stride_major(a), rcond, begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+        return detail::trcon( norm, uplo, diag(), size_column(a),
+                begin_value(a), stride_major(a), rcond,
+                begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -140,15 +161,15 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA >
-    static void invoke( const char norm, const char uplo, const MatrixA& a,
-            real_type& rcond, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixA& a, real_type& rcond, minimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(a) ) );
-        invoke( norm, uplo, a, rcond, info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( norm, uplo, a, rcond, workspace( tmp_work,
+                tmp_iwork ) );
     }
 
     //
@@ -159,11 +180,10 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA >
-    static void invoke( const char norm, const char uplo, const MatrixA& a,
-            real_type& rcond, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixA& a, real_type& rcond, optimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixA >::type diag;
-        invoke( norm, uplo, a, rcond, info, minimal_workspace() );
+        return invoke( norm, uplo, a, rcond, minimal_workspace() );
     }
 
     //
@@ -199,9 +219,9 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename WORK, typename RWORK >
-    static void invoke( const char norm, const char uplo, const MatrixA& a,
-            real_type& rcond, fortran_int_t& info, detail::workspace2<
-            WORK, RWORK > work ) {
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixA& a, real_type& rcond, detail::workspace2< WORK,
+            RWORK > work ) {
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
@@ -212,10 +232,10 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::trcon( norm, uplo, diag(), size_column(a), begin_value(a),
-                stride_major(a), rcond,
+        return detail::trcon( norm, uplo, diag(), size_column(a),
+                begin_value(a), stride_major(a), rcond,
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -226,15 +246,15 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA >
-    static void invoke( const char norm, const char uplo, const MatrixA& a,
-            real_type& rcond, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixA& a, real_type& rcond, minimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( norm, uplo, a, rcond, info, workspace( tmp_work, tmp_rwork ) );
+        return invoke( norm, uplo, a, rcond, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //
@@ -245,11 +265,10 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA >
-    static void invoke( const char norm, const char uplo, const MatrixA& a,
-            real_type& rcond, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixA& a, real_type& rcond, optimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixA >::type diag;
-        invoke( norm, uplo, a, rcond, info, minimal_workspace() );
+        return invoke( norm, uplo, a, rcond, minimal_workspace() );
     }
 
     //
@@ -287,10 +306,8 @@ template< typename MatrixA, typename Workspace >
 inline std::ptrdiff_t trcon( const char norm, const char uplo,
         const MatrixA& a, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, Workspace work ) {
-    fortran_int_t info(0);
-    trcon_impl< typename value< MatrixA >::type >::invoke( norm, uplo, a,
-            rcond, info, work );
-    return info;
+    return trcon_impl< typename value< MatrixA >::type >::invoke( norm,
+            uplo, a, rcond, work );
 }
 
 //
@@ -301,10 +318,8 @@ template< typename MatrixA >
 inline std::ptrdiff_t trcon( const char norm, const char uplo,
         const MatrixA& a, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond ) {
-    fortran_int_t info(0);
-    trcon_impl< typename value< MatrixA >::type >::invoke( norm, uplo, a,
-            rcond, info, optimal_workspace() );
-    return info;
+    return trcon_impl< typename value< MatrixA >::type >::invoke( norm,
+            uplo, a, rcond, optimal_workspace() );
 }
 
 } // namespace lapack

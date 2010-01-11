@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for posvx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,61 +49,77 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void posvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        float* a, fortran_int_t lda, float* af, fortran_int_t ldaf,
-        char& equed, float* s, float* b, fortran_int_t ldb, float* x,
-        fortran_int_t ldx, float& rcond, float* ferr, float* berr,
-        float* work, fortran_int_t* iwork, fortran_int_t& info ) {
+inline std::ptrdiff_t posvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, float* a, fortran_int_t lda, float* af,
+        fortran_int_t ldaf, char& equed, float* s, float* b,
+        fortran_int_t ldb, float* x, fortran_int_t ldx, float& rcond,
+        float* ferr, float* berr, float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SPOSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
             iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void posvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        double* a, fortran_int_t lda, double* af, fortran_int_t ldaf,
-        char& equed, double* s, double* b, fortran_int_t ldb, double* x,
-        fortran_int_t ldx, double& rcond, double* ferr, double* berr,
-        double* work, fortran_int_t* iwork, fortran_int_t& info ) {
+inline std::ptrdiff_t posvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, double* a, fortran_int_t lda, double* af,
+        fortran_int_t ldaf, char& equed, double* s, double* b,
+        fortran_int_t ldb, double* x, fortran_int_t ldx, double& rcond,
+        double* ferr, double* berr, double* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DPOSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
             iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void posvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* af,
-        fortran_int_t ldaf, char& equed, float* s, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float& rcond, float* ferr, float* berr, std::complex<float>* work,
-        float* rwork, fortran_int_t& info ) {
+inline std::ptrdiff_t posvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* af, fortran_int_t ldaf, char& equed, float* s,
+        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* x,
+        fortran_int_t ldx, float& rcond, float* ferr, float* berr,
+        std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CPOSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
             rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void posvx( char fact, UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* af,
-        fortran_int_t ldaf, char& equed, double* s, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, std::complex<double>* work,
-        double* rwork, fortran_int_t& info ) {
+inline std::ptrdiff_t posvx( char fact, UpLo, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* af, fortran_int_t ldaf, char& equed, double* s,
+        std::complex<double>* b, fortran_int_t ldb, std::complex<double>* x,
+        fortran_int_t ldx, double& rcond, double* ferr, double* berr,
+        std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZPOSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
             rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -129,10 +149,10 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
+            IWORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -187,13 +207,13 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::posvx( fact, uplo(), size_column(a), size_column(x),
+        return detail::posvx( fact, uplo(), size_column(a), size_column(x),
                 begin_value(a), stride_major(a), begin_value(af),
                 stride_major(af), equed, begin_value(s), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x), rcond,
                 begin_value(ferr), begin_value(berr),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -206,16 +226,15 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(a) ) );
-        invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -229,12 +248,11 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -273,10 +291,10 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
+            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
+            RWORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorS >::type >::type,
@@ -327,13 +345,13 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::posvx( fact, uplo(), size_column(a), size_column(x),
+        return detail::posvx( fact, uplo(), size_column(a), size_column(x),
                 begin_value(a), stride_major(a), begin_value(af),
                 stride_major(af), equed, begin_value(s), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x), rcond,
                 begin_value(ferr), begin_value(berr),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -346,16 +364,15 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -369,12 +386,11 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
+    static std::ptrdiff_t invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr, info,
+        return invoke( fact, a, af, equed, s, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -424,10 +440,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -448,10 +462,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -473,10 +485,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -497,10 +507,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -522,10 +530,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -546,10 +552,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -571,10 +575,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -595,10 +597,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -620,10 +620,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -644,10 +642,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -669,10 +665,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -693,10 +687,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, const VectorS& s, MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -718,10 +710,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -742,10 +732,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -767,10 +755,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -791,10 +777,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -816,10 +800,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -840,10 +822,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -865,10 +845,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -889,10 +867,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -914,10 +890,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -938,10 +912,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -963,10 +935,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -987,10 +957,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1012,10 +980,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1036,10 +1002,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1061,10 +1025,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1085,10 +1047,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1110,10 +1070,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1134,10 +1092,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1159,10 +1115,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1183,10 +1137,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1208,10 +1160,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1232,10 +1182,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1257,10 +1205,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1281,10 +1227,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1306,10 +1250,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1330,10 +1272,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1355,10 +1295,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1379,10 +1317,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1404,10 +1340,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1428,10 +1362,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, const VectorS& s, MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1453,10 +1385,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1477,10 +1407,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1502,10 +1430,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1526,10 +1452,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1551,10 +1475,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1575,10 +1497,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1600,10 +1520,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1624,10 +1542,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1649,10 +1565,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1673,10 +1587,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1698,10 +1610,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1722,10 +1632,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1747,10 +1655,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1771,10 +1677,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1796,10 +1700,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1820,10 +1722,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, const VectorS& s, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1845,10 +1745,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1869,10 +1767,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1894,10 +1790,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1918,10 +1812,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1943,10 +1835,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1967,10 +1857,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixAF& af, char& equed, const VectorS& s, const MatrixB& b,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1992,10 +1880,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2017,10 +1903,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2042,10 +1926,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2067,10 +1949,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2092,10 +1972,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2117,10 +1995,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2142,10 +2018,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2167,10 +2041,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2192,10 +2064,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2217,10 +2087,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2242,10 +2110,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2267,10 +2133,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2292,10 +2156,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2317,10 +2179,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2342,10 +2202,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2367,10 +2225,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2392,10 +2248,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2417,10 +2271,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2442,10 +2294,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2467,10 +2317,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2492,10 +2340,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2517,10 +2363,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2542,10 +2386,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2567,10 +2409,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2592,10 +2432,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2617,10 +2455,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2642,10 +2478,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2667,10 +2501,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2692,10 +2524,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2717,10 +2547,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2742,10 +2570,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2767,10 +2593,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2792,10 +2616,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2817,10 +2639,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2842,10 +2662,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2867,10 +2685,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2892,10 +2708,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2917,10 +2731,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2942,10 +2754,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -2967,10 +2777,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -2992,10 +2800,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3017,10 +2823,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3042,10 +2846,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3067,10 +2869,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3092,10 +2892,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3117,10 +2915,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3142,10 +2938,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3167,10 +2961,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3192,10 +2984,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3217,10 +3007,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3242,10 +3030,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3267,10 +3053,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3292,10 +3076,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3317,10 +3099,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3342,10 +3122,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3367,10 +3145,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3392,10 +3168,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3417,10 +3191,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3442,10 +3214,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3467,10 +3237,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3492,10 +3260,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3517,10 +3283,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3542,10 +3306,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3567,10 +3329,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3592,10 +3352,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3617,10 +3375,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3642,10 +3398,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3667,10 +3421,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3692,10 +3444,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3717,10 +3467,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3742,10 +3490,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3767,10 +3513,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3792,10 +3536,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3817,10 +3559,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3842,10 +3582,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3867,10 +3605,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3892,10 +3628,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3917,10 +3651,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3942,10 +3674,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -3967,10 +3697,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -3992,10 +3720,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4017,10 +3743,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4042,10 +3766,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4067,10 +3789,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4092,10 +3812,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4117,10 +3835,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4142,10 +3858,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4167,10 +3881,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4192,10 +3904,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4217,10 +3927,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4242,10 +3950,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4267,10 +3973,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4292,10 +3996,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4317,10 +4019,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4342,10 +4042,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4367,10 +4065,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4392,10 +4088,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4417,10 +4111,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4442,10 +4134,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4467,10 +4157,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4492,10 +4180,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4517,10 +4203,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4542,10 +4226,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4567,10 +4249,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4592,10 +4272,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4617,10 +4295,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4642,10 +4318,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4667,10 +4341,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4692,10 +4364,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4717,10 +4387,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4742,10 +4410,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4767,10 +4433,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4792,10 +4456,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4817,10 +4479,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4842,10 +4502,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4867,10 +4525,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4892,10 +4548,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4917,10 +4571,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4942,10 +4594,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -4967,10 +4617,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -4992,10 +4640,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5017,10 +4663,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5042,10 +4686,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5067,10 +4709,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5092,10 +4732,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5117,10 +4755,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5142,10 +4778,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5167,10 +4801,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5192,10 +4824,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5217,10 +4847,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5242,10 +4870,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5267,10 +4893,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5292,10 +4916,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5317,10 +4939,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5342,10 +4962,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5367,10 +4985,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5392,10 +5008,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5417,10 +5031,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5442,10 +5054,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5467,10 +5077,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5492,10 +5100,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5517,10 +5123,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5542,10 +5146,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5567,10 +5169,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5592,10 +5192,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5617,10 +5215,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5642,10 +5238,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5667,10 +5261,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5692,10 +5284,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5717,10 +5307,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5742,10 +5330,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5767,10 +5353,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5792,10 +5376,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5817,10 +5399,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5842,10 +5422,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5867,10 +5445,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5892,10 +5468,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5917,10 +5491,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5942,10 +5514,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -5967,10 +5537,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -5992,10 +5560,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6017,10 +5583,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6042,10 +5606,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6067,10 +5629,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6092,10 +5652,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6117,10 +5675,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6142,10 +5698,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6167,10 +5721,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6192,10 +5744,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6217,10 +5767,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6242,10 +5790,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6267,10 +5813,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6292,10 +5836,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6317,10 +5859,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6342,10 +5882,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6367,10 +5905,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6392,10 +5928,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6417,10 +5951,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6442,10 +5974,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6467,10 +5997,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6492,10 +6020,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6517,10 +6043,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6542,10 +6066,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6567,10 +6089,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6592,10 +6112,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6617,10 +6135,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6642,10 +6158,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6667,10 +6181,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6692,10 +6204,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6717,10 +6227,8 @@ inline std::ptrdiff_t posvx( const char fact, MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -6742,10 +6250,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -6767,10 +6273,8 @@ inline std::ptrdiff_t posvx( const char fact, const MatrixA& a,
         const MatrixX& x, typename remove_imaginary< typename value<
         MatrixA >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    posvx_impl< typename value< MatrixA >::type >::invoke( fact, a, af,
-            equed, s, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return posvx_impl< typename value< MatrixA >::type >::invoke( fact,
+            a, af, equed, s, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

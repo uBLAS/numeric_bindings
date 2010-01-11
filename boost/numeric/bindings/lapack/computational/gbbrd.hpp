@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gbbrd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,53 +48,69 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
         fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku, float* ab,
         fortran_int_t ldab, float* d, float* e, float* q, fortran_int_t ldq,
         float* pt, fortran_int_t ldpt, float* c, fortran_int_t ldc,
-        float* work, fortran_int_t& info ) {
+        float* work ) {
+    fortran_int_t info(0);
     LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
         fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku, double* ab,
         fortran_int_t ldab, double* d, double* e, double* q,
         fortran_int_t ldq, double* pt, fortran_int_t ldpt, double* c,
-        fortran_int_t ldc, double* work, fortran_int_t& info ) {
+        fortran_int_t ldc, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
         fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku,
         std::complex<float>* ab, fortran_int_t ldab, float* d, float* e,
         std::complex<float>* q, fortran_int_t ldq, std::complex<float>* pt,
         fortran_int_t ldpt, std::complex<float>* c, fortran_int_t ldc,
-        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+        std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
         fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku,
         std::complex<double>* ab, fortran_int_t ldab, double* d, double* e,
         std::complex<double>* q, fortran_int_t ldq, std::complex<double>* pt,
         fortran_int_t ldpt, std::complex<double>* c, fortran_int_t ldc,
-        std::complex<double>* work, double* rwork, fortran_int_t& info ) {
+        std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -120,8 +140,8 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK >
-    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -168,12 +188,12 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 bandwidth_upper(ab)+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'Q' || vect == 'P' ||
                 vect == 'B' );
-        detail::gbbrd( vect, size_row(ab), size_column(ab), size_column(c),
-                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(d), begin_value(e),
-                begin_value(q), stride_major(q), begin_value(pt),
-                stride_major(pt), begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())), info );
+        return detail::gbbrd( vect, size_row(ab), size_column(ab),
+                size_column(c), bandwidth_lower(ab), bandwidth_upper(ab),
+                begin_value(ab), stride_major(ab), begin_value(d),
+                begin_value(e), begin_value(q), stride_major(q),
+                begin_value(pt), stride_major(pt), begin_value(c),
+                stride_major(c), begin_value(work.select(real_type())) );
     }
 
     //
@@ -185,12 +205,12 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row(ab), size_column(ab) ) );
-        invoke( vect, ab, d, e, q, pt, c, info, workspace( tmp_work ) );
+        return invoke( vect, ab, d, e, q, pt, c, workspace( tmp_work ) );
     }
 
     //
@@ -202,10 +222,10 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             optimal_workspace work ) {
-        invoke( vect, ab, d, e, q, pt, c, info, minimal_workspace() );
+        return invoke( vect, ab, d, e, q, pt, c, minimal_workspace() );
     }
 
     //
@@ -236,8 +256,8 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK, typename RWORK >
-    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -282,13 +302,13 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 bandwidth_upper(ab)+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'Q' || vect == 'P' ||
                 vect == 'B' );
-        detail::gbbrd( vect, size_row(ab), size_column(ab), size_column(c),
-                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(d), begin_value(e),
-                begin_value(q), stride_major(q), begin_value(pt),
-                stride_major(pt), begin_value(c), stride_major(c),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+        return detail::gbbrd( vect, size_row(ab), size_column(ab),
+                size_column(c), bandwidth_lower(ab), bandwidth_upper(ab),
+                begin_value(ab), stride_major(ab), begin_value(d),
+                begin_value(e), begin_value(q), stride_major(q),
+                begin_value(pt), stride_major(pt), begin_value(c),
+                stride_major(c), begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -300,14 +320,14 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_row(ab), size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_row(ab), size_column(ab) ) );
-        invoke( vect, ab, d, e, q, pt, c, info, workspace( tmp_work,
+        return invoke( vect, ab, d, e, q, pt, c, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -320,10 +340,10 @@ struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
             optimal_workspace work ) {
-        invoke( vect, ab, d, e, q, pt, c, info, minimal_workspace() );
+        return invoke( vect, ab, d, e, q, pt, c, minimal_workspace() );
     }
 
     //
@@ -370,10 +390,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename Workspace >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -390,10 +408,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -412,10 +428,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -432,10 +446,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -454,10 +466,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -474,10 +484,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -496,10 +504,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -516,10 +522,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -538,10 +542,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -558,10 +560,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -580,10 +580,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -600,10 +598,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -622,10 +618,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -643,10 +637,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -665,10 +657,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -686,10 +676,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -708,10 +696,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -728,10 +714,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -750,10 +734,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -770,10 +752,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -792,10 +772,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -813,10 +791,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -835,10 +811,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -856,10 +830,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -878,10 +850,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -898,10 +868,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -920,10 +888,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -941,10 +907,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -963,10 +927,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -984,10 +946,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1006,10 +966,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1027,10 +985,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1049,10 +1005,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1069,10 +1023,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1091,10 +1043,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1111,10 +1061,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1133,10 +1081,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1154,10 +1100,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1176,10 +1120,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1197,10 +1139,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1219,10 +1159,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1239,10 +1177,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1261,10 +1197,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1282,10 +1216,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1304,10 +1236,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1325,10 +1255,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1347,10 +1275,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1368,10 +1294,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1390,10 +1314,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1410,10 +1332,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1432,10 +1352,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1453,10 +1371,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1475,10 +1391,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1496,10 +1410,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1518,10 +1430,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1539,10 +1449,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1561,10 +1469,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1581,10 +1487,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1603,10 +1507,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1624,10 +1526,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1646,10 +1546,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1667,10 +1565,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1689,10 +1585,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1710,10 +1604,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1732,10 +1624,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1752,10 +1642,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1774,10 +1662,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1794,10 +1680,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1816,10 +1700,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1837,10 +1719,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1859,10 +1739,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1880,10 +1758,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1902,10 +1778,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1922,10 +1796,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1944,10 +1816,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -1965,10 +1835,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -1987,10 +1855,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2008,10 +1874,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2030,10 +1894,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2051,10 +1913,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2073,10 +1933,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2093,10 +1951,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2115,10 +1971,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2136,10 +1990,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2158,10 +2010,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2179,10 +2029,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2201,10 +2049,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2222,10 +2068,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2244,10 +2088,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2264,10 +2106,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2286,10 +2126,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2307,10 +2145,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2329,10 +2165,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2350,10 +2184,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2372,10 +2204,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2393,10 +2223,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2415,10 +2243,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2435,10 +2261,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2457,10 +2281,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2478,10 +2300,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2500,10 +2320,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2521,10 +2339,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2543,10 +2359,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2564,10 +2378,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2586,10 +2398,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2606,10 +2416,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2628,10 +2436,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2649,10 +2455,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2671,10 +2475,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2692,10 +2494,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2714,10 +2514,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2735,10 +2533,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2757,10 +2553,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, const MatrixPT& pt, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2777,10 +2571,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         VectorE& e, const MatrixQ& q, const MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2799,10 +2591,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2820,10 +2610,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2842,10 +2630,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2863,10 +2649,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2885,10 +2669,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2906,10 +2688,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2928,10 +2708,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2949,10 +2727,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
         const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -2971,10 +2747,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -2992,10 +2766,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -3014,10 +2786,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -3035,10 +2805,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 //
@@ -3057,10 +2825,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, work );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, work );
 }
 
 //
@@ -3078,10 +2844,8 @@ template< typename MatrixAB, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
         const VectorD& d, const VectorE& e, const MatrixQ& q,
         const MatrixPT& pt, const MatrixC& c ) {
-    fortran_int_t info(0);
-    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
-            e, q, pt, c, info, optimal_workspace() );
-    return info;
+    return gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect,
+            ab, d, e, q, pt, c, optimal_workspace() );
 }
 
 } // namespace lapack

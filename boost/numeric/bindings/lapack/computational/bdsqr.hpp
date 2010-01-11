@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for bdsqr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
+inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
         fortran_int_t nru, fortran_int_t ncc, float* d, float* e, float* vt,
         fortran_int_t ldvt, float* u, fortran_int_t ldu, float* c,
-        fortran_int_t ldc, float* work, fortran_int_t& info ) {
+        fortran_int_t ldc, float* work ) {
+    fortran_int_t info(0);
     LAPACK_SBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
+inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
         fortran_int_t nru, fortran_int_t ncc, double* d, double* e,
         double* vt, fortran_int_t ldvt, double* u, fortran_int_t ldu,
-        double* c, fortran_int_t ldc, double* work, fortran_int_t& info ) {
+        double* c, fortran_int_t ldc, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
+inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
         fortran_int_t nru, fortran_int_t ncc, float* d, float* e,
         std::complex<float>* vt, fortran_int_t ldvt, std::complex<float>* u,
         fortran_int_t ldu, std::complex<float>* c, fortran_int_t ldc,
-        float* rwork, fortran_int_t& info ) {
+        float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
+inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
         fortran_int_t nru, fortran_int_t ncc, double* d, double* e,
         std::complex<double>* vt, fortran_int_t ldvt, std::complex<double>* u,
         fortran_int_t ldu, std::complex<double>* c, fortran_int_t ldc,
-        double* rwork, fortran_int_t& info ) {
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,9 +136,9 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC, typename WORK >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -151,11 +171,11 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(u) >= 0 );
         BOOST_ASSERT( stride_major(u) >= std::max< std::ptrdiff_t >(1,
                 size_row(u)) );
-        detail::bdsqr( uplo, n, size_column(vt), size_row(u), size_column(c),
-                begin_value(d), begin_value(e), begin_value(vt),
-                stride_major(vt), begin_value(u), stride_major(u),
-                begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())), info );
+        return detail::bdsqr( uplo, n, size_column(vt), size_row(u),
+                size_column(c), begin_value(d), begin_value(e),
+                begin_value(vt), stride_major(vt), begin_value(u),
+                stride_major(u), begin_value(c), stride_major(c),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -167,12 +187,12 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 size_column(vt), size_row(u), size_column(c) ) );
-        invoke( uplo, n, d, e, vt, u, c, info, workspace( tmp_work ) );
+        return invoke( uplo, n, d, e, vt, u, c, workspace( tmp_work ) );
     }
 
     //
@@ -184,10 +204,10 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( uplo, n, d, e, vt, u, c, minimal_workspace() );
     }
 
     //
@@ -221,9 +241,9 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC, typename RWORK >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            fortran_int_t& info, detail::workspace1< RWORK > work ) {
+            detail::workspace1< RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -252,11 +272,11 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(u) >= 0 );
         BOOST_ASSERT( stride_major(u) >= std::max< std::ptrdiff_t >(1,
                 size_row(u)) );
-        detail::bdsqr( uplo, n, size_column(vt), size_row(u), size_column(c),
-                begin_value(d), begin_value(e), begin_value(vt),
-                stride_major(vt), begin_value(u), stride_major(u),
-                begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())), info );
+        return detail::bdsqr( uplo, n, size_column(vt), size_row(u),
+                size_column(c), begin_value(d), begin_value(e),
+                begin_value(vt), stride_major(vt), begin_value(u),
+                stride_major(u), begin_value(c), stride_major(c),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -268,12 +288,12 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n,
                 size_column(vt), size_row(u), size_column(c) ) );
-        invoke( uplo, n, d, e, vt, u, c, info, workspace( tmp_rwork ) );
+        return invoke( uplo, n, d, e, vt, u, c, workspace( tmp_rwork ) );
     }
 
     //
@@ -285,10 +305,10 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( const char uplo, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
+            optimal_workspace work ) {
+        return invoke( uplo, n, d, e, vt, u, c, minimal_workspace() );
     }
 
     //
@@ -329,10 +349,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -348,10 +366,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -368,10 +384,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -387,10 +401,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -407,10 +419,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -426,10 +436,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -446,10 +454,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -466,10 +472,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -486,10 +490,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -505,10 +507,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -525,10 +525,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -545,10 +543,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -565,10 +561,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -585,10 +579,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -605,10 +597,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -625,10 +615,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -645,10 +633,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -664,10 +650,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u, MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -684,10 +668,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -704,10 +686,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -724,10 +704,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -744,10 +722,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -764,10 +740,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -784,10 +758,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -804,10 +776,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -824,10 +794,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -844,10 +812,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -864,10 +830,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -884,10 +848,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -904,10 +866,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -924,10 +884,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt,
         const MatrixU& u, MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -944,10 +902,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt,
         const MatrixU& u, MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -964,10 +920,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c,
         Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -983,10 +937,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1003,10 +955,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1023,10 +973,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1043,10 +991,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1063,10 +1009,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1083,10 +1027,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1103,10 +1045,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1123,10 +1063,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1143,10 +1081,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1163,10 +1099,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1183,10 +1117,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1203,10 +1135,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1223,10 +1153,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1243,10 +1171,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1263,10 +1189,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt, MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1283,10 +1207,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1303,10 +1225,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1323,10 +1243,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1343,10 +1261,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1363,10 +1279,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1383,10 +1297,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1403,10 +1315,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1423,10 +1333,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1443,10 +1351,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1463,10 +1369,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1483,10 +1387,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1503,10 +1405,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1523,10 +1423,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1543,10 +1441,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         VectorD& d, const VectorE& e, const MatrixVT& vt, const MatrixU& u,
         const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 //
@@ -1563,10 +1459,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt,
         const MatrixU& u, const MatrixC& c, Workspace work ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, work );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, work );
 }
 
 //
@@ -1583,10 +1477,8 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
 inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, const MatrixVT& vt,
         const MatrixU& u, const MatrixC& c ) {
-    fortran_int_t info(0);
-    bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo, n, d,
-            e, vt, u, c, info, optimal_workspace() );
-    return info;
+    return bdsqr_impl< typename value< MatrixVT >::type >::invoke( uplo,
+            n, d, e, vt, u, c, optimal_workspace() );
 }
 
 } // namespace lapack

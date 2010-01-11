@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for tgevc is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,54 +48,68 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void tgevc( char side, char howmny, const logical_t* select,
+inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
         fortran_int_t n, const float* s, fortran_int_t lds, const float* p,
         fortran_int_t ldp, float* vl, fortran_int_t ldvl, float* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m, float* work,
-        fortran_int_t& info ) {
+        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m, float* work ) {
+    fortran_int_t info(0);
     LAPACK_STGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void tgevc( char side, char howmny, const logical_t* select,
+inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
         fortran_int_t n, const double* s, fortran_int_t lds, const double* p,
         fortran_int_t ldp, double* vl, fortran_int_t ldvl, double* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m, double* work,
-        fortran_int_t& info ) {
+        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
+        double* work ) {
+    fortran_int_t info(0);
     LAPACK_DTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void tgevc( char side, char howmny, const logical_t* select,
+inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
         fortran_int_t n, const std::complex<float>* s, fortran_int_t lds,
         const std::complex<float>* p, fortran_int_t ldp,
         std::complex<float>* vl, fortran_int_t ldvl, std::complex<float>* vr,
         fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
-        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+        std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void tgevc( char side, char howmny, const logical_t* select,
+inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
         fortran_int_t n, const std::complex<double>* s, fortran_int_t lds,
         const std::complex<double>* p, fortran_int_t ldp,
         std::complex<double>* vl, fortran_int_t ldvl,
         std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t mm,
-        fortran_int_t& m, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        fortran_int_t& m, std::complex<double>* work, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -120,11 +138,11 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR, typename WORK >
-    static void invoke( const char side, const char howmny,
+    static std::ptrdiff_t invoke( const char side, const char howmny,
             const VectorSELECT& select, const fortran_int_t n,
             const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixS >::type >::type,
                 typename remove_const< typename value<
@@ -150,11 +168,11 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
         BOOST_ASSERT( stride_major(p) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(s) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::tgevc( side, howmny, begin_value(select), n, begin_value(s),
-                stride_major(s), begin_value(p), stride_major(p),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), mm, m,
-                begin_value(work.select(real_type())), info );
+        return detail::tgevc( side, howmny, begin_value(select), n,
+                begin_value(s), stride_major(s), begin_value(p),
+                stride_major(p), begin_value(vl), stride_major(vl),
+                begin_value(vr), stride_major(vr), mm, m,
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -166,13 +184,13 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void invoke( const char side, const char howmny,
+    static std::ptrdiff_t invoke( const char side, const char howmny,
             const VectorSELECT& select, const fortran_int_t n,
             const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+        return invoke( side, howmny, select, n, s, p, vl, vr, mm, m,
                 workspace( tmp_work ) );
     }
 
@@ -185,12 +203,12 @@ struct tgevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void invoke( const char side, const char howmny,
+    static std::ptrdiff_t invoke( const char side, const char howmny,
             const VectorSELECT& select, const fortran_int_t n,
             const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+            optimal_workspace work ) {
+        return invoke( side, howmny, select, n, s, p, vl, vr, mm, m,
                 minimal_workspace() );
     }
 
@@ -221,11 +239,11 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR, typename WORK,
             typename RWORK >
-    static void invoke( const char side, const char howmny,
+    static std::ptrdiff_t invoke( const char side, const char howmny,
             const VectorSELECT& select, const fortran_int_t n,
             const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixS >::type >::type,
                 typename remove_const< typename value<
@@ -252,12 +270,12 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
         BOOST_ASSERT( stride_major(p) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(s) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::tgevc( side, howmny, begin_value(select), n, begin_value(s),
-                stride_major(s), begin_value(p), stride_major(p),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), mm, m,
+        return detail::tgevc( side, howmny, begin_value(select), n,
+                begin_value(s), stride_major(s), begin_value(p),
+                stride_major(p), begin_value(vl), stride_major(vl),
+                begin_value(vr), stride_major(vr), mm, m,
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -269,14 +287,14 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void invoke( const char side, const char howmny,
+    static std::ptrdiff_t invoke( const char side, const char howmny,
             const VectorSELECT& select, const fortran_int_t n,
             const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+        return invoke( side, howmny, select, n, s, p, vl, vr, mm, m,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -289,12 +307,12 @@ struct tgevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void invoke( const char side, const char howmny,
+    static std::ptrdiff_t invoke( const char side, const char howmny,
             const VectorSELECT& select, const fortran_int_t n,
             const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+            optimal_workspace work ) {
+        return invoke( side, howmny, select, n, s, p, vl, vr, mm, m,
                 minimal_workspace() );
     }
 
@@ -337,10 +355,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const VectorSELECT& select, const fortran_int_t n,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, work );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, work );
 }
 
 //
@@ -355,10 +371,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const VectorSELECT& select, const fortran_int_t n,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, optimal_workspace() );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, optimal_workspace() );
 }
 
 //
@@ -373,10 +387,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const VectorSELECT& select, const fortran_int_t n,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, work );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, work );
 }
 
 //
@@ -391,10 +403,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const VectorSELECT& select, const fortran_int_t n,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl, MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, optimal_workspace() );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, optimal_workspace() );
 }
 
 //
@@ -409,10 +419,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const VectorSELECT& select, const fortran_int_t n,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, work );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, work );
 }
 
 //
@@ -427,10 +435,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const VectorSELECT& select, const fortran_int_t n,
         const MatrixS& s, const MatrixP& p, MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, optimal_workspace() );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, optimal_workspace() );
 }
 
 //
@@ -446,10 +452,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
         Workspace work ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, work );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, work );
 }
 
 //
@@ -465,10 +469,8 @@ inline std::ptrdiff_t tgevc( const char side, const char howmny,
         const MatrixS& s, const MatrixP& p, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm,
         fortran_int_t& m ) {
-    fortran_int_t info(0);
-    tgevc_impl< typename value< MatrixS >::type >::invoke( side, howmny,
-            select, n, s, p, vl, vr, mm, m, info, optimal_workspace() );
-    return info;
+    return tgevc_impl< typename value< MatrixS >::type >::invoke( side,
+            howmny, select, n, s, p, vl, vr, mm, m, optimal_workspace() );
 }
 
 } // namespace lapack

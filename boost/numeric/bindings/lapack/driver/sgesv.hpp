@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -28,6 +26,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for sgesv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -41,14 +45,18 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void sgesv( fortran_int_t n, fortran_int_t nrhs, double* a,
+inline std::ptrdiff_t sgesv( fortran_int_t n, fortran_int_t nrhs, double* a,
         fortran_int_t lda, fortran_int_t* ipiv, const double* b,
         fortran_int_t ldb, double* x, fortran_int_t ldx, double* work,
-        float* swork, fortran_int_t& iter, fortran_int_t& info ) {
+        float* swork, fortran_int_t& iter ) {
+    fortran_int_t info(0);
     LAPACK_DSGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, x, &ldx, work, swork,
             &iter, &info );
+    return info;
 }
 
 } // namespace detail
@@ -71,8 +79,8 @@ struct sgesv_impl {
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename WORK, typename SWORK >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, fortran_int_t& iter, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             detail::workspace2< WORK, SWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -100,11 +108,11 @@ struct sgesv_impl {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::sgesv( size_column(a), size_column(b), begin_value(a),
+        return detail::sgesv( size_column(a), size_column(b), begin_value(a),
                 stride_major(a), begin_value(ipiv), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x),
                 begin_value(work), begin_value(work.select(real_type())),
-                iter, info );
+                iter );
     }
 
     //
@@ -116,14 +124,14 @@ struct sgesv_impl {
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, fortran_int_t& iter, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< real_type > tmp_swork( min_size_swork(
                 size_column(a), size_column(b) ) );
-        invoke( a, ipiv, b, x, iter, info, workspace( tmp_work, tmp_swork ) );
+        return invoke( a, ipiv, b, x, iter, workspace( tmp_work, tmp_swork ) );
     }
 
     //
@@ -135,10 +143,10 @@ struct sgesv_impl {
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, fortran_int_t& iter, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
+            const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             optimal_workspace work ) {
-        invoke( a, ipiv, b, x, iter, info, minimal_workspace() );
+        return invoke( a, ipiv, b, x, iter, minimal_workspace() );
     }
 
     //
@@ -181,10 +189,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -198,10 +204,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -216,10 +220,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -233,10 +235,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -251,10 +251,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -268,10 +266,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -286,10 +282,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -303,10 +297,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -321,10 +313,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -338,10 +328,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -356,10 +344,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -373,10 +359,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -391,10 +375,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -408,10 +390,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 //
@@ -426,10 +406,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
 inline std::ptrdiff_t sgesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter,
         Workspace work ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, work );
 }
 
 //
@@ -443,10 +421,8 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t sgesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
+    return sgesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b, x, iter, optimal_workspace() );
 }
 
 } // namespace lapack

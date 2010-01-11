@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for trsna is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,55 +48,69 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void trsna( char job, char howmny, const logical_t* select,
+inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
         fortran_int_t n, const float* t, fortran_int_t ldt, const float* vl,
         fortran_int_t ldvl, const float* vr, fortran_int_t ldvr, float* s,
         float* sep, fortran_int_t mm, fortran_int_t& m, float* work,
-        fortran_int_t ldwork, fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t ldwork, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_STRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void trsna( char job, char howmny, const logical_t* select,
+inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
         fortran_int_t n, const double* t, fortran_int_t ldt, const double* vl,
         fortran_int_t ldvl, const double* vr, fortran_int_t ldvr, double* s,
         double* sep, fortran_int_t mm, fortran_int_t& m, double* work,
-        fortran_int_t ldwork, fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t ldwork, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void trsna( char job, char howmny, const logical_t* select,
+inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
         fortran_int_t n, const std::complex<float>* t, fortran_int_t ldt,
         const std::complex<float>* vl, fortran_int_t ldvl,
         const std::complex<float>* vr, fortran_int_t ldvr, float* s,
         float* sep, fortran_int_t mm, fortran_int_t& m,
-        std::complex<float>* work, fortran_int_t ldwork, float* rwork,
-        fortran_int_t& info ) {
+        std::complex<float>* work, fortran_int_t ldwork, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void trsna( char job, char howmny, const logical_t* select,
+inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
         fortran_int_t n, const std::complex<double>* t, fortran_int_t ldt,
         const std::complex<double>* vl, fortran_int_t ldvl,
         const std::complex<double>* vr, fortran_int_t ldvr, double* s,
         double* sep, fortran_int_t mm, fortran_int_t& m,
-        std::complex<double>* work, fortran_int_t ldwork, double* rwork,
-        fortran_int_t& info ) {
+        std::complex<double>* work, fortran_int_t ldwork, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -122,11 +140,11 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP,
             typename WORK, typename IWORK >
-    static void invoke( const char job, const char howmny,
+    static std::ptrdiff_t invoke( const char job, const char howmny,
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
@@ -158,12 +176,12 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
         BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
                 size_column(t)) );
-        detail::trsna( job, howmny, begin_value(select), size_column(t),
-                begin_value(t), stride_major(t), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr),
-                begin_value(s), begin_value(sep), mm, m, begin_value(work),
-                stride_major(work),
-                begin_value(work.select(fortran_int_t())), info );
+        return detail::trsna( job, howmny, begin_value(select),
+                size_column(t), begin_value(t), stride_major(t),
+                begin_value(vl), stride_major(vl), begin_value(vr),
+                stride_major(vr), begin_value(s), begin_value(sep), mm, m,
+                begin_value(work), stride_major(work),
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -175,16 +193,16 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( const char job, const char howmny,
+    static std::ptrdiff_t invoke( const char job, const char howmny,
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( $CALL_MIN_SIZE ) );
-        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -197,12 +215,12 @@ struct trsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( const char job, const char howmny,
+    static std::ptrdiff_t invoke( const char job, const char howmny,
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+            optimal_workspace work ) {
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
                 minimal_workspace() );
     }
 
@@ -241,11 +259,11 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP,
             typename WORK, typename RWORK >
-    static void invoke( const char job, const char howmny,
+    static std::ptrdiff_t invoke( const char job, const char howmny,
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorS >::type >::type,
                 typename remove_const< typename value<
@@ -273,12 +291,12 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
         BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
                 size_column(t)) );
-        detail::trsna( job, howmny, begin_value(select), size_column(t),
-                begin_value(t), stride_major(t), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr),
-                begin_value(s), begin_value(sep), mm, m, begin_value(work),
-                stride_major(work), begin_value(work.select(real_type())),
-                info );
+        return detail::trsna( job, howmny, begin_value(select),
+                size_column(t), begin_value(t), stride_major(t),
+                begin_value(vl), stride_major(vl), begin_value(vr),
+                stride_major(vr), begin_value(s), begin_value(sep), mm, m,
+                begin_value(work), stride_major(work),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -290,16 +308,16 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( const char job, const char howmny,
+    static std::ptrdiff_t invoke( const char job, const char howmny,
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 $CALL_MIN_SIZE ) );
-        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -312,12 +330,12 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( const char job, const char howmny,
+    static std::ptrdiff_t invoke( const char job, const char howmny,
             const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
             const MatrixVR& vr, VectorS& s, VectorSEP& sep,
             const fortran_int_t mm, fortran_int_t& m,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+            optimal_workspace work ) {
+        return invoke( job, howmny, select, t, vl, vr, s, sep, mm, m,
                 minimal_workspace() );
     }
 
@@ -361,10 +379,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, VectorS& s, VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
 
 //
@@ -379,10 +395,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, VectorS& s, VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
 
 //
@@ -398,10 +412,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, const VectorS& s, VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
 
 //
@@ -416,10 +428,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, const VectorS& s, VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
 
 //
@@ -435,10 +445,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, VectorS& s, const VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
 
 //
@@ -453,10 +461,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, VectorS& s, const VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
 
 //
@@ -472,10 +478,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, work );
 }
 
 //
@@ -490,10 +494,8 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
+    return trsna_impl< typename value< MatrixT >::type >::invoke( job,
+            howmny, select, t, vl, vr, s, sep, mm, m, optimal_workspace() );
 }
 
 } // namespace lapack

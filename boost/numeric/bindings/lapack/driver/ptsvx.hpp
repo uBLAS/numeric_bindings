@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for ptsvx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,52 +48,67 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
         const float* d, const float* e, float* df, float* ef, const float* b,
         fortran_int_t ldb, float* x, fortran_int_t ldx, float& rcond,
-        float* ferr, float* berr, float* work, fortran_int_t& info ) {
+        float* ferr, float* berr, float* work ) {
+    fortran_int_t info(0);
     LAPACK_SPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
         const double* d, const double* e, double* df, double* ef,
         const double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, double* work,
-        fortran_int_t& info ) {
+        double& rcond, double* ferr, double* berr, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
         const float* d, const std::complex<float>* e, float* df,
         std::complex<float>* ef, const std::complex<float>* b,
         fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
         float& rcond, float* ferr, float* berr, std::complex<float>* work,
-        float* rwork, fortran_int_t& info ) {
+        float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
         const double* d, const std::complex<double>* e, double* df,
         std::complex<double>* ef, const std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
         double& rcond, double* ferr, double* berr, std::complex<double>* work,
-        double* rwork, fortran_int_t& info ) {
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -119,11 +138,10 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
             const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
-            VectorBERR& berr, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+            VectorBERR& berr, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -168,11 +186,11 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::ptsvx( fact, n, size_column(x), begin_value(d),
+        return detail::ptsvx( fact, n, size_column(x), begin_value(d),
                 begin_value(e), begin_value(df), begin_value(ef),
                 begin_value(b), stride_major(b), begin_value(x),
                 stride_major(x), rcond, begin_value(ferr), begin_value(berr),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -185,13 +203,12 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
             const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
-            VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorBERR& berr, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr, info,
+        return invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr,
                 workspace( tmp_work ) );
     }
 
@@ -205,12 +222,11 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
             const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
-            VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr, info,
+            VectorBERR& berr, optimal_workspace work ) {
+        return invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -242,11 +258,10 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename RWORK >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
             const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
-            VectorBERR& berr, fortran_int_t& info, detail::workspace2<
-            WORK, RWORK > work ) {
+            VectorBERR& berr, detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -288,12 +303,12 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::ptsvx( fact, n, size_column(x), begin_value(d),
+        return detail::ptsvx( fact, n, size_column(x), begin_value(d),
                 begin_value(e), begin_value(df), begin_value(ef),
                 begin_value(b), stride_major(b), begin_value(x),
                 stride_major(x), rcond, begin_value(ferr), begin_value(berr),
                 begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -306,14 +321,13 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
             const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
-            VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorBERR& berr, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr, info,
+        return invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -327,12 +341,11 @@ struct ptsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( const char fact, const fortran_int_t n,
+    static std::ptrdiff_t invoke( const char fact, const fortran_int_t n,
             const VectorD& d, const VectorE& e, VectorDF& df, VectorEF& ef,
             const MatrixB& b, MatrixX& x, real_type& rcond, VectorFERR& ferr,
-            VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr, info,
+            VectorBERR& berr, optimal_workspace work ) {
+        return invoke( fact, n, d, e, df, ef, b, x, rcond, ferr, berr,
                 minimal_workspace() );
     }
 
@@ -380,10 +393,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -403,10 +414,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -426,10 +435,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -449,10 +456,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -472,10 +477,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -495,10 +498,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -519,10 +520,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -542,10 +541,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const VectorEF& ef, const MatrixB& b, MatrixX& x,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -565,10 +562,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -588,10 +583,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -611,10 +604,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -634,10 +625,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -657,10 +646,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -680,10 +667,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -704,10 +689,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -727,10 +710,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const VectorEF& ef, const MatrixB& b, const MatrixX& x,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -750,10 +731,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -773,10 +752,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -796,10 +773,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -819,10 +794,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -842,10 +815,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -865,10 +836,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -889,10 +858,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -913,10 +880,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -936,10 +901,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -959,10 +922,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -982,10 +943,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1005,10 +964,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1028,10 +985,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1051,10 +1006,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1075,10 +1028,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1099,10 +1050,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1122,10 +1071,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1145,10 +1092,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1168,10 +1113,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1191,10 +1134,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1214,10 +1155,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1237,10 +1176,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1261,10 +1198,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1285,10 +1220,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1308,10 +1241,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1331,10 +1262,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1354,10 +1283,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1377,10 +1304,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1400,10 +1325,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1423,10 +1346,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1447,10 +1368,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1471,10 +1390,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1494,10 +1411,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1517,10 +1432,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1540,10 +1453,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1563,10 +1474,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1586,10 +1495,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1609,10 +1516,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1633,10 +1538,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1657,10 +1560,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1680,10 +1581,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1703,10 +1602,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1726,10 +1623,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1749,10 +1644,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1772,10 +1665,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1795,10 +1686,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         const MatrixB& b, const MatrixX& x, typename remove_imaginary<
         typename value< VectorE >::type >::type& rcond,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -1819,10 +1708,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, work );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, work );
 }
 
 //
@@ -1843,10 +1730,8 @@ inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
         typename remove_imaginary< typename value<
         VectorE >::type >::type& rcond, const VectorFERR& ferr,
         const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    ptsvx_impl< typename value< VectorE >::type >::invoke( fact, n, d, e,
-            df, ef, b, x, rcond, ferr, berr, info, optimal_workspace() );
-    return info;
+    return ptsvx_impl< typename value< VectorE >::type >::invoke( fact,
+            n, d, e, df, ef, b, x, rcond, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for geevx is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,61 +49,77 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void geevx( char balanc, char jobvl, char jobvr, char sense,
+inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
         fortran_int_t n, float* a, fortran_int_t lda, float* wr, float* wi,
         float* vl, fortran_int_t ldvl, float* vr, fortran_int_t ldvr,
         fortran_int_t& ilo, fortran_int_t& ihi, float* scale, float& abnrm,
         float* rconde, float* rcondv, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi, vl,
             &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
             &lwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void geevx( char balanc, char jobvl, char jobvr, char sense,
+inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
         fortran_int_t n, double* a, fortran_int_t lda, double* wr, double* wi,
         double* vl, fortran_int_t ldvl, double* vr, fortran_int_t ldvr,
         fortran_int_t& ilo, fortran_int_t& ihi, double* scale, double& abnrm,
         double* rconde, double* rcondv, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi, vl,
             &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
             &lwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void geevx( char balanc, char jobvl, char jobvr, char sense,
+inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
         fortran_int_t n, std::complex<float>* a, fortran_int_t lda,
         std::complex<float>* w, std::complex<float>* vl, fortran_int_t ldvl,
         std::complex<float>* vr, fortran_int_t ldvr, fortran_int_t& ilo,
         fortran_int_t& ihi, float* scale, float& abnrm, float* rconde,
         float* rcondv, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork, fortran_int_t& info ) {
+        float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, w, vl, &ldvl,
             vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
             &lwork, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void geevx( char balanc, char jobvl, char jobvr, char sense,
+inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
         fortran_int_t n, std::complex<double>* a, fortran_int_t lda,
         std::complex<double>* w, std::complex<double>* vl, fortran_int_t ldvl,
         std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t& ilo,
         fortran_int_t& ihi, double* scale, double& abnrm, double* rconde,
         double* rcondv, std::complex<double>* work, fortran_int_t lwork,
-        double* rwork, fortran_int_t& info ) {
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, w, vl, &ldvl,
             vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
             &lwork, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -130,12 +150,12 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixVL, typename MatrixVR, typename VectorSCALE,
             typename VectorRCONDE, typename VectorRCONDV, typename WORK,
             typename IWORK >
-    static void invoke( const char balanc, const char jobvl, const char jobvr,
-            const char sense, MatrixA& a, VectorWR& wr, VectorWI& wi,
-            MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
+    static std::ptrdiff_t invoke( const char balanc, const char jobvl,
+            const char jobvr, const char sense, MatrixA& a, VectorWR& wr,
+            VectorWI& wi, MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, detail::workspace2<
+            WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -194,14 +214,14 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
+        return detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
                 begin_value(a), stride_major(a), begin_value(wr),
                 begin_value(wi), begin_value(vl), stride_major(vl),
                 begin_value(vr), stride_major(vr), ilo, ihi,
                 begin_value(scale), abnrm, begin_value(rconde),
                 begin_value(rcondv), begin_value(work.select(real_type())),
                 size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -214,18 +234,18 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR, typename VectorSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( const char balanc, const char jobvl, const char jobvr,
-            const char sense, MatrixA& a, VectorWR& wr, VectorWI& wi,
-            MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
+    static std::ptrdiff_t invoke( const char balanc, const char jobvl,
+            const char jobvr, const char sense, MatrixA& a, VectorWR& wr,
+            VectorWI& wi, MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            fortran_int_t& info, minimal_workspace work ) {
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( sense,
                 jobvl, jobvr, size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( sense, size_column(a) ) );
-        invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
-                scale, abnrm, rconde, rcondv, info, workspace( tmp_work,
+        return invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo,
+                ihi, scale, abnrm, rconde, rcondv, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -239,12 +259,12 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR, typename VectorSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( const char balanc, const char jobvl, const char jobvr,
-            const char sense, MatrixA& a, VectorWR& wr, VectorWI& wi,
-            MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
+    static std::ptrdiff_t invoke( const char balanc, const char jobvl,
+            const char jobvr, const char sense, MatrixA& a, VectorWR& wr,
+            VectorWI& wi, MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv,
-            fortran_int_t& info, optimal_workspace work ) {
+            optimal_workspace work ) {
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( sense, size_column(a) ) );
@@ -254,11 +274,11 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 begin_value(vr), stride_major(vr), ilo, ihi,
                 begin_value(scale), abnrm, begin_value(rconde),
                 begin_value(rcondv), &opt_size_work, -1,
-                begin_value(tmp_iwork), info );
+                begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
-                scale, abnrm, rconde, rcondv, info, workspace( tmp_work,
+                scale, abnrm, rconde, rcondv, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -308,11 +328,11 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
             typename VectorRCONDV, typename WORK, typename RWORK >
-    static void invoke( const char balanc, const char jobvl, const char jobvr,
-            const char sense, MatrixA& a, VectorW& w, MatrixVL& vl,
-            MatrixVR& vr, fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
-            VectorRCONDV& rcondv, fortran_int_t& info, detail::workspace2<
+    static std::ptrdiff_t invoke( const char balanc, const char jobvl,
+            const char jobvr, const char sense, MatrixA& a, VectorW& w,
+            MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
+            fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
+            VectorRCONDE& rconde, VectorRCONDV& rcondv, detail::workspace2<
             WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorSCALE >::type >::type,
@@ -362,14 +382,14 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
+        return detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
                 begin_value(a), stride_major(a), begin_value(w),
                 begin_value(vl), stride_major(vl), begin_value(vr),
                 stride_major(vr), ilo, ihi, begin_value(scale), abnrm,
                 begin_value(rconde), begin_value(rcondv),
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -382,18 +402,18 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
             typename VectorRCONDV >
-    static void invoke( const char balanc, const char jobvl, const char jobvr,
-            const char sense, MatrixA& a, VectorW& w, MatrixVL& vl,
-            MatrixVR& vr, fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
-            VectorRCONDV& rcondv, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char balanc, const char jobvl,
+            const char jobvr, const char sense, MatrixA& a, VectorW& w,
+            MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
+            fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
+            VectorRCONDE& rconde, VectorRCONDV& rcondv,
             minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( sense,
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
-                abnrm, rconde, rcondv, info, workspace( tmp_work,
+        return invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi,
+                scale, abnrm, rconde, rcondv, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -407,11 +427,11 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
             typename VectorRCONDV >
-    static void invoke( const char balanc, const char jobvl, const char jobvr,
-            const char sense, MatrixA& a, VectorW& w, MatrixVL& vl,
-            MatrixVR& vr, fortran_int_t& ilo, fortran_int_t& ihi,
-            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
-            VectorRCONDV& rcondv, fortran_int_t& info,
+    static std::ptrdiff_t invoke( const char balanc, const char jobvl,
+            const char jobvr, const char sense, MatrixA& a, VectorW& w,
+            MatrixVL& vl, MatrixVR& vr, fortran_int_t& ilo,
+            fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
+            VectorRCONDE& rconde, VectorRCONDV& rcondv,
             optimal_workspace work ) {
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -421,12 +441,11 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(vl), stride_major(vl), begin_value(vr),
                 stride_major(vr), ilo, ihi, begin_value(scale), abnrm,
                 begin_value(rconde), begin_value(rcondv), &opt_size_work, -1,
-                begin_value(tmp_rwork), info );
+                begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
-                abnrm, rconde, rcondv, info, workspace( tmp_work,
-                tmp_rwork ) );
+                abnrm, rconde, rcondv, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -481,11 +500,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -509,11 +526,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -537,11 +552,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -565,11 +578,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -593,11 +604,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -621,11 +630,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -650,11 +657,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -679,11 +684,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -708,11 +711,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -737,11 +738,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -766,11 +765,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -795,11 +792,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -824,11 +819,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -853,11 +846,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -882,11 +873,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -911,11 +900,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -940,11 +927,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -969,11 +954,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -998,11 +981,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1027,11 +1008,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1056,11 +1035,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1085,11 +1062,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1114,11 +1089,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1143,11 +1116,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1172,11 +1143,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1201,11 +1170,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1230,11 +1197,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1259,11 +1224,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1288,11 +1251,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1317,11 +1278,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1346,11 +1305,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1375,11 +1332,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1404,11 +1359,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1433,11 +1386,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1462,11 +1413,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1491,11 +1440,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1520,11 +1467,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1549,11 +1494,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1578,11 +1521,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1607,11 +1548,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1636,11 +1575,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1665,11 +1602,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1694,11 +1629,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1723,11 +1656,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1752,11 +1683,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1781,11 +1710,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1810,11 +1737,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1839,11 +1764,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1868,11 +1791,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1897,11 +1818,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1926,11 +1845,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -1955,11 +1872,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -1984,11 +1899,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2013,11 +1926,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2042,11 +1953,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2071,11 +1980,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2100,11 +2007,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2129,11 +2034,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2158,11 +2061,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2187,11 +2088,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2216,11 +2115,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2245,11 +2142,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2274,11 +2169,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2303,11 +2196,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2332,11 +2223,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2361,11 +2250,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2390,11 +2277,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2419,11 +2304,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2448,11 +2331,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2477,11 +2358,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2506,11 +2385,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2535,11 +2412,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2564,11 +2439,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2593,11 +2466,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2622,11 +2493,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2651,11 +2520,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2680,11 +2547,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2709,11 +2574,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2738,11 +2601,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2767,11 +2628,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2796,11 +2655,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2825,11 +2682,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2854,11 +2709,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2883,11 +2736,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2912,11 +2763,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2941,11 +2790,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -2970,11 +2817,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -2999,11 +2844,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3028,11 +2871,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3057,11 +2898,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3086,11 +2925,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3115,11 +2952,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3144,11 +2979,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3173,11 +3006,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3202,11 +3033,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3231,11 +3060,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3260,11 +3087,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3289,11 +3114,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3318,11 +3141,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3347,11 +3168,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3376,11 +3195,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3405,11 +3222,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3434,11 +3249,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3463,11 +3276,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3492,11 +3303,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3521,11 +3330,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3550,11 +3357,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3579,11 +3384,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3608,11 +3411,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3637,11 +3438,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3666,11 +3465,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3695,11 +3492,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3724,11 +3519,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3753,11 +3546,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3782,11 +3573,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3811,11 +3600,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3840,11 +3627,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3869,11 +3654,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3898,11 +3681,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3927,11 +3708,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -3956,11 +3735,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -3985,11 +3762,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4014,11 +3789,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4043,11 +3816,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4072,11 +3843,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4101,11 +3870,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4130,11 +3897,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4159,11 +3924,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4187,11 +3950,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4215,11 +3976,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4243,11 +4002,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4271,11 +4028,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4299,11 +4054,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4327,11 +4080,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4356,11 +4107,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4385,11 +4134,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4414,11 +4161,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4443,11 +4188,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4472,11 +4215,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4501,11 +4242,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4530,11 +4269,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4559,11 +4296,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4588,11 +4323,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4617,11 +4350,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4646,11 +4377,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4675,11 +4404,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4704,11 +4431,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4733,11 +4458,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4762,11 +4485,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4791,11 +4512,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4820,11 +4539,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4849,11 +4566,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4878,11 +4593,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4907,11 +4620,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4936,11 +4647,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -4965,11 +4674,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -4994,11 +4701,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5023,11 +4728,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5052,11 +4755,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5081,11 +4782,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5110,11 +4809,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5139,11 +4836,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5168,11 +4863,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5197,11 +4890,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5226,11 +4917,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5255,11 +4944,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5284,11 +4971,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5313,11 +4998,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5342,11 +5025,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5371,11 +5052,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5400,11 +5079,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5429,11 +5106,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5458,11 +5133,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5487,11 +5160,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5516,11 +5187,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5545,11 +5214,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5574,11 +5241,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5603,11 +5268,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5632,11 +5295,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5661,11 +5322,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5690,11 +5349,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5719,11 +5376,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5748,11 +5403,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5777,11 +5430,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5806,11 +5457,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5835,11 +5484,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5864,11 +5511,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5893,11 +5538,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5922,11 +5565,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -5951,11 +5592,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -5980,11 +5619,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6009,11 +5646,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6038,11 +5673,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6067,11 +5700,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6096,11 +5727,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6125,11 +5754,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6154,11 +5781,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6183,11 +5808,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6212,11 +5835,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6241,11 +5862,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6270,11 +5889,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6299,11 +5916,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6328,11 +5943,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6357,11 +5970,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6386,11 +5997,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6415,11 +6024,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6444,11 +6051,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6473,11 +6078,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6502,11 +6105,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6531,11 +6132,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6560,11 +6159,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6589,11 +6186,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6618,11 +6213,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6647,11 +6240,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6676,11 +6267,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6705,11 +6294,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6734,11 +6321,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6763,11 +6348,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6792,11 +6375,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6821,11 +6402,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6850,11 +6429,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6879,11 +6456,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6908,11 +6483,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6937,11 +6510,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -6966,11 +6537,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -6995,11 +6564,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7024,11 +6591,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7053,11 +6618,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7082,11 +6645,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7111,11 +6672,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7140,11 +6699,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7169,11 +6726,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7198,11 +6753,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7227,11 +6780,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7256,11 +6807,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7285,11 +6834,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7314,11 +6861,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7343,11 +6888,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7372,11 +6915,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7401,11 +6942,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7430,11 +6969,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7459,11 +6996,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7488,11 +7023,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7517,11 +7050,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7546,11 +7077,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7575,11 +7104,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7604,11 +7131,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7633,11 +7158,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7662,11 +7185,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7691,11 +7212,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7720,11 +7239,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7749,11 +7266,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7778,11 +7293,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7807,11 +7320,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7836,11 +7347,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7865,11 +7374,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7893,11 +7400,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7921,11 +7426,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -7949,11 +7452,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -7977,11 +7478,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8005,11 +7504,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8033,11 +7530,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8062,11 +7557,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8091,11 +7584,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8120,11 +7611,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8149,11 +7638,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8178,11 +7665,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8207,11 +7692,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8236,11 +7719,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8265,11 +7746,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8294,11 +7773,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8323,11 +7800,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8352,11 +7827,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8381,11 +7854,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8410,11 +7881,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8439,11 +7908,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8468,11 +7935,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8497,11 +7962,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8526,11 +7989,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8555,11 +8016,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8584,11 +8043,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8613,11 +8070,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8642,11 +8097,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8671,11 +8124,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8700,11 +8151,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8729,11 +8178,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8758,11 +8205,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8787,11 +8232,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8816,11 +8259,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8845,11 +8286,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8874,11 +8313,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8903,11 +8340,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8932,11 +8367,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -8961,11 +8394,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -8990,11 +8421,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9019,11 +8448,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9048,11 +8475,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9077,11 +8502,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9106,11 +8529,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9135,11 +8556,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9164,11 +8583,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9193,11 +8610,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9222,11 +8637,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9251,11 +8664,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9280,11 +8691,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9309,11 +8718,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9338,11 +8745,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9367,11 +8772,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9396,11 +8799,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9425,11 +8826,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9454,11 +8853,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9483,11 +8880,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9512,11 +8907,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9541,11 +8934,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9570,11 +8961,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9599,11 +8988,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9628,11 +9015,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9657,11 +9042,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9686,11 +9069,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9715,11 +9096,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9744,11 +9123,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9773,11 +9150,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9802,11 +9177,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9831,11 +9204,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9860,11 +9231,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9889,11 +9258,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9918,11 +9285,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -9947,11 +9312,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -9976,11 +9339,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10005,11 +9366,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10034,11 +9393,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10063,11 +9420,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10092,11 +9447,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10121,11 +9474,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10150,11 +9501,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10179,11 +9528,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10208,11 +9555,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10237,11 +9582,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10266,11 +9609,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10295,11 +9636,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10324,11 +9663,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10353,11 +9690,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10382,11 +9717,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10411,11 +9744,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10440,11 +9771,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10469,11 +9798,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10498,11 +9825,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10527,11 +9852,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10556,11 +9879,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10585,11 +9906,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10614,11 +9933,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10643,11 +9960,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10672,11 +9987,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10701,11 +10014,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10730,11 +10041,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10759,11 +10068,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10788,11 +10095,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10817,11 +10122,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10846,11 +10149,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10875,11 +10176,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10904,11 +10203,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10933,11 +10230,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -10962,11 +10257,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -10991,11 +10284,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11020,11 +10311,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11049,11 +10338,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11078,11 +10365,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11107,11 +10392,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11136,11 +10419,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11165,11 +10446,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11194,11 +10473,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11223,11 +10500,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11252,11 +10527,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11281,11 +10554,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11310,11 +10581,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11339,11 +10608,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11368,11 +10635,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11397,11 +10662,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11426,11 +10689,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11455,11 +10716,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11484,11 +10743,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11513,11 +10770,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11542,11 +10797,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11571,11 +10824,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11600,11 +10851,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11628,11 +10877,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11657,11 +10904,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11685,11 +10930,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11714,11 +10957,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11742,11 +10983,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11771,11 +11010,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11800,11 +11037,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11829,11 +11064,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11858,11 +11091,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11887,11 +11118,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11916,11 +11145,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -11945,11 +11172,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -11974,11 +11199,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12003,11 +11226,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12032,11 +11253,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12061,11 +11280,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12090,11 +11307,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12119,11 +11334,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12148,11 +11361,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12177,11 +11388,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12206,11 +11415,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12235,11 +11442,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12264,11 +11469,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12293,11 +11496,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12322,11 +11523,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12351,11 +11550,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12380,11 +11577,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12409,11 +11604,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12438,11 +11631,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12467,11 +11658,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12496,11 +11685,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12525,11 +11712,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12554,11 +11739,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12583,11 +11766,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12612,11 +11793,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12641,11 +11820,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12670,11 +11847,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12699,11 +11874,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12728,11 +11901,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12757,11 +11928,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12786,11 +11955,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12815,11 +11982,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12844,11 +12009,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12873,11 +12036,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12902,11 +12063,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12931,11 +12090,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -12960,11 +12117,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -12989,11 +12144,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13018,11 +12171,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13047,11 +12198,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13076,11 +12225,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13105,11 +12252,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13134,11 +12279,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13163,11 +12306,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13192,11 +12333,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13221,11 +12360,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13250,11 +12387,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13279,11 +12414,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13308,11 +12441,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13337,11 +12468,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13366,11 +12495,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13395,11 +12522,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13424,11 +12549,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13453,11 +12576,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13482,11 +12603,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13511,11 +12630,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13540,11 +12657,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13569,11 +12684,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13598,11 +12711,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13627,11 +12738,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13656,11 +12765,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13685,11 +12792,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13714,11 +12819,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13743,11 +12846,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13772,11 +12873,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13801,11 +12900,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13830,11 +12927,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13859,11 +12954,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13888,11 +12981,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13917,11 +13008,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -13946,11 +13035,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -13975,11 +13062,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14004,11 +13089,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14033,11 +13116,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14062,11 +13143,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14091,11 +13170,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14120,11 +13197,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14149,11 +13224,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14178,11 +13251,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14207,11 +13278,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14236,11 +13305,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14265,11 +13332,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14294,11 +13359,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14323,11 +13386,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14352,11 +13413,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14381,11 +13440,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14410,11 +13467,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14439,11 +13494,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14468,11 +13521,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14497,11 +13548,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14526,11 +13575,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14555,11 +13602,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14584,11 +13629,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14613,11 +13656,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14642,11 +13683,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14671,11 +13710,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14700,11 +13737,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14729,11 +13764,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14758,11 +13791,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14787,11 +13818,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14816,11 +13845,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14845,11 +13872,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14874,11 +13899,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14903,11 +13926,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14932,11 +13953,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -14961,11 +13980,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -14990,11 +14007,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -15019,11 +14034,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -15048,11 +14061,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -15077,11 +14088,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -15106,11 +14115,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -15135,11 +14142,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -15164,11 +14169,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -15193,11 +14196,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -15222,11 +14223,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 
 //
@@ -15251,11 +14250,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, work );
 }
 
 //
@@ -15280,11 +14277,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi, scale, abnrm,
+            rconde, rcondv, optimal_workspace() );
 }
 //
 // Overloaded function for geevx. Its overload differs for
@@ -15306,11 +14301,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15333,11 +14326,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15360,11 +14351,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15387,11 +14376,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15414,11 +14401,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15441,11 +14426,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15468,11 +14451,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15495,11 +14476,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15522,11 +14501,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15549,11 +14526,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15576,11 +14551,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15603,11 +14576,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15630,11 +14601,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15657,11 +14626,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15685,11 +14652,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15713,11 +14678,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15740,11 +14703,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15767,11 +14728,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15794,11 +14753,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15821,11 +14778,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15848,11 +14803,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15875,11 +14828,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15903,11 +14854,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15931,11 +14880,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -15958,11 +14905,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -15985,11 +14930,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16012,11 +14955,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16039,11 +14980,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16066,11 +15005,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16093,11 +15030,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16121,11 +15056,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16149,11 +15082,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16177,11 +15108,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16205,11 +15134,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16233,11 +15160,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16261,11 +15186,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16289,11 +15212,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16317,11 +15238,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16345,11 +15264,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16373,11 +15290,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16401,11 +15316,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16429,11 +15342,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16457,11 +15368,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16485,11 +15394,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16513,11 +15420,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16541,11 +15446,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16569,11 +15472,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16597,11 +15498,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16625,11 +15524,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16653,11 +15550,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16681,11 +15576,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16709,11 +15602,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16737,11 +15628,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16765,11 +15654,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16793,11 +15680,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16821,11 +15706,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16849,11 +15732,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16877,11 +15758,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16905,11 +15784,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16933,11 +15810,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -16961,11 +15836,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -16989,11 +15862,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17017,11 +15888,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17045,11 +15914,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17072,11 +15939,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17099,11 +15964,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17126,11 +15989,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17153,11 +16014,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17180,11 +16039,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17207,11 +16064,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17234,11 +16089,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17261,11 +16114,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17288,11 +16139,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17315,11 +16164,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17342,11 +16189,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17369,11 +16214,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17396,11 +16239,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17423,11 +16264,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17451,11 +16290,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17479,11 +16316,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17506,11 +16341,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17533,11 +16366,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17560,11 +16391,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17587,11 +16416,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17614,11 +16441,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17641,11 +16466,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17669,11 +16492,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17697,11 +16518,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17724,11 +16543,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17751,11 +16568,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17778,11 +16593,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17805,11 +16618,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17832,11 +16643,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17859,11 +16668,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17887,11 +16694,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17915,11 +16720,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17943,11 +16746,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -17971,11 +16772,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -17999,11 +16798,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18027,11 +16824,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18055,11 +16850,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18083,11 +16876,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18111,11 +16902,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18139,11 +16928,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18167,11 +16954,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18195,11 +16980,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18223,11 +17006,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18251,11 +17032,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18279,11 +17058,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18307,11 +17084,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18335,11 +17110,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18363,11 +17136,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18391,11 +17162,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18419,11 +17188,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18447,11 +17214,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18475,11 +17240,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18503,11 +17266,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18531,11 +17292,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18559,11 +17318,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18587,11 +17344,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18615,11 +17370,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18643,11 +17396,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18671,11 +17422,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18699,11 +17448,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18727,11 +17474,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18755,11 +17500,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18783,11 +17526,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18811,11 +17552,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18838,11 +17577,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18865,11 +17602,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18892,11 +17627,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18919,11 +17652,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -18946,11 +17677,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -18973,11 +17702,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19000,11 +17727,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19027,11 +17752,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19054,11 +17777,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19081,11 +17802,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19108,11 +17827,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19135,11 +17852,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19162,11 +17877,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19189,11 +17902,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19217,11 +17928,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19245,11 +17954,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19272,11 +17979,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19299,11 +18004,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19326,11 +18029,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19353,11 +18054,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19380,11 +18079,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19407,11 +18104,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19435,11 +18130,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19463,11 +18156,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19490,11 +18181,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19517,11 +18206,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19544,11 +18231,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19571,11 +18256,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19598,11 +18281,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19625,11 +18306,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19653,11 +18332,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19681,11 +18358,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19709,11 +18384,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19737,11 +18410,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19765,11 +18436,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19793,11 +18462,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19821,11 +18488,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19849,11 +18514,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19877,11 +18540,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19905,11 +18566,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19933,11 +18592,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -19961,11 +18618,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -19989,11 +18644,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20017,11 +18670,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20045,11 +18696,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20073,11 +18722,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20101,11 +18748,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20129,11 +18774,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20157,11 +18800,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20185,11 +18826,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20213,11 +18852,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20241,11 +18878,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20269,11 +18904,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20297,11 +18930,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20325,11 +18956,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20353,11 +18982,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20381,11 +19008,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20409,11 +19034,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20437,11 +19060,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20465,11 +19086,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20493,11 +19112,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20521,11 +19138,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20549,11 +19164,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20577,11 +19190,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20605,11 +19216,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20632,11 +19241,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20660,11 +19267,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20687,11 +19292,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20715,11 +19318,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20742,11 +19343,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20770,11 +19369,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20797,11 +19394,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20825,11 +19420,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20852,11 +19445,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20880,11 +19471,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20907,11 +19496,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20935,11 +19522,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -20962,11 +19547,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -20990,11 +19573,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21018,11 +19599,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21046,11 +19625,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21073,11 +19650,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21101,11 +19676,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21128,11 +19701,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21156,11 +19727,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21183,11 +19752,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21211,11 +19778,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21239,11 +19804,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21267,11 +19830,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21294,11 +19855,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21322,11 +19881,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21349,11 +19906,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21377,11 +19932,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv,
         Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21404,11 +19957,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         fortran_int_t& ihi, VectorSCALE& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& abnrm,
         const VectorRCONDE& rconde, const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21432,11 +19983,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21460,11 +20009,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21488,11 +20035,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21516,11 +20061,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21544,11 +20087,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21572,11 +20113,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21600,11 +20139,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21628,11 +20165,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21656,11 +20191,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21684,11 +20217,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21712,11 +20243,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21740,11 +20269,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21768,11 +20295,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21796,11 +20321,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21824,11 +20347,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21852,11 +20373,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21880,11 +20399,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21908,11 +20425,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21936,11 +20451,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -21964,11 +20477,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -21992,11 +20503,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22020,11 +20529,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -22048,11 +20555,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22076,11 +20581,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -22104,11 +20607,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22132,11 +20633,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -22160,11 +20659,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22188,11 +20685,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -22216,11 +20711,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22244,11 +20737,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -22272,11 +20763,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22300,11 +20789,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 //
@@ -22328,11 +20815,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv, Workspace work ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, work );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, work );
 }
 
 //
@@ -22356,11 +20841,9 @@ inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
         const VectorSCALE& scale, typename remove_imaginary< typename value<
         MatrixA >::type >::type& abnrm, const VectorRCONDE& rconde,
         const VectorRCONDV& rcondv ) {
-    fortran_int_t info(0);
-    geevx_impl< typename value< MatrixA >::type >::invoke( balanc, jobvl,
-            jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
-            rcondv, info, optimal_workspace() );
-    return info;
+    return geevx_impl< typename value< MatrixA >::type >::invoke( balanc,
+            jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale, abnrm, rconde,
+            rcondv, optimal_workspace() );
 }
 
 } // namespace lapack

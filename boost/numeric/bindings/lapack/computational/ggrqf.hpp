@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for ggrqf is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,48 +49,62 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
+inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
         float* a, fortran_int_t lda, float* taua, float* b, fortran_int_t ldb,
-        float* taub, float* work, fortran_int_t lwork, fortran_int_t& info ) {
+        float* taub, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
+inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
         double* a, fortran_int_t lda, double* taua, double* b,
-        fortran_int_t ldb, double* taub, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        fortran_int_t ldb, double* taub, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
+inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
         std::complex<float>* a, fortran_int_t lda, std::complex<float>* taua,
         std::complex<float>* b, fortran_int_t ldb, std::complex<float>* taub,
-        std::complex<float>* work, fortran_int_t lwork, fortran_int_t& info ) {
+        std::complex<float>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
+inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
         std::complex<double>* a, fortran_int_t lda,
         std::complex<double>* taua, std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* taub,
-        std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        std::complex<double>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -115,9 +133,8 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB, typename WORK >
-    static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+            VectorTAUB& taub, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -149,11 +166,11 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::ggrqf( size_row(a), size_row(b), size_column(b),
+        return detail::ggrqf( size_row(a), size_row(b), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
                 begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -165,12 +182,11 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
-    static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+            VectorTAUB& taub, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        invoke( a, taua, b, taub, info, workspace( tmp_work ) );
+        return invoke( a, taua, b, taub, workspace( tmp_work ) );
     }
 
     //
@@ -182,17 +198,16 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
-    static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+            VectorTAUB& taub, optimal_workspace work ) {
         real_type opt_size_work;
         detail::ggrqf( size_row(a), size_row(b), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
-                &opt_size_work, -1, info );
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, taua, b, taub, info, workspace( tmp_work ) );
+        invoke( a, taua, b, taub, workspace( tmp_work ) );
     }
 
     //
@@ -221,9 +236,8 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB, typename WORK >
-    static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+            VectorTAUB& taub, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -255,11 +269,11 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::ggrqf( size_row(a), size_row(b), size_column(b),
+        return detail::ggrqf( size_row(a), size_row(b), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
                 begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -271,12 +285,11 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
-    static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+            VectorTAUB& taub, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        invoke( a, taua, b, taub, info, workspace( tmp_work ) );
+        return invoke( a, taua, b, taub, workspace( tmp_work ) );
     }
 
     //
@@ -288,17 +301,16 @@ struct ggrqf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
-    static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+            VectorTAUB& taub, optimal_workspace work ) {
         value_type opt_size_work;
         detail::ggrqf( size_row(a), size_row(b), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
-                &opt_size_work, -1, info );
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, taua, b, taub, info, workspace( tmp_work ) );
+        invoke( a, taua, b, taub, workspace( tmp_work ) );
     }
 
     //
@@ -332,10 +344,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -350,10 +360,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -368,10 +376,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -386,10 +392,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -404,10 +408,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -422,10 +424,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -440,10 +440,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -458,10 +456,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -476,10 +472,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -494,10 +488,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -512,10 +504,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -530,10 +520,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -548,10 +536,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -566,10 +552,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -584,10 +568,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -602,10 +584,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -620,10 +600,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -638,10 +616,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -656,10 +632,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -674,10 +648,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -692,10 +664,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -710,10 +680,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -728,10 +696,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -746,10 +712,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -764,10 +728,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -782,10 +744,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -800,10 +760,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -818,10 +776,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -836,10 +792,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -854,10 +808,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 //
@@ -872,10 +824,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, work );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, work );
 }
 
 //
@@ -890,10 +840,8 @@ template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
 inline std::ptrdiff_t ggrqf( const MatrixA& a, const VectorTAUA& taua,
         const MatrixB& b, const VectorTAUB& taub ) {
-    fortran_int_t info(0);
-    ggrqf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
-            taub, info, optimal_workspace() );
-    return info;
+    return ggrqf_impl< typename value< MatrixA >::type >::invoke( a,
+            taua, b, taub, optimal_workspace() );
 }
 
 } // namespace lapack

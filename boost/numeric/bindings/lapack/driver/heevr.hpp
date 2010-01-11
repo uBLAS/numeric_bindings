@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -30,6 +28,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for heevr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,35 +47,43 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void heevr( char jobz, char range, UpLo, fortran_int_t n,
+inline std::ptrdiff_t heevr( char jobz, char range, UpLo, fortran_int_t n,
         std::complex<float>* a, fortran_int_t lda, float vl, float vu,
         fortran_int_t il, fortran_int_t iu, float abstol, fortran_int_t& m,
         float* w, std::complex<float>* z, fortran_int_t ldz,
         fortran_int_t* isuppz, std::complex<float>* work, fortran_int_t lwork,
         float* rwork, fortran_int_t lrwork, fortran_int_t* iwork,
-        fortran_int_t liwork, fortran_int_t& info ) {
+        fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_CHEEVR( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
             &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, isuppz, work, &lwork,
             rwork, &lrwork, iwork, &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void heevr( char jobz, char range, UpLo, fortran_int_t n,
+inline std::ptrdiff_t heevr( char jobz, char range, UpLo, fortran_int_t n,
         std::complex<double>* a, fortran_int_t lda, double vl, double vu,
         fortran_int_t il, fortran_int_t iu, double abstol, fortran_int_t& m,
         double* w, std::complex<double>* z, fortran_int_t ldz,
         fortran_int_t* isuppz, std::complex<double>* work,
         fortran_int_t lwork, double* rwork, fortran_int_t lrwork,
-        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+        fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_ZHEEVR( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
             &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, isuppz, work, &lwork,
             rwork, &lrwork, iwork, &liwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -95,12 +107,12 @@ struct heevr_impl {
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ, typename WORK, typename RWORK,
             typename IWORK >
-    static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
+            MatrixA& a, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            detail::workspace3< WORK, RWORK, IWORK > work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, detail::workspace3< WORK, RWORK,
+            IWORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -125,15 +137,15 @@ struct heevr_impl {
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::heevr( jobz, range, uplo(), size_column(a), begin_value(a),
-                stride_major(a), vl, vu, il, iu, abstol, m, begin_value(w),
-                begin_value(z), stride_major(z), begin_value(isuppz),
-                begin_value(work.select(value_type())),
+        return detail::heevr( jobz, range, uplo(), size_column(a),
+                begin_value(a), stride_major(a), vl, vu, il, iu, abstol, m,
+                begin_value(w), begin_value(z), stride_major(z),
+                begin_value(isuppz), begin_value(work.select(value_type())),
                 size(work.select(value_type())),
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())), info );
+                size(work.select(fortran_int_t())) );
     }
 
     //
@@ -145,12 +157,11 @@ struct heevr_impl {
     //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
+            MatrixA& a, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
@@ -158,8 +169,8 @@ struct heevr_impl {
                 size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( size_column(a) ) );
-        invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
-                workspace( tmp_work, tmp_rwork, tmp_iwork ) );
+        return invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z,
+                isuppz, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     //
@@ -171,12 +182,11 @@ struct heevr_impl {
     //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
+            MatrixA& a, const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            optimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
         real_type opt_size_rwork;
@@ -185,14 +195,14 @@ struct heevr_impl {
                 begin_value(a), stride_major(a), vl, vu, il, iu, abstol, m,
                 begin_value(w), begin_value(z), stride_major(z),
                 begin_value(isuppz), &opt_size_work, -1, &opt_size_rwork, -1,
-                &opt_size_iwork, -1, info );
+                &opt_size_iwork, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< real_type > tmp_rwork(
                 traits::detail::to_int( opt_size_rwork ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+        invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
@@ -249,10 +259,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -273,11 +281,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -298,10 +304,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -322,11 +326,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -347,10 +349,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -371,11 +371,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -396,10 +394,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -420,11 +416,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -445,10 +439,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -469,11 +461,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -494,10 +484,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -518,11 +506,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -544,10 +530,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -568,11 +552,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -594,10 +576,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -618,11 +598,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -643,10 +621,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -667,11 +643,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -692,10 +666,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -716,11 +688,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -742,10 +712,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -766,11 +734,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -792,10 +758,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -816,11 +780,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -841,10 +803,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -865,11 +825,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -890,10 +848,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -914,11 +870,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -940,10 +894,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -964,11 +916,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -990,10 +940,8 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1014,11 +962,9 @@ inline std::ptrdiff_t heevr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
-            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return heevr_impl< typename value< MatrixA >::type >::invoke( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

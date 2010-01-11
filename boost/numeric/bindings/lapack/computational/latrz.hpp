@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for latrz is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,37 +48,53 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
+inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
         float* a, fortran_int_t lda, float* tau, float* work ) {
+    fortran_int_t info(0);
     LAPACK_SLATRZ( &m, &n, &l, a, &lda, tau, work );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
+inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
         double* a, fortran_int_t lda, double* tau, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DLATRZ( &m, &n, &l, a, &lda, tau, work );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
+inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
         std::complex<float>* a, fortran_int_t lda, std::complex<float>* tau,
         std::complex<float>* work ) {
+    fortran_int_t info(0);
     LAPACK_CLATRZ( &m, &n, &l, a, &lda, tau, work );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
+inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
         std::complex<double>* a, fortran_int_t lda, std::complex<double>* tau,
         std::complex<double>* work ) {
+    fortran_int_t info(0);
     LAPACK_ZLATRZ( &m, &n, &l, a, &lda, tau, work );
+    return info;
 }
 
 } // namespace detail
@@ -102,8 +122,8 @@ struct latrz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( MatrixA& a, VectorTAU& tau, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -119,7 +139,7 @@ struct latrz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::latrz( size_row(a), size_column(a), size_column(a),
+        return detail::latrz( size_row(a), size_column(a), size_column(a),
                 begin_value(a), stride_major(a), begin_value(tau),
                 begin_value(work.select(real_type())) );
     }
@@ -132,10 +152,11 @@ struct latrz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorTAU& tau, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row(a) ) );
-        invoke( a, tau, workspace( tmp_work ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -146,8 +167,9 @@ struct latrz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorTAU& tau, optimal_workspace work ) {
-        invoke( a, tau, minimal_workspace() );
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
+            optimal_workspace work ) {
+        return invoke( a, tau, minimal_workspace() );
     }
 
     //
@@ -175,8 +197,8 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( MatrixA& a, VectorTAU& tau, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -192,7 +214,7 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::latrz( size_row(a), size_column(a), size_column(a),
+        return detail::latrz( size_row(a), size_column(a), size_column(a),
                 begin_value(a), stride_major(a), begin_value(tau),
                 begin_value(work.select(value_type())) );
     }
@@ -205,10 +227,11 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorTAU& tau, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_row(a) ) );
-        invoke( a, tau, workspace( tmp_work ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -219,8 +242,9 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorTAU& tau, optimal_workspace work ) {
-        invoke( a, tau, minimal_workspace() );
+    static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
+            optimal_workspace work ) {
+        return invoke( a, tau, minimal_workspace() );
     }
 
     //
@@ -249,11 +273,9 @@ struct latrz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t latrz( MatrixA& a, VectorTAU& tau,
-        Workspace work ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau, work );
-    return info;
+inline std::ptrdiff_t latrz( MatrixA& a, VectorTAU& tau, Workspace work ) {
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            work );
 }
 
 //
@@ -264,10 +286,8 @@ inline std::ptrdiff_t latrz( MatrixA& a, VectorTAU& tau,
 //
 template< typename MatrixA, typename VectorTAU >
 inline std::ptrdiff_t latrz( MatrixA& a, VectorTAU& tau ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -279,9 +299,8 @@ inline std::ptrdiff_t latrz( MatrixA& a, VectorTAU& tau ) {
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline std::ptrdiff_t latrz( const MatrixA& a, VectorTAU& tau,
         Workspace work ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau, work );
-    return info;
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            work );
 }
 
 //
@@ -292,10 +311,8 @@ inline std::ptrdiff_t latrz( const MatrixA& a, VectorTAU& tau,
 //
 template< typename MatrixA, typename VectorTAU >
 inline std::ptrdiff_t latrz( const MatrixA& a, VectorTAU& tau ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -307,9 +324,8 @@ inline std::ptrdiff_t latrz( const MatrixA& a, VectorTAU& tau ) {
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline std::ptrdiff_t latrz( MatrixA& a, const VectorTAU& tau,
         Workspace work ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau, work );
-    return info;
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            work );
 }
 
 //
@@ -320,10 +336,8 @@ inline std::ptrdiff_t latrz( MatrixA& a, const VectorTAU& tau,
 //
 template< typename MatrixA, typename VectorTAU >
 inline std::ptrdiff_t latrz( MatrixA& a, const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -335,9 +349,8 @@ inline std::ptrdiff_t latrz( MatrixA& a, const VectorTAU& tau ) {
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline std::ptrdiff_t latrz( const MatrixA& a, const VectorTAU& tau,
         Workspace work ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau, work );
-    return info;
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            work );
 }
 
 //
@@ -348,10 +361,8 @@ inline std::ptrdiff_t latrz( const MatrixA& a, const VectorTAU& tau,
 //
 template< typename MatrixA, typename VectorTAU >
 inline std::ptrdiff_t latrz( const MatrixA& a, const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
+    return latrz_impl< typename value< MatrixA >::type >::invoke( a, tau,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

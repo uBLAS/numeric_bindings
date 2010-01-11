@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for spsv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -40,47 +44,61 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void spsv( UpLo, fortran_int_t n, fortran_int_t nrhs, float* ap,
-        fortran_int_t* ipiv, float* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        float* ap, fortran_int_t* ipiv, float* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_SSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void spsv( UpLo, fortran_int_t n, fortran_int_t nrhs, double* ap,
-        fortran_int_t* ipiv, double* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        double* ap, fortran_int_t* ipiv, double* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_DSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
         std::complex<float>* ap, fortran_int_t* ipiv, std::complex<float>* b,
-        fortran_int_t ldb, fortran_int_t& info ) {
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_CSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
         std::complex<double>* ap, fortran_int_t* ipiv,
-        std::complex<double>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<double>* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_ZSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -102,8 +120,7 @@ struct spsv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -117,9 +134,9 @@ struct spsv_impl {
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(ap)) );
-        detail::spsv( uplo(), size_column(ap), size_column(b),
+        return detail::spsv( uplo(), size_column(ap), size_column(b),
                 begin_value(ap), begin_value(ipiv), begin_value(b),
-                stride_major(b), info );
+                stride_major(b) );
     }
 
 };
@@ -141,12 +158,9 @@ struct spsv_impl {
 // * MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t spsv( MatrixAP& ap, VectorIPIV& ipiv,
-        MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+inline std::ptrdiff_t spsv( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b ) {
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -158,10 +172,8 @@ inline std::ptrdiff_t spsv( MatrixAP& ap, VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( const MatrixAP& ap, VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -173,10 +185,8 @@ inline std::ptrdiff_t spsv( const MatrixAP& ap, VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( MatrixAP& ap, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -188,10 +198,8 @@ inline std::ptrdiff_t spsv( MatrixAP& ap, const VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( const MatrixAP& ap, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -203,10 +211,8 @@ inline std::ptrdiff_t spsv( const MatrixAP& ap, const VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( MatrixAP& ap, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -218,10 +224,8 @@ inline std::ptrdiff_t spsv( MatrixAP& ap, VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( const MatrixAP& ap, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -233,10 +237,8 @@ inline std::ptrdiff_t spsv( const MatrixAP& ap, VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( MatrixAP& ap, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -248,10 +250,8 @@ inline std::ptrdiff_t spsv( MatrixAP& ap, const VectorIPIV& ipiv,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t spsv( const MatrixAP& ap, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    spsv_impl< typename value< MatrixAP >::type >::invoke( ap, ipiv, b,
-            info );
-    return info;
+    return spsv_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 } // namespace lapack

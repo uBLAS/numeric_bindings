@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -28,6 +26,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for tftri is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -41,43 +45,59 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename TransR, typename Diag >
-inline void tftri( TransR, char uplo, Diag, fortran_int_t n, float* a,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t tftri( TransR, char uplo, Diag, fortran_int_t n,
+        float* a ) {
+    fortran_int_t info(0);
     LAPACK_STFTRI( &lapack_option< TransR >::value, &uplo, &lapack_option<
             Diag >::value, &n, a, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename TransR, typename Diag >
-inline void tftri( TransR, char uplo, Diag, fortran_int_t n, double* a,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t tftri( TransR, char uplo, Diag, fortran_int_t n,
+        double* a ) {
+    fortran_int_t info(0);
     LAPACK_DTFTRI( &lapack_option< TransR >::value, &uplo, &lapack_option<
             Diag >::value, &n, a, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename TransR, typename Diag >
-inline void tftri( TransR, char uplo, Diag, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t& info ) {
+inline std::ptrdiff_t tftri( TransR, char uplo, Diag, fortran_int_t n,
+        std::complex<float>* a ) {
+    fortran_int_t info(0);
     LAPACK_CTFTRI( &lapack_option< TransR >::value, &uplo, &lapack_option<
             Diag >::value, &n, a, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename TransR, typename Diag >
-inline void tftri( TransR, char uplo, Diag, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t& info ) {
+inline std::ptrdiff_t tftri( TransR, char uplo, Diag, fortran_int_t n,
+        std::complex<double>* a ) {
+    fortran_int_t info(0);
     LAPACK_ZTFTRI( &lapack_option< TransR >::value, &uplo, &lapack_option<
             Diag >::value, &n, a, &info );
+    return info;
 }
 
 } // namespace detail
@@ -99,14 +119,13 @@ struct tftri_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA >
-    static void invoke( const char uplo, MatrixA& a,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char uplo, MatrixA& a ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type transr;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size_column_op(a, transr()) >= 0 );
-        detail::tftri( transr(), uplo, diag(), size_column_op(a, transr()),
-                begin_value(a), info );
+        return detail::tftri( transr(), uplo, diag(), size_column_op(a,
+                transr()), begin_value(a) );
     }
 
 };
@@ -127,10 +146,8 @@ struct tftri_impl {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t tftri( const char uplo, MatrixA& a ) {
-    fortran_int_t info(0);
-    tftri_impl< typename value< MatrixA >::type >::invoke( uplo, a,
-            info );
-    return info;
+    return tftri_impl< typename value< MatrixA >::type >::invoke( uplo,
+            a );
 }
 
 //
@@ -139,10 +156,8 @@ inline std::ptrdiff_t tftri( const char uplo, MatrixA& a ) {
 //
 template< typename MatrixA >
 inline std::ptrdiff_t tftri( const char uplo, const MatrixA& a ) {
-    fortran_int_t info(0);
-    tftri_impl< typename value< MatrixA >::type >::invoke( uplo, a,
-            info );
-    return info;
+    return tftri_impl< typename value< MatrixA >::type >::invoke( uplo,
+            a );
 }
 
 } // namespace lapack

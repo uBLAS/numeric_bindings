@@ -21,8 +21,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for lalsd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,62 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
+inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
         fortran_int_t nrhs, float* d, float* e, float* b, fortran_int_t ldb,
-        float rcond, fortran_int_t& rank, float* work, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        float rcond, fortran_int_t& rank, float* work, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_SLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
+inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
         fortran_int_t nrhs, double* d, double* e, double* b,
         fortran_int_t ldb, double rcond, fortran_int_t& rank, double* work,
-        fortran_int_t* iwork, fortran_int_t& info ) {
+        fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_DLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
+inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
         fortran_int_t nrhs, float* d, float* e, std::complex<float>* b,
         fortran_int_t ldb, float rcond, fortran_int_t& rank,
-        std::complex<float>* work, float* rwork, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        std::complex<float>* work, float* rwork, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_CLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, rwork, iwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
+inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
         fortran_int_t nrhs, double* d, double* e, std::complex<double>* b,
         fortran_int_t ldb, double rcond, fortran_int_t& rank,
-        std::complex<double>* work, double* rwork, fortran_int_t* iwork,
-        fortran_int_t& info ) {
+        std::complex<double>* work, double* rwork, fortran_int_t* iwork ) {
+    fortran_int_t info(0);
     LAPACK_ZLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, rwork, iwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,10 +133,10 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename MatrixB,
             typename WORK, typename IWORK >
-    static void invoke( const char uplo, const fortran_int_t smlsiz,
-            const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
-            const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const char uplo,
+            const fortran_int_t smlsiz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
+            fortran_int_t& rank, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -145,10 +162,10 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_column(b) >= 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::lalsd( uplo, smlsiz, n, size_column(b), begin_value(d),
+        return detail::lalsd( uplo, smlsiz, n, size_column(b), begin_value(d),
                 begin_value(e), begin_value(b), stride_major(b), rcond, rank,
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -159,10 +176,10 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const char uplo, const fortran_int_t smlsiz,
-            const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
-            const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char uplo,
+            const fortran_int_t smlsiz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
+            fortran_int_t& rank, minimal_workspace work ) {
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
             std::log(static_cast<real_type>(n)/static_cast<real_type>(smlsiz+
@@ -172,7 +189,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 smlsiz, nlvl, size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n, nlvl ) );
-        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+        return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -184,11 +201,11 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const char uplo, const fortran_int_t smlsiz,
-            const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
-            const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+    static std::ptrdiff_t invoke( const char uplo,
+            const fortran_int_t smlsiz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
+            fortran_int_t& rank, optimal_workspace work ) {
+        return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 minimal_workspace() );
     }
 
@@ -231,10 +248,10 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename MatrixB,
             typename WORK, typename RWORK, typename IWORK >
-    static void invoke( const char uplo, const fortran_int_t smlsiz,
-            const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
-            const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, detail::workspace3< WORK, RWORK,
+    static std::ptrdiff_t invoke( const char uplo,
+            const fortran_int_t smlsiz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
+            fortran_int_t& rank, detail::workspace3< WORK, RWORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -260,11 +277,11 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_column(b) >= 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::lalsd( uplo, smlsiz, n, size_column(b), begin_value(d),
+        return detail::lalsd( uplo, smlsiz, n, size_column(b), begin_value(d),
                 begin_value(e), begin_value(b), stride_major(b), rcond, rank,
                 begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), info );
+                begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -275,10 +292,10 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const char uplo, const fortran_int_t smlsiz,
-            const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
-            const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char uplo,
+            const fortran_int_t smlsiz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
+            fortran_int_t& rank, minimal_workspace work ) {
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
             std::log(static_cast<real_type>(std::min<
@@ -291,7 +308,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 smlsiz, nlvl, size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n, nlvl ) );
-        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+        return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
@@ -303,11 +320,11 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const char uplo, const fortran_int_t smlsiz,
-            const fortran_int_t n, VectorD& d, VectorE& e, MatrixB& b,
-            const real_type rcond, fortran_int_t& rank,
-            fortran_int_t& info, optimal_workspace work ) {
-        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+    static std::ptrdiff_t invoke( const char uplo,
+            const fortran_int_t smlsiz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
+            fortran_int_t& rank, optimal_workspace work ) {
+        return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 minimal_workspace() );
     }
 
@@ -366,10 +383,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         VectorE& e, MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -385,10 +400,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         VectorE& e, MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -406,10 +419,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -425,10 +436,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorD& d, VectorE& e, MatrixB& b,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -445,10 +454,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorE& e, MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -464,10 +471,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorE& e, MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -485,10 +490,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -504,10 +507,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorD& d, const VectorE& e, MatrixB& b,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -524,10 +525,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         VectorE& e, const MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -543,10 +542,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         VectorE& e, const MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -564,10 +561,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -583,10 +578,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorD& d, VectorE& e, const MatrixB& b,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -603,10 +596,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorE& e, const MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -622,10 +613,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorE& e, const MatrixB& b, const typename remove_imaginary<
         typename value< MatrixB >::type >::type rcond,
         fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 //
@@ -643,10 +632,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank,
         Workspace work ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, work );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, work );
 }
 
 //
@@ -662,10 +649,8 @@ inline std::ptrdiff_t lalsd( const char uplo,
         const VectorD& d, const VectorE& e, const MatrixB& b,
         const typename remove_imaginary< typename value<
         MatrixB >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    lalsd_impl< typename value< MatrixB >::type >::invoke( uplo, smlsiz,
-            n, d, e, b, rcond, rank, info, optimal_workspace() );
-    return info;
+    return lalsd_impl< typename value< MatrixB >::type >::invoke( uplo,
+            smlsiz, n, d, e, b, rcond, rank, optimal_workspace() );
 }
 
 } // namespace lapack

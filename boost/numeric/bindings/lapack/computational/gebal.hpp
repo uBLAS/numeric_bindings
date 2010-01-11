@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -29,6 +27,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gebal is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,39 +46,55 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gebal( char job, fortran_int_t n, float* a, fortran_int_t lda,
-        fortran_int_t& ilo, fortran_int_t& ihi, float* scale,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gebal( char job, fortran_int_t n, float* a,
+        fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
+        float* scale ) {
+    fortran_int_t info(0);
     LAPACK_SGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gebal( char job, fortran_int_t n, double* a, fortran_int_t lda,
-        fortran_int_t& ilo, fortran_int_t& ihi, double* scale,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gebal( char job, fortran_int_t n, double* a,
+        fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
+        double* scale ) {
+    fortran_int_t info(0);
     LAPACK_DGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gebal( char job, fortran_int_t n, std::complex<float>* a,
+inline std::ptrdiff_t gebal( char job, fortran_int_t n, std::complex<float>* a,
         fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
-        float* scale, fortran_int_t& info ) {
+        float* scale ) {
+    fortran_int_t info(0);
     LAPACK_CGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gebal( char job, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
-        double* scale, fortran_int_t& info ) {
+inline std::ptrdiff_t gebal( char job, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda, fortran_int_t& ilo,
+        fortran_int_t& ihi, double* scale ) {
+    fortran_int_t info(0);
     LAPACK_ZGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
+    return info;
 }
 
 } // namespace detail
@@ -102,9 +122,9 @@ struct gebal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorSCALE >
-    static void invoke( const char job, MatrixA& a, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorSCALE& scale,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char job, MatrixA& a,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorSCALE& scale ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -116,8 +136,8 @@ struct gebal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::gebal( job, size_column(a), begin_value(a), stride_major(a),
-                ilo, ihi, begin_value(scale), info );
+        return detail::gebal( job, size_column(a), begin_value(a),
+                stride_major(a), ilo, ihi, begin_value(scale) );
     }
 
 };
@@ -138,9 +158,9 @@ struct gebal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorSCALE >
-    static void invoke( const char job, MatrixA& a, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorSCALE& scale,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char job, MatrixA& a,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorSCALE& scale ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorSCALE >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
@@ -148,8 +168,8 @@ struct gebal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::gebal( job, size_column(a), begin_value(a), stride_major(a),
-                ilo, ihi, begin_value(scale), info );
+        return detail::gebal( job, size_column(a), begin_value(a),
+                stride_major(a), ilo, ihi, begin_value(scale) );
     }
 
 };
@@ -172,10 +192,8 @@ struct gebal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi, VectorSCALE& scale ) {
-    fortran_int_t info(0);
-    gebal_impl< typename value< MatrixA >::type >::invoke( job, a, ilo,
-            ihi, scale, info );
-    return info;
+    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            ilo, ihi, scale );
 }
 
 //
@@ -186,10 +204,8 @@ inline std::ptrdiff_t gebal( const char job, MatrixA& a,
 template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, const MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi, VectorSCALE& scale ) {
-    fortran_int_t info(0);
-    gebal_impl< typename value< MatrixA >::type >::invoke( job, a, ilo,
-            ihi, scale, info );
-    return info;
+    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            ilo, ihi, scale );
 }
 
 //
@@ -201,10 +217,8 @@ template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi,
         const VectorSCALE& scale ) {
-    fortran_int_t info(0);
-    gebal_impl< typename value< MatrixA >::type >::invoke( job, a, ilo,
-            ihi, scale, info );
-    return info;
+    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            ilo, ihi, scale );
 }
 
 //
@@ -216,10 +230,8 @@ template< typename MatrixA, typename VectorSCALE >
 inline std::ptrdiff_t gebal( const char job, const MatrixA& a,
         fortran_int_t& ilo, fortran_int_t& ihi,
         const VectorSCALE& scale ) {
-    fortran_int_t info(0);
-    gebal_impl< typename value< MatrixA >::type >::invoke( job, a, ilo,
-            ihi, scale, info );
-    return info;
+    return gebal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            ilo, ihi, scale );
 }
 
 } // namespace lapack

@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for stegr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,53 +49,67 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void stegr( char jobz, char range, fortran_int_t n, float* d, float* e,
-        float vl, float vu, fortran_int_t il, fortran_int_t iu, float abstol,
-        fortran_int_t& m, float* w, float* z, fortran_int_t ldz,
+inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, float* d,
+        float* e, float vl, float vu, fortran_int_t il, fortran_int_t iu,
+        float abstol, fortran_int_t& m, float* w, float* z, fortran_int_t ldz,
         fortran_int_t* isuppz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+        fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_SSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void stegr( char jobz, char range, fortran_int_t n, double* d,
+inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, double* d,
         double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
         double abstol, fortran_int_t& m, double* w, double* z,
         fortran_int_t ldz, fortran_int_t* isuppz, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork,
-        fortran_int_t& info ) {
+        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_DSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void stegr( char jobz, char range, fortran_int_t n, float* d, float* e,
-        float vl, float vu, fortran_int_t il, fortran_int_t iu, float abstol,
-        fortran_int_t& m, float* w, std::complex<float>* z, fortran_int_t ldz,
-        fortran_int_t* isuppz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, float* d,
+        float* e, float vl, float vu, fortran_int_t il, fortran_int_t iu,
+        float abstol, fortran_int_t& m, float* w, std::complex<float>* z,
+        fortran_int_t ldz, fortran_int_t* isuppz, float* work,
+        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_CSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void stegr( char jobz, char range, fortran_int_t n, double* d,
+inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, double* d,
         double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
         double abstol, fortran_int_t& m, double* w, std::complex<double>* z,
         fortran_int_t ldz, fortran_int_t* isuppz, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork,
-        fortran_int_t& info ) {
+        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+    fortran_int_t info(0);
     LAPACK_ZSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -121,13 +139,13 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,
             typename IWORK >
-    static void invoke( const char jobz, const char range,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
             const fortran_int_t n, VectorD& d, VectorE& e,
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -156,13 +174,13 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n,
                 jobz ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        detail::stegr( jobz, range, n, begin_value(d), begin_value(e), vl, vu,
-                il, iu, abstol, m, begin_value(w), begin_value(z),
+        return detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
+                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
                 stride_major(z), begin_value(isuppz),
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())), info );
+                size(work.select(fortran_int_t())) );
     }
 
     //
@@ -174,19 +192,18 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
             const fortran_int_t n, VectorD& d, VectorE& e,
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n, jobz ) );
-        invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-                info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z,
+                isuppz, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -198,25 +215,24 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
             const fortran_int_t n, VectorD& d, VectorE& e,
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            optimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
         detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
                 vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
                 stride_major(z), begin_value(isuppz), &opt_size_work, -1,
-                &opt_size_iwork, -1, info );
+                &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-                info, workspace( tmp_work, tmp_iwork ) );
+                workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -264,13 +280,13 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,
             typename IWORK >
-    static void invoke( const char jobz, const char range,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
             const fortran_int_t n, VectorD& d, VectorE& e,
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -295,13 +311,13 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n,
                 jobz ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        detail::stegr( jobz, range, n, begin_value(d), begin_value(e), vl, vu,
-                il, iu, abstol, m, begin_value(w), begin_value(z),
+        return detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
+                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
                 stride_major(z), begin_value(isuppz),
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())), info );
+                size(work.select(fortran_int_t())) );
     }
 
     //
@@ -313,19 +329,18 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
             const fortran_int_t n, VectorD& d, VectorE& e,
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n, jobz ) );
-        invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-                info, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z,
+                isuppz, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -337,25 +352,24 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range,
+    static std::ptrdiff_t invoke( const char jobz, const char range,
             const fortran_int_t n, VectorD& d, VectorE& e,
             const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
-            optimal_workspace work ) {
+            MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
         detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
                 vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
                 stride_major(z), begin_value(isuppz), &opt_size_work, -1,
-                &opt_size_iwork, -1, info );
+                &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-                info, workspace( tmp_work, tmp_iwork ) );
+                workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -415,10 +429,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -441,11 +453,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -468,10 +478,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -494,11 +502,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -521,10 +527,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -547,11 +551,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -574,10 +576,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -600,11 +600,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -627,10 +625,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -653,11 +649,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -680,10 +674,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -706,11 +698,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -733,10 +723,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -759,11 +747,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -786,10 +772,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -812,11 +796,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -839,10 +821,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -865,11 +845,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -892,10 +870,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -918,11 +894,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -945,10 +919,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -971,11 +943,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -998,10 +968,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1024,11 +992,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1052,10 +1018,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1078,11 +1042,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1106,10 +1068,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1132,11 +1092,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1160,10 +1118,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1186,11 +1142,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1214,10 +1168,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1240,11 +1192,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1267,10 +1217,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1293,11 +1241,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1320,10 +1266,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1346,11 +1290,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1373,10 +1315,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1399,11 +1339,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1426,10 +1364,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1452,11 +1388,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1480,10 +1414,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1506,11 +1438,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1534,10 +1464,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1560,11 +1488,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1588,10 +1514,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1614,11 +1538,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1642,10 +1564,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1668,11 +1588,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1695,10 +1613,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1721,11 +1637,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1748,10 +1662,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1774,11 +1686,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1801,10 +1711,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1827,11 +1735,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1854,10 +1760,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1880,11 +1784,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1908,10 +1810,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1934,11 +1834,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -1962,10 +1860,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -1988,11 +1884,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2016,10 +1910,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -2042,11 +1934,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -2070,10 +1960,8 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
         Workspace work ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
-    return info;
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, work );
 }
 
 //
@@ -2096,11 +1984,9 @@ inline std::ptrdiff_t stegr( const char jobz, const char range,
         const typename remove_imaginary< typename value<
         MatrixZ >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
-    fortran_int_t info(0);
-    stegr_impl< typename value< MatrixZ >::type >::invoke( jobz, range,
-            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+    return stegr_impl< typename value< MatrixZ >::type >::invoke( jobz,
+            range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

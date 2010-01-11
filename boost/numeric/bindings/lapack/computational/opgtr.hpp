@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +27,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for opgtr is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,21 +46,27 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void opgtr( char uplo, fortran_int_t n, const float* ap,
-        const float* tau, float* q, fortran_int_t ldq, float* work,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t opgtr( char uplo, fortran_int_t n, const float* ap,
+        const float* tau, float* q, fortran_int_t ldq, float* work ) {
+    fortran_int_t info(0);
     LAPACK_SOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void opgtr( char uplo, fortran_int_t n, const double* ap,
-        const double* tau, double* q, fortran_int_t ldq, double* work,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t opgtr( char uplo, fortran_int_t n, const double* ap,
+        const double* tau, double* q, fortran_int_t ldq, double* work ) {
+    fortran_int_t info(0);
     LAPACK_DOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
+    return info;
 }
 
 } // namespace detail
@@ -79,9 +89,9 @@ struct opgtr_impl {
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixQ,
             typename WORK >
-    static void invoke( const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixQ& q, fortran_int_t& info,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, detail::workspace1<
+            WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorAP >::type >::type,
                 typename remove_const< typename value<
@@ -99,9 +109,9 @@ struct opgtr_impl {
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
         BOOST_ASSERT( stride_major(q) >= std::max< std::ptrdiff_t >(1,
                 size_column(q)) );
-        detail::opgtr( uplo, size_column(q), begin_value(ap),
+        return detail::opgtr( uplo, size_column(q), begin_value(ap),
                 begin_value(tau), begin_value(q), stride_major(q),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -112,12 +122,11 @@ struct opgtr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void invoke( const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixQ& q, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(q) ) );
-        invoke( uplo, ap, tau, q, info, workspace( tmp_work ) );
+        return invoke( uplo, ap, tau, q, workspace( tmp_work ) );
     }
 
     //
@@ -128,10 +137,9 @@ struct opgtr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void invoke( const char uplo, const VectorAP& ap,
-            const VectorTAU& tau, MatrixQ& q, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( uplo, ap, tau, q, info, minimal_workspace() );
+    static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, optimal_workspace work ) {
+        return invoke( uplo, ap, tau, q, minimal_workspace() );
     }
 
     //
@@ -162,10 +170,8 @@ template< typename VectorAP, typename VectorTAU, typename MatrixQ,
         typename Workspace >
 inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixQ& q, Workspace work ) {
-    fortran_int_t info(0);
-    opgtr_impl< typename value< VectorAP >::type >::invoke( uplo, ap,
-            tau, q, info, work );
-    return info;
+    return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
+            ap, tau, q, work );
 }
 
 //
@@ -176,10 +182,8 @@ inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
 inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
         const VectorTAU& tau, MatrixQ& q ) {
-    fortran_int_t info(0);
-    opgtr_impl< typename value< VectorAP >::type >::invoke( uplo, ap,
-            tau, q, info, optimal_workspace() );
-    return info;
+    return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
+            ap, tau, q, optimal_workspace() );
 }
 
 //
@@ -191,10 +195,8 @@ template< typename VectorAP, typename VectorTAU, typename MatrixQ,
         typename Workspace >
 inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
         const VectorTAU& tau, const MatrixQ& q, Workspace work ) {
-    fortran_int_t info(0);
-    opgtr_impl< typename value< VectorAP >::type >::invoke( uplo, ap,
-            tau, q, info, work );
-    return info;
+    return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
+            ap, tau, q, work );
 }
 
 //
@@ -205,10 +207,8 @@ inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
 inline std::ptrdiff_t opgtr( const char uplo, const VectorAP& ap,
         const VectorTAU& tau, const MatrixQ& q ) {
-    fortran_int_t info(0);
-    opgtr_impl< typename value< VectorAP >::type >::invoke( uplo, ap,
-            tau, q, info, optimal_workspace() );
-    return info;
+    return opgtr_impl< typename value< VectorAP >::type >::invoke( uplo,
+            ap, tau, q, optimal_workspace() );
 }
 
 } // namespace lapack

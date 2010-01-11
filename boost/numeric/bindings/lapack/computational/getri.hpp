@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,20 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for getri is selected by defining a pre-processor
+// variable, which can be one of
+// * for ATLAS's CLAPACK, define BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+// * netlib-compatible LAPACK is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+#include <boost/numeric/bindings/lapack/detail/clapack.h>
+#include <boost/numeric/bindings/lapack/detail/clapack_option.hpp>
+#else
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
@@ -44,43 +56,113 @@ namespace lapack {
 //
 namespace detail {
 
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * float value-type.
 //
-inline void getri( fortran_int_t n, float* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, float* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+template< typename Order >
+inline std::ptrdiff_t getri( Order, int n, float* a, int lda, const int* ipiv,
+        float* work, int lwork ) {
+    return clapack_sgetri( clapack_option< Order >::value, n, a, lda, ipiv );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * double value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t getri( Order, int n, double* a, int lda, const int* ipiv,
+        double* work, int lwork ) {
+    return clapack_dgetri( clapack_option< Order >::value, n, a, lda, ipiv );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<float> value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t getri( Order, int n, std::complex<float>* a, int lda,
+        const int* ipiv, std::complex<float>* work, int lwork ) {
+    return clapack_cgetri( clapack_option< Order >::value, n, a, lda, ipiv );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<double> value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t getri( Order, int n, std::complex<double>* a, int lda,
+        const int* ipiv, std::complex<double>* work, int lwork ) {
+    return clapack_zgetri( clapack_option< Order >::value, n, a, lda, ipiv );
+}
+
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t getri( Order, fortran_int_t n, float* a,
+        fortran_int_t lda, const fortran_int_t* ipiv, float* work,
+        fortran_int_t lwork ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_SGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void getri( fortran_int_t n, double* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+template< typename Order >
+inline std::ptrdiff_t getri( Order, fortran_int_t n, double* a,
+        fortran_int_t lda, const fortran_int_t* ipiv, double* work,
+        fortran_int_t lwork ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_DGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void getri( fortran_int_t n, std::complex<float>* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
-    LAPACK_CGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
-}
-
-//
-// Overloaded function for dispatching to complex<double> value-type.
-//
-inline void getri( fortran_int_t n, std::complex<double>* a,
+template< typename Order >
+inline std::ptrdiff_t getri( Order, fortran_int_t n, std::complex<float>* a,
         fortran_int_t lda, const fortran_int_t* ipiv,
-        std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
-    LAPACK_ZGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
+        std::complex<float>* work, fortran_int_t lwork ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
+    LAPACK_CGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
+    return info;
 }
 
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t getri( Order, fortran_int_t n, std::complex<double>* a,
+        fortran_int_t lda, const fortran_int_t* ipiv,
+        std::complex<double>* work, fortran_int_t lwork ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
+    LAPACK_ZGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
+    return info;
+}
+
+#endif
 } // namespace detail
 
 //
@@ -106,8 +188,8 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( MatrixA& a, const VectorIPIV& ipiv,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size(ipiv) >= size_column(a) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
@@ -116,9 +198,10 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::getri( size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+        return detail::getri( order(), size_column(a), begin_value(a),
+                stride_major(a), begin_value(ipiv),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())) );
     }
 
     //
@@ -129,11 +212,11 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( MatrixA& a, const VectorIPIV& ipiv,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        invoke( a, ipiv, info, workspace( tmp_work ) );
+        return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -144,14 +227,14 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( MatrixA& a, const VectorIPIV& ipiv,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            optimal_workspace work ) {
         real_type opt_size_work;
         detail::getri( size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), &opt_size_work, -1, info );
+                begin_value(ipiv), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, ipiv, info, workspace( tmp_work ) );
+        invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -179,8 +262,8 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( MatrixA& a, const VectorIPIV& ipiv,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size(ipiv) >= size_column(a) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
@@ -189,9 +272,10 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::getri( size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+        return detail::getri( order(), size_column(a), begin_value(a),
+                stride_major(a), begin_value(ipiv),
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())) );
     }
 
     //
@@ -202,11 +286,11 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( MatrixA& a, const VectorIPIV& ipiv,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        invoke( a, ipiv, info, workspace( tmp_work ) );
+        return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -217,14 +301,14 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( MatrixA& a, const VectorIPIV& ipiv,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            optimal_workspace work ) {
         value_type opt_size_work;
         detail::getri( size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), &opt_size_work, -1, info );
+                begin_value(ipiv), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, ipiv, info, workspace( tmp_work ) );
+        invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -254,10 +338,8 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline std::ptrdiff_t getri( MatrixA& a, const VectorIPIV& ipiv,
         Workspace work ) {
-    fortran_int_t info(0);
-    getri_impl< typename value< MatrixA >::type >::invoke( a, ipiv, info,
-            work );
-    return info;
+    return getri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, work );
 }
 
 //
@@ -267,10 +349,8 @@ inline std::ptrdiff_t getri( MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getri( MatrixA& a, const VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    getri_impl< typename value< MatrixA >::type >::invoke( a, ipiv, info,
-            optimal_workspace() );
-    return info;
+    return getri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, optimal_workspace() );
 }
 
 //
@@ -281,10 +361,8 @@ inline std::ptrdiff_t getri( MatrixA& a, const VectorIPIV& ipiv ) {
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline std::ptrdiff_t getri( const MatrixA& a, const VectorIPIV& ipiv,
         Workspace work ) {
-    fortran_int_t info(0);
-    getri_impl< typename value< MatrixA >::type >::invoke( a, ipiv, info,
-            work );
-    return info;
+    return getri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, work );
 }
 
 //
@@ -294,10 +372,8 @@ inline std::ptrdiff_t getri( const MatrixA& a, const VectorIPIV& ipiv,
 //
 template< typename MatrixA, typename VectorIPIV >
 inline std::ptrdiff_t getri( const MatrixA& a, const VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    getri_impl< typename value< MatrixA >::type >::invoke( a, ipiv, info,
-            optimal_workspace() );
-    return info;
+    return getri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, optimal_workspace() );
 }
 
 } // namespace lapack

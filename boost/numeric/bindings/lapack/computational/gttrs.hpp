@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for gttrs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -40,53 +44,68 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans >
-inline void gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const float* dl, const float* d, const float* du, const float* du2,
-        const fortran_int_t* ipiv, float* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+        const fortran_int_t* ipiv, float* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_SGTTRS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, du2,
             ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans >
-inline void gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const double* dl, const double* d, const double* du,
         const double* du2, const fortran_int_t* ipiv, double* b,
-        fortran_int_t ldb, fortran_int_t& info ) {
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_DGTTRS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, du2,
             ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans >
-inline void gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* dl, const std::complex<float>* d,
         const std::complex<float>* du, const std::complex<float>* du2,
-        const fortran_int_t* ipiv, std::complex<float>* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+        const fortran_int_t* ipiv, std::complex<float>* b,
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_CGTTRS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, du2,
             ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans >
-inline void gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gttrs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* dl, const std::complex<double>* d,
         const std::complex<double>* du, const std::complex<double>* du2,
-        const fortran_int_t* ipiv, std::complex<double>* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+        const fortran_int_t* ipiv, std::complex<double>* b,
+        fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_ZGTTRS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, du2,
             ipiv, b, &ldb, &info );
+    return info;
 }
 
 } // namespace detail
@@ -109,9 +128,9 @@ struct gttrs_impl {
     //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDU2, typename VectorIPIV, typename MatrixB >
-    static void invoke( const fortran_int_t n, const VectorDL& dl,
-            const VectorD& d, const VectorDU& du, const VectorDU2& du2,
-            const VectorIPIV& ipiv, MatrixB& b, fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorDL >::type >::type,
                 typename remove_const< typename value<
@@ -137,9 +156,9 @@ struct gttrs_impl {
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::gttrs( trans(), n, size_column(b), begin_value(dl),
+        return detail::gttrs( trans(), n, size_column(b), begin_value(dl),
                 begin_value(d), begin_value(du), begin_value(du2),
-                begin_value(ipiv), begin_value(b), stride_major(b), info );
+                begin_value(ipiv), begin_value(b), stride_major(b) );
     }
 
 };
@@ -163,10 +182,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gttrs( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
-    fortran_int_t info(0);
-    gttrs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            du2, ipiv, b, info );
-    return info;
+    return gttrs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, du2, ipiv, b );
 }
 
 //
@@ -178,10 +195,8 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline std::ptrdiff_t gttrs( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b ) {
-    fortran_int_t info(0);
-    gttrs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
-            du2, ipiv, b, info );
-    return info;
+    return gttrs_impl< typename value< VectorDL >::type >::invoke( n, dl,
+            d, du, du2, ipiv, b );
 }
 
 } // namespace lapack

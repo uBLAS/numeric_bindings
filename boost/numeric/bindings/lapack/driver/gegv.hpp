@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gegv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,55 +49,67 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gegv( char jobvl, char jobvr, fortran_int_t n, float* a,
+inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n, float* a,
         fortran_int_t lda, float* b, fortran_int_t ldb, float* alphar,
         float* alphai, float* beta, float* vl, fortran_int_t ldvl, float* vr,
-        fortran_int_t ldvr, float* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        fortran_int_t ldvr, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alphar, alphai, beta,
             vl, &ldvl, vr, &ldvr, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gegv( char jobvl, char jobvr, fortran_int_t n, double* a,
+inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n, double* a,
         fortran_int_t lda, double* b, fortran_int_t ldb, double* alphar,
         double* alphai, double* beta, double* vl, fortran_int_t ldvl,
-        double* vr, fortran_int_t ldvr, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        double* vr, fortran_int_t ldvr, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alphar, alphai, beta,
             vl, &ldvl, vr, &ldvr, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gegv( char jobvl, char jobvr, fortran_int_t n,
+inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n,
         std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
         fortran_int_t ldb, std::complex<float>* alpha,
         std::complex<float>* beta, std::complex<float>* vl,
         fortran_int_t ldvl, std::complex<float>* vr, fortran_int_t ldvr,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
-        fortran_int_t& info ) {
+        std::complex<float>* work, fortran_int_t lwork, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alpha, beta, vl,
             &ldvl, vr, &ldvr, work, &lwork, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gegv( char jobvl, char jobvr, fortran_int_t n,
+inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n,
         std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* alpha,
         std::complex<double>* beta, std::complex<double>* vl,
         fortran_int_t ldvl, std::complex<double>* vr, fortran_int_t ldvr,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t& info ) {
+        std::complex<double>* work, fortran_int_t lwork, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alpha, beta, vl,
             &ldvl, vr, &ldvr, work, &lwork, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -123,10 +139,10 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR, typename WORK >
-    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
-            MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
+            MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+            VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
+            MatrixVR& vr, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -173,12 +189,12 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
+        return detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
                 begin_value(alphar), begin_value(alphai), begin_value(beta),
                 begin_value(vl), stride_major(vl), begin_value(vr),
                 stride_major(vr), begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -191,13 +207,13 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
-            MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
+            MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+            VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
+            MatrixVR& vr, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
+        return invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr,
                 workspace( tmp_work ) );
     }
 
@@ -211,19 +227,19 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
-            MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
+            MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+            VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
+            MatrixVR& vr, optimal_workspace work ) {
         real_type opt_size_work;
         detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
                 begin_value(alphar), begin_value(alphai), begin_value(beta),
                 begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), &opt_size_work, -1, info );
+                stride_major(vr), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
+        invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr,
                 workspace( tmp_work ) );
     }
 
@@ -254,9 +270,9 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVL, typename MatrixVR,
             typename WORK, typename RWORK >
-    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
-            MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
-            MatrixVR& vr, fortran_int_t& info, detail::workspace2< WORK,
+    static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
+            MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+            MatrixVL& vl, MatrixVR& vr, detail::workspace2< WORK,
             RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -301,13 +317,13 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
+        return detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
                 begin_value(alpha), begin_value(beta), begin_value(vl),
                 stride_major(vl), begin_value(vr), stride_major(vr),
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -319,14 +335,14 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVL, typename MatrixVR >
-    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
-            MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
-            MatrixVR& vr, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
+            MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+            MatrixVL& vl, MatrixVR& vr, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
+        return invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -339,9 +355,9 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVL, typename MatrixVR >
-    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
-            MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
-            MatrixVR& vr, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
+            MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+            MatrixVL& vl, MatrixVR& vr, optimal_workspace work ) {
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
@@ -349,11 +365,11 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 stride_major(a), begin_value(b), stride_major(b),
                 begin_value(alpha), begin_value(beta), begin_value(vl),
                 stride_major(vl), begin_value(vr), stride_major(vr),
-                &opt_size_work, -1, begin_value(tmp_rwork), info );
+                &opt_size_work, -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
-                workspace( tmp_work, tmp_rwork ) );
+        invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //
@@ -400,10 +416,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -423,10 +437,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -447,10 +459,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -470,10 +480,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -494,10 +502,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -517,10 +523,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -541,10 +545,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -564,10 +566,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -588,10 +588,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -611,10 +609,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -635,10 +631,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -658,10 +652,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -682,10 +674,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -705,10 +695,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -729,10 +717,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -752,10 +738,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -776,10 +760,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -800,10 +782,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -824,10 +804,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -848,10 +826,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -872,10 +848,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -896,10 +870,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -920,10 +892,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -944,10 +914,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -968,10 +936,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -992,10 +958,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1016,10 +980,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1040,10 +1002,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1064,10 +1024,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1088,10 +1046,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1112,10 +1068,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1136,10 +1090,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1159,10 +1111,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1182,10 +1132,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1206,10 +1154,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1230,10 +1176,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1254,10 +1198,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1278,10 +1220,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1302,10 +1242,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1326,10 +1264,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1350,10 +1286,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1374,10 +1308,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1398,10 +1330,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1422,10 +1352,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1446,10 +1374,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1470,10 +1396,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1494,10 +1418,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1518,10 +1440,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1542,10 +1462,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1566,10 +1484,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1590,10 +1506,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1614,10 +1528,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1638,10 +1550,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1662,10 +1572,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1686,10 +1594,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1710,10 +1616,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1734,10 +1638,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1758,10 +1660,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1782,10 +1682,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1806,10 +1704,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1830,10 +1726,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1854,10 +1748,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1878,10 +1770,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1902,10 +1792,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1925,10 +1813,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1948,10 +1834,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -1972,10 +1856,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -1996,10 +1878,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2020,10 +1900,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2044,10 +1922,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2068,10 +1944,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2092,10 +1966,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2116,10 +1988,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2140,10 +2010,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2164,10 +2032,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2188,10 +2054,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2212,10 +2076,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2236,10 +2098,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2260,10 +2120,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2284,10 +2142,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2308,10 +2164,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2332,10 +2186,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2356,10 +2208,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2380,10 +2230,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2404,10 +2252,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2428,10 +2274,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2452,10 +2296,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2476,10 +2318,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2500,10 +2340,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2524,10 +2362,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2548,10 +2384,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2572,10 +2406,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2596,10 +2428,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2620,10 +2450,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2644,10 +2472,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2668,10 +2494,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2692,10 +2516,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2715,10 +2537,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2739,10 +2559,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2763,10 +2581,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2787,10 +2603,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2811,10 +2625,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2835,10 +2647,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2859,10 +2669,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2883,10 +2691,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2907,10 +2713,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2931,10 +2735,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -2955,10 +2757,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -2979,10 +2779,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3003,10 +2801,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3027,10 +2823,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3051,10 +2845,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3075,10 +2867,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3099,10 +2889,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3123,10 +2911,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3147,10 +2933,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3171,10 +2955,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3195,10 +2977,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3219,10 +2999,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3243,10 +3021,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3267,10 +3043,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3291,10 +3065,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3315,10 +3087,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3339,10 +3109,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3363,10 +3131,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3387,10 +3153,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3411,10 +3175,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3435,10 +3197,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3458,10 +3218,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3481,10 +3239,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3505,10 +3261,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3529,10 +3283,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3553,10 +3305,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3577,10 +3327,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3601,10 +3349,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3625,10 +3371,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3649,10 +3393,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3673,10 +3415,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3697,10 +3437,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3721,10 +3459,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3745,10 +3481,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3769,10 +3503,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3793,10 +3525,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3817,10 +3547,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3841,10 +3569,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3865,10 +3591,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3889,10 +3613,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3913,10 +3635,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3937,10 +3657,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -3961,10 +3679,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -3985,10 +3701,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4009,10 +3723,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4033,10 +3745,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4057,10 +3767,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4081,10 +3789,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4105,10 +3811,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4129,10 +3833,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4153,10 +3855,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4177,10 +3877,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4201,10 +3899,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4225,10 +3921,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4248,10 +3942,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4272,10 +3964,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4296,10 +3986,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4320,10 +4008,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4344,10 +4030,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4368,10 +4052,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4392,10 +4074,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4416,10 +4096,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4440,10 +4118,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4464,10 +4140,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4488,10 +4162,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4512,10 +4184,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4536,10 +4206,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4560,10 +4228,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4584,10 +4250,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4608,10 +4272,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4632,10 +4294,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4656,10 +4316,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4680,10 +4338,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4704,10 +4360,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4728,10 +4382,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4752,10 +4404,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4776,10 +4426,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4800,10 +4448,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4824,10 +4470,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4848,10 +4492,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4872,10 +4514,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4896,10 +4536,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4920,10 +4558,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4944,10 +4580,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -4968,10 +4602,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta, MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -4992,10 +4624,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5015,10 +4645,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5039,10 +4667,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5063,10 +4689,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5087,10 +4711,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5111,10 +4733,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5135,10 +4755,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5159,10 +4777,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5183,10 +4799,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5207,10 +4821,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5231,10 +4843,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5255,10 +4865,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5279,10 +4887,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5303,10 +4909,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5327,10 +4931,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5351,10 +4953,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5375,10 +4975,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5399,10 +4997,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5423,10 +5019,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5447,10 +5041,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5471,10 +5063,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5495,10 +5085,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5519,10 +5107,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5543,10 +5129,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5567,10 +5151,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5591,10 +5173,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5615,10 +5195,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5639,10 +5217,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5663,10 +5239,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5687,10 +5261,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5711,10 +5283,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5735,10 +5305,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5759,10 +5327,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5782,10 +5348,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5806,10 +5370,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5830,10 +5392,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5854,10 +5414,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5878,10 +5436,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5902,10 +5458,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5926,10 +5480,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5950,10 +5502,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -5974,10 +5524,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -5998,10 +5546,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6022,10 +5568,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6046,10 +5590,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6070,10 +5612,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6094,10 +5634,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6118,10 +5656,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         VectorALPHAI& alphai, const VectorBETA& beta, const MatrixVL& vl,
         const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6142,10 +5678,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6166,10 +5700,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6190,10 +5722,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6214,10 +5744,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6238,10 +5766,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6262,10 +5788,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6286,10 +5810,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6310,10 +5832,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6334,10 +5854,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6358,10 +5876,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6382,10 +5898,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6406,10 +5920,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6430,10 +5942,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6454,10 +5964,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6478,10 +5986,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, work );
 }
 
 //
@@ -6502,10 +6008,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHAR& alphar,
         const VectorALPHAI& alphai, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alphar, alphai, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alphar, alphai, beta, vl, vr, optimal_workspace() );
 }
 //
 // Overloaded function for gegv. Its overload differs for
@@ -6523,10 +6027,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6544,10 +6046,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6566,10 +6066,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6587,10 +6085,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6609,10 +6105,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6630,10 +6124,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6652,10 +6144,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6673,10 +6163,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6695,10 +6183,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6716,10 +6202,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6738,10 +6222,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6759,10 +6241,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6781,10 +6261,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6802,10 +6280,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6824,10 +6300,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6845,10 +6319,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6867,10 +6339,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6888,10 +6358,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6910,10 +6378,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6931,10 +6397,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6953,10 +6417,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -6974,10 +6436,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -6996,10 +6456,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7017,10 +6475,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7039,10 +6495,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7060,10 +6514,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7082,10 +6534,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7103,10 +6553,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7125,10 +6573,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7146,10 +6592,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7168,10 +6612,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7189,10 +6631,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7211,10 +6651,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7232,10 +6670,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7254,10 +6690,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7275,10 +6709,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7297,10 +6729,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7318,10 +6748,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7340,10 +6768,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7361,10 +6787,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7383,10 +6807,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7404,10 +6826,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7426,10 +6846,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7447,10 +6865,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7469,10 +6885,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7490,10 +6904,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7512,10 +6924,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7533,10 +6943,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7555,10 +6963,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7576,10 +6982,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7599,10 +7003,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7620,10 +7022,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7643,10 +7043,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7664,10 +7062,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7687,10 +7083,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7708,10 +7102,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7731,10 +7123,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7752,10 +7142,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7775,10 +7163,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7796,10 +7182,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7819,10 +7203,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7840,10 +7222,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7863,10 +7243,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7884,10 +7262,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7906,10 +7282,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7927,10 +7301,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7949,10 +7321,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -7970,10 +7340,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -7992,10 +7360,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8013,10 +7379,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8035,10 +7399,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8056,10 +7418,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8078,10 +7438,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8099,10 +7457,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8121,10 +7477,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8142,10 +7496,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8164,10 +7516,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8185,10 +7535,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8207,10 +7555,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8228,10 +7574,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8250,10 +7594,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8271,10 +7613,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8294,10 +7634,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8315,10 +7653,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8338,10 +7674,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8359,10 +7693,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8382,10 +7714,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8403,10 +7733,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8426,10 +7754,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8447,10 +7773,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8470,10 +7794,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8491,10 +7813,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8514,10 +7834,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8535,10 +7853,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8558,10 +7874,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8579,10 +7893,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8601,10 +7913,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8622,10 +7932,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8644,10 +7952,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8665,10 +7971,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8687,10 +7991,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8708,10 +8010,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8731,10 +8031,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8752,10 +8050,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8774,10 +8070,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8795,10 +8089,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha, VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8818,10 +8110,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8839,10 +8129,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8862,10 +8150,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8883,10 +8169,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8906,10 +8190,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8927,10 +8209,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8949,10 +8229,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr, Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -8970,10 +8248,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, const VectorBETA& beta,
         const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -8993,10 +8269,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9014,10 +8288,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -9037,10 +8309,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9058,10 +8328,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -9081,10 +8349,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9102,10 +8368,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -9125,10 +8389,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9146,10 +8408,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -9169,10 +8429,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9190,10 +8448,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -9213,10 +8469,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9234,10 +8488,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 //
@@ -9257,10 +8509,8 @@ inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr,
         Workspace work ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, work );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, work );
 }
 
 //
@@ -9278,10 +8528,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
         const MatrixA& a, const MatrixB& b, const VectorALPHA& alpha,
         const VectorBETA& beta, const MatrixVL& vl, const MatrixVR& vr ) {
-    fortran_int_t info(0);
-    gegv_impl< typename value< MatrixA >::type >::invoke( jobvl, jobvr,
-            a, b, alpha, beta, vl, vr, info, optimal_workspace() );
-    return info;
+    return gegv_impl< typename value< MatrixA >::type >::invoke( jobvl,
+            jobvr, a, b, alpha, beta, vl, vr, optimal_workspace() );
 }
 
 } // namespace lapack

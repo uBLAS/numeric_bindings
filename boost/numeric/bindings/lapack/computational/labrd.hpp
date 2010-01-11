@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -29,6 +27,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for labrd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,45 +46,61 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
-        float* a, fortran_int_t lda, float* d, float* e, float* tauq,
-        float* taup, float* x, fortran_int_t ldx, float* y,
+inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nb, float* a, fortran_int_t lda, float* d, float* e,
+        float* tauq, float* taup, float* x, fortran_int_t ldx, float* y,
         fortran_int_t ldy ) {
+    fortran_int_t info(0);
     LAPACK_SLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
-        double* a, fortran_int_t lda, double* d, double* e, double* tauq,
-        double* taup, double* x, fortran_int_t ldx, double* y,
+inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nb, double* a, fortran_int_t lda, double* d, double* e,
+        double* tauq, double* taup, double* x, fortran_int_t ldx, double* y,
         fortran_int_t ldy ) {
+    fortran_int_t info(0);
     LAPACK_DLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
-        std::complex<float>* a, fortran_int_t lda, float* d, float* e,
-        std::complex<float>* tauq, std::complex<float>* taup,
+inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nb, std::complex<float>* a, fortran_int_t lda, float* d,
+        float* e, std::complex<float>* tauq, std::complex<float>* taup,
         std::complex<float>* x, fortran_int_t ldx, std::complex<float>* y,
         fortran_int_t ldy ) {
+    fortran_int_t info(0);
     LAPACK_CLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
-        std::complex<double>* a, fortran_int_t lda, double* d, double* e,
-        std::complex<double>* tauq, std::complex<double>* taup,
-        std::complex<double>* x, fortran_int_t ldx, std::complex<double>* y,
-        fortran_int_t ldy ) {
+inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
+        fortran_int_t nb, std::complex<double>* a, fortran_int_t lda,
+        double* d, double* e, std::complex<double>* tauq,
+        std::complex<double>* taup, std::complex<double>* x,
+        fortran_int_t ldx, std::complex<double>* y, fortran_int_t ldy ) {
+    fortran_int_t info(0);
     LAPACK_ZLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
+    return info;
 }
 
 } // namespace detail
@@ -110,8 +130,8 @@ struct labrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
             typename MatrixY >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -154,7 +174,7 @@ struct labrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(a)) );
         BOOST_ASSERT( stride_major(x) >= size_row(a) );
         BOOST_ASSERT( stride_major(y) >= size_column(a) );
-        detail::labrd( size_row(a), size_column(a), size_column(a),
+        return detail::labrd( size_row(a), size_column(a), size_column(a),
                 begin_value(a), stride_major(a), begin_value(d),
                 begin_value(e), begin_value(tauq), begin_value(taup),
                 begin_value(x), stride_major(x), begin_value(y),
@@ -181,8 +201,8 @@ struct labrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
             typename MatrixY >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -223,7 +243,7 @@ struct labrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(a)) );
         BOOST_ASSERT( stride_major(y) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::labrd( size_row(a), size_column(a), size_column(a),
+        return detail::labrd( size_row(a), size_column(a), size_column(a),
                 begin_value(a), stride_major(a), begin_value(d),
                 begin_value(e), begin_value(tauq), begin_value(taup),
                 begin_value(x), stride_major(x), begin_value(y),
@@ -257,10 +277,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -278,10 +296,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -299,10 +315,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -321,10 +335,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -342,10 +354,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -364,10 +374,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -386,10 +394,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -408,10 +414,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -429,10 +433,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -450,10 +452,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -471,10 +471,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -493,10 +491,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -514,10 +510,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -536,10 +530,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -558,10 +550,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -580,10 +570,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -601,10 +589,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -622,10 +608,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -643,10 +627,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -665,10 +647,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -686,10 +666,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -708,10 +686,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -730,10 +706,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -752,10 +726,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -774,10 +746,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -796,10 +766,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -818,10 +786,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -840,10 +806,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -862,10 +826,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -884,10 +846,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -906,10 +866,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -928,10 +886,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -949,10 +905,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -970,10 +924,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -991,10 +943,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1013,10 +963,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1034,10 +982,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1056,10 +1002,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1078,10 +1022,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1100,10 +1042,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1122,10 +1062,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1144,10 +1082,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1166,10 +1102,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1188,10 +1122,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1210,10 +1142,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1232,10 +1162,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1254,10 +1182,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1276,10 +1202,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1298,10 +1222,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1320,10 +1242,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1342,10 +1262,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1364,10 +1282,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1386,10 +1302,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1408,10 +1322,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1430,10 +1342,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1452,10 +1362,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1474,10 +1382,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1496,10 +1402,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1518,10 +1422,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1540,10 +1442,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1562,10 +1462,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1584,10 +1482,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1606,10 +1502,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1628,10 +1522,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1649,10 +1541,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1670,10 +1560,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1691,10 +1579,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1713,10 +1599,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1734,10 +1618,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename MatrixY >
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1756,10 +1638,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1778,10 +1658,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1800,10 +1678,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1822,10 +1698,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1844,10 +1718,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1866,10 +1738,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1888,10 +1758,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1910,10 +1778,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1932,10 +1798,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1954,10 +1818,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1976,10 +1838,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -1998,10 +1858,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2020,10 +1878,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2042,10 +1898,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2064,10 +1918,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2086,10 +1938,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2108,10 +1958,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2130,10 +1978,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2152,10 +1998,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2174,10 +2018,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2196,10 +2038,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2218,10 +2058,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2240,10 +2078,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2262,10 +2098,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2284,10 +2118,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2306,10 +2138,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2328,10 +2158,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2350,10 +2178,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2372,10 +2198,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2394,10 +2218,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2416,10 +2238,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2438,10 +2258,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2460,10 +2278,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2482,10 +2298,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2504,10 +2318,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2526,10 +2338,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2548,10 +2358,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2570,10 +2378,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2592,10 +2398,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2614,10 +2418,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2636,10 +2438,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2658,10 +2458,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2680,10 +2478,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2702,10 +2498,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2724,10 +2518,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2746,10 +2538,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2768,10 +2558,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2790,10 +2578,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2812,10 +2598,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2834,10 +2618,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2856,10 +2638,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2878,10 +2658,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2900,10 +2678,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2922,10 +2698,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2944,10 +2718,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2966,10 +2738,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
         const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -2988,10 +2758,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -3010,10 +2778,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 //
@@ -3032,10 +2798,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         const MatrixX& x, const MatrixY& y ) {
-    fortran_int_t info(0);
-    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, x, y );
-    return info;
+    return labrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, x, y );
 }
 
 } // namespace lapack

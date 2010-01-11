@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -26,6 +24,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for gghrd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -39,49 +43,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, float* a, fortran_int_t lda, float* b,
-        fortran_int_t ldb, float* q, fortran_int_t ldq, float* z,
-        fortran_int_t ldz, fortran_int_t& info ) {
+inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, float* a, fortran_int_t lda,
+        float* b, fortran_int_t ldb, float* q, fortran_int_t ldq, float* z,
+        fortran_int_t ldz ) {
+    fortran_int_t info(0);
     LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, double* a, fortran_int_t lda, double* b,
-        fortran_int_t ldb, double* q, fortran_int_t ldq, double* z,
-        fortran_int_t ldz, fortran_int_t& info ) {
+inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, double* a, fortran_int_t lda,
+        double* b, fortran_int_t ldb, double* q, fortran_int_t ldq, double* z,
+        fortran_int_t ldz ) {
+    fortran_int_t info(0);
     LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* q,
-        fortran_int_t ldq, std::complex<float>* z, fortran_int_t ldz,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, std::complex<float>* a,
+        fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
+        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* z,
+        fortran_int_t ldz ) {
+    fortran_int_t info(0);
     LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb, std::complex<double>* q,
-        fortran_int_t ldq, std::complex<double>* z, fortran_int_t ldz,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, std::complex<double>* a,
+        fortran_int_t lda, std::complex<double>* b, fortran_int_t ldb,
+        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* z,
+        fortran_int_t ldz ) {
+    fortran_int_t info(0);
     LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
+    return info;
 }
 
 } // namespace detail
@@ -104,10 +124,9 @@ struct gghrd_impl {
     //
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( const char compq, const char compz,
+    static std::ptrdiff_t invoke( const char compq, const char compz,
             const fortran_int_t n, const fortran_int_t ilo,
-            MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-            fortran_int_t& info ) {
+            MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -133,10 +152,10 @@ struct gghrd_impl {
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::gghrd( compq, compz, n, ilo, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(q), stride_major(q), begin_value(z),
-                stride_major(z), info );
+        return detail::gghrd( compq, compz, n, ilo, size_column(a),
+                begin_value(a), stride_major(a), begin_value(b),
+                stride_major(b), begin_value(q), stride_major(q),
+                begin_value(z), stride_major(z) );
     }
 
 };
@@ -163,10 +182,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         MatrixB& b, MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -181,10 +198,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -199,10 +214,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         const MatrixB& b, MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -217,10 +230,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -235,10 +246,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -253,10 +262,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -271,10 +278,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         const MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -289,10 +294,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -307,10 +310,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -325,10 +326,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -343,10 +342,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         const MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -361,10 +358,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -379,10 +374,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         MatrixB& b, const MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -397,10 +390,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -415,10 +406,8 @@ template< typename MatrixA, typename MatrixB, typename MatrixQ,
 inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
         const MatrixB& b, const MatrixQ& q, const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 //
@@ -434,10 +423,8 @@ inline std::ptrdiff_t gghrd( const char compq, const char compz,
         const fortran_int_t n, const fortran_int_t ilo,
         const MatrixA& a, const MatrixB& b, const MatrixQ& q,
         const MatrixZ& z ) {
-    fortran_int_t info(0);
-    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
-            n, ilo, a, b, q, z, info );
-    return info;
+    return gghrd_impl< typename value< MatrixA >::type >::invoke( compq,
+            compz, n, ilo, a, b, q, z );
 }
 
 } // namespace lapack

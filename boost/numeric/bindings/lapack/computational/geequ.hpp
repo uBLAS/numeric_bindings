@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -29,6 +27,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for geequ is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,40 +46,55 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void geequ( fortran_int_t m, fortran_int_t n, const float* a,
+inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n, const float* a,
         fortran_int_t lda, float* r, float* c, float& rowcnd, float& colcnd,
-        float& amax, fortran_int_t& info ) {
+        float& amax ) {
+    fortran_int_t info(0);
     LAPACK_SGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void geequ( fortran_int_t m, fortran_int_t n, const double* a,
+inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n, const double* a,
         fortran_int_t lda, double* r, double* c, double& rowcnd,
-        double& colcnd, double& amax, fortran_int_t& info ) {
+        double& colcnd, double& amax ) {
+    fortran_int_t info(0);
     LAPACK_DGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void geequ( fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n,
         const std::complex<float>* a, fortran_int_t lda, float* r, float* c,
-        float& rowcnd, float& colcnd, float& amax, fortran_int_t& info ) {
+        float& rowcnd, float& colcnd, float& amax ) {
+    fortran_int_t info(0);
     LAPACK_CGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void geequ( fortran_int_t m, fortran_int_t n,
+inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n,
         const std::complex<double>* a, fortran_int_t lda, double* r,
-        double* c, double& rowcnd, double& colcnd, double& amax,
-        fortran_int_t& info ) {
+        double* c, double& rowcnd, double& colcnd, double& amax ) {
+    fortran_int_t info(0);
     LAPACK_ZGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
+    return info;
 }
 
 } // namespace detail
@@ -103,9 +122,8 @@ struct geequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorR, typename VectorC >
-    static void invoke( const MatrixA& a, VectorR& r, VectorC& c,
-            real_type& rowcnd, real_type& colcnd, real_type& amax,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const MatrixA& a, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -121,9 +139,9 @@ struct geequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::geequ( size_row(a), size_column(a), begin_value(a),
+        return detail::geequ( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(r), begin_value(c), rowcnd,
-                colcnd, amax, info );
+                colcnd, amax );
     }
 
 };
@@ -144,9 +162,8 @@ struct geequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorR, typename VectorC >
-    static void invoke( const MatrixA& a, VectorR& r, VectorC& c,
-            real_type& rowcnd, real_type& colcnd, real_type& amax,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const MatrixA& a, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorR >::type >::type,
                 typename remove_const< typename value<
@@ -158,9 +175,9 @@ struct geequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::geequ( size_row(a), size_column(a), begin_value(a),
+        return detail::geequ( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(r), begin_value(c), rowcnd,
-                colcnd, amax, info );
+                colcnd, amax );
     }
 
 };
@@ -187,10 +204,8 @@ inline std::ptrdiff_t geequ( const MatrixA& a, VectorR& r, VectorC& c,
         typename value< MatrixA >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& amax ) {
-    fortran_int_t info(0);
-    geequ_impl< typename value< MatrixA >::type >::invoke( a, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return geequ_impl< typename value< MatrixA >::type >::invoke( a, r,
+            c, rowcnd, colcnd, amax );
 }
 
 //
@@ -205,10 +220,8 @@ inline std::ptrdiff_t geequ( const MatrixA& a, const VectorR& r,
         typename value< MatrixA >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& amax ) {
-    fortran_int_t info(0);
-    geequ_impl< typename value< MatrixA >::type >::invoke( a, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return geequ_impl< typename value< MatrixA >::type >::invoke( a, r,
+            c, rowcnd, colcnd, amax );
 }
 
 //
@@ -223,10 +236,8 @@ inline std::ptrdiff_t geequ( const MatrixA& a, VectorR& r,
         typename value< MatrixA >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& amax ) {
-    fortran_int_t info(0);
-    geequ_impl< typename value< MatrixA >::type >::invoke( a, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return geequ_impl< typename value< MatrixA >::type >::invoke( a, r,
+            c, rowcnd, colcnd, amax );
 }
 
 //
@@ -241,10 +252,8 @@ inline std::ptrdiff_t geequ( const MatrixA& a, const VectorR& r,
         typename value< MatrixA >::type >::type& colcnd,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& amax ) {
-    fortran_int_t info(0);
-    geequ_impl< typename value< MatrixA >::type >::invoke( a, r, c,
-            rowcnd, colcnd, amax, info );
-    return info;
+    return geequ_impl< typename value< MatrixA >::type >::invoke( a, r,
+            c, rowcnd, colcnd, amax );
 }
 
 } // namespace lapack

@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -30,6 +28,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for latrd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,48 +47,64 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void latrd( UpLo, fortran_int_t n, fortran_int_t nb, float* a,
+inline std::ptrdiff_t latrd( UpLo, fortran_int_t n, fortran_int_t nb, float* a,
         fortran_int_t lda, float* e, float* tau, float* w,
         fortran_int_t ldw ) {
+    fortran_int_t info(0);
     LAPACK_SLATRD( &lapack_option< UpLo >::value, &n, &nb, a, &lda, e, tau, w,
             &ldw );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void latrd( UpLo, fortran_int_t n, fortran_int_t nb, double* a,
-        fortran_int_t lda, double* e, double* tau, double* w,
+inline std::ptrdiff_t latrd( UpLo, fortran_int_t n, fortran_int_t nb,
+        double* a, fortran_int_t lda, double* e, double* tau, double* w,
         fortran_int_t ldw ) {
+    fortran_int_t info(0);
     LAPACK_DLATRD( &lapack_option< UpLo >::value, &n, &nb, a, &lda, e, tau, w,
             &ldw );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void latrd( UpLo, fortran_int_t n, fortran_int_t nb,
+inline std::ptrdiff_t latrd( UpLo, fortran_int_t n, fortran_int_t nb,
         std::complex<float>* a, fortran_int_t lda, float* e,
         std::complex<float>* tau, std::complex<float>* w, fortran_int_t ldw ) {
+    fortran_int_t info(0);
     LAPACK_CLATRD( &lapack_option< UpLo >::value, &n, &nb, a, &lda, e, tau, w,
             &ldw );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void latrd( UpLo, fortran_int_t n, fortran_int_t nb,
+inline std::ptrdiff_t latrd( UpLo, fortran_int_t n, fortran_int_t nb,
         std::complex<double>* a, fortran_int_t lda, double* e,
         std::complex<double>* tau, std::complex<double>* w,
         fortran_int_t ldw ) {
+    fortran_int_t info(0);
     LAPACK_ZLATRD( &lapack_option< UpLo >::value, &n, &nb, a, &lda, e, tau, w,
             &ldw );
+    return info;
 }
 
 } // namespace detail
@@ -113,8 +133,8 @@ struct latrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorE, typename VectorTAU,
             typename MatrixW >
-    static void invoke( const fortran_int_t nb, MatrixA& a, VectorE& e,
-            VectorTAU& tau, MatrixW& w ) {
+    static std::ptrdiff_t invoke( const fortran_int_t nb, MatrixA& a,
+            VectorE& e, VectorTAU& tau, MatrixW& w ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -137,7 +157,7 @@ struct latrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( stride_major(a) >= (ERROR) );
         BOOST_ASSERT( stride_major(w) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::latrd( uplo(), size_column(a), nb, begin_value(a),
+        return detail::latrd( uplo(), size_column(a), nb, begin_value(a),
                 stride_major(a), begin_value(e), begin_value(tau),
                 begin_value(w), stride_major(w) );
     }
@@ -161,8 +181,8 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorE, typename VectorTAU,
             typename MatrixW >
-    static void invoke( const fortran_int_t nb, MatrixA& a, VectorE& e,
-            VectorTAU& tau, MatrixW& w ) {
+    static std::ptrdiff_t invoke( const fortran_int_t nb, MatrixA& a,
+            VectorE& e, VectorTAU& tau, MatrixW& w ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -181,7 +201,7 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column(a)) );
         BOOST_ASSERT( stride_major(w) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::latrd( uplo(), size_column(a), nb, begin_value(a),
+        return detail::latrd( uplo(), size_column(a), nb, begin_value(a),
                 stride_major(a), begin_value(e), begin_value(tau),
                 begin_value(w), stride_major(w) );
     }
@@ -209,10 +229,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -224,12 +242,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        VectorE& e, VectorTAU& tau, MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -243,10 +259,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -258,12 +272,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, const VectorE& e, VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        const VectorE& e, VectorTAU& tau, MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -277,10 +289,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -292,12 +302,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        VectorE& e, const VectorTAU& tau, MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -311,10 +319,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, const VectorTAU& tau, MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -326,13 +332,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, const VectorE& e, const VectorTAU& tau,
-        MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        const VectorE& e, const VectorTAU& tau, MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -346,10 +349,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -361,12 +362,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        VectorE& e, VectorTAU& tau, const MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -380,10 +379,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, VectorTAU& tau, const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -395,13 +392,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, const VectorE& e, VectorTAU& tau,
-        const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        const VectorE& e, VectorTAU& tau, const MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -415,10 +409,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -430,13 +422,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, VectorE& e, const VectorTAU& tau,
-        const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -450,10 +439,8 @@ template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
 inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
         const VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 //
@@ -465,13 +452,10 @@ inline std::ptrdiff_t latrd( const fortran_int_t nb, MatrixA& a,
 //
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline std::ptrdiff_t latrd( const fortran_int_t nb,
-        const MatrixA& a, const VectorE& e, const VectorTAU& tau,
-        const MatrixW& w ) {
-    fortran_int_t info(0);
-    latrd_impl< typename value< MatrixA >::type >::invoke( nb, a, e, tau,
-            w );
-    return info;
+inline std::ptrdiff_t latrd( const fortran_int_t nb, const MatrixA& a,
+        const VectorE& e, const VectorTAU& tau, const MatrixW& w ) {
+    return latrd_impl< typename value< MatrixA >::type >::invoke( nb, a,
+            e, tau, w );
 }
 
 } // namespace lapack

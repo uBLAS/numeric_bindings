@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for ggglm is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,49 +49,63 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+inline std::ptrdiff_t ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
         float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* d,
-        float* x, float* y, float* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        float* x, float* y, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+inline std::ptrdiff_t ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
         double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* d,
-        double* x, double* y, double* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+        double* x, double* y, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+inline std::ptrdiff_t ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
         std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
         fortran_int_t ldb, std::complex<float>* d, std::complex<float>* x,
         std::complex<float>* y, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
             &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+inline std::ptrdiff_t ggglm( fortran_int_t n, fortran_int_t m, fortran_int_t p,
         std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* d, std::complex<double>* x,
         std::complex<double>* y, std::complex<double>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
             &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,9 +134,8 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY, typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-            VectorY& y, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
+            VectorX& x, VectorY& y, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -153,11 +170,11 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(b)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::ggglm( size_row(b), size_column(a), size_column(b),
+        return detail::ggglm( size_row(b), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(d), begin_value(x),
                 begin_value(y), begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -169,11 +186,11 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
-    static void invoke( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-            VectorY& y, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
+            VectorX& x, VectorY& y, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a), size_row(b), size_column(b) ) );
-        invoke( a, b, d, x, y, info, workspace( tmp_work ) );
+        return invoke( a, b, d, x, y, workspace( tmp_work ) );
     }
 
     //
@@ -185,16 +202,16 @@ struct ggglm_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
-    static void invoke( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-            VectorY& y, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
+            VectorX& x, VectorY& y, optimal_workspace work ) {
         real_type opt_size_work;
         detail::ggglm( size_row(b), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(d), begin_value(x),
-                begin_value(y), &opt_size_work, -1, info );
+                begin_value(y), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, d, x, y, info, workspace( tmp_work ) );
+        invoke( a, b, d, x, y, workspace( tmp_work ) );
     }
 
     //
@@ -224,9 +241,8 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY, typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-            VectorY& y, fortran_int_t& info, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
+            VectorX& x, VectorY& y, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -261,11 +277,11 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(b)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        detail::ggglm( size_row(b), size_column(a), size_column(b),
+        return detail::ggglm( size_row(b), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(d), begin_value(x),
                 begin_value(y), begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -277,11 +293,11 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
-    static void invoke( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-            VectorY& y, fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
+            VectorX& x, VectorY& y, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a), size_row(b), size_column(b) ) );
-        invoke( a, b, d, x, y, info, workspace( tmp_work ) );
+        return invoke( a, b, d, x, y, workspace( tmp_work ) );
     }
 
     //
@@ -293,16 +309,16 @@ struct ggglm_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorD,
             typename VectorX, typename VectorY >
-    static void invoke( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
-            VectorY& y, fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorD& d,
+            VectorX& x, VectorY& y, optimal_workspace work ) {
         value_type opt_size_work;
         detail::ggglm( size_row(b), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(d), begin_value(x),
-                begin_value(y), &opt_size_work, -1, info );
+                begin_value(y), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, d, x, y, info, workspace( tmp_work ) );
+        invoke( a, b, d, x, y, workspace( tmp_work ) );
     }
 
     //
@@ -338,10 +354,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -357,10 +371,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -376,10 +388,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -395,10 +405,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -414,10 +422,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -433,10 +439,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -452,10 +456,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -471,10 +473,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -490,10 +490,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -509,10 +507,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -528,10 +524,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -547,10 +541,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -566,10 +558,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -585,10 +575,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -604,10 +592,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -623,10 +609,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -642,10 +626,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -661,10 +643,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -680,10 +660,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -699,10 +677,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -718,10 +694,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -737,10 +711,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -756,10 +728,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -775,10 +745,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -794,10 +762,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -813,10 +779,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -832,10 +796,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -851,10 +813,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -870,10 +830,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -889,10 +847,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -908,10 +864,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -927,10 +881,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -946,10 +898,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -965,10 +915,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -984,10 +932,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1003,10 +949,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1022,10 +966,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1041,10 +983,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1060,10 +1000,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1079,10 +1017,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1098,10 +1034,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1117,10 +1051,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1136,10 +1068,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1155,10 +1085,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1174,10 +1102,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1193,10 +1119,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1212,10 +1136,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1231,10 +1153,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1250,10 +1170,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1269,10 +1187,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1288,10 +1204,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1307,10 +1221,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b, VectorD& d,
         const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1326,10 +1238,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         const VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1345,10 +1255,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b, VectorD& d,
         const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1364,10 +1272,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, const VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1383,10 +1289,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         VectorD& d, const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1402,10 +1306,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY, typename Workspace >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         const VectorX& x, const VectorY& y, Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1421,10 +1323,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, MatrixB& b, const VectorD& d,
         const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1441,10 +1341,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, const VectorX& x, const VectorY& y,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1460,10 +1358,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, MatrixB& b,
         const VectorD& d, const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1480,10 +1376,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, const VectorY& y,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1499,10 +1393,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 //
@@ -1519,10 +1411,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, const VectorY& y,
         Workspace work ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, work );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, work );
 }
 
 //
@@ -1538,10 +1428,8 @@ template< typename MatrixA, typename MatrixB, typename VectorD,
         typename VectorX, typename VectorY >
 inline std::ptrdiff_t ggglm( const MatrixA& a, const MatrixB& b,
         const VectorD& d, const VectorX& x, const VectorY& y ) {
-    fortran_int_t info(0);
-    ggglm_impl< typename value< MatrixA >::type >::invoke( a, b, d, x, y,
-            info, optimal_workspace() );
-    return info;
+    return ggglm_impl< typename value< MatrixA >::type >::invoke( a, b,
+            d, x, y, optimal_workspace() );
 }
 
 } // namespace lapack

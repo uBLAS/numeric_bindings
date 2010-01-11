@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for lacon is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,35 +48,51 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void lacon( fortran_int_t n, float* v, float* x, fortran_int_t* isgn,
-        float& est, fortran_int_t& kase ) {
+inline std::ptrdiff_t lacon( fortran_int_t n, float* v, float* x,
+        fortran_int_t* isgn, float& est, fortran_int_t& kase ) {
+    fortran_int_t info(0);
     LAPACK_SLACON( &n, v, x, isgn, &est, &kase );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void lacon( fortran_int_t n, double* v, double* x, fortran_int_t* isgn,
-        double& est, fortran_int_t& kase ) {
+inline std::ptrdiff_t lacon( fortran_int_t n, double* v, double* x,
+        fortran_int_t* isgn, double& est, fortran_int_t& kase ) {
+    fortran_int_t info(0);
     LAPACK_DLACON( &n, v, x, isgn, &est, &kase );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void lacon( fortran_int_t n, std::complex<float>* v,
+inline std::ptrdiff_t lacon( fortran_int_t n, std::complex<float>* v,
         std::complex<float>* x, float& est, fortran_int_t& kase ) {
+    fortran_int_t info(0);
     LAPACK_CLACON( &n, v, x, &est, &kase );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void lacon( fortran_int_t n, std::complex<double>* v,
+inline std::ptrdiff_t lacon( fortran_int_t n, std::complex<double>* v,
         std::complex<double>* x, double& est, fortran_int_t& kase ) {
+    fortran_int_t info(0);
     LAPACK_ZLACON( &n, v, x, &est, &kase );
+    return info;
 }
 
 } // namespace detail
@@ -100,14 +120,15 @@ struct lacon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename V, typename ISGN >
-    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
-            fortran_int_t& kase, detail::workspace2< V, ISGN > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
+            real_type& est, fortran_int_t& kase, detail::workspace2< V,
+            ISGN > work ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 1 );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_isgn( n ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_v( n ));
-        detail::lacon( n, begin_value(work.select(real_type())),
+        return detail::lacon( n, begin_value(work.select(real_type())),
                 begin_value(x), begin_value(work.select(fortran_int_t())),
                 est, kase );
     }
@@ -120,12 +141,12 @@ struct lacon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorX >
-    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
-            fortran_int_t& kase, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
+            real_type& est, fortran_int_t& kase, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_v( min_size_v( n ) );
         bindings::detail::array<
                 fortran_int_t > tmp_isgn( min_size_isgn( n ) );
-        invoke( n, x, est, kase, workspace( tmp_v, tmp_isgn ) );
+        return invoke( n, x, est, kase, workspace( tmp_v, tmp_isgn ) );
     }
 
     //
@@ -136,9 +157,9 @@ struct lacon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorX >
-    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
-            fortran_int_t& kase, optimal_workspace work ) {
-        invoke( n, x, est, kase, minimal_workspace() );
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
+            real_type& est, fortran_int_t& kase, optimal_workspace work ) {
+        return invoke( n, x, est, kase, minimal_workspace() );
     }
 
     //
@@ -174,12 +195,13 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX, typename V >
-    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
-            fortran_int_t& kase, detail::workspace1< V > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
+            real_type& est, fortran_int_t& kase, detail::workspace1<
+            V > work ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 1 );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_v( n ));
-        detail::lacon( n, begin_value(work.select(value_type())),
+        return detail::lacon( n, begin_value(work.select(value_type())),
                 begin_value(x), est, kase );
     }
 
@@ -191,10 +213,10 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename VectorX >
-    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
-            fortran_int_t& kase, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
+            real_type& est, fortran_int_t& kase, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_v( min_size_v( n ) );
-        invoke( n, x, est, kase, workspace( tmp_v ) );
+        return invoke( n, x, est, kase, workspace( tmp_v ) );
     }
 
     //
@@ -205,9 +227,9 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename VectorX >
-    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
-            fortran_int_t& kase, optimal_workspace work ) {
-        invoke( n, x, est, kase, minimal_workspace() );
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
+            real_type& est, fortran_int_t& kase, optimal_workspace work ) {
+        return invoke( n, x, est, kase, minimal_workspace() );
     }
 
     //
@@ -239,10 +261,8 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase,
         Workspace work ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, work );
-    return info;
+    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
+            est, kase, work );
 }
 
 //
@@ -254,10 +274,8 @@ template< typename VectorX >
 inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, optimal_workspace() );
-    return info;
+    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
+            est, kase, optimal_workspace() );
 }
 
 //
@@ -270,10 +288,8 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase,
         Workspace work ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, work );
-    return info;
+    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
+            est, kase, work );
 }
 
 //
@@ -285,10 +301,8 @@ template< typename VectorX >
 inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, optimal_workspace() );
-    return info;
+    return lacon_impl< typename value< VectorX >::type >::invoke( n, x,
+            est, kase, optimal_workspace() );
 }
 
 } // namespace lapack

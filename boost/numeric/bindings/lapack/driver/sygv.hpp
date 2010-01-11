@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -30,6 +28,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for sygv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -43,25 +47,33 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename UpLo >
-inline void sygv( fortran_int_t itype, char jobz, UpLo, fortran_int_t n,
-        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* w,
-        float* work, fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t sygv( fortran_int_t itype, char jobz, UpLo,
+        fortran_int_t n, float* a, fortran_int_t lda, float* b,
+        fortran_int_t ldb, float* w, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SSYGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename UpLo >
-inline void sygv( fortran_int_t itype, char jobz, UpLo, fortran_int_t n,
-        double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* w,
-        double* work, fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t sygv( fortran_int_t itype, char jobz, UpLo,
+        fortran_int_t n, double* a, fortran_int_t lda, double* b,
+        fortran_int_t ldb, double* w, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DSYGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -84,9 +96,9 @@ struct sygv_impl {
     //
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename WORK >
-    static void invoke( const fortran_int_t itype, const char jobz,
-            const fortran_int_t n, MatrixA& a, MatrixB& b, VectorW& w,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t itype,
+            const char jobz, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorW& w, detail::workspace1< WORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -106,10 +118,10 @@ struct sygv_impl {
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::sygv( itype, jobz, uplo(), n, begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(w),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+        return detail::sygv( itype, jobz, uplo(), n, begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
+                begin_value(w), begin_value(work.select(real_type())),
+                size(work.select(real_type())) );
     }
 
     //
@@ -120,12 +132,12 @@ struct sygv_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void invoke( const fortran_int_t itype, const char jobz,
-            const fortran_int_t n, MatrixA& a, MatrixB& b, VectorW& w,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t itype,
+            const char jobz, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorW& w, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        invoke( itype, jobz, n, a, b, w, info, workspace( tmp_work ) );
+        return invoke( itype, jobz, n, a, b, w, workspace( tmp_work ) );
     }
 
     //
@@ -136,17 +148,17 @@ struct sygv_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void invoke( const fortran_int_t itype, const char jobz,
-            const fortran_int_t n, MatrixA& a, MatrixB& b, VectorW& w,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const fortran_int_t itype,
+            const char jobz, const fortran_int_t n, MatrixA& a,
+            MatrixB& b, VectorW& w, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
         detail::sygv( itype, jobz, uplo(), n, begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
-                begin_value(w), &opt_size_work, -1, info );
+                begin_value(w), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( itype, jobz, n, a, b, w, info, workspace( tmp_work ) );
+        invoke( itype, jobz, n, a, b, w, workspace( tmp_work ) );
     }
 
     //
@@ -180,10 +192,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a, MatrixB& b,
         VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -197,10 +207,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a, MatrixB& b,
         VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -215,10 +223,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         MatrixB& b, VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -232,10 +238,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         MatrixB& b, VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -250,10 +254,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a,
         const MatrixB& b, VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -267,10 +269,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a,
         const MatrixB& b, VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -285,10 +285,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         const MatrixB& b, VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -302,10 +300,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         const MatrixB& b, VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -320,10 +316,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a, MatrixB& b,
         const VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -337,10 +331,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a, MatrixB& b,
         const VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -355,10 +347,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         MatrixB& b, const VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -372,10 +362,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         MatrixB& b, const VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -390,10 +378,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a,
         const MatrixB& b, const VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -407,10 +393,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, MatrixA& a,
         const MatrixB& b, const VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 //
@@ -425,10 +409,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW,
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         const MatrixB& b, const VectorW& w, Workspace work ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, work );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, work );
 }
 
 //
@@ -442,10 +424,8 @@ template< typename MatrixA, typename MatrixB, typename VectorW >
 inline std::ptrdiff_t sygv( const fortran_int_t itype,
         const char jobz, const fortran_int_t n, const MatrixA& a,
         const MatrixB& b, const VectorW& w ) {
-    fortran_int_t info(0);
-    sygv_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            n, a, b, w, info, optimal_workspace() );
-    return info;
+    return sygv_impl< typename value< MatrixA >::type >::invoke( itype,
+            jobz, n, a, b, w, optimal_workspace() );
 }
 
 } // namespace lapack

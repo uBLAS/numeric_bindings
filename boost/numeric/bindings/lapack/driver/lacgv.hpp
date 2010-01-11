@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -26,6 +24,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for lacgv is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -39,19 +43,27 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void lacgv( fortran_int_t n, std::complex<float>* x,
+inline std::ptrdiff_t lacgv( fortran_int_t n, std::complex<float>* x,
         fortran_int_t incx ) {
+    fortran_int_t info(0);
     LAPACK_CLACGV( &n, x, &incx );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void lacgv( fortran_int_t n, std::complex<double>* x,
+inline std::ptrdiff_t lacgv( fortran_int_t n, std::complex<double>* x,
         fortran_int_t incx ) {
+    fortran_int_t info(0);
     LAPACK_ZLACGV( &n, x, &incx );
+    return info;
 }
 
 } // namespace detail
@@ -73,11 +85,11 @@ struct lacgv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename VectorX >
-    static void invoke( const fortran_int_t n, VectorX& x,
+    static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
             const fortran_int_t incx ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 0 );
-        detail::lacgv( n, begin_value(x), incx );
+        return detail::lacgv( n, begin_value(x), incx );
     }
 
 };
@@ -99,9 +111,8 @@ struct lacgv_impl {
 template< typename VectorX >
 inline std::ptrdiff_t lacgv( const fortran_int_t n, VectorX& x,
         const fortran_int_t incx ) {
-    fortran_int_t info(0);
-    lacgv_impl< typename value< VectorX >::type >::invoke( n, x, incx );
-    return info;
+    return lacgv_impl< typename value< VectorX >::type >::invoke( n, x,
+            incx );
 }
 
 //
@@ -111,9 +122,8 @@ inline std::ptrdiff_t lacgv( const fortran_int_t n, VectorX& x,
 template< typename VectorX >
 inline std::ptrdiff_t lacgv( const fortran_int_t n, const VectorX& x,
         const fortran_int_t incx ) {
-    fortran_int_t info(0);
-    lacgv_impl< typename value< VectorX >::type >::invoke( n, x, incx );
-    return info;
+    return lacgv_impl< typename value< VectorX >::type >::invoke( n, x,
+            incx );
 }
 
 } // namespace lapack

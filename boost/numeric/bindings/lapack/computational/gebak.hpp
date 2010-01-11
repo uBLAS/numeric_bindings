@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -29,6 +27,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gebak is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,39 +46,55 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, const float* scale, fortran_int_t m, float* v,
-        fortran_int_t ldv, fortran_int_t& info ) {
+inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, const float* scale,
+        fortran_int_t m, float* v, fortran_int_t ldv ) {
+    fortran_int_t info(0);
     LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, const double* scale, fortran_int_t m, double* v,
-        fortran_int_t ldv, fortran_int_t& info ) {
+inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, const double* scale,
+        fortran_int_t m, double* v, fortran_int_t ldv ) {
+    fortran_int_t info(0);
     LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, const float* scale, fortran_int_t m,
-        std::complex<float>* v, fortran_int_t ldv, fortran_int_t& info ) {
+inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, const float* scale,
+        fortran_int_t m, std::complex<float>* v, fortran_int_t ldv ) {
+    fortran_int_t info(0);
     LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, const double* scale, fortran_int_t m,
-        std::complex<double>* v, fortran_int_t ldv, fortran_int_t& info ) {
+inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, const double* scale,
+        fortran_int_t m, std::complex<double>* v, fortran_int_t ldv ) {
+    fortran_int_t info(0);
     LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
+    return info;
 }
 
 } // namespace detail
@@ -102,9 +122,9 @@ struct gebak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename VectorSCALE, typename MatrixV >
-    static void invoke( const char job, const char side,
+    static std::ptrdiff_t invoke( const char job, const char side,
             const fortran_int_t ilo, const fortran_int_t ihi,
-            const VectorSCALE& scale, MatrixV& v, fortran_int_t& info ) {
+            const VectorSCALE& scale, MatrixV& v ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorSCALE >::type >::type,
                 typename remove_const< typename value<
@@ -118,8 +138,9 @@ struct gebak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(v) >= 0 );
         BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
                 size_row(v)) );
-        detail::gebak( job, side, size_row(v), ilo, ihi, begin_value(scale),
-                size_column(v), begin_value(v), stride_major(v), info );
+        return detail::gebak( job, side, size_row(v), ilo, ihi,
+                begin_value(scale), size_column(v), begin_value(v),
+                stride_major(v) );
     }
 
 };
@@ -140,9 +161,9 @@ struct gebak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename VectorSCALE, typename MatrixV >
-    static void invoke( const char job, const char side,
+    static std::ptrdiff_t invoke( const char job, const char side,
             const fortran_int_t ilo, const fortran_int_t ihi,
-            const VectorSCALE& scale, MatrixV& v, fortran_int_t& info ) {
+            const VectorSCALE& scale, MatrixV& v ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
@@ -152,8 +173,9 @@ struct gebak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(v) >= 0 );
         BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
                 size_row(v)) );
-        detail::gebak( job, side, size_row(v), ilo, ihi, begin_value(scale),
-                size_column(v), begin_value(v), stride_major(v), info );
+        return detail::gebak( job, side, size_row(v), ilo, ihi,
+                begin_value(scale), size_column(v), begin_value(v),
+                stride_major(v) );
     }
 
 };
@@ -176,10 +198,8 @@ template< typename VectorSCALE, typename MatrixV >
 inline std::ptrdiff_t gebak( const char job, const char side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorSCALE& scale, MatrixV& v ) {
-    fortran_int_t info(0);
-    gebak_impl< typename value< MatrixV >::type >::invoke( job, side,
-            ilo, ihi, scale, v, info );
-    return info;
+    return gebak_impl< typename value< MatrixV >::type >::invoke( job,
+            side, ilo, ihi, scale, v );
 }
 
 //
@@ -190,10 +210,8 @@ template< typename VectorSCALE, typename MatrixV >
 inline std::ptrdiff_t gebak( const char job, const char side,
         const fortran_int_t ilo, const fortran_int_t ihi,
         const VectorSCALE& scale, const MatrixV& v ) {
-    fortran_int_t info(0);
-    gebak_impl< typename value< MatrixV >::type >::invoke( job, side,
-            ilo, ihi, scale, v, info );
-    return info;
+    return gebak_impl< typename value< MatrixV >::type >::invoke( job,
+            side, ilo, ihi, scale, v );
 }
 
 } // namespace lapack

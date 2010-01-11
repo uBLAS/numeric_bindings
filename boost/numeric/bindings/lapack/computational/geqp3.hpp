@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for geqp3 is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,41 +49,57 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void geqp3( fortran_int_t m, fortran_int_t n, float* a,
+inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n, float* a,
         fortran_int_t lda, fortran_int_t* jpvt, float* tau, float* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void geqp3( fortran_int_t m, fortran_int_t n, double* a,
+inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n, double* a,
         fortran_int_t lda, fortran_int_t* jpvt, double* tau, double* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void geqp3( fortran_int_t m, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, fortran_int_t* jpvt, std::complex<float>* tau,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n,
+        std::complex<float>* a, fortran_int_t lda, fortran_int_t* jpvt,
+        std::complex<float>* tau, std::complex<float>* work,
+        fortran_int_t lwork, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void geqp3( fortran_int_t m, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, fortran_int_t* jpvt, std::complex<double>* tau,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda, fortran_int_t* jpvt,
+        std::complex<double>* tau, std::complex<double>* work,
+        fortran_int_t lwork, double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -108,8 +128,8 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
             typename WORK >
-    static void invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
-            fortran_int_t& info, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -126,10 +146,10 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::geqp3( size_row(a), size_column(a), begin_value(a),
+        return detail::geqp3( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(jpvt), begin_value(tau),
                 begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -140,11 +160,11 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        invoke( a, jpvt, tau, info, workspace( tmp_work ) );
+        return invoke( a, jpvt, tau, workspace( tmp_work ) );
     }
 
     //
@@ -155,15 +175,15 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+            optimal_workspace work ) {
         real_type opt_size_work;
         detail::geqp3( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(jpvt), begin_value(tau),
-                &opt_size_work, -1, info );
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, jpvt, tau, info, workspace( tmp_work ) );
+        invoke( a, jpvt, tau, workspace( tmp_work ) );
     }
 
     //
@@ -192,8 +212,8 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
             typename WORK, typename RWORK >
-    static void invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
-            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -212,11 +232,11 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::geqp3( size_row(a), size_column(a), begin_value(a),
+        return detail::geqp3( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(jpvt), begin_value(tau),
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -227,13 +247,13 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
-            fortran_int_t& info, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( a, jpvt, tau, info, workspace( tmp_work, tmp_rwork ) );
+        return invoke( a, jpvt, tau, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -244,17 +264,17 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
-    static void invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
-            fortran_int_t& info, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+            optimal_workspace work ) {
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
         detail::geqp3( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(jpvt), begin_value(tau),
-                &opt_size_work, -1, begin_value(tmp_rwork), info );
+                &opt_size_work, -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, jpvt, tau, info, workspace( tmp_work, tmp_rwork ) );
+        invoke( a, jpvt, tau, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -293,12 +313,10 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
-inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
-        VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
+        Workspace work ) {
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -311,10 +329,8 @@ inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
         VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -328,10 +344,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
         VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -344,10 +358,8 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
         VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -361,10 +373,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
         VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -377,10 +387,8 @@ inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
         VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -394,10 +402,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
         VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -410,10 +416,8 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
         VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -427,10 +431,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
         const VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -443,10 +445,8 @@ inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( MatrixA& a, VectorJPVT& jpvt,
         const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -460,10 +460,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
         const VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -476,10 +474,8 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( const MatrixA& a, VectorJPVT& jpvt,
         const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -493,10 +489,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
         const VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -509,10 +503,8 @@ inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( MatrixA& a, const VectorJPVT& jpvt,
         const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 //
@@ -526,10 +518,8 @@ template< typename MatrixA, typename VectorJPVT, typename VectorTAU,
         typename Workspace >
 inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
         const VectorTAU& tau, Workspace work ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, work );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, work );
 }
 
 //
@@ -542,10 +532,8 @@ inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
 template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
 inline std::ptrdiff_t geqp3( const MatrixA& a, const VectorJPVT& jpvt,
         const VectorTAU& tau ) {
-    fortran_int_t info(0);
-    geqp3_impl< typename value< MatrixA >::type >::invoke( a, jpvt, tau,
-            info, optimal_workspace() );
-    return info;
+    return geqp3_impl< typename value< MatrixA >::type >::invoke( a,
+            jpvt, tau, optimal_workspace() );
 }
 
 } // namespace lapack

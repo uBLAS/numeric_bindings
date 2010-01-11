@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -26,6 +24,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for gbtrf is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -39,39 +43,55 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gbtrf( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, float* ab, fortran_int_t ldab, fortran_int_t* ipiv,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, float* ab, fortran_int_t ldab,
+        fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
     LAPACK_SGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gbtrf( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, double* ab, fortran_int_t ldab, fortran_int_t* ipiv,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, double* ab, fortran_int_t ldab,
+        fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
     LAPACK_DGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gbtrf( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, std::complex<float>* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, fortran_int_t& info ) {
+inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, std::complex<float>* ab,
+        fortran_int_t ldab, fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
     LAPACK_CGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gbtrf( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, std::complex<double>* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, fortran_int_t& info ) {
+inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
+        fortran_int_t kl, fortran_int_t ku, std::complex<double>* ab,
+        fortran_int_t ldab, fortran_int_t* ipiv ) {
+    fortran_int_t info(0);
     LAPACK_ZGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
+    return info;
 }
 
 } // namespace detail
@@ -93,8 +113,7 @@ struct gbtrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorIPIV >
-    static void invoke( MatrixAB& ab, VectorIPIV& ipiv,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixAB& ab, VectorIPIV& ipiv ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
         BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
@@ -105,9 +124,9 @@ struct gbtrf_impl {
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_row(ab) >= 0 );
         BOOST_ASSERT( stride_major(ab) >= 2 );
-        detail::gbtrf( size_row(ab), size_column(ab), bandwidth_lower(ab),
-                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
-                begin_value(ipiv), info );
+        return detail::gbtrf( size_row(ab), size_column(ab),
+                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(ipiv) );
     }
 
 };
@@ -129,10 +148,8 @@ struct gbtrf_impl {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv,
-            info );
-    return info;
+    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv );
 }
 
 //
@@ -142,10 +159,8 @@ inline std::ptrdiff_t gbtrf( MatrixAB& ab, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( const MatrixAB& ab, VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv,
-            info );
-    return info;
+    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv );
 }
 
 //
@@ -155,10 +170,8 @@ inline std::ptrdiff_t gbtrf( const MatrixAB& ab, VectorIPIV& ipiv ) {
 //
 template< typename MatrixAB, typename VectorIPIV >
 inline std::ptrdiff_t gbtrf( MatrixAB& ab, const VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv,
-            info );
-    return info;
+    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv );
 }
 
 //
@@ -167,12 +180,9 @@ inline std::ptrdiff_t gbtrf( MatrixAB& ab, const VectorIPIV& ipiv ) {
 // * const VectorIPIV&
 //
 template< typename MatrixAB, typename VectorIPIV >
-inline std::ptrdiff_t gbtrf( const MatrixAB& ab,
-        const VectorIPIV& ipiv ) {
-    fortran_int_t info(0);
-    gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab, ipiv,
-            info );
-    return info;
+inline std::ptrdiff_t gbtrf( const MatrixAB& ab, const VectorIPIV& ipiv ) {
+    return gbtrf_impl< typename value< MatrixAB >::type >::invoke( ab,
+            ipiv );
 }
 
 } // namespace lapack

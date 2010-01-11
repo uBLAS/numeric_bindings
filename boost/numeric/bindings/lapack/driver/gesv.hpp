@@ -17,8 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,20 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for gesv is selected by defining a pre-processor
+// variable, which can be one of
+// * for ATLAS's CLAPACK, define BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+// * netlib-compatible LAPACK is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+#include <boost/numeric/bindings/lapack/detail/clapack.h>
+#include <boost/numeric/bindings/lapack/detail/clapack_option.hpp>
+#else
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
@@ -39,42 +51,117 @@ namespace lapack {
 //
 namespace detail {
 
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * float value-type.
 //
-inline void gesv( fortran_int_t n, fortran_int_t nrhs, float* a,
-        fortran_int_t lda, fortran_int_t* ipiv, float* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, int n, int nrhs, float* a, int lda,
+        int* ipiv, float* b, int ldb ) {
+    return clapack_sgesv( clapack_option< Order >::value, n, nrhs, a, lda,
+            ipiv, b, ldb );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * double value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, int n, int nrhs, double* a, int lda,
+        int* ipiv, double* b, int ldb ) {
+    return clapack_dgesv( clapack_option< Order >::value, n, nrhs, a, lda,
+            ipiv, b, ldb );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<float> value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, int n, int nrhs, std::complex<float>* a,
+        int lda, int* ipiv, std::complex<float>* b, int ldb ) {
+    return clapack_cgesv( clapack_option< Order >::value, n, nrhs, a, lda,
+            ipiv, b, ldb );
+}
+
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * complex<double> value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, int n, int nrhs, std::complex<double>* a,
+        int lda, int* ipiv, std::complex<double>* b, int ldb ) {
+    return clapack_zgesv( clapack_option< Order >::value, n, nrhs, a, lda,
+            ipiv, b, ldb );
+}
+
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
+//
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
+        float* a, fortran_int_t lda, fortran_int_t* ipiv, float* b,
+        fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_SGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gesv( fortran_int_t n, fortran_int_t nrhs, double* a,
-        fortran_int_t lda, fortran_int_t* ipiv, double* b, fortran_int_t ldb,
-        fortran_int_t& info ) {
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
+        double* a, fortran_int_t lda, fortran_int_t* ipiv, double* b,
+        fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_DGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gesv( fortran_int_t n, fortran_int_t nrhs, std::complex<float>* a,
-        fortran_int_t lda, fortran_int_t* ipiv, std::complex<float>* b,
-        fortran_int_t ldb, fortran_int_t& info ) {
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<float>* a, fortran_int_t lda, fortran_int_t* ipiv,
+        std::complex<float>* b, fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_CGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gesv( fortran_int_t n, fortran_int_t nrhs,
+template< typename Order >
+inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
         std::complex<double>* a, fortran_int_t lda, fortran_int_t* ipiv,
-        std::complex<double>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<double>* b, fortran_int_t ldb ) {
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
+    fortran_int_t info(0);
     LAPACK_ZGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    return info;
 }
 
+#endif
 } // namespace detail
 
 //
@@ -94,8 +181,7 @@ struct gesv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -112,9 +198,9 @@ struct gesv_impl {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::gesv( size_column(a), size_column(b), begin_value(a),
-                stride_major(a), begin_value(ipiv), begin_value(b),
-                stride_major(b), info );
+        return detail::gesv( order(), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(ipiv),
+                begin_value(b), stride_major(b) );
     }
 
 };
@@ -137,10 +223,8 @@ struct gesv_impl {
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -152,10 +236,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -167,10 +249,8 @@ inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -182,10 +262,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, const VectorIPIV& ipiv,
         MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -197,10 +275,8 @@ inline std::ptrdiff_t gesv( const MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -212,10 +288,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -227,10 +301,8 @@ inline std::ptrdiff_t gesv( const MatrixA& a, VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -242,10 +314,8 @@ inline std::ptrdiff_t gesv( MatrixA& a, const VectorIPIV& ipiv,
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t gesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b ) {
-    fortran_int_t info(0);
-    gesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
-            info );
-    return info;
+    return gesv_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 } // namespace lapack

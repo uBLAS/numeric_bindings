@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -33,6 +31,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gels is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -46,49 +50,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
 template< typename Trans >
-inline void gels( Trans, fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, float* a, fortran_int_t lda, float* b,
+        fortran_int_t ldb, float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
 template< typename Trans >
-inline void gels( Trans, fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        double* a, fortran_int_t lda, double* b, fortran_int_t ldb,
-        double* work, fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, double* a, fortran_int_t lda, double* b,
+        fortran_int_t ldb, double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Trans >
-inline void gels( Trans, fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* work,
+        fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Trans >
-inline void gels( Trans, fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* work, fortran_int_t lwork,
-        fortran_int_t& info ) {
+inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
+        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* b, fortran_int_t ldb,
+        std::complex<double>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -116,8 +136,8 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixB, typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, fortran_int_t& info,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, detail::workspace1<
+            WORK > work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -138,11 +158,11 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,std::max<
                 std::ptrdiff_t >(size_row_op(a, trans()),size_column_op(a,
                 trans()))) );
-        detail::gels( trans(), size_row_op(a, trans()), size_column_op(a,
-                trans()), size_column(b), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b),
+        return detail::gels( trans(), size_row_op(a, trans()),
+                size_column_op(a, trans()), size_column(b), begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
                 begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -153,13 +173,13 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB >
-    static void invoke( MatrixA& a, MatrixB& b, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             minimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row_op(a, trans()), size_column_op(a, trans()),
                 size_column(b) ) );
-        invoke( a, b, info, workspace( tmp_work ) );
+        return invoke( a, b, workspace( tmp_work ) );
     }
 
     //
@@ -170,17 +190,17 @@ struct gels_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB >
-    static void invoke( MatrixA& a, MatrixB& b, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
         detail::gels( trans(), size_row_op(a, trans()),
                 size_column_op(a, trans()), size_column(b), begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
-                &opt_size_work, -1, info );
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, info, workspace( tmp_work ) );
+        invoke( a, b, workspace( tmp_work ) );
     }
 
     //
@@ -211,8 +231,8 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixB, typename WORK >
-    static void invoke( MatrixA& a, MatrixB& b, fortran_int_t& info,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, detail::workspace1<
+            WORK > work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -233,11 +253,11 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,std::max<
                 std::ptrdiff_t >(size_row_op(a, trans()),size_column_op(a,
                 trans()))) );
-        detail::gels( trans(), size_row_op(a, trans()), size_column_op(a,
-                trans()), size_column(b), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b),
+        return detail::gels( trans(), size_row_op(a, trans()),
+                size_column_op(a, trans()), size_column(b), begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
                 begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -248,13 +268,13 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB >
-    static void invoke( MatrixA& a, MatrixB& b, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             minimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_row_op(a, trans()), size_column_op(a, trans()),
                 size_column(b) ) );
-        invoke( a, b, info, workspace( tmp_work ) );
+        return invoke( a, b, workspace( tmp_work ) );
     }
 
     //
@@ -265,17 +285,17 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB >
-    static void invoke( MatrixA& a, MatrixB& b, fortran_int_t& info,
+    static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b,
             optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         detail::gels( trans(), size_row_op(a, trans()),
                 size_column_op(a, trans()), size_column(b), begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b),
-                &opt_size_work, -1, info );
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, info, workspace( tmp_work ) );
+        invoke( a, b, workspace( tmp_work ) );
     }
 
     //
@@ -308,10 +328,8 @@ struct gels_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 //
 template< typename MatrixA, typename MatrixB, typename Workspace >
 inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b, Workspace work ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
-    return info;
 }
 
 //
@@ -322,10 +340,8 @@ inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b, Workspace work ) {
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -337,10 +353,8 @@ inline std::ptrdiff_t gels( MatrixA& a, MatrixB& b ) {
 template< typename MatrixA, typename MatrixB, typename Workspace >
 inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b,
         Workspace work ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
-    return info;
 }
 
 //
@@ -351,10 +365,8 @@ inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -366,10 +378,8 @@ inline std::ptrdiff_t gels( const MatrixA& a, MatrixB& b ) {
 template< typename MatrixA, typename MatrixB, typename Workspace >
 inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b,
         Workspace work ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
-    return info;
 }
 
 //
@@ -380,10 +390,8 @@ inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
-    return info;
 }
 
 //
@@ -395,10 +403,8 @@ inline std::ptrdiff_t gels( MatrixA& a, const MatrixB& b ) {
 template< typename MatrixA, typename MatrixB, typename Workspace >
 inline std::ptrdiff_t gels( const MatrixA& a, const MatrixB& b,
         Workspace work ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             work );
-    return info;
 }
 
 //
@@ -409,10 +415,8 @@ inline std::ptrdiff_t gels( const MatrixA& a, const MatrixB& b,
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t gels( const MatrixA& a, const MatrixB& b ) {
-    fortran_int_t info(0);
-    gels_impl< typename value< MatrixA >::type >::invoke( a, b, info,
+    return gels_impl< typename value< MatrixA >::type >::invoke( a, b,
             optimal_workspace() );
-    return info;
 }
 
 } // namespace lapack

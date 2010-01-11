@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -31,6 +29,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for stein is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -44,50 +48,65 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void stein( fortran_int_t n, const float* d, const float* e,
+inline std::ptrdiff_t stein( fortran_int_t n, const float* d, const float* e,
         fortran_int_t m, const float* w, const fortran_int_t* iblock,
         const fortran_int_t* isplit, float* z, fortran_int_t ldz, float* work,
-        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t& info ) {
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
+    fortran_int_t info(0);
     LAPACK_SSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void stein( fortran_int_t n, const double* d, const double* e,
+inline std::ptrdiff_t stein( fortran_int_t n, const double* d, const double* e,
         fortran_int_t m, const double* w, const fortran_int_t* iblock,
         const fortran_int_t* isplit, double* z, fortran_int_t ldz,
-        double* work, fortran_int_t* iwork, fortran_int_t* ifail,
-        fortran_int_t& info ) {
+        double* work, fortran_int_t* iwork, fortran_int_t* ifail ) {
+    fortran_int_t info(0);
     LAPACK_DSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void stein( fortran_int_t n, const float* d, const float* e,
+inline std::ptrdiff_t stein( fortran_int_t n, const float* d, const float* e,
         fortran_int_t m, const float* w, const fortran_int_t* iblock,
         const fortran_int_t* isplit, std::complex<float>* z,
         fortran_int_t ldz, float* work, fortran_int_t* iwork,
-        fortran_int_t* ifail, fortran_int_t& info ) {
+        fortran_int_t* ifail ) {
+    fortran_int_t info(0);
     LAPACK_CSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void stein( fortran_int_t n, const double* d, const double* e,
+inline std::ptrdiff_t stein( fortran_int_t n, const double* d, const double* e,
         fortran_int_t m, const double* w, const fortran_int_t* iblock,
         const fortran_int_t* isplit, std::complex<double>* z,
         fortran_int_t ldz, double* work, fortran_int_t* iwork,
-        fortran_int_t* ifail, fortran_int_t& info ) {
+        fortran_int_t* ifail ) {
+    fortran_int_t info(0);
     LAPACK_ZSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
+    return info;
 }
 
 } // namespace detail
@@ -117,11 +136,11 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void invoke( const fortran_int_t n, const VectorD& d,
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -154,11 +173,12 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(z) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::stein( n, begin_value(d), begin_value(e), m, begin_value(w),
-                begin_value(iblock), begin_value(isplit), begin_value(z),
-                stride_major(z), begin_value(work.select(real_type())),
+        return detail::stein( n, begin_value(d), begin_value(e), m,
+                begin_value(w), begin_value(iblock), begin_value(isplit),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                begin_value(ifail), info );
+                begin_value(ifail) );
     }
 
     //
@@ -171,15 +191,14 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const fortran_int_t n, const VectorD& d,
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
+        return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -193,12 +212,11 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const fortran_int_t n, const VectorD& d,
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+        return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 minimal_workspace() );
     }
 
@@ -237,11 +255,11 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void invoke( const fortran_int_t n, const VectorD& d,
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -270,11 +288,12 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(z) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::stein( n, begin_value(d), begin_value(e), m, begin_value(w),
-                begin_value(iblock), begin_value(isplit), begin_value(z),
-                stride_major(z), begin_value(work.select(real_type())),
+        return detail::stein( n, begin_value(d), begin_value(e), m,
+                begin_value(w), begin_value(iblock), begin_value(isplit),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
-                begin_value(ifail), info );
+                begin_value(ifail) );
     }
 
     //
@@ -287,15 +306,14 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const fortran_int_t n, const VectorD& d,
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
-            minimal_workspace work ) {
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
+        return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -309,12 +327,11 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const fortran_int_t n, const VectorD& d,
+    static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
-            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
-            optimal_workspace work ) {
-        invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+        return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 minimal_workspace() );
     }
 
@@ -358,10 +375,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, work );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, work );
 }
 
 //
@@ -377,10 +392,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, optimal_workspace() );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
 }
 
 //
@@ -396,10 +409,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, work );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, work );
 }
 
 //
@@ -415,10 +426,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, optimal_workspace() );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
 }
 
 //
@@ -434,10 +443,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, work );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, work );
 }
 
 //
@@ -453,10 +460,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, optimal_workspace() );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
 }
 
 //
@@ -472,10 +477,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, work );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, work );
 }
 
 //
@@ -491,10 +494,8 @@ inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
         const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
-            iblock, isplit, z, ifail, info, optimal_workspace() );
-    return info;
+    return stein_impl< typename value< MatrixZ >::type >::invoke( n, d,
+            e, m, w, iblock, isplit, z, ifail, optimal_workspace() );
 }
 
 } // namespace lapack

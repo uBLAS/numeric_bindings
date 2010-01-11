@@ -18,8 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
@@ -27,6 +25,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for hptrs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -40,21 +44,29 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void hptrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t hptrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* ap, const fortran_int_t* ipiv,
-        std::complex<float>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<float>* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_CHPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void hptrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t hptrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* ap, const fortran_int_t* ipiv,
-        std::complex<double>* b, fortran_int_t ldb, fortran_int_t& info ) {
+        std::complex<double>* b, fortran_int_t ldb ) {
+    fortran_int_t info(0);
     LAPACK_ZHPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
+    return info;
 }
 
 } // namespace detail
@@ -76,9 +88,8 @@ struct hptrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-    static void invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const VectorIPIV& ipiv, MatrixB& b,
-            fortran_int_t& info ) {
+    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
+            const MatrixAP& ap, const VectorIPIV& ipiv, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
@@ -90,8 +101,8 @@ struct hptrs_impl {
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        detail::hptrs( uplo, n, size_column(b), begin_value(ap),
-                begin_value(ipiv), begin_value(b), stride_major(b), info );
+        return detail::hptrs( uplo, n, size_column(b), begin_value(ap),
+                begin_value(ipiv), begin_value(b), stride_major(b) );
     }
 
 };
@@ -113,10 +124,8 @@ struct hptrs_impl {
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
         const MatrixAP& ap, const VectorIPIV& ipiv, MatrixB& b ) {
-    fortran_int_t info(0);
-    hptrs_impl< typename value< MatrixAP >::type >::invoke( uplo, n, ap,
-            ipiv, b, info );
-    return info;
+    return hptrs_impl< typename value< MatrixAP >::type >::invoke( uplo,
+            n, ap, ipiv, b );
 }
 
 //
@@ -126,10 +135,8 @@ inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
         const MatrixAP& ap, const VectorIPIV& ipiv, const MatrixB& b ) {
-    fortran_int_t info(0);
-    hptrs_impl< typename value< MatrixAP >::type >::invoke( uplo, n, ap,
-            ipiv, b, info );
-    return info;
+    return hptrs_impl< typename value< MatrixAP >::type >::invoke( uplo,
+            n, ap, ipiv, b );
 }
 
 } // namespace lapack

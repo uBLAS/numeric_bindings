@@ -20,8 +20,6 @@
 #include <boost/numeric/bindings/is_complex.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/is_real.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -32,6 +30,12 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
+
+//
+// The LAPACK-backend for gebrd is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -45,41 +49,57 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to float value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * float value-type.
 //
-inline void gebrd( fortran_int_t m, fortran_int_t n, float* a,
+inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n, float* a,
         fortran_int_t lda, float* d, float* e, float* tauq, float* taup,
-        float* work, fortran_int_t lwork, fortran_int_t& info ) {
+        float* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_SGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to double value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * double value-type.
 //
-inline void gebrd( fortran_int_t m, fortran_int_t n, double* a,
+inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n, double* a,
         fortran_int_t lda, double* d, double* e, double* tauq, double* taup,
-        double* work, fortran_int_t lwork, fortran_int_t& info ) {
+        double* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_DGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
-inline void gebrd( fortran_int_t m, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, float* d, float* e, std::complex<float>* tauq,
-        std::complex<float>* taup, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n,
+        std::complex<float>* a, fortran_int_t lda, float* d, float* e,
+        std::complex<float>* tauq, std::complex<float>* taup,
+        std::complex<float>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_CGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
-inline void gebrd( fortran_int_t m, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, double* d, double* e, std::complex<double>* tauq,
-        std::complex<double>* taup, std::complex<double>* work,
-        fortran_int_t lwork, fortran_int_t& info ) {
+inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda, double* d, double* e,
+        std::complex<double>* tauq, std::complex<double>* taup,
+        std::complex<double>* work, fortran_int_t lwork ) {
+    fortran_int_t info(0);
     LAPACK_ZGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -108,8 +128,8 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename WORK >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, fortran_int_t& info, detail::workspace1<
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -145,11 +165,11 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::gebrd( size_row(a), size_column(a), begin_value(a),
+        return detail::gebrd( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(d), begin_value(e),
                 begin_value(tauq), begin_value(taup),
                 begin_value(work.select(real_type())),
-                size(work.select(real_type())), info );
+                size(work.select(real_type())) );
     }
 
     //
@@ -161,12 +181,11 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_row(a), size_column(a) ) );
-        invoke( a, d, e, tauq, taup, info, workspace( tmp_work ) );
+        return invoke( a, d, e, tauq, taup, workspace( tmp_work ) );
     }
 
     //
@@ -178,17 +197,15 @@ struct gebrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, optimal_workspace work ) {
         real_type opt_size_work;
         detail::gebrd( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(d), begin_value(e),
-                begin_value(tauq), begin_value(taup), &opt_size_work, -1,
-                info );
+                begin_value(tauq), begin_value(taup), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, d, e, tauq, taup, info, workspace( tmp_work ) );
+        invoke( a, d, e, tauq, taup, workspace( tmp_work ) );
     }
 
     //
@@ -219,8 +236,8 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename WORK >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, fortran_int_t& info, detail::workspace1<
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
@@ -252,11 +269,11 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_row(a)) );
-        detail::gebrd( size_row(a), size_column(a), begin_value(a),
+        return detail::gebrd( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(d), begin_value(e),
                 begin_value(tauq), begin_value(taup),
                 begin_value(work.select(value_type())),
-                size(work.select(value_type())), info );
+                size(work.select(value_type())) );
     }
 
     //
@@ -268,12 +285,11 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, fortran_int_t& info,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_row(a), size_column(a) ) );
-        invoke( a, d, e, tauq, taup, info, workspace( tmp_work ) );
+        return invoke( a, d, e, tauq, taup, workspace( tmp_work ) );
     }
 
     //
@@ -285,17 +301,15 @@ struct gebrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP >
-    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
-            VectorTAUP& taup, fortran_int_t& info,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
+            VectorTAUQ& tauq, VectorTAUP& taup, optimal_workspace work ) {
         value_type opt_size_work;
         detail::gebrd( size_row(a), size_column(a), begin_value(a),
                 stride_major(a), begin_value(d), begin_value(e),
-                begin_value(tauq), begin_value(taup), &opt_size_work, -1,
-                info );
+                begin_value(tauq), begin_value(taup), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, d, e, tauq, taup, info, workspace( tmp_work ) );
+        invoke( a, d, e, tauq, taup, workspace( tmp_work ) );
     }
 
     //
@@ -332,10 +346,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -351,10 +363,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -370,10 +380,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -389,10 +397,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -408,10 +414,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -427,10 +431,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -446,10 +448,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -465,10 +465,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -484,10 +482,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -503,10 +499,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -523,10 +517,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -542,10 +534,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -562,10 +552,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -581,10 +569,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -601,10 +587,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -620,10 +604,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -639,10 +621,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -658,10 +638,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -677,10 +655,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -696,10 +672,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -715,10 +689,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -734,10 +706,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -754,10 +724,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -773,10 +741,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -792,10 +758,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -811,10 +775,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -831,10 +793,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -850,10 +810,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -870,10 +828,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -889,10 +845,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -909,10 +863,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -928,10 +880,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -947,10 +897,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -966,10 +914,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -985,10 +931,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1004,10 +948,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1023,10 +965,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1042,10 +982,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1062,10 +1000,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1081,10 +1017,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1100,10 +1034,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1119,10 +1051,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1139,10 +1069,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1158,10 +1086,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1178,10 +1104,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1197,10 +1121,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1217,10 +1139,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1236,10 +1156,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1255,10 +1173,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1274,10 +1190,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1293,10 +1207,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1312,10 +1224,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1331,10 +1241,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1350,10 +1258,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d, VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1370,10 +1276,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1389,10 +1293,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1408,10 +1310,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename Workspace >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup, Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1427,10 +1327,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, VectorD& d, const VectorE& e,
         const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1447,10 +1345,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1466,10 +1362,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1486,10 +1380,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1505,10 +1397,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 //
@@ -1525,10 +1415,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
         Workspace work ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, work );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, work );
 }
 
 //
@@ -1544,10 +1432,8 @@ template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP >
 inline std::ptrdiff_t gebrd( const MatrixA& a, const VectorD& d,
         const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup ) {
-    fortran_int_t info(0);
-    gebrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
-            taup, info, optimal_workspace() );
-    return info;
+    return gebrd_impl< typename value< MatrixA >::type >::invoke( a, d,
+            e, tauq, taup, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -19,8 +19,6 @@
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
-#include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -29,6 +27,12 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_const.hpp>
+
+//
+// The LAPACK-backend for herfs is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 
 namespace boost {
 namespace numeric {
@@ -42,33 +46,40 @@ namespace lapack {
 namespace detail {
 
 //
-// Overloaded function for dispatching to complex<float> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<float> value-type.
 //
 template< typename UpLo >
-inline void herfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t herfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<float>* a, fortran_int_t lda,
         const std::complex<float>* af, fortran_int_t ldaf,
         const fortran_int_t* ipiv, const std::complex<float>* b,
         fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float* ferr, float* berr, std::complex<float>* work, float* rwork,
-        fortran_int_t& info ) {
+        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
+    fortran_int_t info(0);
     LAPACK_CHERFS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, af,
             &ldaf, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );
+    return info;
 }
 
 //
-// Overloaded function for dispatching to complex<double> value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * complex<double> value-type.
 //
 template< typename UpLo >
-inline void herfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t herfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
         const std::complex<double>* a, fortran_int_t lda,
         const std::complex<double>* af, fortran_int_t ldaf,
         const fortran_int_t* ipiv, const std::complex<double>* b,
         fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double* ferr, double* berr, std::complex<double>* work, double* rwork,
-        fortran_int_t& info ) {
+        double* ferr, double* berr, std::complex<double>* work,
+        double* rwork ) {
+    fortran_int_t info(0);
     LAPACK_ZHERFS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, af,
             &ldaf, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );
+    return info;
 }
 
 } // namespace detail
@@ -92,10 +103,10 @@ struct herfs_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
+            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
+            RWORK > work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
@@ -136,12 +147,13 @@ struct herfs_impl {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        detail::herfs( uplo(), size_column(a), size_column(x), begin_value(a),
-                stride_major(a), begin_value(af), stride_major(af),
-                begin_value(ipiv), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), begin_value(ferr),
-                begin_value(berr), begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), info );
+        return detail::herfs( uplo(), size_column(a), size_column(x),
+                begin_value(a), stride_major(a), begin_value(af),
+                stride_major(af), begin_value(ipiv), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x),
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -154,16 +166,15 @@ struct herfs_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            minimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        invoke( a, af, ipiv, b, x, ferr, berr, info, workspace( tmp_work,
+        return invoke( a, af, ipiv, b, x, ferr, berr, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -177,12 +188,11 @@ struct herfs_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( const MatrixA& a, const MatrixAF& af,
+    static std::ptrdiff_t invoke( const MatrixA& a, const MatrixAF& af,
             const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
-            optimal_workspace work ) {
+            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        invoke( a, af, ipiv, b, x, ferr, berr, info, minimal_workspace() );
+        return invoke( a, af, ipiv, b, x, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -225,10 +235,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -244,10 +252,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -263,10 +269,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -282,10 +286,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -301,10 +303,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -320,10 +320,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -339,10 +337,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -358,10 +354,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -377,10 +371,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -396,10 +388,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -415,10 +405,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -434,10 +422,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -453,10 +439,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -472,10 +456,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -491,10 +473,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, work );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, work );
 }
 
 //
@@ -510,10 +490,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline std::ptrdiff_t herfs( const MatrixA& a, const MatrixAF& af,
         const VectorIPIV& ipiv, const MatrixB& b, const MatrixX& x,
         const VectorFERR& ferr, const VectorBERR& berr ) {
-    fortran_int_t info(0);
-    herfs_impl< typename value< MatrixA >::type >::invoke( a, af, ipiv,
-            b, x, ferr, berr, info, optimal_workspace() );
-    return info;
+    return herfs_impl< typename value< MatrixA >::type >::invoke( a, af,
+            ipiv, b, x, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

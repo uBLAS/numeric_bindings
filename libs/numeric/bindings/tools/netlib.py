@@ -1260,9 +1260,18 @@ def parse_file( filename, template_map ):
           if len( match_workspace ) > 0:
             argument_properties[ 'workspace_query_for' ] = []
           for name in grouped_arguments[ 'by_io' ][ 'workspace' ]:
+            list_of_other_workspaces = []
+            for other in grouped_arguments[ 'by_io' ][ 'workspace' ]:
+                if other != name:
+                    list_of_other_workspaces.append( other )
+            other_work_regex = "|".join( list_of_other_workspaces )
+            print "list of other workspaces: ", list_of_other_workspaces
+
             if name in match_workspace:
               # try to find proof that it is actually a minimum size workspace query.
-              match_min_size = re.compile( 'minimum(size|of|the|array|\s)+' + name, re.M | re.S ).findall( work_query_block )
+              match_min_size = re.compile( 'minimum(' + other_work_regex + \
+                    '|size|sizes|of|the|array|arrays|and|\s)+' + name, \
+                    re.M | re.S ).findall( work_query_block )
               if len( match_min_size ) == 0:
                  argument_properties[ 'workspace_query_for' ] += [ name ]
               else:

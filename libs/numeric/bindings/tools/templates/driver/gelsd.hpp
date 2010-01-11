@@ -4,6 +4,8 @@ $TEMPLATE[gelsd.complex.min_size_rwork.args]
 MINMN,SMLSIZ,NLVL,NRHS
 $TEMPLATE[gelsd.all.extra_variables]
 MINMN,SMLSIZ,NLVL
+$TEMPLATE[gelsd.all.extra_opt_variables]
+MINMN,NLVL
 $TEMPLATE[gelsd.all.MINMN.init]
 $INTEGER_TYPE minmn = std::min< $INTEGER_TYPE >( size_row(a), size_column(a) );
 $TEMPLATE[gelsd.all.SMLSIZ.init]

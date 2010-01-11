@@ -114,6 +114,8 @@ def level0_type( name, properties ):
             result = level0_types[ name ]
     if '*' not in result and '&' not in result and 'const ' in result:
         result = result.replace( 'const ', '' )
+    if name == 'INFO':
+        result = None
     return result
 
 def level0_typename( name, properties ):
@@ -240,6 +242,10 @@ def call_level0_type( name, properties, arg_map ):
 
   else:
     result = name.lower()
+
+  if name == 'INFO':
+    result = None
+
   return result
 
 
@@ -264,6 +270,9 @@ def level1_type( name, properties ):
         properties[ 'value_type' ] == 'DOUBLE COMPLEX':
          result = result.replace( complex_float_type, "value_type" )
          result = result.replace( complex_double_type, "value_type" )
+
+  if name == 'INFO':
+    result = None
 
   return result
 

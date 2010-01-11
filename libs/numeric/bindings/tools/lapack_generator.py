@@ -9,6 +9,7 @@
 #
 
 import netlib, bindings, documentation
+import cblas
 
 import re, os.path, copy
 from types import StringType
@@ -65,8 +66,6 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/is_mutable.hpp>',
       #'#include <boost/numeric/bindings/traits/traits.hpp>',
       #'#include <boost/numeric/bindings/traits/type_traits.hpp>', 
-      '#include <boost/numeric/bindings/lapack/detail/lapack.h>',
-      '#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>',
       #'#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/type_traits/remove_const.hpp>',
@@ -77,32 +76,83 @@ def write_functions( info_map, group, template_map, base_dir ):
 
     #
     # LEVEL 0 HANDLING
-    #  
+    #
+    # If the first subroutine has a clapack_ routine, assume we are going
+    # to provide specialisations
     overloads = ''
-    for subroutine in subroutines:
-      sub_template = template_map[ 'lapack_overloads' ]
-      # add the argument list here
-      arg_list = []
-      lapack_arg_list = []
-      typename_list = []
+    backend_includes = ''
+    if 'clapack_routine' in info_map[ subroutines[0] ]:
+        overloads = template_map[ 'backend_lapack_with_clapack' ]
+        backend_includes = template_map[ 'lapack_backend_includes_with_clapack' ]
+    else:
+        overloads = template_map[ 'backend_lapack_default' ]
+        backend_includes = template_map[ 'lapack_backend_includes_default' ]
 
-      for arg in info_map[ subroutine ][ 'arguments' ]:
-        arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
-        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_lapack_header' ] ]
-        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
-            typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
+    for select_backend in [ 'lapack_overloads', 'clapack_overloads' ]:
 
-      sub_template = sub_template.replace( "$TYPES", ", ".join( typename_list ) )
-      sub_template = sub_template.replace( "template<  >\n", "" )
-      sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
-      sub_template = sub_template.replace( "$CALL_LAPACK_HEADER", ", ".join( lapack_arg_list ) )
-      sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
-      sub_template = sub_template.replace( '$groupname', group_name.lower() )
-      sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
-      sub_template = sub_template.replace( '$LIBRARY_INT_TYPE', "fortran_int_t" )
-      
-      overloads += bindings.proper_indent( sub_template )
-  
+      sub_overloads = ''
+
+      for subroutine in subroutines:
+
+        sub_template = template_map[ select_backend ]
+        have_clapack = 'clapack_routine' in info_map[ subroutine ]
+        # add the argument list here
+        arg_list = []
+        lapack_arg_list = []
+        clapack_arg_list = []
+        typename_list = []
+        level0_static_asserts = []
+
+        for arg in info_map[ subroutine ][ 'arguments' ]:
+            print "Subroutine ", subroutine, " arg ", arg
+            if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] != None:
+                arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
+            if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_lapack_header' ] != None:
+                lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_lapack_header' ] ]
+            if have_clapack and info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_clapack_header' ] != None:
+                clapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_clapack_header' ] ]
+            if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
+                typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
+
+        if "has_clapack_order_arg" in info_map[ subroutine ]:
+            if info_map[ subroutine ][ "has_clapack_order_arg" ] == True:
+                arg_list.insert( 0, "Order" )
+                clapack_arg_list.insert( 0, "clapack_option< Order >::value" )
+                typename_list.insert( 0, "typename Order" )
+                level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );" )
+                includes += [ "#include <boost/type_traits/is_same.hpp>" ]
+
+        sub_template = sub_template.replace( "$TYPES", ", ".join( typename_list ) )
+        sub_template = sub_template.replace( "template<  >\n", "" )
+        sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
+        sub_template = sub_template.replace( "$CALL_LAPACK_HEADER", ", ".join( lapack_arg_list ) )
+        sub_template = sub_template.replace( "$CALL_CLAPACK_HEADER", ", ".join( clapack_arg_list ) )
+        sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
+        sub_template = sub_template.replace( '$groupname', group_name.lower() )
+        sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
+        sub_template = sub_template.replace( '$STATIC_ASSERTS', "\n    ".join( level0_static_asserts ) )
+
+        if select_backend == 'lapack_overloads':
+            sub_template = sub_template.replace( '$LIBRARY_INT_TYPE', "fortran_int_t" )
+        else:
+            sub_template = sub_template.replace( '$LIBRARY_INT_TYPE', "int" )
+
+        # CLAPACK stuff
+        if 'clapack_routine' in info_map[ subroutine ]:
+            clapack_routine = info_map[ subroutine ][ 'clapack_routine' ]
+        else:
+            clapack_routine = '// NOT FOUND'
+        sub_template = sub_template.replace( "$CLAPACK_ROUTINE", clapack_routine )
+
+
+        # Finalize this sub_overload
+        sub_overloads += bindings.proper_indent( sub_template )
+
+      # fill in for the appropriate back-end
+      print "Replacing ", '$' + select_backend.upper()
+      overloads = overloads.replace( '$' + select_backend.upper(),
+        sub_overloads )
+
     cases = {}
     # first, see what kind of functions we have
     # needed for argument check etc.
@@ -221,7 +271,8 @@ def write_functions( info_map, group, template_map, base_dir ):
 
       # import the code, by argument
       for arg in info_map[ subroutine ][ 'arguments' ]:
-        level0_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] ]
+        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] != None:
+          level0_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1' ] != None:
           level1_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
@@ -251,6 +302,10 @@ def write_functions( info_map, group, template_map, base_dir ):
           print arg
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] != None:
             user_defined_opt_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] ]
+
+      # Insert the order_type() if appropriate
+      if "has_clapack_order_arg" in info_map[ subroutine ]:
+          level0_arg_list.insert( 0, "order()" )
 
       # Level 1 replacements
       level1_template = level1_template.replace( "$TYPEDEFS", "\n        ".join( typedef_list ) )
@@ -453,6 +508,7 @@ def write_functions( info_map, group, template_map, base_dir ):
 
     result = template_map[ 'lapack.hpp' ]
     result = result.replace( '$INCLUDES', includes_code )
+    result = result.replace( '$BACKEND_INCLUDES', backend_includes )
     result = result.replace( '$OVERLOADS', overloads )
     result = result.replace( '$LEVEL1', level1 )
     result = result.replace( '$LEVEL2', level2 )
@@ -517,6 +573,7 @@ def read_templates( template_file ):
   return result
 
 lapack_src_path = './lapack-3.2.0/SRC'
+clapack_h_path = './atlas-3.6.0/include/clapack.h'
 template_src_path = './templates'
 bindings_impl_target_path = '../../../../boost/numeric/bindings/lapack/'
 test_target_path = '../test/lapack/'
@@ -541,6 +598,8 @@ for lapack_file in os.listdir( lapack_src_path ):
     if key != None and value != None:
       print "Adding LAPACK subroutine", key
       function_info_map[ key ] = value
+
+cblas.parse_file( clapack_h_path, function_info_map, templates )
 
 print "Grouping subroutines..."
 

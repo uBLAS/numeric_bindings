@@ -18,14 +18,23 @@ import pprint
 
 def parse_file( filename, info_map, template_map ):
 
+    parser_mode = template_map[ 'PARSERMODE' ]
+    prefix_map = { 'BLAS': 'cblas_',
+                   'LAPACK': 'clapack_' }
+    prefix = prefix_map[ parser_mode ]
+
+    print prefix
+
     pp = pprint.PrettyPrinter( indent = 2 )
     source = open( filename ).read() 
 
-    for match in re.compile( '(void|float|double) +cblas_([^\(]+)\(([^\)]+)\)', re.M | re.S ).findall( source ):
+    for match in re.compile( '(void|float|int|double) +' + prefix + '([^\(]+)\(([^\)]+)\)', re.M | re.S ).findall( source ):
         print "----"
         return_type  = match[0]
-        blas_routine = match[1].split("_sub")[0].upper().strip()
-        print "CBLAS routine:", match[1] , "   BLAS equivalent:", blas_routine
+        fortran_routine = match[1].split("_sub")[0].upper().strip()
+        c_routine = prefix + match[1]
+
+        print "C" + parser_mode + " routine:", c_routine , "   " + parser_mode + " equivalent:", fortran_routine
         arguments = {}
         for arg in match[2].replace('\n','').split( ',' ):
             arg = arg.strip()
@@ -36,12 +45,12 @@ def parse_file( filename, info_map, template_map ):
 
         pp.pprint( arguments )
 
-        if blas_routine in info_map:
-            print "Found ", blas_routine, " in Fortran info_map."
-            info_map[ blas_routine ][ "cblas_routine" ] = 'cblas_' + match[1]
+        if fortran_routine in info_map:
+            print "Found ", fortran_routine, " in Fortran info_map."
+            info_map[ fortran_routine ][ prefix + "routine" ] = c_routine
 
             # read aliases, if they are there
-            my_key = blas_routine[ 1: ].lower() + '.all.cblas_alias'
+            my_key = fortran_routine[ 1: ].lower() + '.all.cblas_alias'
             alias_map = {}
             #print my_key
             if netlib.my_has_key( my_key, template_map ) != None:
@@ -54,7 +63,7 @@ def parse_file( filename, info_map, template_map ):
 
             # Try to match and insert arguments
             # argument_map is the data gathered through the Fortran interface
-            for arg in info_map[ blas_routine ][ 'argument_map' ]:
+            for arg in info_map[ fortran_routine ][ 'argument_map' ]:
                 cblas_arg = ''
                 if arg in arguments:
                     cblas_arg = arg
@@ -62,10 +71,10 @@ def parse_file( filename, info_map, template_map ):
                     if alias_map[ arg ] in arguments:
                         cblas_arg = alias_map[ arg ]
 
-                print "Looking for BLAS argument ", arg, " CBLAS equivalent: ", cblas_arg
+                print "Looking for " + parser_mode + " argument ", arg, " CBLAS equivalent: ", cblas_arg
                 if cblas_arg in arguments:
                     print "Found matching argument, inserting call_cblas_header stuff"
-                    call_cblas_header = info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_blas_header" ]
+                    call_cblas_header = info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_blas_header" ]
                     print "Original: ", call_cblas_header
                     if not arguments[ cblas_arg ][ "pointer" ]:
                         call_cblas_header = call_cblas_header.replace( "&", "" )
@@ -74,27 +83,34 @@ def parse_file( filename, info_map, template_map ):
 
                     print "Result:   ", call_cblas_header
                     if arg == 'UPLO':
-                        info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                            "cblas_option< UpLo >::value"
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = \
+                            prefix + "option< UpLo >::value"
                     elif arg == 'DIAG':
-                        info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                            "cblas_option< Diag >::value"
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = \
+                            prefix + "option< Diag >::value"
                     elif arg == 'SIDE':
-                        info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                            "cblas_option< Side >::value"
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = \
+                            prefix + "option< Side >::value"
                     elif  arg == 'TRANS' or arg == 'TRANSA' or arg == 'TRANSB':
-                        info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                          "cblas_option< " + netlib.level0_types[ arg ] + " >::value"
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = \
+                          prefix + "option< " + netlib.level0_types[ arg ] + " >::value"
                     else:
-                        info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = call_cblas_header
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = call_cblas_header
                 else:
-                    exit(0)
+                    if arg == 'INFO' and return_type == 'int':
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = None
+                        print "INFO is the return type, adding it with code None"
+                    elif arg == 'WORK' or arg == 'LWORK':
+                        info_map[ fortran_routine ][ "argument_map" ][ arg ][ "code" ][ "call_" + prefix + "header" ] = None
+                        info_map[ fortran_routine ][ "clapack_disable_workspace" ] = True
+                    else:
+                        exit(0)
 
             if "ORDER" in arguments:
                 print "Adding order argument."
-                info_map[ blas_routine ][ "has_cblas_order_arg" ] = True
+                info_map[ fortran_routine ][ "has_" + prefix + "order_arg" ] = True
             else:
                 print "Not adding order argument."
-                info_map[ blas_routine ][ "has_cblas_order_arg" ] = False
+                info_map[ fortran_routine ][ "has_" + prefix + "order_arg" ] = False
 
 

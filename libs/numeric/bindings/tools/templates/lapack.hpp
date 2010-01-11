@@ -16,6 +16,7 @@ $TEMPLATE[lapack.hpp]
 #define BOOST_NUMERIC_BINDINGS_LAPACK_$DIRNAME_$GROUPNAME_HPP
 
 $INCLUDES
+$BACKEND_INCLUDES
 
 namespace boost {
 namespace numeric {
@@ -48,13 +49,59 @@ $LEVEL2
 } // namespace boost
 
 #endif
+$TEMPLATE[lapack_backend_includes_with_clapack]
+
+//
+// The LAPACK-backend for $groupname is selected by defining a pre-processor
+// variable, which can be one of
+// * for ATLAS's CLAPACK, define BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+// * netlib-compatible LAPACK is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+#include <boost/numeric/bindings/lapack/detail/clapack.h>
+#include <boost/numeric/bindings/lapack/detail/clapack_option.hpp>
+#else
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#endif
+$TEMPLATE[lapack_backend_includes_default]
+
+//
+// The LAPACK-backend for $groupname is the netlib-compatible backend.
+//
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+$TEMPLATE[backend_lapack_default]
+$LAPACK_OVERLOADS
+$TEMPLATE[backend_lapack_with_clapack]
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+$CLAPACK_OVERLOADS
+#else
+$LAPACK_OVERLOADS
+#endif
 $TEMPLATE[lapack_overloads]
 //
-// Overloaded function for dispatching to $SPECIALIZATION value-type.
+// Overloaded function for dispatching to
+// * netlib-compatible LAPACK backend (the default), and
+// * $SPECIALIZATION value-type.
 //
 template< $TYPES >
-inline void $groupname( $LEVEL0 ) {
+inline $INTEGER_TYPE $groupname( $LEVEL0 ) {
+    $STATIC_ASSERTS
+    fortran_int_t info(0);
     LAPACK_$SUBROUTINE( $CALL_LAPACK_HEADER );
+    return info;
+}
+
+$TEMPLATE[clapack_overloads]
+//
+// Overloaded function for dispatching to
+// * ATLAS's CLAPACK backend, and
+// * $SPECIALIZATION value-type.
+//
+template< $TYPES >
+inline $INTEGER_TYPE $groupname( $LEVEL0 ) {
+    return $CLAPACK_ROUTINE( $CALL_CLAPACK_HEADER );
 }
 
 $TEMPLATE[lapack_include_hierarchy]
@@ -110,12 +157,12 @@ $TEMPLATE[level1_workspace]
     // * Asserts that most arguments make sense.
     //
     template< $TYPES, $WORKSPACE_TYPENAMES >
-    static void invoke( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+    static $INTEGER_TYPE invoke( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         $TYPEDEFS
         $STATIC_ASSERTS
         $INIT_USER_DEFINED_VARIABLES
         $ASSERTS
-        detail::$groupname( $CALL_LEVEL0 );
+        return detail::$groupname( $CALL_LEVEL0 );
     }
 
     //
@@ -126,11 +173,11 @@ $TEMPLATE[level1_workspace]
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< $TYPES >
-    static void invoke( $LEVEL1, minimal_workspace work ) {
+    static $INTEGER_TYPE invoke( $LEVEL1, minimal_workspace work ) {
         $TYPEDEFS
         $INIT_USER_DEFINED_VARIABLES
 $SETUP_MIN_WORKARRAYS_POST
-        invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
+        return invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
     }
 
     //
@@ -141,7 +188,7 @@ $SETUP_MIN_WORKARRAYS_POST
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< $TYPES >
-    static void invoke( $LEVEL1, optimal_workspace work ) {
+    static $INTEGER_TYPE invoke( $LEVEL1, optimal_workspace work ) {
         $TYPEDEFS
 $OPT_WORKSPACE_FUNC
     }
@@ -156,7 +203,7 @@ $TEMPLATE[level1_opt_workspace]
         $SETUP_OPT_WORKARRAYS_POST
         invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
 $TEMPLATE[level1_opt_workspace_is_min]
-        invoke( $CALL_LEVEL1, minimal_workspace() );
+        return invoke( $CALL_LEVEL1, minimal_workspace() );
 $TEMPLATE[level2_workspace]
 //
 // Overloaded function for $groupname. Its overload differs for
@@ -164,10 +211,8 @@ $COMMENTS
 // * User-defined workspace
 //
 template< $TYPES, typename Workspace >
-inline std::ptrdiff_t $groupname( $LEVEL2, Workspace work ) {
-    fortran_int_t info(0);
-    $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
-    return info;
+inline $INTEGER_TYPE $groupname( $LEVEL2, Workspace work ) {
+    return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
 }
 
 //
@@ -176,10 +221,8 @@ $COMMENTS
 // * Default workspace-type (optimal)
 //
 template< $TYPES >
-inline std::ptrdiff_t $groupname( $LEVEL2 ) {
-    fortran_int_t info(0);
-    $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
-    return info;
+inline $INTEGER_TYPE $groupname( $LEVEL2 ) {
+    return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
 }
 $TEMPLATE[setup_min_workspace]
         bindings::detail::array< $WORKSPACE_TYPE > tmp_$NAME( min_size_$NAME( $CALL_MIN_SIZE ) );
@@ -190,7 +233,7 @@ $TEMPLATE[min_size_func]
     // Static member function that returns the minimum size of
     // workspace-array $NAME.
     //
-    static std::ptrdiff_t min_size_$NAME( $ARGUMENTS ) {
+    static $INTEGER_TYPE min_size_$NAME( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
@@ -205,11 +248,11 @@ $TEMPLATE[level1_noworkspace]
     // * Asserts that most arguments make sense.
     //
     template< $TYPES >
-    static void invoke( $LEVEL1 ) {
+    static $INTEGER_TYPE invoke( $LEVEL1 ) {
         $TYPEDEFS
         $STATIC_ASSERTS
         $ASSERTS
-        detail::$groupname( $CALL_LEVEL0 );
+        return detail::$groupname( $CALL_LEVEL0 );
     }
 
 };
@@ -220,9 +263,7 @@ $TEMPLATE[level2_noworkspace]
 $COMMENTS
 //
 template< $TYPES >
-inline std::ptrdiff_t $groupname( $LEVEL2 ) {
-    fortran_int_t info(0);
-    $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
-    return info;
+inline $INTEGER_TYPE $groupname( $LEVEL2 ) {
+    return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

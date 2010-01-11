@@ -201,7 +201,7 @@ $TEMPLATE[level1_opt_workspace]
         $SETUP_OPT_WORKARRAYS_PRE
         detail::$groupname( $WORKSPACE_QUERY );
         $SETUP_OPT_WORKARRAYS_POST
-        invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
+        return invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
 $TEMPLATE[level1_opt_workspace_is_min]
         return invoke( $CALL_LEVEL1, minimal_workspace() );
 $TEMPLATE[level2_workspace]

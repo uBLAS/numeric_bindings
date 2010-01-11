@@ -9,8 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_CBLAS_OPTION_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_CBLAS_OPTION_HPP
 
-#include <boost/mpl/int.hpp>
-#include <boost/numeric/bindings/blas/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas.h>
 #include <boost/numeric/bindings/tag.hpp>
 
 namespace boost {
@@ -23,37 +22,59 @@ template< typename Tag >
 struct cblas_option {};
 
 template<>
-struct cblas_option< tag::row_major >:  mpl::int_< CblasRowMajor > {};
+struct cblas_option< tag::row_major > {
+    static const CBLAS_ORDER value = CblasRowMajor;
+};
 
 template<>
-struct cblas_option< tag::column_major >:  mpl::int_< CblasColMajor > {};
+struct cblas_option< tag::column_major > {
+    static const CBLAS_ORDER value = CblasColMajor;
+};
 
 template<>
-struct cblas_option< tag::transpose >:  mpl::int_< CblasTrans > {};
+struct cblas_option< tag::transpose > {
+    static const CBLAS_TRANSPOSE value = CblasTrans;
+};
 
 template<>
-struct cblas_option< tag::no_transpose >:  mpl::int_< CblasNoTrans > {};
+struct cblas_option< tag::no_transpose > {
+    static const CBLAS_TRANSPOSE value = CblasNoTrans;
+};
 
 template<>
-struct cblas_option< tag::conjugate >:  mpl::int_< CblasConjTrans > {};
+struct cblas_option< tag::conjugate > {
+    static const CBLAS_TRANSPOSE value = CblasConjTrans;
+};
 
 template<>
-struct cblas_option< tag::upper >:  mpl::int_< CblasUpper > {};
+struct cblas_option< tag::upper > {
+    static const CBLAS_UPLO value = CblasUpper;
+};
 
 template<>
-struct cblas_option< tag::lower >:  mpl::int_< CblasLower > {};
+struct cblas_option< tag::lower > {
+    static const CBLAS_UPLO value = CblasLower;
+};
 
 template<>
-struct cblas_option< tag::unit >:  mpl::int_< CblasUnit > {};
+struct cblas_option< tag::unit > {
+    static const CBLAS_DIAG value = CblasUnit;
+};
 
 template<>
-struct cblas_option< tag::non_unit >:  mpl::int_< CblasNonUnit > {};
+struct cblas_option< tag::non_unit > {
+    static const CBLAS_DIAG value = CblasNonUnit;
+};
 
 template<>
-struct cblas_option< tag::left >:  mpl::int_< CblasLeft > {};
+struct cblas_option< tag::left > {
+    static const CBLAS_SIDE value = CblasLeft;
+};
 
 template<>
-struct cblas_option< tag::right >:  mpl::int_< CblasRight > {};
+struct cblas_option< tag::right > {
+    static const CBLAS_SIDE value = CblasRight;
+};
 
 } // namespace detail
 } // namespace blas

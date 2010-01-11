@@ -282,7 +282,8 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
             optimal_workspace work ) {
         real_type opt_size_work;
-        fortran_int_t opt_size_iwork;
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( size_column(a), sense ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
                 size_column(a), sort ) );
         detail::ggesx( jobvsl, jobvsr, sort, selctg, sense,
@@ -291,11 +292,9 @@ struct ggesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 begin_value(alphai), begin_value(beta), begin_value(vsl),
                 stride_major(vsl), begin_value(vsr), stride_major(vsr),
                 begin_value(rconde), begin_value(rcondv), &opt_size_work, -1,
-                &opt_size_iwork, -1, begin_value(tmp_bwork) );
+                begin_value(tmp_iwork), -1, begin_value(tmp_bwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        bindings::detail::array< fortran_int_t > tmp_iwork(
-                opt_size_iwork );
         return invoke( jobvsl, jobvsr, sort, selctg, sense, a, b, sdim,
                 alphar, alphai, beta, vsl, vsr, rconde, rcondv,
                 workspace( tmp_work, tmp_iwork, tmp_bwork ) );
@@ -483,7 +482,8 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 size_column(a) ) );
-        fortran_int_t opt_size_iwork;
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( size_column(a), sense ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
                 size_column(a), sort ) );
         detail::ggesx( jobvsl, jobvsr, sort, selctg, sense,
@@ -492,12 +492,10 @@ struct ggesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(beta), begin_value(vsl), stride_major(vsl),
                 begin_value(vsr), stride_major(vsr), begin_value(rconde),
                 begin_value(rcondv), &opt_size_work, -1,
-                begin_value(tmp_rwork), &opt_size_iwork, -1,
+                begin_value(tmp_rwork), begin_value(tmp_iwork), -1,
                 begin_value(tmp_bwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        bindings::detail::array< fortran_int_t > tmp_iwork(
-                opt_size_iwork );
         return invoke( jobvsl, jobvsr, sort, selctg, sense, a, b, sdim, alpha,
                 beta, vsl, vsr, rconde, rcondv, workspace( tmp_work,
                 tmp_rwork, tmp_iwork, tmp_bwork ) );

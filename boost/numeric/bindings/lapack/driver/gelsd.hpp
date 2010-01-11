@@ -219,15 +219,14 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const real_type rcond, fortran_int_t& rank,
             optimal_workspace work ) {
         real_type opt_size_work;
-        fortran_int_t opt_size_iwork;
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( minmn, nlvl ) );
         detail::gelsd( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(s), rcond, rank, &opt_size_work,
-                -1, &opt_size_iwork );
+                -1, begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        bindings::detail::array< fortran_int_t > tmp_iwork(
-                opt_size_iwork );
         return invoke( a, b, s, rcond, rank, workspace( tmp_work,
                 tmp_iwork ) );
     }

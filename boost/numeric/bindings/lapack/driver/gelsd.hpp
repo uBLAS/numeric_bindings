@@ -228,7 +228,8 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_iwork ) );
+        return invoke( a, b, s, rcond, rank, workspace( tmp_work,
+                tmp_iwork ) );
     }
 
     //
@@ -366,7 +367,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 traits::detail::to_int( opt_size_rwork ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork,
+        return invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 

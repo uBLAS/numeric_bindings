@@ -245,8 +245,8 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
-                workspace( tmp_work ) );
+        return invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q,
+                z, workspace( tmp_work ) );
     }
 
     //
@@ -375,7 +375,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z,
+        return invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z,
                 workspace( tmp_work, tmp_rwork ) );
     }
 

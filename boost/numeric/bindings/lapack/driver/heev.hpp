@@ -154,7 +154,7 @@ struct heev_impl {
                 begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobz, a, w, workspace( tmp_work, tmp_rwork ) );
+        return invoke( jobz, a, w, workspace( tmp_work, tmp_rwork ) );
     }
 
     //

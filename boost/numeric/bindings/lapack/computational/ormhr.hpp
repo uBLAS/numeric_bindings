@@ -163,7 +163,7 @@ struct ormhr_impl {
                 begin_value(c), stride_major(c), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( side, ilo, ihi, a, tau, c, workspace( tmp_work ) );
+        return invoke( side, ilo, ihi, a, tau, c, workspace( tmp_work ) );
     }
 
     //

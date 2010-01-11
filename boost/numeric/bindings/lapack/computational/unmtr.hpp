@@ -167,7 +167,7 @@ struct unmtr_impl {
                 &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( side, a, tau, c, workspace( tmp_work ) );
+        return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //

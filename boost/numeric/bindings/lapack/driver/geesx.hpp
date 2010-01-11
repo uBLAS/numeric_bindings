@@ -241,8 +241,8 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobvs, sort, select, sense, a, sdim, wr, wi, vs, rconde,
-                rcondv, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
+        return invoke( jobvs, sort, select, sense, a, sdim, wr, wi, vs,
+                rconde, rcondv, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
 
     //
@@ -386,8 +386,8 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(tmp_bwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvs, sort, select, sense, a, sdim, w, vs, rconde, rcondv,
-                workspace( tmp_work, tmp_rwork, tmp_bwork ) );
+        return invoke( jobvs, sort, select, sense, a, sdim, w, vs, rconde,
+                rcondv, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
     //

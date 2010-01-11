@@ -162,7 +162,7 @@ struct sytrd_impl {
                 begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, d, e, tau, workspace( tmp_work ) );
+        return invoke( a, d, e, tau, workspace( tmp_work ) );
     }
 
     //

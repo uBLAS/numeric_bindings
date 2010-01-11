@@ -212,7 +212,7 @@ struct hesvx_impl {
                 begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr,
+        return invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 

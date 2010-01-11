@@ -204,7 +204,7 @@ struct gelss_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, s, rcond, rank, workspace( tmp_work ) );
+        return invoke( a, b, s, rcond, rank, workspace( tmp_work ) );
     }
 
     //
@@ -315,7 +315,8 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork ) );
+        return invoke( a, b, s, rcond, rank, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //

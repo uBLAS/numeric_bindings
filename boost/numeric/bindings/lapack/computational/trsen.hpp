@@ -169,7 +169,7 @@ struct trsen_impl {
                 -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( job, compq, select, t, q, w, m, s, sep,
+        return invoke( job, compq, select, t, q, w, m, s, sep,
                 workspace( tmp_work ) );
     }
 

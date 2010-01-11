@@ -147,7 +147,7 @@ struct syev_impl {
                 stride_major(a), begin_value(w), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobz, a, w, workspace( tmp_work ) );
+        return invoke( jobz, a, w, workspace( tmp_work ) );
     }
 
     //

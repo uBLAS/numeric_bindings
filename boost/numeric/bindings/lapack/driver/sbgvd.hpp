@@ -190,7 +190,8 @@ struct sbgvd_impl {
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, n, ab, bb, w, z, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, n, ab, bb, w, z, workspace( tmp_work,
+                tmp_iwork ) );
     }
 
     //

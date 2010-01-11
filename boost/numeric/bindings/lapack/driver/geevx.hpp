@@ -277,8 +277,8 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
-                scale, abnrm, rconde, rcondv, workspace( tmp_work,
+        return invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo,
+                ihi, scale, abnrm, rconde, rcondv, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -444,8 +444,9 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
-                abnrm, rconde, rcondv, workspace( tmp_work, tmp_rwork ) );
+        return invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi,
+                scale, abnrm, rconde, rcondv, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //

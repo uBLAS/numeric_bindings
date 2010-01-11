@@ -158,7 +158,7 @@ struct sygv_impl {
                 begin_value(w), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( itype, jobz, n, a, b, w, workspace( tmp_work ) );
+        return invoke( itype, jobz, n, a, b, w, workspace( tmp_work ) );
     }
 
     //

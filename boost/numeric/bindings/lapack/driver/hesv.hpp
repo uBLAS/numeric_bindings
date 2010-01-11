@@ -156,7 +156,7 @@ struct hesv_impl {
                 begin_value(b), stride_major(b), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, ipiv, b, workspace( tmp_work ) );
+        return invoke( a, ipiv, b, workspace( tmp_work ) );
     }
 
     //

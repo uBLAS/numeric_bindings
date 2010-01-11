@@ -196,7 +196,7 @@ struct heevx_impl {
                 begin_value(tmp_iwork), begin_value(ifail) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
+        return invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 

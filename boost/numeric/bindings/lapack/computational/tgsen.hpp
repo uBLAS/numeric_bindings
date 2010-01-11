@@ -277,8 +277,8 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( ijob, wantq, wantz, select, n, a, b, alphar, alphai, beta, q,
-                z, m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
+        return invoke( ijob, wantq, wantz, select, n, a, b, alphar, alphai,
+                beta, q, z, m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -426,8 +426,8 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( ijob, wantq, wantz, select, n, a, b, alpha, beta, q, z, m, pl,
-                pr, dif, workspace( tmp_work, tmp_iwork ) );
+        return invoke( ijob, wantq, wantz, select, n, a, b, alpha, beta, q, z,
+                m, pl, pr, dif, workspace( tmp_work, tmp_iwork ) );
     }
 
     //

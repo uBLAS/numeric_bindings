@@ -200,8 +200,8 @@ struct sygvx_impl {
                 begin_value(ifail) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z,
-                ifail, workspace( tmp_work, tmp_iwork ) );
+        return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,
+                w, z, ifail, workspace( tmp_work, tmp_iwork ) );
     }
 
     //

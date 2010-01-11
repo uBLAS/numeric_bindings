@@ -165,7 +165,7 @@ struct ormbr_impl {
                 begin_value(c), stride_major(c), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( vect, side, k, a, tau, c, workspace( tmp_work ) );
+        return invoke( vect, side, k, a, tau, c, workspace( tmp_work ) );
     }
 
     //

@@ -213,7 +213,7 @@ struct gesvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 stride_major(vt), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobu, jobvt, a, s, u, vt, workspace( tmp_work ) );
+        return invoke( jobu, jobvt, a, s, u, vt, workspace( tmp_work ) );
     }
 
     //
@@ -333,7 +333,8 @@ struct gesvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 stride_major(vt), &opt_size_work, -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobu, jobvt, a, s, u, vt, workspace( tmp_work, tmp_rwork ) );
+        return invoke( jobu, jobvt, a, s, u, vt, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //

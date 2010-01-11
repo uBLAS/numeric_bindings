@@ -250,7 +250,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
+        return invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
                 workspace( tmp_work, tmp_iwork ) );
     }
 

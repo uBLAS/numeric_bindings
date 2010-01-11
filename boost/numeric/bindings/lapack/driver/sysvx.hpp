@@ -263,7 +263,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr,
+        return invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -407,7 +407,7 @@ struct sysvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr,
+        return invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
 

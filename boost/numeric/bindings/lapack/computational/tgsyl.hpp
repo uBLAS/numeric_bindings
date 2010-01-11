@@ -255,8 +255,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 -1, begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( ijob, m, n, a, b, c, d, e, f, scale, dif, workspace( tmp_work,
-                tmp_iwork ) );
+        return invoke( ijob, m, n, a, b, c, d, e, f, scale, dif,
+                workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -392,8 +392,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 -1, begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( ijob, m, n, a, b, c, d, e, f, scale, dif, workspace( tmp_work,
-                tmp_iwork ) );
+        return invoke( ijob, m, n, a, b, c, d, e, f, scale, dif,
+                workspace( tmp_work, tmp_iwork ) );
     }
 
     //

@@ -348,7 +348,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_rwork,
+        return invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 

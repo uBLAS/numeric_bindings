@@ -239,7 +239,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 stride_major(vr), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr,
+        return invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr,
                 workspace( tmp_work ) );
     }
 
@@ -368,8 +368,8 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 &opt_size_work, -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr, workspace( tmp_work,
-                tmp_rwork ) );
+        return invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr,
+                workspace( tmp_work, tmp_rwork ) );
     }
 
     //

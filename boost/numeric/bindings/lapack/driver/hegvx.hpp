@@ -202,8 +202,8 @@ struct hegvx_impl {
                 begin_value(tmp_iwork), begin_value(ifail) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z,
-                ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
+        return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,
+                w, z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     //

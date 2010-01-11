@@ -176,7 +176,7 @@ struct geqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 stride_major(a), begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, tau, workspace( tmp_work ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -257,7 +257,7 @@ struct geqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 stride_major(a), begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( a, tau, workspace( tmp_work ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //

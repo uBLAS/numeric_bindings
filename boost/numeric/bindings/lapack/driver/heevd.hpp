@@ -168,7 +168,8 @@ struct heevd_impl {
                 traits::detail::to_int( opt_size_rwork ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, a, w, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
+        return invoke( jobz, a, w, workspace( tmp_work, tmp_rwork,
+                tmp_iwork ) );
     }
 
     //

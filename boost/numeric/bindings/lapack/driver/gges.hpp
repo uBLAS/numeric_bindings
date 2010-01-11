@@ -264,8 +264,8 @@ struct gges_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 &opt_size_work, -1, begin_value(tmp_bwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar, alphai,
-                beta, vsl, vsr, workspace( tmp_work, tmp_bwork ) );
+        return invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar,
+                alphai, beta, vsl, vsr, workspace( tmp_work, tmp_bwork ) );
     }
 
     //
@@ -417,8 +417,8 @@ struct gges_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 begin_value(tmp_bwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl,
-                vsr, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
+        return invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta,
+                vsl, vsr, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
     //

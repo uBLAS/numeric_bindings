@@ -161,7 +161,8 @@ struct hegv_impl {
                 begin_value(w), &opt_size_work, -1, begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( itype, jobz, n, a, b, w, workspace( tmp_work, tmp_rwork ) );
+        return invoke( itype, jobz, n, a, b, w, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     //

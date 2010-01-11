@@ -144,7 +144,7 @@ struct orgtr_impl {
                 begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        invoke( n, a, tau, workspace( tmp_work ) );
+        return invoke( n, a, tau, workspace( tmp_work ) );
     }
 
     //

@@ -189,8 +189,8 @@ struct stevr_impl {
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
-                workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z,
+                isuppz, workspace( tmp_work, tmp_iwork ) );
     }
 
     //

@@ -237,8 +237,8 @@ struct stemr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, range, n, d, e, vl, vu, il, iu, m, w, z, nzc, isuppz,
-                tryrac, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, range, n, d, e, vl, vu, il, iu, m, w, z, nzc,
+                isuppz, tryrac, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -376,8 +376,8 @@ struct stemr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( jobz, range, n, d, e, vl, vu, il, iu, m, w, z, nzc, isuppz,
-                tryrac, workspace( tmp_work, tmp_iwork ) );
+        return invoke( jobz, range, n, d, e, vl, vu, il, iu, m, w, z, nzc,
+                isuppz, tryrac, workspace( tmp_work, tmp_iwork ) );
     }
 
     //

@@ -177,7 +177,7 @@ struct spgvd_impl {
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        invoke( itype, jobz, n, ap, bp, w, z, workspace( tmp_work,
+        return invoke( itype, jobz, n, ap, bp, w, z, workspace( tmp_work,
                 tmp_iwork ) );
     }
 

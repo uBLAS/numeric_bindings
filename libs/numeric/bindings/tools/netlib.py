@@ -1261,7 +1261,13 @@ def parse_file( filename, template_map ):
             argument_properties[ 'workspace_query_for' ] = []
           for name in grouped_arguments[ 'by_io' ][ 'workspace' ]:
             if name in match_workspace:
-              argument_properties[ 'workspace_query_for' ] += [ name ]
+              # try to find proof that it is actually a minimum size workspace query.
+              match_min_size = re.compile( 'minimum(size|of|the|array|\s)+' + name, re.M | re.S ).findall( work_query_block )
+              if len( match_min_size ) == 0:
+                 argument_properties[ 'workspace_query_for' ] += [ name ]
+              else:
+                 print "Not relying on backend to return minimum size of " + name + " with a " + \
+                       "workspace query."
 
     #
     # Handle CHARACTER comment blocks.

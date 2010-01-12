@@ -10,13 +10,12 @@
 
 #include <boost/numeric/bindings/lapack/driver/hbev.hpp>
 #include <boost/numeric/bindings/lapack/driver/sbev.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/vector_proxy.hpp>
 #include <boost/numeric/bindings/ublas/banded.hpp>
 #include <boost/numeric/bindings/ublas/hermitian.hpp>
-#include <boost/numeric/ublas/hermitian.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/mpl/if.hpp>
@@ -26,25 +25,25 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-  static inline integer_t hbev( const char jobz, const integer_t n,
-        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+  static inline integer_t hbev( const char jobz, 
+        MatrixAB& ab, VectorW& w, MatrixZ& z,
         Workspace work ) {
-    return lapack::sbev( jobz, n, kd, ab, w, z, work );
+    return lapack::sbev( jobz, ab, w, z, work );
   }
 };
 
 struct apply_complex {
   template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-  static inline integer_t hbev( const char jobz, const integer_t n,
-        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+  static inline integer_t hbev( const char jobz, 
+        MatrixAB& ab, VectorW& w, MatrixZ& z,
         Workspace work ) {
-    return lapack::hbev( jobz, n, kd, ab, w, z, work );
+    return lapack::hbev( jobz, ab, w, z, work );
   }
 };
 
@@ -88,13 +87,13 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::hermitian_adaptor<banded_type, UPLO> h( a ), h2( a2 );
 
    // Compute Schur decomposition.
-   apply_t::hbev( 'V', bindings::size_column( h ), traits::matrix_upper_bandwidth( h ),
+   apply_t::hbev( 'V', 
      h, e1, z, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
    matrix_type dummy_z( n, n );
-   apply_t::hbev( 'N', bindings::size_column( h2 ), traits::matrix_upper_bandwidth( h2 ),
+   apply_t::hbev( 'N',
      h2, e2, dummy_z, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
@@ -109,7 +108,7 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::vector_range< vector_type> e_r( e1, r );
    ublas::matrix_range< matrix_type> z_r( z, r, r );
 
-   apply_t::hbev( 'V', bindings::size_column( h_r ), traits::matrix_upper_bandwidth( h_r ),
+   apply_t::hbev( 'V',  
      h_r, e_r, z_r, workspace );
 
    banded_range a2_r( a2, r, r );

@@ -50,6 +50,17 @@ struct basic_ublas_adaptor {
         return bindings::stride2( id.data() );
     }
 
+    // A.k.a. left half-bandwidth
+    static std::ptrdiff_t bandwidth1( const Id& id ) {
+        return bindings::bandwidth1( id.data() );
+    }
+
+    // A.k.a. right half-bandwidth
+    static std::ptrdiff_t bandwidth2( const Id& id ) {
+        return bindings::bandwidth2( id.data() );
+    }
+
+
 };
 
 } // detail

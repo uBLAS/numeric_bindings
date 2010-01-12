@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UBLAS_MATRIX_EXPRESSION_HPP
 #define BOOST_NUMERIC_BINDINGS_UBLAS_MATRIX_EXPRESSION_HPP
 
+#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/property_map.hpp>
@@ -49,6 +50,14 @@ struct adaptor< boost::numeric::ublas::matrix_reference< T >, Id, Enable > {
 
     static std::ptrdiff_t stride2( const Id& id ) {
         return bindings::stride2( id.expression() );
+    }
+
+    static std::ptrdiff_t bandwidth1( const Id& id ) {
+        return bindings::bandwidth1( id.expression() );
+    }
+
+    static std::ptrdiff_t bandwidth2( const Id& id ) {
+        return bindings::bandwidth2( id.expression() );
     }
 
 };

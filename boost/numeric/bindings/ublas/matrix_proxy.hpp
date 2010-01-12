@@ -54,6 +54,14 @@ struct adaptor< ublas::matrix_range< T >, Id, Enable > {
         return bindings::stride2( id.data() );
     }
 
+    static std::ptrdiff_t bandwidth1( const Id& id ) {
+        return bindings::bandwidth1( id.data() );
+    }
+
+    static std::ptrdiff_t bandwidth2( const Id& id ) {
+        return bindings::bandwidth2( id.data() );
+    }
+
 };
 
 } // namespace detail

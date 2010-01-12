@@ -216,7 +216,8 @@ def call_level0_type( name, properties, arg_map ):
         result = "bandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
-    if properties[ 'trait_type' ] == 'num_super_uplo':
+    if properties[ 'trait_type' ] == 'num_super_uplo' or \
+       properties[ 'trait_type' ] == 'num_sub_uplo':
         result = "bandwidth(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", uplo())"
 
@@ -1182,7 +1183,7 @@ def parse_file( filename, template_map ):
         #
         match_matrix_traits = re.compile( '(sub|super|rows|columns|order)([\-]?diagonals|with|in|of|the|band|input|\s)+(matrix|matrices|\s)+' + \
             '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
-        match_banded_uplo = re.compile( '(number|of|sub|super|diagonals|if|UPLO)', re.M | re.S ).findall( comment_block )
+        match_banded_uplo = re.compile( '(number|of|sub|super|\s)+diagonals(if|\s)+UPLO', re.M | re.S ).findall( comment_block )
         if len( match_matrix_traits ) == 1:
           print "Matched trait:", match_matrix_traits
           if match_matrix_traits[0][0] == 'order':

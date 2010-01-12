@@ -63,7 +63,19 @@ struct adaptor< ublas::symmetric_adaptor< T, F >, Id, Enable >:
         Id,
         mpl::pair< tag::matrix_type, tag::symmetric >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
-    > {};
+    > {
+
+    typedef typename convert_to< tag::data_side, F >::type data_side;
+
+    static std::ptrdiff_t bandwidth1( const Id& id ) {
+        return bindings::bandwidth( id.data(), data_side() );
+    }
+
+    static std::ptrdiff_t bandwidth2( const Id& id ) {
+        return bindings::bandwidth( id.data(), data_side() );
+    }
+
+};
 
 } // namespace detail
 } // namespace bindings

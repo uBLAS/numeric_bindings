@@ -15,7 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HBMV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/bandwidth.hpp
+#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>

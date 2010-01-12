@@ -64,8 +64,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, int n, int k, float alpha, const float* a,
-        int lda, const float* x, int incx, float beta, float* y, int incy ) {
+inline void sbmv( Order, UpLo, const int n, const int k, const float alpha,
+        const float* a, const int lda, const float* x, const int incx,
+        const float beta, float* y, const int incy ) {
     cblas_ssbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -76,9 +77,9 @@ inline void sbmv( Order, UpLo, int n, int k, float alpha, const float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, int n, int k, double alpha, const double* a,
-        int lda, const double* x, int incx, double beta, double* y,
-        int incy ) {
+inline void sbmv( Order, UpLo, const int n, const int k, const double alpha,
+        const double* a, const int lda, const double* x, const int incx,
+        const double beta, double* y, const int incy ) {
     cblas_dsbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -90,8 +91,9 @@ inline void sbmv( Order, UpLo, int n, int k, double alpha, const double* a,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, int n, int k, float alpha, const float* a,
-        int lda, const float* x, int incx, float beta, float* y, int incy ) {
+inline void sbmv( Order, UpLo, const int n, const int k, const float alpha,
+        const float* a, const int lda, const float* x, const int incx,
+        const float beta, float* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -103,9 +105,9 @@ inline void sbmv( Order, UpLo, int n, int k, float alpha, const float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, int n, int k, double alpha, const double* a,
-        int lda, const double* x, int incx, double beta, double* y,
-        int incy ) {
+inline void sbmv( Order, UpLo, const int n, const int k, const double alpha,
+        const double* a, const int lda, const double* x, const int incx,
+        const double beta, double* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -117,9 +119,10 @@ inline void sbmv( Order, UpLo, int n, int k, double alpha, const double* a,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, fortran_int_t n, fortran_int_t k, float alpha,
-        const float* a, fortran_int_t lda, const float* x, fortran_int_t incx,
-        float beta, float* y, fortran_int_t incy ) {
+inline void sbmv( Order, UpLo, const fortran_int_t n, const fortran_int_t k,
+        const float alpha, const float* a, const fortran_int_t lda,
+        const float* x, const fortran_int_t incx, const float beta, float* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -131,9 +134,10 @@ inline void sbmv( Order, UpLo, fortran_int_t n, fortran_int_t k, float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, fortran_int_t n, fortran_int_t k, double alpha,
-        const double* a, fortran_int_t lda, const double* x,
-        fortran_int_t incx, double beta, double* y, fortran_int_t incy ) {
+inline void sbmv( Order, UpLo, const fortran_int_t n, const fortran_int_t k,
+        const double alpha, const double* a, const fortran_int_t lda,
+        const double* x, const fortran_int_t incx, const double beta,
+        double* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );

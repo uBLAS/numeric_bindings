@@ -52,11 +52,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, fortran_int_t k, fortran_int_t l,
-        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float tola,
-        float tolb, float* alpha, float* beta, float* u, fortran_int_t ldu,
-        float* v, fortran_int_t ldv, float* q, fortran_int_t ldq, float* work,
+inline std::ptrdiff_t tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        const fortran_int_t k, const fortran_int_t l, float* a,
+        const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        const float tola, const float tolb, float* alpha, float* beta,
+        float* u, const fortran_int_t ldu, float* v, const fortran_int_t ldv,
+        float* q, const fortran_int_t ldq, float* work,
         fortran_int_t& ncycle ) {
     fortran_int_t info(0);
     LAPACK_STGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b, &ldb,
@@ -70,12 +72,14 @@ inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, fortran_int_t k, fortran_int_t l,
-        double* a, fortran_int_t lda, double* b, fortran_int_t ldb,
-        double tola, double tolb, double* alpha, double* beta, double* u,
-        fortran_int_t ldu, double* v, fortran_int_t ldv, double* q,
-        fortran_int_t ldq, double* work, fortran_int_t& ncycle ) {
+inline std::ptrdiff_t tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        const fortran_int_t k, const fortran_int_t l, double* a,
+        const fortran_int_t lda, double* b, const fortran_int_t ldb,
+        const double tola, const double tolb, double* alpha, double* beta,
+        double* u, const fortran_int_t ldu, double* v,
+        const fortran_int_t ldv, double* q, const fortran_int_t ldq,
+        double* work, fortran_int_t& ncycle ) {
     fortran_int_t info(0);
     LAPACK_DTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b, &ldb,
             &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work,
@@ -88,13 +92,16 @@ inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, fortran_int_t k, fortran_int_t l,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, float tola, float tolb, float* alpha, float* beta,
-        std::complex<float>* u, fortran_int_t ldu, std::complex<float>* v,
-        fortran_int_t ldv, std::complex<float>* q, fortran_int_t ldq,
-        std::complex<float>* work, fortran_int_t& ncycle ) {
+inline std::ptrdiff_t tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        const fortran_int_t k, const fortran_int_t l, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, const float tola, const float tolb,
+        float* alpha, float* beta, std::complex<float>* u,
+        const fortran_int_t ldu, std::complex<float>* v,
+        const fortran_int_t ldv, std::complex<float>* q,
+        const fortran_int_t ldq, std::complex<float>* work,
+        fortran_int_t& ncycle ) {
     fortran_int_t info(0);
     LAPACK_CTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b, &ldb,
             &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work,
@@ -107,13 +114,15 @@ inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgsja( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, fortran_int_t k, fortran_int_t l,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, double tola, double tolb, double* alpha,
-        double* beta, std::complex<double>* u, fortran_int_t ldu,
-        std::complex<double>* v, fortran_int_t ldv, std::complex<double>* q,
-        fortran_int_t ldq, std::complex<double>* work,
+inline std::ptrdiff_t tgsja( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        const fortran_int_t k, const fortran_int_t l, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, const double tola, const double tolb,
+        double* alpha, double* beta, std::complex<double>* u,
+        const fortran_int_t ldu, std::complex<double>* v,
+        const fortran_int_t ldv, std::complex<double>* q,
+        const fortran_int_t ldq, std::complex<double>* work,
         fortran_int_t& ncycle ) {
     fortran_int_t info(0);
     LAPACK_ZTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b, &ldb,

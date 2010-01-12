@@ -50,11 +50,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t trsen( char job, char compq, const logical_t* select,
-        fortran_int_t n, std::complex<float>* t, fortran_int_t ldt,
-        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* w,
-        fortran_int_t& m, float& s, float& sep, std::complex<float>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t trsen( const char job, const char compq,
+        const logical_t* select, const fortran_int_t n,
+        std::complex<float>* t, const fortran_int_t ldt,
+        std::complex<float>* q, const fortran_int_t ldq,
+        std::complex<float>* w, fortran_int_t& m, float& s, float& sep,
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CTRSEN( &job, &compq, select, &n, t, &ldt, q, &ldq, w, &m, &s,
             &sep, work, &lwork, &info );
@@ -66,11 +67,12 @@ inline std::ptrdiff_t trsen( char job, char compq, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t trsen( char job, char compq, const logical_t* select,
-        fortran_int_t n, std::complex<double>* t, fortran_int_t ldt,
-        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* w,
-        fortran_int_t& m, double& s, double& sep, std::complex<double>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t trsen( const char job, const char compq,
+        const logical_t* select, const fortran_int_t n,
+        std::complex<double>* t, const fortran_int_t ldt,
+        std::complex<double>* q, const fortran_int_t ldq,
+        std::complex<double>* w, fortran_int_t& m, double& s, double& sep,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZTRSEN( &job, &compq, select, &n, t, &ldt, q, &ldq, w, &m, &s,
             &sep, work, &lwork, &info );

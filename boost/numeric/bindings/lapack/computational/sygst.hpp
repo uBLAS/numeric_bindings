@@ -49,8 +49,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygst( fortran_int_t itype, UpLo, fortran_int_t n,
-        float* a, fortran_int_t lda, const float* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t sygst( const fortran_int_t itype, UpLo,
+        const fortran_int_t n, float* a, const fortran_int_t lda,
+        const float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SSYGST( &itype, &lapack_option< UpLo >::value, &n, a, &lda, b,
             &ldb, &info );
@@ -63,8 +64,9 @@ inline std::ptrdiff_t sygst( fortran_int_t itype, UpLo, fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygst( fortran_int_t itype, UpLo, fortran_int_t n,
-        double* a, fortran_int_t lda, const double* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t sygst( const fortran_int_t itype, UpLo,
+        const fortran_int_t n, double* a, const fortran_int_t lda,
+        const double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DSYGST( &itype, &lapack_option< UpLo >::value, &n, a, &lda, b,
             &ldb, &info );

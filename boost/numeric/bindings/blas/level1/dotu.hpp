@@ -60,8 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline std::complex<float> dotu( int n, const std::complex<float>* x,
-        int incx, const std::complex<float>* y, int incy ) {
+inline std::complex<float> dotu( const int n, const std::complex<float>* x,
+        const int incx, const std::complex<float>* y, const int incy ) {
     std::complex<float> result;
     cblas_cdotu_sub( n, x, incx, y, incy, &result );
     return result;
@@ -72,8 +72,8 @@ inline std::complex<float> dotu( int n, const std::complex<float>* x,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline std::complex<double> dotu( int n, const std::complex<double>* x,
-        int incx, const std::complex<double>* y, int incy ) {
+inline std::complex<double> dotu( const int n, const std::complex<double>* x,
+        const int incx, const std::complex<double>* y, const int incy ) {
     std::complex<double> result;
     cblas_zdotu_sub( n, x, incx, y, incy, &result );
     return result;
@@ -85,8 +85,8 @@ inline std::complex<double> dotu( int n, const std::complex<double>* x,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline std::complex<float> dotu( int n, const std::complex<float>* x,
-        int incx, const std::complex<float>* y, int incy ) {
+inline std::complex<float> dotu( const int n, const std::complex<float>* x,
+        const int incx, const std::complex<float>* y, const int incy ) {
     return cublasCdotu( n, x, incx, y, incy );
 }
 
@@ -95,8 +95,8 @@ inline std::complex<float> dotu( int n, const std::complex<float>* x,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline std::complex<double> dotu( int n, const std::complex<double>* x,
-        int incx, const std::complex<double>* y, int incy ) {
+inline std::complex<double> dotu( const int n, const std::complex<double>* x,
+        const int incx, const std::complex<double>* y, const int incy ) {
     return cublasZdotu( n, x, incx, y, incy );
 }
 
@@ -106,9 +106,9 @@ inline std::complex<double> dotu( int n, const std::complex<double>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline std::complex<float> dotu( fortran_int_t n,
-        const std::complex<float>* x, fortran_int_t incx,
-        const std::complex<float>* y, fortran_int_t incy ) {
+inline std::complex<float> dotu( const fortran_int_t n,
+        const std::complex<float>* x, const fortran_int_t incx,
+        const std::complex<float>* y, const fortran_int_t incy ) {
     return BLAS_CDOTU( &n, x, &incx, y, &incy );
 }
 
@@ -117,9 +117,9 @@ inline std::complex<float> dotu( fortran_int_t n,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline std::complex<double> dotu( fortran_int_t n,
-        const std::complex<double>* x, fortran_int_t incx,
-        const std::complex<double>* y, fortran_int_t incy ) {
+inline std::complex<double> dotu( const fortran_int_t n,
+        const std::complex<double>* x, const fortran_int_t incx,
+        const std::complex<double>* y, const fortran_int_t incy ) {
     return BLAS_ZDOTU( &n, x, &incx, y, &incy );
 }
 

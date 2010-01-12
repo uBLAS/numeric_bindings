@@ -52,9 +52,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
-        fortran_int_t l, const float* v, fortran_int_t incv, float tau,
-        float* c, fortran_int_t ldc, float* work ) {
+inline std::ptrdiff_t larz( const char side, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t l, const float* v,
+        const fortran_int_t incv, const float tau, float* c,
+        const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
     LAPACK_SLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
     return info;
@@ -65,9 +66,10 @@ inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
-        fortran_int_t l, const double* v, fortran_int_t incv, double tau,
-        double* c, fortran_int_t ldc, double* work ) {
+inline std::ptrdiff_t larz( const char side, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t l, const double* v,
+        const fortran_int_t incv, const double tau, double* c,
+        const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
     LAPACK_DLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
     return info;
@@ -78,10 +80,11 @@ inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
-        fortran_int_t l, const std::complex<float>* v, fortran_int_t incv,
-        std::complex<float> tau, std::complex<float>* c, fortran_int_t ldc,
-        std::complex<float>* work ) {
+inline std::ptrdiff_t larz( const char side, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t l,
+        const std::complex<float>* v, const fortran_int_t incv,
+        const std::complex<float> tau, std::complex<float>* c,
+        const fortran_int_t ldc, std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
     return info;
@@ -92,10 +95,11 @@ inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t larz( char side, fortran_int_t m, fortran_int_t n,
-        fortran_int_t l, const std::complex<double>* v, fortran_int_t incv,
-        std::complex<double> tau, std::complex<double>* c, fortran_int_t ldc,
-        std::complex<double>* work ) {
+inline std::ptrdiff_t larz( const char side, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t l,
+        const std::complex<double>* v, const fortran_int_t incv,
+        const std::complex<double> tau, std::complex<double>* c,
+        const fortran_int_t ldc, std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
     return info;
@@ -127,9 +131,8 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     template< typename VectorV, typename MatrixC, typename WORK >
     static std::ptrdiff_t invoke( const char side, const fortran_int_t l,
-            const VectorV& v, const fortran_int_t incv,
-            const real_type tau, MatrixC& c, detail::workspace1<
-            WORK > work ) {
+            const VectorV& v, const real_type tau, MatrixC& c,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorV >::type >::type,
                 typename remove_const< typename value<
@@ -142,8 +145,8 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 size_row(c)) );
         return detail::larz( side, size_row(c), size_column(c), l,
-                begin_value(v), incv, tau, begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())) );
+                begin_value(v), stride(v), tau, begin_value(c),
+                stride_major(c), begin_value(work.select(real_type())) );
     }
 
     //
@@ -155,11 +158,11 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const fortran_int_t l,
-            const VectorV& v, const fortran_int_t incv,
-            const real_type tau, MatrixC& c, minimal_workspace work ) {
+            const VectorV& v, const real_type tau, MatrixC& c,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
                 size_row(c), size_column(c) ) );
-        return invoke( side, l, v, incv, tau, c, workspace( tmp_work ) );
+        return invoke( side, l, v, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -171,9 +174,9 @@ struct larz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     //
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const fortran_int_t l,
-            const VectorV& v, const fortran_int_t incv,
-            const real_type tau, MatrixC& c, optimal_workspace work ) {
-        return invoke( side, l, v, incv, tau, c, minimal_workspace() );
+            const VectorV& v, const real_type tau, MatrixC& c,
+            optimal_workspace work ) {
+        return invoke( side, l, v, tau, c, minimal_workspace() );
     }
 
     //
@@ -206,9 +209,8 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename VectorV, typename MatrixC, typename WORK >
     static std::ptrdiff_t invoke( const char side, const fortran_int_t l,
-            const VectorV& v, const fortran_int_t incv,
-            const value_type tau, MatrixC& c, detail::workspace1<
-            WORK > work ) {
+            const VectorV& v, const value_type tau, MatrixC& c,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorV >::type >::type,
                 typename remove_const< typename value<
@@ -221,8 +223,8 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 size_row(c)) );
         return detail::larz( side, size_row(c), size_column(c), l,
-                begin_value(v), incv, tau, begin_value(c), stride_major(c),
-                begin_value(work.select(value_type())) );
+                begin_value(v), stride(v), tau, begin_value(c),
+                stride_major(c), begin_value(work.select(value_type())) );
     }
 
     //
@@ -234,11 +236,11 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const fortran_int_t l,
-            const VectorV& v, const fortran_int_t incv,
-            const value_type tau, MatrixC& c, minimal_workspace work ) {
+            const VectorV& v, const value_type tau, MatrixC& c,
+            minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
                 size_row(c), size_column(c) ) );
-        return invoke( side, l, v, incv, tau, c, workspace( tmp_work ) );
+        return invoke( side, l, v, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -250,9 +252,9 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     //
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const fortran_int_t l,
-            const VectorV& v, const fortran_int_t incv,
-            const value_type tau, MatrixC& c, optimal_workspace work ) {
-        return invoke( side, l, v, incv, tau, c, minimal_workspace() );
+            const VectorV& v, const value_type tau, MatrixC& c,
+            optimal_workspace work ) {
+        return invoke( side, l, v, tau, c, minimal_workspace() );
     }
 
     //
@@ -285,11 +287,10 @@ struct larz_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv,
-        const typename remove_imaginary< typename value<
+        const VectorV& v, const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, MatrixC& c, Workspace work ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, work );
+            l, v, tau, c, work );
 }
 
 //
@@ -299,11 +300,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv,
-        const typename remove_imaginary< typename value<
+        const VectorV& v, const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, MatrixC& c ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, optimal_workspace() );
+            l, v, tau, c, optimal_workspace() );
 }
 
 //
@@ -313,11 +313,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv,
-        const typename remove_imaginary< typename value<
+        const VectorV& v, const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, const MatrixC& c, Workspace work ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, work );
+            l, v, tau, c, work );
 }
 
 //
@@ -327,11 +326,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv,
-        const typename remove_imaginary< typename value<
+        const VectorV& v, const typename remove_imaginary< typename value<
         VectorV >::type >::type tau, const MatrixC& c ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, optimal_workspace() );
+            l, v, tau, c, optimal_workspace() );
 }
 //
 // Overloaded function for larz. Its overload differs for
@@ -340,10 +338,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv, const typename value<
-        VectorV >::type tau, MatrixC& c, Workspace work ) {
+        const VectorV& v, const typename value< VectorV >::type tau,
+        MatrixC& c, Workspace work ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, work );
+            l, v, tau, c, work );
 }
 
 //
@@ -353,10 +351,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv, const typename value<
-        VectorV >::type tau, MatrixC& c ) {
+        const VectorV& v, const typename value< VectorV >::type tau,
+        MatrixC& c ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, optimal_workspace() );
+            l, v, tau, c, optimal_workspace() );
 }
 
 //
@@ -366,10 +364,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC, typename Workspace >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv, const typename value<
-        VectorV >::type tau, const MatrixC& c, Workspace work ) {
+        const VectorV& v, const typename value< VectorV >::type tau,
+        const MatrixC& c, Workspace work ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, work );
+            l, v, tau, c, work );
 }
 
 //
@@ -379,10 +377,10 @@ inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
 //
 template< typename VectorV, typename MatrixC >
 inline std::ptrdiff_t larz( const char side, const fortran_int_t l,
-        const VectorV& v, const fortran_int_t incv, const typename value<
-        VectorV >::type tau, const MatrixC& c ) {
+        const VectorV& v, const typename value< VectorV >::type tau,
+        const MatrixC& c ) {
     return larz_impl< typename value< VectorV >::type >::invoke( side,
-            l, v, incv, tau, c, optimal_workspace() );
+            l, v, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

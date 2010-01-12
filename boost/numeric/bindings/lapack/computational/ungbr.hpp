@@ -50,10 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ungbr( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t k, std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* tau, std::complex<float>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* tau,
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CUNGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -64,10 +64,10 @@ inline std::ptrdiff_t ungbr( char vect, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ungbr( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t k, std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* tau, std::complex<double>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ungbr( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* tau,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZUNGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     return info;

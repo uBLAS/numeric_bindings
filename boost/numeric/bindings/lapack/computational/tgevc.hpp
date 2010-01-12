@@ -52,10 +52,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
-        fortran_int_t n, const float* s, fortran_int_t lds, const float* p,
-        fortran_int_t ldp, float* vl, fortran_int_t ldvl, float* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m, float* work ) {
+inline std::ptrdiff_t tgevc( const char side, const char howmny,
+        const logical_t* select, const fortran_int_t n, const float* s,
+        const fortran_int_t lds, const float* p, const fortran_int_t ldp,
+        float* vl, const fortran_int_t ldvl, float* vr,
+        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_STGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, &info );
@@ -67,10 +69,11 @@ inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
-        fortran_int_t n, const double* s, fortran_int_t lds, const double* p,
-        fortran_int_t ldp, double* vl, fortran_int_t ldvl, double* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
+inline std::ptrdiff_t tgevc( const char side, const char howmny,
+        const logical_t* select, const fortran_int_t n, const double* s,
+        const fortran_int_t lds, const double* p, const fortran_int_t ldp,
+        double* vl, const fortran_int_t ldvl, double* vr,
+        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
         double* work ) {
     fortran_int_t info(0);
     LAPACK_DTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
@@ -83,12 +86,14 @@ inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
-        fortran_int_t n, const std::complex<float>* s, fortran_int_t lds,
-        const std::complex<float>* p, fortran_int_t ldp,
-        std::complex<float>* vl, fortran_int_t ldvl, std::complex<float>* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
-        std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t tgevc( const char side, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        const std::complex<float>* s, const fortran_int_t lds,
+        const std::complex<float>* p, const fortran_int_t ldp,
+        std::complex<float>* vl, const fortran_int_t ldvl,
+        std::complex<float>* vr, const fortran_int_t ldvr,
+        const fortran_int_t mm, fortran_int_t& m, std::complex<float>* work,
+        float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, rwork, &info );
@@ -100,12 +105,14 @@ inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgevc( char side, char howmny, const logical_t* select,
-        fortran_int_t n, const std::complex<double>* s, fortran_int_t lds,
-        const std::complex<double>* p, fortran_int_t ldp,
-        std::complex<double>* vl, fortran_int_t ldvl,
-        std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t mm,
-        fortran_int_t& m, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t tgevc( const char side, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        const std::complex<double>* s, const fortran_int_t lds,
+        const std::complex<double>* p, const fortran_int_t ldp,
+        std::complex<double>* vl, const fortran_int_t ldvl,
+        std::complex<double>* vr, const fortran_int_t ldvr,
+        const fortran_int_t mm, fortran_int_t& m, std::complex<double>* work,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, rwork, &info );

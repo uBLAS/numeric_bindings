@@ -50,8 +50,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gebal( char job, fortran_int_t n, float* a,
-        fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
+inline std::ptrdiff_t gebal( const char job, const fortran_int_t n, float* a,
+        const fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
         float* scale ) {
     fortran_int_t info(0);
     LAPACK_SGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
@@ -63,8 +63,8 @@ inline std::ptrdiff_t gebal( char job, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gebal( char job, fortran_int_t n, double* a,
-        fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
+inline std::ptrdiff_t gebal( const char job, const fortran_int_t n, double* a,
+        const fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
         double* scale ) {
     fortran_int_t info(0);
     LAPACK_DGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
@@ -76,9 +76,9 @@ inline std::ptrdiff_t gebal( char job, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gebal( char job, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, fortran_int_t& ilo, fortran_int_t& ihi,
-        float* scale ) {
+inline std::ptrdiff_t gebal( const char job, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda, fortran_int_t& ilo,
+        fortran_int_t& ihi, float* scale ) {
     fortran_int_t info(0);
     LAPACK_CGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
     return info;
@@ -89,8 +89,8 @@ inline std::ptrdiff_t gebal( char job, fortran_int_t n, std::complex<float>* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gebal( char job, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, fortran_int_t& ilo,
+inline std::ptrdiff_t gebal( const char job, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda, fortran_int_t& ilo,
         fortran_int_t& ihi, double* scale ) {
     fortran_int_t info(0);
     LAPACK_ZGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );

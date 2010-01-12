@@ -54,11 +54,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const float* ab, fortran_int_t ldab,
-        const float* afb, fortran_int_t ldafb, const float* b,
-        fortran_int_t ldb, float* x, fortran_int_t ldx, float* ferr,
-        float* berr, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t pbrfs( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs, const float* ab,
+        const fortran_int_t ldab, const float* afb, const fortran_int_t ldafb,
+        const float* b, const fortran_int_t ldb, float* x,
+        const fortran_int_t ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SPBRFS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
             afb, &ldafb, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
@@ -71,11 +72,12 @@ inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const double* ab, fortran_int_t ldab,
-        const double* afb, fortran_int_t ldafb, const double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double* ferr,
-        double* berr, double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t pbrfs( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs, const double* ab,
+        const fortran_int_t ldab, const double* afb,
+        const fortran_int_t ldafb, const double* b, const fortran_int_t ldb,
+        double* x, const fortran_int_t ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DPBRFS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
             afb, &ldafb, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
@@ -88,12 +90,13 @@ inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const std::complex<float>* ab, fortran_int_t ldab,
-        const std::complex<float>* afb, fortran_int_t ldafb,
-        const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* x, fortran_int_t ldx, float* ferr, float* berr,
-        std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t pbrfs( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs,
+        const std::complex<float>* ab, const fortran_int_t ldab,
+        const std::complex<float>* afb, const fortran_int_t ldafb,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float* ferr,
+        float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CPBRFS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,
             afb, &ldafb, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );
@@ -106,11 +109,12 @@ inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbrfs( UpLo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const std::complex<double>* ab,
-        fortran_int_t ldab, const std::complex<double>* afb,
-        fortran_int_t ldafb, const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double* ferr,
+inline std::ptrdiff_t pbrfs( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs,
+        const std::complex<double>* ab, const fortran_int_t ldab,
+        const std::complex<double>* afb, const fortran_int_t ldafb,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double* ferr,
         double* berr, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZPBRFS( &lapack_option< UpLo >::value, &n, &kd, &nrhs, ab, &ldab,

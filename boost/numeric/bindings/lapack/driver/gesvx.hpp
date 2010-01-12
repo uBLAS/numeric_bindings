@@ -54,12 +54,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, float* a, fortran_int_t lda, float* af,
-        fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, float* r,
-        float* c, float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
-        float& rcond, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gesvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, float* a, const fortran_int_t lda,
+        float* af, const fortran_int_t ldaf, fortran_int_t* ipiv, char& equed,
+        float* r, float* c, float* b, const fortran_int_t ldb, float* x,
+        const fortran_int_t ldx, float& rcond, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
@@ -73,12 +73,12 @@ inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, double* a, fortran_int_t lda, double* af,
-        fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, double* r,
-        double* c, double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, double* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gesvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, double* a, const fortran_int_t lda,
+        double* af, const fortran_int_t ldaf, fortran_int_t* ipiv,
+        char& equed, double* r, double* c, double* b, const fortran_int_t ldb,
+        double* x, const fortran_int_t ldx, double& rcond, double* ferr,
+        double* berr, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
@@ -92,13 +92,13 @@ inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* af, fortran_int_t ldaf, fortran_int_t* ipiv,
-        char& equed, float* r, float* c, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float& rcond, float* ferr, float* berr, std::complex<float>* work,
-        float* rwork ) {
+inline std::ptrdiff_t gesvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* af,
+        const fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, float* r,
+        float* c, std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float& rcond,
+        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
@@ -112,12 +112,13 @@ inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gesvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* af, fortran_int_t ldaf, fortran_int_t* ipiv,
-        char& equed, double* r, double* c, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, std::complex<double>* work,
+inline std::ptrdiff_t gesvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* af,
+        const fortran_int_t ldaf, fortran_int_t* ipiv, char& equed, double* r,
+        double* c, std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double& rcond,
+        double* ferr, double* berr, std::complex<double>* work,
         double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGESVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, a, &lda,

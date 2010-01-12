@@ -60,8 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void rot( int n, const float* x, int incx, float* y, int incy, float c,
-        float s ) {
+inline void rot( const int n, const float* x, const int incx, float* y,
+        const int incy, const float c, const float s ) {
     cblas_srot( n, x, incx, y, incy, c, s );
 }
 
@@ -70,8 +70,8 @@ inline void rot( int n, const float* x, int incx, float* y, int incy, float c,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void rot( int n, const double* x, int incx, double* y, int incy,
-        double c, double s ) {
+inline void rot( const int n, const double* x, const int incx, double* y,
+        const int incy, const double c, const double s ) {
     cblas_drot( n, x, incx, y, incy, c, s );
 }
 
@@ -81,8 +81,8 @@ inline void rot( int n, const double* x, int incx, double* y, int incy,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void rot( int n, const float* x, int incx, float* y, int incy, float c,
-        float s ) {
+inline void rot( const int n, const float* x, const int incx, float* y,
+        const int incy, const float c, const float s ) {
     cublasSrot( n, x, incx, y, incy, c, s );
 }
 
@@ -91,8 +91,8 @@ inline void rot( int n, const float* x, int incx, float* y, int incy, float c,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void rot( int n, const double* x, int incx, double* y, int incy,
-        double c, double s ) {
+inline void rot( const int n, const double* x, const int incx, double* y,
+        const int incy, const double c, const double s ) {
     cublasDrot( n, x, incx, y, incy, c, s );
 }
 
@@ -102,8 +102,9 @@ inline void rot( int n, const double* x, int incx, double* y, int incy,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void rot( fortran_int_t n, const float* x, fortran_int_t incx,
-        float* y, fortran_int_t incy, float c, float s ) {
+inline void rot( const fortran_int_t n, const float* x,
+        const fortran_int_t incx, float* y, const fortran_int_t incy,
+        const float c, const float s ) {
     BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
 }
 
@@ -112,8 +113,9 @@ inline void rot( fortran_int_t n, const float* x, fortran_int_t incx,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void rot( fortran_int_t n, const double* x, fortran_int_t incx,
-        double* y, fortran_int_t incy, double c, double s ) {
+inline void rot( const fortran_int_t n, const double* x,
+        const fortran_int_t incx, double* y, const fortran_int_t incy,
+        const double c, const double s ) {
     BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
 }
 

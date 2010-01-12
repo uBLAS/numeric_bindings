@@ -53,9 +53,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t sycon( char uplo, fortran_int_t n, const float* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, float anorm,
-        float& rcond, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t sycon( const char uplo, const fortran_int_t n,
+        const float* a, const fortran_int_t lda, const fortran_int_t* ipiv,
+        const float anorm, float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
             &info );
@@ -67,9 +67,10 @@ inline std::ptrdiff_t sycon( char uplo, fortran_int_t n, const float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sycon( char uplo, fortran_int_t n, const double* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, double anorm,
-        double& rcond, double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t sycon( const char uplo, const fortran_int_t n,
+        const double* a, const fortran_int_t lda, const fortran_int_t* ipiv,
+        const double anorm, double& rcond, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
             &info );
@@ -81,9 +82,9 @@ inline std::ptrdiff_t sycon( char uplo, fortran_int_t n, const double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t sycon( char uplo, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, float anorm, float& rcond,
+inline std::ptrdiff_t sycon( const char uplo, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, const float anorm, float& rcond,
         std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, &info );
@@ -95,9 +96,9 @@ inline std::ptrdiff_t sycon( char uplo, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t sycon( char uplo, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, double anorm, double& rcond,
+inline std::ptrdiff_t sycon( const char uplo, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, const double anorm, double& rcond,
         std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, &info );

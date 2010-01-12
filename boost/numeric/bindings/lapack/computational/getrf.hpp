@@ -57,8 +57,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, int m, int n, float* a, int lda,
-        int* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const int m, const int n, float* a,
+        const int lda, int* ipiv ) {
     return clapack_sgetrf( clapack_option< Order >::value, m, n, a, lda,
             ipiv );
 }
@@ -69,8 +69,8 @@ inline std::ptrdiff_t getrf( Order, int m, int n, float* a, int lda,
 // * double value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, int m, int n, double* a, int lda,
-        int* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const int m, const int n, double* a,
+        const int lda, int* ipiv ) {
     return clapack_dgetrf( clapack_option< Order >::value, m, n, a, lda,
             ipiv );
 }
@@ -81,8 +81,8 @@ inline std::ptrdiff_t getrf( Order, int m, int n, double* a, int lda,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, int m, int n, std::complex<float>* a,
-        int lda, int* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const int m, const int n,
+        std::complex<float>* a, const int lda, int* ipiv ) {
     return clapack_cgetrf( clapack_option< Order >::value, m, n, a, lda,
             ipiv );
 }
@@ -93,8 +93,8 @@ inline std::ptrdiff_t getrf( Order, int m, int n, std::complex<float>* a,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, int m, int n, std::complex<double>* a,
-        int lda, int* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const int m, const int n,
+        std::complex<double>* a, const int lda, int* ipiv ) {
     return clapack_zgetrf( clapack_option< Order >::value, m, n, a, lda,
             ipiv );
 }
@@ -106,8 +106,9 @@ inline std::ptrdiff_t getrf( Order, int m, int n, std::complex<double>* a,
 // * float value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n, float* a,
-        fortran_int_t lda, fortran_int_t* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const fortran_int_t m,
+        const fortran_int_t n, float* a, const fortran_int_t lda,
+        fortran_int_t* ipiv ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_SGETRF( &m, &n, a, &lda, ipiv, &info );
@@ -120,8 +121,9 @@ inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n,
-        double* a, fortran_int_t lda, fortran_int_t* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const fortran_int_t m,
+        const fortran_int_t n, double* a, const fortran_int_t lda,
+        fortran_int_t* ipiv ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_DGETRF( &m, &n, a, &lda, ipiv, &info );
@@ -134,8 +136,9 @@ inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, fortran_int_t* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const fortran_int_t m,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, fortran_int_t* ipiv ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_CGETRF( &m, &n, a, &lda, ipiv, &info );
@@ -148,8 +151,9 @@ inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getrf( Order, fortran_int_t m, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, fortran_int_t* ipiv ) {
+inline std::ptrdiff_t getrf( Order, const fortran_int_t m,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, fortran_int_t* ipiv ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_ZGETRF( &m, &n, a, &lda, ipiv, &info );

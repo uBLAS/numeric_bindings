@@ -50,9 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t orgbr( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t k, float* a, fortran_int_t lda, const float* tau,
-        float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t orgbr( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, float* a,
+        const fortran_int_t lda, const float* tau, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -63,9 +64,10 @@ inline std::ptrdiff_t orgbr( char vect, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t orgbr( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t k, double* a, fortran_int_t lda, const double* tau,
-        double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t orgbr( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, double* a,
+        const fortran_int_t lda, const double* tau, double* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     return info;

@@ -52,10 +52,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stein( fortran_int_t n, const float* d, const float* e,
-        fortran_int_t m, const float* w, const fortran_int_t* iblock,
-        const fortran_int_t* isplit, float* z, fortran_int_t ldz, float* work,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t stein( const fortran_int_t n, const float* d,
+        const float* e, const fortran_int_t m, const float* w,
+        const fortran_int_t* iblock, const fortran_int_t* isplit, float* z,
+        const fortran_int_t ldz, float* work, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_SSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
@@ -67,10 +68,11 @@ inline std::ptrdiff_t stein( fortran_int_t n, const float* d, const float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stein( fortran_int_t n, const double* d, const double* e,
-        fortran_int_t m, const double* w, const fortran_int_t* iblock,
-        const fortran_int_t* isplit, double* z, fortran_int_t ldz,
-        double* work, fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t stein( const fortran_int_t n, const double* d,
+        const double* e, const fortran_int_t m, const double* w,
+        const fortran_int_t* iblock, const fortran_int_t* isplit, double* z,
+        const fortran_int_t ldz, double* work, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_DSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
@@ -82,11 +84,11 @@ inline std::ptrdiff_t stein( fortran_int_t n, const double* d, const double* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t stein( fortran_int_t n, const float* d, const float* e,
-        fortran_int_t m, const float* w, const fortran_int_t* iblock,
-        const fortran_int_t* isplit, std::complex<float>* z,
-        fortran_int_t ldz, float* work, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+inline std::ptrdiff_t stein( const fortran_int_t n, const float* d,
+        const float* e, const fortran_int_t m, const float* w,
+        const fortran_int_t* iblock, const fortran_int_t* isplit,
+        std::complex<float>* z, const fortran_int_t ldz, float* work,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_CSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
@@ -98,11 +100,11 @@ inline std::ptrdiff_t stein( fortran_int_t n, const float* d, const float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t stein( fortran_int_t n, const double* d, const double* e,
-        fortran_int_t m, const double* w, const fortran_int_t* iblock,
-        const fortran_int_t* isplit, std::complex<double>* z,
-        fortran_int_t ldz, double* work, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+inline std::ptrdiff_t stein( const fortran_int_t n, const double* d,
+        const double* e, const fortran_int_t m, const double* w,
+        const fortran_int_t* iblock, const fortran_int_t* isplit,
+        std::complex<double>* z, const fortran_int_t ldz, double* work,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_ZSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );

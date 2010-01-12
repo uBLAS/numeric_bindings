@@ -53,9 +53,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
-        const float* ab, fortran_int_t ldab, float anorm, float& rcond,
-        float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t pbcon( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const float* ab, const fortran_int_t ldab,
+        const float anorm, float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
             &info );
@@ -67,9 +67,10 @@ inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
-        const double* ab, fortran_int_t ldab, double anorm, double& rcond,
-        double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t pbcon( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const double* ab, const fortran_int_t ldab,
+        const double anorm, double& rcond, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
             &info );
@@ -81,9 +82,10 @@ inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
-        const std::complex<float>* ab, fortran_int_t ldab, float anorm,
-        float& rcond, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t pbcon( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const std::complex<float>* ab,
+        const fortran_int_t ldab, const float anorm, float& rcond,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, rwork,
             &info );
@@ -95,9 +97,10 @@ inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t pbcon( char uplo, fortran_int_t n, fortran_int_t kd,
-        const std::complex<double>* ab, fortran_int_t ldab, double anorm,
-        double& rcond, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t pbcon( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const std::complex<double>* ab,
+        const fortran_int_t ldab, const double anorm, double& rcond,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, rwork,
             &info );

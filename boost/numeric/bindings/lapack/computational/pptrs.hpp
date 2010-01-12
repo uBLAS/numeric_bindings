@@ -49,8 +49,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const float* ap, float* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t pptrs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* ap, float* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SPPTRS( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
@@ -63,8 +64,9 @@ inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const double* ap, double* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t pptrs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* ap, double* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DPPTRS( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
@@ -77,9 +79,9 @@ inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<float>* ap, std::complex<float>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t pptrs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* ap,
+        std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CPPTRS( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );
@@ -92,9 +94,9 @@ inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pptrs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<double>* ap, std::complex<double>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t pptrs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* ap,
+        std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZPPTRS( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
             &info );

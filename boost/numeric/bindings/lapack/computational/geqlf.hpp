@@ -53,8 +53,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n, float* a,
-        fortran_int_t lda, float* tau, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t geqlf( const fortran_int_t m, const fortran_int_t n,
+        float* a, const fortran_int_t lda, float* tau, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -65,8 +66,9 @@ inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n, double* a,
-        fortran_int_t lda, double* tau, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t geqlf( const fortran_int_t m, const fortran_int_t n,
+        double* a, const fortran_int_t lda, double* tau, double* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -77,9 +79,10 @@ inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* tau,
-        std::complex<float>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t geqlf( const fortran_int_t m, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* tau, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -90,9 +93,10 @@ inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t geqlf( fortran_int_t m, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* tau,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t geqlf( const fortran_int_t m, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* tau, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
     return info;

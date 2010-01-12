@@ -49,8 +49,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stev( char jobz, fortran_int_t n, float* d, float* e,
-        float* z, fortran_int_t ldz, float* work ) {
+inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n, float* d,
+        float* e, float* z, const fortran_int_t ldz, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
     return info;
@@ -61,8 +61,8 @@ inline std::ptrdiff_t stev( char jobz, fortran_int_t n, float* d, float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stev( char jobz, fortran_int_t n, double* d, double* e,
-        double* z, fortran_int_t ldz, double* work ) {
+inline std::ptrdiff_t stev( const char jobz, const fortran_int_t n, double* d,
+        double* e, double* z, const fortran_int_t ldz, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
     return info;

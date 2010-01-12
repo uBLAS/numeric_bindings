@@ -50,10 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ungql( fortran_int_t m, fortran_int_t n, fortran_int_t k,
-        std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* tau, std::complex<float>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ungql( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* tau,
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CUNGQL( &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -64,10 +64,10 @@ inline std::ptrdiff_t ungql( fortran_int_t m, fortran_int_t n, fortran_int_t k,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ungql( fortran_int_t m, fortran_int_t n, fortran_int_t k,
-        std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* tau, std::complex<double>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ungql( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t k, std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* tau,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZUNGQL( &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     return info;

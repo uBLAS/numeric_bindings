@@ -52,12 +52,14 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvd( char jobz, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, std::complex<float>* ab,
-        fortran_int_t ldab, std::complex<float>* bb, fortran_int_t ldbb,
-        float* w, std::complex<float>* z, fortran_int_t ldz,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t hbgvd( const char jobz, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        std::complex<float>* bb, const fortran_int_t ldbb, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork,
+        const fortran_int_t lrwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CHBGVD( &jobz, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
             &ldab, bb, &ldbb, w, z, &ldz, work, &lwork, rwork, &lrwork, iwork,
@@ -71,12 +73,14 @@ inline std::ptrdiff_t hbgvd( char jobz, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvd( char jobz, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, std::complex<double>* ab,
-        fortran_int_t ldab, std::complex<double>* bb, fortran_int_t ldbb,
-        double* w, std::complex<double>* z, fortran_int_t ldz,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t hbgvd( const char jobz, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        std::complex<double>* bb, const fortran_int_t ldbb, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
+        std::complex<double>* work, const fortran_int_t lwork, double* rwork,
+        const fortran_int_t lrwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZHBGVD( &jobz, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
             &ldab, bb, &ldbb, w, z, &ldz, work, &lwork, rwork, &lrwork, iwork,

@@ -52,9 +52,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t ggbal( char job, fortran_int_t n, float* a,
-        fortran_int_t lda, float* b, fortran_int_t ldb, fortran_int_t& ilo,
-        fortran_int_t& ihi, float* lscale, float* rscale, float* work ) {
+inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n, float* a,
+        const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        fortran_int_t& ilo, fortran_int_t& ihi, float* lscale, float* rscale,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_SGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
             work, &info );
@@ -66,9 +67,10 @@ inline std::ptrdiff_t ggbal( char job, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t ggbal( char job, fortran_int_t n, double* a,
-        fortran_int_t lda, double* b, fortran_int_t ldb, fortran_int_t& ilo,
-        fortran_int_t& ihi, double* lscale, double* rscale, double* work ) {
+inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n, double* a,
+        const fortran_int_t lda, double* b, const fortran_int_t ldb,
+        fortran_int_t& ilo, fortran_int_t& ihi, double* lscale,
+        double* rscale, double* work ) {
     fortran_int_t info(0);
     LAPACK_DGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
             work, &info );
@@ -80,10 +82,10 @@ inline std::ptrdiff_t ggbal( char job, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ggbal( char job, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
-        fortran_int_t& ilo, fortran_int_t& ihi, float* lscale, float* rscale,
-        float* work ) {
+inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* b, const fortran_int_t ldb, fortran_int_t& ilo,
+        fortran_int_t& ihi, float* lscale, float* rscale, float* work ) {
     fortran_int_t info(0);
     LAPACK_CGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
             work, &info );
@@ -95,10 +97,10 @@ inline std::ptrdiff_t ggbal( char job, fortran_int_t n, std::complex<float>* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ggbal( char job, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, fortran_int_t& ilo, fortran_int_t& ihi,
-        double* lscale, double* rscale, double* work ) {
+inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* b, const fortran_int_t ldb, fortran_int_t& ilo,
+        fortran_int_t& ihi, double* lscale, double* rscale, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
             work, &info );

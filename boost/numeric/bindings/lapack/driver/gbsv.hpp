@@ -48,9 +48,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, float* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, float* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gbsv( const fortran_int_t n, const fortran_int_t kl,
+        const fortran_int_t ku, const fortran_int_t nrhs, float* ab,
+        const fortran_int_t ldab, fortran_int_t* ipiv, float* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
     return info;
@@ -61,9 +62,10 @@ inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, double* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv, double* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gbsv( const fortran_int_t n, const fortran_int_t kl,
+        const fortran_int_t ku, const fortran_int_t nrhs, double* ab,
+        const fortran_int_t ldab, fortran_int_t* ipiv, double* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
     return info;
@@ -74,10 +76,11 @@ inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, std::complex<float>* ab,
-        fortran_int_t ldab, fortran_int_t* ipiv, std::complex<float>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gbsv( const fortran_int_t n, const fortran_int_t kl,
+        const fortran_int_t ku, const fortran_int_t nrhs,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        fortran_int_t* ipiv, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
     return info;
@@ -88,10 +91,11 @@ inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gbsv( fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, std::complex<double>* ab,
-        fortran_int_t ldab, fortran_int_t* ipiv, std::complex<double>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gbsv( const fortran_int_t n, const fortran_int_t kl,
+        const fortran_int_t ku, const fortran_int_t nrhs,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        fortran_int_t* ipiv, std::complex<double>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
     return info;

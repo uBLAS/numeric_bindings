@@ -62,8 +62,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order >
-inline void ger( Order, int m, int n, float alpha, const float* x, int incx,
-        const float* y, int incy, float* a, int lda ) {
+inline void ger( Order, const int m, const int n, const float alpha,
+        const float* x, const int incx, const float* y, const int incy,
+        float* a, const int lda ) {
     cblas_sger( cblas_option< Order >::value, m, n, alpha, x, incx, y, incy,
             a, lda );
 }
@@ -74,8 +75,9 @@ inline void ger( Order, int m, int n, float alpha, const float* x, int incx,
 // * double value-type.
 //
 template< typename Order >
-inline void ger( Order, int m, int n, double alpha, const double* x, int incx,
-        const double* y, int incy, double* a, int lda ) {
+inline void ger( Order, const int m, const int n, const double alpha,
+        const double* x, const int incx, const double* y, const int incy,
+        double* a, const int lda ) {
     cblas_dger( cblas_option< Order >::value, m, n, alpha, x, incx, y, incy,
             a, lda );
 }
@@ -87,8 +89,9 @@ inline void ger( Order, int m, int n, double alpha, const double* x, int incx,
 // * float value-type.
 //
 template< typename Order >
-inline void ger( Order, int m, int n, float alpha, const float* x, int incx,
-        const float* y, int incy, float* a, int lda ) {
+inline void ger( Order, const int m, const int n, const float alpha,
+        const float* x, const int incx, const float* y, const int incy,
+        float* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSger( m, n, alpha, x, incx, y, incy, a, lda );
 }
@@ -99,8 +102,9 @@ inline void ger( Order, int m, int n, float alpha, const float* x, int incx,
 // * double value-type.
 //
 template< typename Order >
-inline void ger( Order, int m, int n, double alpha, const double* x, int incx,
-        const double* y, int incy, double* a, int lda ) {
+inline void ger( Order, const int m, const int n, const double alpha,
+        const double* x, const int incx, const double* y, const int incy,
+        double* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDger( m, n, alpha, x, incx, y, incy, a, lda );
 }
@@ -112,9 +116,10 @@ inline void ger( Order, int m, int n, double alpha, const double* x, int incx,
 // * float value-type.
 //
 template< typename Order >
-inline void ger( Order, fortran_int_t m, fortran_int_t n, float alpha,
-        const float* x, fortran_int_t incx, const float* y,
-        fortran_int_t incy, float* a, fortran_int_t lda ) {
+inline void ger( Order, const fortran_int_t m, const fortran_int_t n,
+        const float alpha, const float* x, const fortran_int_t incx,
+        const float* y, const fortran_int_t incy, float* a,
+        const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
@@ -125,9 +130,10 @@ inline void ger( Order, fortran_int_t m, fortran_int_t n, float alpha,
 // * double value-type.
 //
 template< typename Order >
-inline void ger( Order, fortran_int_t m, fortran_int_t n, double alpha,
-        const double* x, fortran_int_t incx, const double* y,
-        fortran_int_t incy, double* a, fortran_int_t lda ) {
+inline void ger( Order, const fortran_int_t m, const fortran_int_t n,
+        const double alpha, const double* x, const fortran_int_t incx,
+        const double* y, const fortran_int_t incy, double* a,
+        const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }

@@ -46,6 +46,7 @@
 #include <boost/numeric/bindings/lapack/driver/cposv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gbsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gbsvx.hpp>
+#include <boost/numeric/bindings/lapack/driver/gejsv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gesv.hpp>
 #include <boost/numeric/bindings/lapack/driver/gesvx.hpp>
 #include <boost/numeric/bindings/lapack/driver/gtsv.hpp>

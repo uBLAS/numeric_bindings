@@ -60,7 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void scal( int n, float a, float* x, int incx ) {
+inline void scal( const int n, const float a, float* x, const int incx ) {
     cblas_sscal( n, a, x, incx );
 }
 
@@ -69,7 +69,7 @@ inline void scal( int n, float a, float* x, int incx ) {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void scal( int n, double a, double* x, int incx ) {
+inline void scal( const int n, const double a, double* x, const int incx ) {
     cblas_dscal( n, a, x, incx );
 }
 
@@ -78,8 +78,8 @@ inline void scal( int n, double a, double* x, int incx ) {
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void scal( int n, std::complex<float> a, std::complex<float>* x,
-        int incx ) {
+inline void scal( const int n, const std::complex<float> a,
+        std::complex<float>* x, const int incx ) {
     cblas_cscal( n, &a, x, incx );
 }
 
@@ -88,8 +88,8 @@ inline void scal( int n, std::complex<float> a, std::complex<float>* x,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void scal( int n, std::complex<double> a, std::complex<double>* x,
-        int incx ) {
+inline void scal( const int n, const std::complex<double> a,
+        std::complex<double>* x, const int incx ) {
     cblas_zscal( n, &a, x, incx );
 }
 
@@ -99,7 +99,7 @@ inline void scal( int n, std::complex<double> a, std::complex<double>* x,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void scal( int n, float a, float* x, int incx ) {
+inline void scal( const int n, const float a, float* x, const int incx ) {
     cublasSscal( n, a, x, incx );
 }
 
@@ -108,7 +108,7 @@ inline void scal( int n, float a, float* x, int incx ) {
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void scal( int n, double a, double* x, int incx ) {
+inline void scal( const int n, const double a, double* x, const int incx ) {
     cublasDscal( n, a, x, incx );
 }
 
@@ -117,8 +117,8 @@ inline void scal( int n, double a, double* x, int incx ) {
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void scal( int n, std::complex<float> a, std::complex<float>* x,
-        int incx ) {
+inline void scal( const int n, const std::complex<float> a,
+        std::complex<float>* x, const int incx ) {
     cublasCscal( n, a, x, incx );
 }
 
@@ -127,8 +127,8 @@ inline void scal( int n, std::complex<float> a, std::complex<float>* x,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void scal( int n, std::complex<double> a, std::complex<double>* x,
-        int incx ) {
+inline void scal( const int n, const std::complex<double> a,
+        std::complex<double>* x, const int incx ) {
     cublasZscal( n, a, x, incx );
 }
 
@@ -138,7 +138,8 @@ inline void scal( int n, std::complex<double> a, std::complex<double>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void scal( fortran_int_t n, float a, float* x, fortran_int_t incx ) {
+inline void scal( const fortran_int_t n, const float a, float* x,
+        const fortran_int_t incx ) {
     BLAS_SSCAL( &n, &a, x, &incx );
 }
 
@@ -147,7 +148,8 @@ inline void scal( fortran_int_t n, float a, float* x, fortran_int_t incx ) {
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void scal( fortran_int_t n, double a, double* x, fortran_int_t incx ) {
+inline void scal( const fortran_int_t n, const double a, double* x,
+        const fortran_int_t incx ) {
     BLAS_DSCAL( &n, &a, x, &incx );
 }
 
@@ -156,8 +158,8 @@ inline void scal( fortran_int_t n, double a, double* x, fortran_int_t incx ) {
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void scal( fortran_int_t n, std::complex<float> a,
-        std::complex<float>* x, fortran_int_t incx ) {
+inline void scal( const fortran_int_t n, const std::complex<float> a,
+        std::complex<float>* x, const fortran_int_t incx ) {
     BLAS_CSCAL( &n, &a, x, &incx );
 }
 
@@ -166,8 +168,8 @@ inline void scal( fortran_int_t n, std::complex<float> a,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void scal( fortran_int_t n, std::complex<double> a,
-        std::complex<double>* x, fortran_int_t incx ) {
+inline void scal( const fortran_int_t n, const std::complex<double> a,
+        std::complex<double>* x, const fortran_int_t incx ) {
     BLAS_ZSCAL( &n, &a, x, &incx );
 }
 

@@ -52,10 +52,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const float* ab, fortran_int_t ldab,
-        const fortran_int_t* ipiv, float anorm, float& rcond, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gbcon( const char norm, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, const float* ab,
+        const fortran_int_t ldab, const fortran_int_t* ipiv,
+        const float anorm, float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond, work,
             iwork, &info );
@@ -67,9 +67,10 @@ inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const double* ab, fortran_int_t ldab,
-        const fortran_int_t* ipiv, double anorm, double& rcond, double* work,
+inline std::ptrdiff_t gbcon( const char norm, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, const double* ab,
+        const fortran_int_t ldab, const fortran_int_t* ipiv,
+        const double anorm, double& rcond, double* work,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond, work,
@@ -82,9 +83,10 @@ inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const std::complex<float>* ab, fortran_int_t ldab,
-        const fortran_int_t* ipiv, float anorm, float& rcond,
+inline std::ptrdiff_t gbcon( const char norm, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const std::complex<float>* ab, const fortran_int_t ldab,
+        const fortran_int_t* ipiv, const float anorm, float& rcond,
         std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond, work,
@@ -97,9 +99,10 @@ inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gbcon( char norm, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, const std::complex<double>* ab, fortran_int_t ldab,
-        const fortran_int_t* ipiv, double anorm, double& rcond,
+inline std::ptrdiff_t gbcon( const char norm, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const std::complex<double>* ab, const fortran_int_t ldab,
+        const fortran_int_t* ipiv, const double anorm, double& rcond,
         std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond, work,

@@ -51,10 +51,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbgst( char vect, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, float* ab, fortran_int_t ldab,
-        const float* bb, fortran_int_t ldbb, float* x, fortran_int_t ldx,
-        float* work ) {
+inline std::ptrdiff_t sbgst( const char vect, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb, float* ab,
+        const fortran_int_t ldab, const float* bb, const fortran_int_t ldbb,
+        float* x, const fortran_int_t ldx, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSBGST( &vect, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
             &ldab, bb, &ldbb, x, &ldx, work, &info );
@@ -67,10 +67,10 @@ inline std::ptrdiff_t sbgst( char vect, UpLo, fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbgst( char vect, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, double* ab, fortran_int_t ldab,
-        const double* bb, fortran_int_t ldbb, double* x, fortran_int_t ldx,
-        double* work ) {
+inline std::ptrdiff_t sbgst( const char vect, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb, double* ab,
+        const fortran_int_t ldab, const double* bb, const fortran_int_t ldbb,
+        double* x, const fortran_int_t ldx, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSBGST( &vect, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
             &ldab, bb, &ldbb, x, &ldx, work, &info );

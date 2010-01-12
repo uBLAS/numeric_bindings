@@ -52,12 +52,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, float* a, fortran_int_t lda,
-        float* b, fortran_int_t ldb, float tola, float tolb, fortran_int_t& k,
-        fortran_int_t& l, float* u, fortran_int_t ldu, float* v,
-        fortran_int_t ldv, float* q, fortran_int_t ldq, fortran_int_t* iwork,
-        float* tau, float* work ) {
+inline std::ptrdiff_t ggsvp( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        float* a, const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        const float tola, const float tolb, fortran_int_t& k,
+        fortran_int_t& l, float* u, const fortran_int_t ldu, float* v,
+        const fortran_int_t ldv, float* q, const fortran_int_t ldq,
+        fortran_int_t* iwork, float* tau, float* work ) {
     fortran_int_t info(0);
     LAPACK_SGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, tau, work,
@@ -70,12 +71,14 @@ inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, double* a, fortran_int_t lda,
-        double* b, fortran_int_t ldb, double tola, double tolb,
-        fortran_int_t& k, fortran_int_t& l, double* u, fortran_int_t ldu,
-        double* v, fortran_int_t ldv, double* q, fortran_int_t ldq,
-        fortran_int_t* iwork, double* tau, double* work ) {
+inline std::ptrdiff_t ggsvp( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb, const double tola, const double tolb,
+        fortran_int_t& k, fortran_int_t& l, double* u,
+        const fortran_int_t ldu, double* v, const fortran_int_t ldv,
+        double* q, const fortran_int_t ldq, fortran_int_t* iwork, double* tau,
+        double* work ) {
     fortran_int_t info(0);
     LAPACK_DGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, tau, work,
@@ -88,14 +91,15 @@ inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
-        float tola, float tolb, fortran_int_t& k, fortran_int_t& l,
-        std::complex<float>* u, fortran_int_t ldu, std::complex<float>* v,
-        fortran_int_t ldv, std::complex<float>* q, fortran_int_t ldq,
-        fortran_int_t* iwork, float* rwork, std::complex<float>* tau,
-        std::complex<float>* work ) {
+inline std::ptrdiff_t ggsvp( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* b, const fortran_int_t ldb, const float tola,
+        const float tolb, fortran_int_t& k, fortran_int_t& l,
+        std::complex<float>* u, const fortran_int_t ldu,
+        std::complex<float>* v, const fortran_int_t ldv,
+        std::complex<float>* q, const fortran_int_t ldq, fortran_int_t* iwork,
+        float* rwork, std::complex<float>* tau, std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CGGSVP( &jobu, &jobv, &jobq, &m, &p, &n, a, &lda, b, &ldb, &tola,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, rwork, tau, work,
@@ -108,12 +112,14 @@ inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ggsvp( char jobu, char jobv, char jobq, fortran_int_t m,
-        fortran_int_t p, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, std::complex<double>* b, fortran_int_t ldb,
-        double tola, double tolb, fortran_int_t& k, fortran_int_t& l,
-        std::complex<double>* u, fortran_int_t ldu, std::complex<double>* v,
-        fortran_int_t ldv, std::complex<double>* q, fortran_int_t ldq,
+inline std::ptrdiff_t ggsvp( const char jobu, const char jobv, const char jobq,
+        const fortran_int_t m, const fortran_int_t p, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* b, const fortran_int_t ldb, const double tola,
+        const double tolb, fortran_int_t& k, fortran_int_t& l,
+        std::complex<double>* u, const fortran_int_t ldu,
+        std::complex<double>* v, const fortran_int_t ldv,
+        std::complex<double>* q, const fortran_int_t ldq,
         fortran_int_t* iwork, double* rwork, std::complex<double>* tau,
         std::complex<double>* work ) {
     fortran_int_t info(0);

@@ -53,11 +53,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, float* h, fortran_int_t ldh,
-        float* t, fortran_int_t ldt, float* alphar, float* alphai,
-        float* beta, float* q, fortran_int_t ldq, float* z, fortran_int_t ldz,
-        float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, float* h, const fortran_int_t ldh, float* t,
+        const fortran_int_t ldt, float* alphar, float* alphai, float* beta,
+        float* q, const fortran_int_t ldq, float* z, const fortran_int_t ldz,
+        float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
@@ -69,11 +70,12 @@ inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, double* h, fortran_int_t ldh,
-        double* t, fortran_int_t ldt, double* alphar, double* alphai,
-        double* beta, double* q, fortran_int_t ldq, double* z,
-        fortran_int_t ldz, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, double* h, const fortran_int_t ldh,
+        double* t, const fortran_int_t ldt, double* alphar, double* alphai,
+        double* beta, double* q, const fortran_int_t ldq, double* z,
+        const fortran_int_t ldz, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
@@ -85,13 +87,15 @@ inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, std::complex<float>* h,
-        fortran_int_t ldh, std::complex<float>* t, fortran_int_t ldt,
-        std::complex<float>* alpha, std::complex<float>* beta,
-        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* z,
-        fortran_int_t ldz, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork ) {
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, std::complex<float>* h,
+        const fortran_int_t ldh, std::complex<float>* t,
+        const fortran_int_t ldt, std::complex<float>* alpha,
+        std::complex<float>* beta, std::complex<float>* q,
+        const fortran_int_t ldq, std::complex<float>* z,
+        const fortran_int_t ldz, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alpha, beta, q, &ldq, z, &ldz, work, &lwork, rwork, &info );
@@ -103,13 +107,15 @@ inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hgeqz( char job, char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, std::complex<double>* h,
-        fortran_int_t ldh, std::complex<double>* t, fortran_int_t ldt,
-        std::complex<double>* alpha, std::complex<double>* beta,
-        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* z,
-        fortran_int_t ldz, std::complex<double>* work, fortran_int_t lwork,
-        double* rwork ) {
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, std::complex<double>* h,
+        const fortran_int_t ldh, std::complex<double>* t,
+        const fortran_int_t ldt, std::complex<double>* alpha,
+        std::complex<double>* beta, std::complex<double>* q,
+        const fortran_int_t ldq, std::complex<double>* z,
+        const fortran_int_t ldz, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alpha, beta, q, &ldq, z, &ldz, work, &lwork, rwork, &info );

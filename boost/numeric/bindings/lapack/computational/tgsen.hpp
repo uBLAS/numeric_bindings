@@ -53,13 +53,14 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
-        logical_t wantz, const logical_t* select, fortran_int_t n, float* a,
-        fortran_int_t lda, float* b, fortran_int_t ldb, float* alphar,
-        float* alphai, float* beta, float* q, fortran_int_t ldq, float* z,
-        fortran_int_t ldz, fortran_int_t& m, float& pl, float& pr, float* dif,
-        float* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork ) {
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const fortran_int_t n,
+        float* a, const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        float* alphar, float* alphai, float* beta, float* q,
+        const fortran_int_t ldq, float* z, const fortran_int_t ldz,
+        fortran_int_t& m, float& pl, float& pr, float* dif, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_STGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
@@ -72,13 +73,14 @@ inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
-        logical_t wantz, const logical_t* select, fortran_int_t n, double* a,
-        fortran_int_t lda, double* b, fortran_int_t ldb, double* alphar,
-        double* alphai, double* beta, double* q, fortran_int_t ldq, double* z,
-        fortran_int_t ldz, fortran_int_t& m, double& pl, double& pr,
-        double* dif, double* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork ) {
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const fortran_int_t n,
+        double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb, double* alphar, double* alphai, double* beta,
+        double* q, const fortran_int_t ldq, double* z,
+        const fortran_int_t ldz, fortran_int_t& m, double& pl, double& pr,
+        double* dif, double* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
@@ -91,14 +93,16 @@ inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
-        logical_t wantz, const logical_t* select, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* alpha,
-        std::complex<float>* beta, std::complex<float>* q, fortran_int_t ldq,
-        std::complex<float>* z, fortran_int_t ldz, fortran_int_t& m,
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* alpha, std::complex<float>* beta,
+        std::complex<float>* q, const fortran_int_t ldq,
+        std::complex<float>* z, const fortran_int_t ldz, fortran_int_t& m,
         float& pl, float& pr, float* dif, std::complex<float>* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb, alpha,
             beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work, &lwork, iwork,
@@ -111,15 +115,16 @@ inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgsen( fortran_int_t ijob, logical_t wantq,
-        logical_t wantz, const logical_t* select, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* alpha,
-        std::complex<double>* beta, std::complex<double>* q,
-        fortran_int_t ldq, std::complex<double>* z, fortran_int_t ldz,
-        fortran_int_t& m, double& pl, double& pr, double* dif,
-        std::complex<double>* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork ) {
+inline std::ptrdiff_t tgsen( const fortran_int_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* alpha, std::complex<double>* beta,
+        std::complex<double>* q, const fortran_int_t ldq,
+        std::complex<double>* z, const fortran_int_t ldz, fortran_int_t& m,
+        double& pl, double& pr, double* dif, std::complex<double>* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb, alpha,
             beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work, &lwork, iwork,

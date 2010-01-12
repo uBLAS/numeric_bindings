@@ -49,9 +49,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegst( fortran_int_t itype, UpLo, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t hegst( const fortran_int_t itype, UpLo,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CHEGST( &itype, &lapack_option< UpLo >::value, &n, a, &lda, b,
             &ldb, &info );
@@ -64,9 +65,10 @@ inline std::ptrdiff_t hegst( fortran_int_t itype, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegst( fortran_int_t itype, UpLo, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t hegst( const fortran_int_t itype, UpLo,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZHEGST( &itype, &lapack_option< UpLo >::value, &n, a, &lda, b,
             &ldb, &info );

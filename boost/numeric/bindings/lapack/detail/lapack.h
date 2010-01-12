@@ -2985,6 +2985,22 @@ void LAPACK_ZGBSVX( const char* fact, const char* trans,
         double* rcond, double* ferr, double* berr, void* work, double* rwork,
         fortran_int_t* info );
 
+// Value-type variants of gejsv
+void LAPACK_SGEJSV( const char* joba, const char* jobu, const char* jobv,
+        const char* jobr, const char* jobt, const char* jobp,
+        const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* sva, float* u,
+        const fortran_int_t* ldu, float* v, const fortran_int_t* ldv,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DGEJSV( const char* joba, const char* jobu, const char* jobv,
+        const char* jobr, const char* jobt, const char* jobp,
+        const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* sva, double* u,
+        const fortran_int_t* ldu, double* v, const fortran_int_t* ldv,
+        double* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
+
 // Value-type variants of gesv
 void LAPACK_SGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
         float* a, const fortran_int_t* lda, fortran_int_t* ipiv, float* b,
@@ -3938,6 +3954,271 @@ void LAPACK_ZLALSD( const char* uplo, const fortran_int_t* smlsiz,
         double* e, void* b, const fortran_int_t* ldb, const double* rcond,
         fortran_int_t* rank, void* work, double* rwork, fortran_int_t* iwork,
         fortran_int_t* info );
+
+//
+// LAPACK auxiliary routines
+//
+
+// Value-type variants of larf
+void LAPACK_SLARF( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const float* v, const fortran_int_t* incv,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work );
+void LAPACK_DLARF( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const double* v, const fortran_int_t* incv,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work );
+void LAPACK_CLARF( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const void* v, const fortran_int_t* incv,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work );
+void LAPACK_ZLARF( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const void* v, const fortran_int_t* incv,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work );
+
+// Value-type variants of larfb
+void LAPACK_SLARFB( const char* side, const char* trans, const char* direct,
+        const char* storev, const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const float* v, const fortran_int_t* ldv,
+        const float* t, const fortran_int_t* ldt, float* c,
+        const fortran_int_t* ldc, float* work, const fortran_int_t* ldwork );
+void LAPACK_DLARFB( const char* side, const char* trans, const char* direct,
+        const char* storev, const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const double* v, const fortran_int_t* ldv,
+        const double* t, const fortran_int_t* ldt, double* c,
+        const fortran_int_t* ldc, double* work, const fortran_int_t* ldwork );
+void LAPACK_CLARFB( const char* side, const char* trans, const char* direct,
+        const char* storev, const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* v, const fortran_int_t* ldv,
+        const void* t, const fortran_int_t* ldt, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* ldwork );
+void LAPACK_ZLARFB( const char* side, const char* trans, const char* direct,
+        const char* storev, const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* v, const fortran_int_t* ldv,
+        const void* t, const fortran_int_t* ldt, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* ldwork );
+
+// Value-type variants of larfg
+void LAPACK_SLARFG( const fortran_int_t* n, float* alpha, float* x,
+        const fortran_int_t* incx, float* tau );
+void LAPACK_DLARFG( const fortran_int_t* n, double* alpha, double* x,
+        const fortran_int_t* incx, double* tau );
+void LAPACK_CLARFG( const fortran_int_t* n, void* alpha, void* x,
+        const fortran_int_t* incx, void* tau );
+void LAPACK_ZLARFG( const fortran_int_t* n, void* alpha, void* x,
+        const fortran_int_t* incx, void* tau );
+
+// Value-type variants of larft
+void LAPACK_SLARFT( const char* direct, const char* storev,
+        const fortran_int_t* n, const fortran_int_t* k, float* v,
+        const fortran_int_t* ldv, const float* tau, float* t,
+        const fortran_int_t* ldt );
+void LAPACK_DLARFT( const char* direct, const char* storev,
+        const fortran_int_t* n, const fortran_int_t* k, double* v,
+        const fortran_int_t* ldv, const double* tau, double* t,
+        const fortran_int_t* ldt );
+void LAPACK_CLARFT( const char* direct, const char* storev,
+        const fortran_int_t* n, const fortran_int_t* k, void* v,
+        const fortran_int_t* ldv, const void* tau, void* t,
+        const fortran_int_t* ldt );
+void LAPACK_ZLARFT( const char* direct, const char* storev,
+        const fortran_int_t* n, const fortran_int_t* k, void* v,
+        const fortran_int_t* ldv, const void* tau, void* t,
+        const fortran_int_t* ldt );
+
+// Value-type variants of larfx
+void LAPACK_SLARFX( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const float* v, const float* tau, float* c,
+        const fortran_int_t* ldc, float* work );
+void LAPACK_DLARFX( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const double* v, const double* tau, double* c,
+        const fortran_int_t* ldc, double* work );
+void LAPACK_CLARFX( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const void* v, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work );
+void LAPACK_ZLARFX( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const void* v, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work );
+
+// Value-type variants of largv
+void LAPACK_SLARGV( const fortran_int_t* n, float* x,
+        const fortran_int_t* incx, float* y, const fortran_int_t* incy,
+        float* c, const fortran_int_t* incc );
+void LAPACK_DLARGV( const fortran_int_t* n, double* x,
+        const fortran_int_t* incx, double* y, const fortran_int_t* incy,
+        double* c, const fortran_int_t* incc );
+void LAPACK_CLARGV( const fortran_int_t* n, void* x,
+        const fortran_int_t* incx, void* y, const fortran_int_t* incy,
+        float* c, const fortran_int_t* incc );
+void LAPACK_ZLARGV( const fortran_int_t* n, void* x,
+        const fortran_int_t* incx, void* y, const fortran_int_t* incy,
+        double* c, const fortran_int_t* incc );
+
+// Value-type variants of larnv
+void LAPACK_SLARNV( const fortran_int_t* idist, fortran_int_t* iseed,
+        const fortran_int_t* n, float* x );
+void LAPACK_DLARNV( const fortran_int_t* idist, fortran_int_t* iseed,
+        const fortran_int_t* n, double* x );
+void LAPACK_CLARNV( const fortran_int_t* idist, fortran_int_t* iseed,
+        const fortran_int_t* n, void* x );
+void LAPACK_ZLARNV( const fortran_int_t* idist, fortran_int_t* iseed,
+        const fortran_int_t* n, void* x );
+
+// Value-type variants of larrb
+void LAPACK_SLARRB( const fortran_int_t* n, const float* d, const float* lld,
+        const fortran_int_t* ifirst, const fortran_int_t* ilast,
+        const float* rtol1, const float* rtol2, const fortran_int_t* offset,
+        float* w, float* wgap, float* werr, float* work, fortran_int_t* iwork,
+        const float* pivmin, const float* spdiam, const fortran_int_t* twist,
+        fortran_int_t* info );
+void LAPACK_DLARRB( const fortran_int_t* n, const double* d,
+        const double* lld, const fortran_int_t* ifirst,
+        const fortran_int_t* ilast, const double* rtol1, const double* rtol2,
+        const fortran_int_t* offset, double* w, double* wgap, double* werr,
+        double* work, fortran_int_t* iwork, const double* pivmin,
+        const double* spdiam, const fortran_int_t* twist,
+        fortran_int_t* info );
+
+// Value-type variants of larre
+void LAPACK_SLARRE( const char* range, const fortran_int_t* n, float* vl,
+        float* vu, const fortran_int_t* il, const fortran_int_t* iu, float* d,
+        float* e, float* e2, const float* rtol1, const float* rtol2,
+        const float* spltol, fortran_int_t* nsplit, fortran_int_t* isplit,
+        fortran_int_t* m, float* w, float* werr, float* wgap,
+        fortran_int_t* iblock, fortran_int_t* indexw, float* gers,
+        float* pivmin, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DLARRE( const char* range, const fortran_int_t* n, double* vl,
+        double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        double* d, double* e, double* e2, const double* rtol1,
+        const double* rtol2, const double* spltol, fortran_int_t* nsplit,
+        fortran_int_t* isplit, fortran_int_t* m, double* w, double* werr,
+        double* wgap, fortran_int_t* iblock, fortran_int_t* indexw,
+        double* gers, double* pivmin, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+
+// Value-type variants of langb
+void LAPACK_SLANGB( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const float* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_DLANGB( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const double* ab,
+        const fortran_int_t* ldab, double* work );
+void LAPACK_CLANGB( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const void* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_ZLANGB( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const void* ab,
+        const fortran_int_t* ldab, double* work );
+
+// Value-type variants of lange
+void LAPACK_SLANGE( const char* norm, const fortran_int_t* m,
+        const fortran_int_t* n, const float* a, const fortran_int_t* lda,
+        float* work );
+void LAPACK_DLANGE( const char* norm, const fortran_int_t* m,
+        const fortran_int_t* n, const double* a, const fortran_int_t* lda,
+        double* work );
+void LAPACK_CLANGE( const char* norm, const fortran_int_t* m,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        float* work );
+void LAPACK_ZLANGE( const char* norm, const fortran_int_t* m,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        double* work );
+
+// Value-type variants of lanhb
+void LAPACK_CLANHB( const char* norm, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* k, const void* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_ZLANHB( const char* norm, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* k, const void* ab,
+        const fortran_int_t* ldab, double* work );
+
+// Value-type variants of lanhe
+void LAPACK_CLANHE( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        float* work );
+void LAPACK_ZLANHE( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        double* work );
+
+// Value-type variants of lanhp
+void LAPACK_CLANHP( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* ap, float* work );
+void LAPACK_ZLANHP( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* ap, double* work );
+
+// Value-type variants of lanhs
+void LAPACK_SLANHS( const char* norm, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, float* work );
+void LAPACK_DLANHS( const char* norm, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, double* work );
+void LAPACK_CLANHS( const char* norm, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, float* work );
+void LAPACK_ZLANHS( const char* norm, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, double* work );
+
+// Value-type variants of lansb
+void LAPACK_SLANSB( const char* norm, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* k, const float* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_DLANSB( const char* norm, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* k, const double* ab,
+        const fortran_int_t* ldab, double* work );
+void LAPACK_CLANSB( const char* norm, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* k, const void* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_ZLANSB( const char* norm, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* k, const void* ab,
+        const fortran_int_t* ldab, double* work );
+
+// Value-type variants of lansp
+void LAPACK_SLANSP( const char* norm, const char* uplo,
+        const fortran_int_t* n, const float* ap, float* work );
+void LAPACK_DLANSP( const char* norm, const char* uplo,
+        const fortran_int_t* n, const double* ap, double* work );
+void LAPACK_CLANSP( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* ap, float* work );
+void LAPACK_ZLANSP( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* ap, double* work );
+
+// Value-type variants of lansy
+void LAPACK_SLANSY( const char* norm, const char* uplo,
+        const fortran_int_t* n, const float* a, const fortran_int_t* lda,
+        float* work );
+void LAPACK_DLANSY( const char* norm, const char* uplo,
+        const fortran_int_t* n, const double* a, const fortran_int_t* lda,
+        double* work );
+void LAPACK_CLANSY( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        float* work );
+void LAPACK_ZLANSY( const char* norm, const char* uplo,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        double* work );
+
+// Value-type variants of lantb
+void LAPACK_SLANTB( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const fortran_int_t* k, const float* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_DLANTB( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const fortran_int_t* k, const double* ab,
+        const fortran_int_t* ldab, double* work );
+void LAPACK_CLANTB( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const fortran_int_t* k, const void* ab,
+        const fortran_int_t* ldab, float* work );
+void LAPACK_ZLANTB( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const fortran_int_t* k, const void* ab,
+        const fortran_int_t* ldab, double* work );
+
+// Value-type variants of lantr
+void LAPACK_SLANTR( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* m, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, float* work );
+void LAPACK_DLANTR( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* m, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, double* work );
+void LAPACK_CLANTR( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* m, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, float* work );
+void LAPACK_ZLANTR( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* m, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, double* work );
 
 //
 // LAPACK auxiliary routines

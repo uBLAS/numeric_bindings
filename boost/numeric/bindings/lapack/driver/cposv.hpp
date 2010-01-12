@@ -51,12 +51,12 @@ namespace detail {
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t cposv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx,
-        std::complex<double>* work, std::complex<float>* swork, double* rwork,
-        fortran_int_t& iter ) {
+inline std::ptrdiff_t cposv( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* x,
+        const fortran_int_t ldx, std::complex<double>* work,
+        std::complex<float>* swork, double* rwork, fortran_int_t& iter ) {
     fortran_int_t info(0);
     LAPACK_ZCPOSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,
             x, &ldx, work, swork, rwork, &iter, &info );

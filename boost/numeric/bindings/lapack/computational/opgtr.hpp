@@ -50,8 +50,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t opgtr( char uplo, fortran_int_t n, const float* ap,
-        const float* tau, float* q, fortran_int_t ldq, float* work ) {
+inline std::ptrdiff_t opgtr( const char uplo, const fortran_int_t n,
+        const float* ap, const float* tau, float* q, const fortran_int_t ldq,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_SOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
     return info;
@@ -62,8 +63,9 @@ inline std::ptrdiff_t opgtr( char uplo, fortran_int_t n, const float* ap,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t opgtr( char uplo, fortran_int_t n, const double* ap,
-        const double* tau, double* q, fortran_int_t ldq, double* work ) {
+inline std::ptrdiff_t opgtr( const char uplo, const fortran_int_t n,
+        const double* ap, const double* tau, double* q,
+        const fortran_int_t ldq, double* work ) {
     fortran_int_t info(0);
     LAPACK_DOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
     return info;

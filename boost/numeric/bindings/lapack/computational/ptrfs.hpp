@@ -53,10 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t ptrfs( fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t ptrfs( const fortran_int_t n, const fortran_int_t nrhs,
         const float* d, const float* e, const float* df, const float* ef,
-        const float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
-        float* ferr, float* berr, float* work ) {
+        const float* b, const fortran_int_t ldb, float* x,
+        const fortran_int_t ldx, float* ferr, float* berr, float* work ) {
     fortran_int_t info(0);
     LAPACK_SPTRFS( &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, ferr, berr,
             work, &info );
@@ -68,10 +68,10 @@ inline std::ptrdiff_t ptrfs( fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t ptrfs( fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t ptrfs( const fortran_int_t n, const fortran_int_t nrhs,
         const double* d, const double* e, const double* df, const double* ef,
-        const double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double* ferr, double* berr, double* work ) {
+        const double* b, const fortran_int_t ldb, double* x,
+        const fortran_int_t ldx, double* ferr, double* berr, double* work ) {
     fortran_int_t info(0);
     LAPACK_DPTRFS( &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, ferr, berr,
             work, &info );
@@ -83,11 +83,13 @@ inline std::ptrdiff_t ptrfs( fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ptrfs( char uplo, fortran_int_t n, fortran_int_t nrhs,
-        const float* d, const std::complex<float>* e, const float* df,
+inline std::ptrdiff_t ptrfs( const char uplo, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* d,
+        const std::complex<float>* e, const float* df,
         const std::complex<float>* ef, const std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
+        const fortran_int_t ldb, std::complex<float>* x,
+        const fortran_int_t ldx, float* ferr, float* berr,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CPTRFS( &uplo, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, ferr,
             berr, work, rwork, &info );
@@ -99,12 +101,13 @@ inline std::ptrdiff_t ptrfs( char uplo, fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ptrfs( char uplo, fortran_int_t n, fortran_int_t nrhs,
-        const double* d, const std::complex<double>* e, const double* df,
+inline std::ptrdiff_t ptrfs( const char uplo, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* d,
+        const std::complex<double>* e, const double* df,
         const std::complex<double>* ef, const std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double* ferr, double* berr, std::complex<double>* work,
-        double* rwork ) {
+        const fortran_int_t ldb, std::complex<double>* x,
+        const fortran_int_t ldx, double* ferr, double* berr,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZPTRFS( &uplo, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, ferr,
             berr, work, rwork, &info );

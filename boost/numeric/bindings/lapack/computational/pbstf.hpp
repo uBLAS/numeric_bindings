@@ -49,8 +49,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
-        float* ab, fortran_int_t ldab ) {
+inline std::ptrdiff_t pbstf( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, float* ab, const fortran_int_t ldab ) {
     fortran_int_t info(0);
     LAPACK_SPBSTF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
     return info;
@@ -62,8 +62,8 @@ inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
-        double* ab, fortran_int_t ldab ) {
+inline std::ptrdiff_t pbstf( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, double* ab, const fortran_int_t ldab ) {
     fortran_int_t info(0);
     LAPACK_DPBSTF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
     return info;
@@ -75,8 +75,9 @@ inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
-        std::complex<float>* ab, fortran_int_t ldab ) {
+inline std::ptrdiff_t pbstf( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, std::complex<float>* ab,
+        const fortran_int_t ldab ) {
     fortran_int_t info(0);
     LAPACK_CPBSTF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
     return info;
@@ -88,8 +89,9 @@ inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbstf( UpLo, fortran_int_t n, fortran_int_t kd,
-        std::complex<double>* ab, fortran_int_t ldab ) {
+inline std::ptrdiff_t pbstf( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, std::complex<double>* ab,
+        const fortran_int_t ldab ) {
     fortran_int_t info(0);
     LAPACK_ZPBSTF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
     return info;

@@ -56,10 +56,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t nrhs, const float* a, fortran_int_t lda, const float* b,
-        fortran_int_t ldb, const float* x, fortran_int_t ldx, float* ferr,
-        float* berr, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t trrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t nrhs, const float* a,
+        const fortran_int_t lda, const float* b, const fortran_int_t ldb,
+        const float* x, const fortran_int_t ldx, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STRRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &n, &nrhs, a, &lda, b, &ldb, x, &ldx, ferr, berr,
@@ -73,11 +74,11 @@ inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t nrhs, const double* a, fortran_int_t lda,
-        const double* b, fortran_int_t ldb, const double* x,
-        fortran_int_t ldx, double* ferr, double* berr, double* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t trrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t nrhs, const double* a,
+        const fortran_int_t lda, const double* b, const fortran_int_t ldb,
+        const double* x, const fortran_int_t ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTRRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &n, &nrhs, a, &lda, b, &ldb, x, &ldx, ferr, berr,
@@ -91,10 +92,11 @@ inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* b, fortran_int_t ldb,
-        const std::complex<float>* x, fortran_int_t ldx, float* ferr,
+inline std::ptrdiff_t trrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t nrhs,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        const std::complex<float>* x, const fortran_int_t ldx, float* ferr,
         float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTRRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
@@ -109,10 +111,11 @@ inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t trrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* b, fortran_int_t ldb,
-        const std::complex<double>* x, fortran_int_t ldx, double* ferr,
+inline std::ptrdiff_t trrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t nrhs,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        const std::complex<double>* x, const fortran_int_t ldx, double* ferr,
         double* berr, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTRRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<

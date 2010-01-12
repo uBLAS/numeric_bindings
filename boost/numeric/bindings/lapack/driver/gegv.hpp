@@ -53,10 +53,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n, float* a,
-        fortran_int_t lda, float* b, fortran_int_t ldb, float* alphar,
-        float* alphai, float* beta, float* vl, fortran_int_t ldvl, float* vr,
-        fortran_int_t ldvr, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb, float* alphar, float* alphai, float* beta,
+        float* vl, const fortran_int_t ldvl, float* vr,
+        const fortran_int_t ldvr, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alphar, alphai, beta,
             vl, &ldvl, vr, &ldvr, work, &lwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n, double* a,
-        fortran_int_t lda, double* b, fortran_int_t ldb, double* alphar,
-        double* alphai, double* beta, double* vl, fortran_int_t ldvl,
-        double* vr, fortran_int_t ldvr, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
+        const fortran_int_t n, double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb, double* alphar, double* alphai, double* beta,
+        double* vl, const fortran_int_t ldvl, double* vr,
+        const fortran_int_t ldvr, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alphar, alphai, beta,
             vl, &ldvl, vr, &ldvr, work, &lwork, &info );
@@ -83,12 +85,14 @@ inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* alpha,
+inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* alpha,
         std::complex<float>* beta, std::complex<float>* vl,
-        fortran_int_t ldvl, std::complex<float>* vr, fortran_int_t ldvr,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork ) {
+        const fortran_int_t ldvl, std::complex<float>* vr,
+        const fortran_int_t ldvr, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alpha, beta, vl,
             &ldvl, vr, &ldvr, work, &lwork, rwork, &info );
@@ -100,12 +104,14 @@ inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gegv( char jobvl, char jobvr, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* alpha,
+inline std::ptrdiff_t gegv( const char jobvl, const char jobvr,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* alpha,
         std::complex<double>* beta, std::complex<double>* vl,
-        fortran_int_t ldvl, std::complex<double>* vr, fortran_int_t ldvr,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork ) {
+        const fortran_int_t ldvl, std::complex<double>* vr,
+        const fortran_int_t ldvr, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEGV( &jobvl, &jobvr, &n, a, &lda, b, &ldb, alpha, beta, vl,
             &ldvl, vr, &ldvr, work, &lwork, rwork, &info );

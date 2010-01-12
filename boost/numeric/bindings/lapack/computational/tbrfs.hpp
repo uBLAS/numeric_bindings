@@ -56,10 +56,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t kd, fortran_int_t nrhs, const float* ab,
-        fortran_int_t ldab, const float* b, fortran_int_t ldb, const float* x,
-        fortran_int_t ldx, float* ferr, float* berr, float* work,
+inline std::ptrdiff_t tbrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t kd,
+        const fortran_int_t nrhs, const float* ab, const fortran_int_t ldab,
+        const float* b, const fortran_int_t ldb, const float* x,
+        const fortran_int_t ldx, float* ferr, float* berr, float* work,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STBRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
@@ -74,11 +75,12 @@ inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t kd, fortran_int_t nrhs, const double* ab,
-        fortran_int_t ldab, const double* b, fortran_int_t ldb,
-        const double* x, fortran_int_t ldx, double* ferr, double* berr,
-        double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t tbrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t kd,
+        const fortran_int_t nrhs, const double* ab, const fortran_int_t ldab,
+        const double* b, const fortran_int_t ldb, const double* x,
+        const fortran_int_t ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTBRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &n, &kd, &nrhs, ab, &ldab, b, &ldb, x, &ldx, ferr,
@@ -92,11 +94,13 @@ inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t kd, fortran_int_t nrhs, const std::complex<float>* ab,
-        fortran_int_t ldab, const std::complex<float>* b, fortran_int_t ldb,
-        const std::complex<float>* x, fortran_int_t ldx, float* ferr,
-        float* berr, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t tbrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t kd,
+        const fortran_int_t nrhs, const std::complex<float>* ab,
+        const fortran_int_t ldab, const std::complex<float>* b,
+        const fortran_int_t ldb, const std::complex<float>* x,
+        const fortran_int_t ldx, float* ferr, float* berr,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTBRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &n, &kd, &nrhs, ab, &ldab, b, &ldb, x, &ldx, ferr,
@@ -110,11 +114,13 @@ inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans, typename Diag >
-inline std::ptrdiff_t tbrfs( char uplo, Trans, Diag, fortran_int_t n,
-        fortran_int_t kd, fortran_int_t nrhs, const std::complex<double>* ab,
-        fortran_int_t ldab, const std::complex<double>* b, fortran_int_t ldb,
-        const std::complex<double>* x, fortran_int_t ldx, double* ferr,
-        double* berr, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t tbrfs( const char uplo, Trans, Diag,
+        const fortran_int_t n, const fortran_int_t kd,
+        const fortran_int_t nrhs, const std::complex<double>* ab,
+        const fortran_int_t ldab, const std::complex<double>* b,
+        const fortran_int_t ldb, const std::complex<double>* x,
+        const fortran_int_t ldx, double* ferr, double* berr,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTBRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
             Diag >::value, &n, &kd, &nrhs, ab, &ldab, b, &ldb, x, &ldx, ferr,

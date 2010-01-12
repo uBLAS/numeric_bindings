@@ -55,9 +55,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, float* a, fortran_int_t lda, float* b,
-        fortran_int_t ldb, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t nrhs, float* a,
+        const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
@@ -70,9 +71,10 @@ inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, double* a, fortran_int_t lda, double* b,
-        fortran_int_t ldb, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t nrhs, double* a,
+        const fortran_int_t lda, double* b, const fortran_int_t ldb,
+        double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
@@ -85,10 +87,11 @@ inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t nrhs,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );
@@ -101,10 +104,11 @@ inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gels( Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gels( Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t nrhs,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZGELS( &lapack_option< Trans >::value, &m, &n, &nrhs, a, &lda, b,
             &ldb, work, &lwork, &info );

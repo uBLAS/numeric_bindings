@@ -52,10 +52,11 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t upmtr( char side, char uplo, Trans, fortran_int_t m,
-        fortran_int_t n, const std::complex<float>* ap,
-        const std::complex<float>* tau, std::complex<float>* c,
-        fortran_int_t ldc, std::complex<float>* work ) {
+inline std::ptrdiff_t upmtr( const char side, const char uplo, Trans,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float>* ap, const std::complex<float>* tau,
+        std::complex<float>* c, const fortran_int_t ldc,
+        std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CUPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
             tau, c, &ldc, work, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t upmtr( char side, char uplo, Trans, fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t upmtr( char side, char uplo, Trans, fortran_int_t m,
-        fortran_int_t n, const std::complex<double>* ap,
-        const std::complex<double>* tau, std::complex<double>* c,
-        fortran_int_t ldc, std::complex<double>* work ) {
+inline std::ptrdiff_t upmtr( const char side, const char uplo, Trans,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double>* ap, const std::complex<double>* tau,
+        std::complex<double>* c, const fortran_int_t ldc,
+        std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZUPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
             tau, c, &ldc, work, &info );

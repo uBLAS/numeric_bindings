@@ -55,12 +55,13 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
-        fortran_int_t n, const float* a, fortran_int_t lda, const float* b,
-        fortran_int_t ldb, float* c, fortran_int_t ldc, const float* d,
-        fortran_int_t ldd, const float* e, fortran_int_t lde, float* f,
-        fortran_int_t ldf, float& scale, float& dif, float* work,
-        fortran_int_t lwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t tgsyl( Trans, const fortran_int_t ijob,
+        const fortran_int_t m, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, const float* b, const fortran_int_t ldb,
+        float* c, const fortran_int_t ldc, const float* d,
+        const fortran_int_t ldd, const float* e, const fortran_int_t lde,
+        float* f, const fortran_int_t ldf, float& scale, float& dif,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STGSYL( &lapack_option< Trans >::value, &ijob, &m, &n, a, &lda, b,
             &ldb, c, &ldc, d, &ldd, e, &lde, f, &ldf, &scale, &dif, work,
@@ -74,12 +75,13 @@ inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
-        fortran_int_t n, const double* a, fortran_int_t lda, const double* b,
-        fortran_int_t ldb, double* c, fortran_int_t ldc, const double* d,
-        fortran_int_t ldd, const double* e, fortran_int_t lde, double* f,
-        fortran_int_t ldf, double& scale, double& dif, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t tgsyl( Trans, const fortran_int_t ijob,
+        const fortran_int_t m, const fortran_int_t n, const double* a,
+        const fortran_int_t lda, const double* b, const fortran_int_t ldb,
+        double* c, const fortran_int_t ldc, const double* d,
+        const fortran_int_t ldd, const double* e, const fortran_int_t lde,
+        double* f, const fortran_int_t ldf, double& scale, double& dif,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTGSYL( &lapack_option< Trans >::value, &ijob, &m, &n, a, &lda, b,
             &ldb, c, &ldc, d, &ldd, e, &lde, f, &ldf, &scale, &dif, work,
@@ -93,14 +95,15 @@ inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
-        fortran_int_t n, const std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* c, fortran_int_t ldc,
-        const std::complex<float>* d, fortran_int_t ldd,
-        const std::complex<float>* e, fortran_int_t lde,
-        std::complex<float>* f, fortran_int_t ldf, float& scale, float& dif,
-        std::complex<float>* work, fortran_int_t lwork,
+inline std::ptrdiff_t tgsyl( Trans, const fortran_int_t ijob,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* c, const fortran_int_t ldc,
+        const std::complex<float>* d, const fortran_int_t ldd,
+        const std::complex<float>* e, const fortran_int_t lde,
+        std::complex<float>* f, const fortran_int_t ldf, float& scale,
+        float& dif, std::complex<float>* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_CTGSYL( &lapack_option< Trans >::value, &ijob, &m, &n, a, &lda, b,
@@ -115,14 +118,15 @@ inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t tgsyl( Trans, fortran_int_t ijob, fortran_int_t m,
-        fortran_int_t n, const std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* c, fortran_int_t ldc,
-        const std::complex<double>* d, fortran_int_t ldd,
-        const std::complex<double>* e, fortran_int_t lde,
-        std::complex<double>* f, fortran_int_t ldf, double& scale,
-        double& dif, std::complex<double>* work, fortran_int_t lwork,
+inline std::ptrdiff_t tgsyl( Trans, const fortran_int_t ijob,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* c, const fortran_int_t ldc,
+        const std::complex<double>* d, const fortran_int_t ldd,
+        const std::complex<double>* e, const fortran_int_t lde,
+        std::complex<double>* f, const fortran_int_t ldf, double& scale,
+        double& dif, std::complex<double>* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_ZTGSYL( &lapack_option< Trans >::value, &ijob, &m, &n, a, &lda, b,

@@ -54,11 +54,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const float* a, fortran_int_t lda, const float* af,
-        fortran_int_t ldaf, const fortran_int_t* ipiv, const float* b,
-        fortran_int_t ldb, float* x, fortran_int_t ldx, float* ferr,
-        float* berr, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t gerfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* a, const fortran_int_t lda,
+        const float* af, const fortran_int_t ldaf, const fortran_int_t* ipiv,
+        const float* b, const fortran_int_t ldb, float* x,
+        const fortran_int_t ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGERFS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, af,
             &ldaf, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
@@ -71,11 +72,12 @@ inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const double* a, fortran_int_t lda, const double* af,
-        fortran_int_t ldaf, const fortran_int_t* ipiv, const double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double* ferr,
-        double* berr, double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t gerfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* a, const fortran_int_t lda,
+        const double* af, const fortran_int_t ldaf, const fortran_int_t* ipiv,
+        const double* b, const fortran_int_t ldb, double* x,
+        const fortran_int_t ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGERFS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, af,
             &ldaf, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
@@ -88,12 +90,13 @@ inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* af, fortran_int_t ldaf,
-        const fortran_int_t* ipiv, const std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t gerfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* af,
+        const fortran_int_t ldaf, const fortran_int_t* ipiv,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float* ferr,
+        float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGERFS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, af,
             &ldaf, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );
@@ -106,13 +109,13 @@ inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gerfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* af, fortran_int_t ldaf,
-        const fortran_int_t* ipiv, const std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double* ferr, double* berr, std::complex<double>* work,
-        double* rwork ) {
+inline std::ptrdiff_t gerfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* af,
+        const fortran_int_t ldaf, const fortran_int_t* ipiv,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double* ferr,
+        double* berr, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGERFS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, af,
             &ldaf, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork, &info );

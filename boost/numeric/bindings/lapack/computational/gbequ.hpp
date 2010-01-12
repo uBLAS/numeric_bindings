@@ -50,10 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, const float* ab,
-        fortran_int_t ldab, float* r, float* c, float& rowcnd, float& colcnd,
-        float& amax ) {
+inline std::ptrdiff_t gbequ( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, const float* ab,
+        const fortran_int_t ldab, float* r, float* c, float& rowcnd,
+        float& colcnd, float& amax ) {
     fortran_int_t info(0);
     LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
@@ -65,9 +65,9 @@ inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, const double* ab,
-        fortran_int_t ldab, double* r, double* c, double& rowcnd,
+inline std::ptrdiff_t gbequ( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, const double* ab,
+        const fortran_int_t ldab, double* r, double* c, double& rowcnd,
         double& colcnd, double& amax ) {
     fortran_int_t info(0);
     LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
@@ -80,10 +80,10 @@ inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, const std::complex<float>* ab,
-        fortran_int_t ldab, float* r, float* c, float& rowcnd, float& colcnd,
-        float& amax ) {
+inline std::ptrdiff_t gbequ( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const std::complex<float>* ab, const fortran_int_t ldab, float* r,
+        float* c, float& rowcnd, float& colcnd, float& amax ) {
     fortran_int_t info(0);
     LAPACK_CGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
@@ -95,10 +95,10 @@ inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gbequ( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, const std::complex<double>* ab,
-        fortran_int_t ldab, double* r, double* c, double& rowcnd,
-        double& colcnd, double& amax ) {
+inline std::ptrdiff_t gbequ( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const std::complex<double>* ab, const fortran_int_t ldab, double* r,
+        double* c, double& rowcnd, double& colcnd, double& amax ) {
     fortran_int_t info(0);
     LAPACK_ZGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );

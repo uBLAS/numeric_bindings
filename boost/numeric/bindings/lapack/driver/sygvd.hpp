@@ -52,10 +52,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygvd( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, float* a, fortran_int_t lda, float* b,
-        fortran_int_t ldb, float* w, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t sygvd( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb, float* w, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSYGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, iwork, &liwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t sygvd( fortran_int_t itype, char jobz, UpLo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygvd( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, double* a, fortran_int_t lda, double* b,
-        fortran_int_t ldb, double* w, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t sygvd( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb, double* w, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSYGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, iwork, &liwork, &info );

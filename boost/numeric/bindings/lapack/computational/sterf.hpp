@@ -47,7 +47,7 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t sterf( fortran_int_t n, float* d, float* e ) {
+inline std::ptrdiff_t sterf( const fortran_int_t n, float* d, float* e ) {
     fortran_int_t info(0);
     LAPACK_SSTERF( &n, d, e, &info );
     return info;
@@ -58,7 +58,7 @@ inline std::ptrdiff_t sterf( fortran_int_t n, float* d, float* e ) {
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sterf( fortran_int_t n, double* d, double* e ) {
+inline std::ptrdiff_t sterf( const fortran_int_t n, double* d, double* e ) {
     fortran_int_t info(0);
     LAPACK_DSTERF( &n, d, e, &info );
     return info;

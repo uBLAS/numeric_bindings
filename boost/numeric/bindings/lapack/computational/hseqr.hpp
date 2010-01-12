@@ -52,10 +52,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, float* h, fortran_int_t ldh,
-        float* wr, float* wi, float* z, fortran_int_t ldz, float* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t hseqr( const char job, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, float* h, const fortran_int_t ldh, float* wr,
+        float* wi, float* z, const fortran_int_t ldz, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
             work, &lwork, &info );
@@ -67,10 +68,11 @@ inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, double* h, fortran_int_t ldh,
-        double* wr, double* wi, double* z, fortran_int_t ldz, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t hseqr( const char job, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, double* h, const fortran_int_t ldh,
+        double* wr, double* wi, double* z, const fortran_int_t ldz,
+        double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
             work, &lwork, &info );
@@ -82,10 +84,12 @@ inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, std::complex<float>* h,
-        fortran_int_t ldh, std::complex<float>* w, std::complex<float>* z,
-        fortran_int_t ldz, std::complex<float>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t hseqr( const char job, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, std::complex<float>* h,
+        const fortran_int_t ldh, std::complex<float>* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, w, z, &ldz, work,
             &lwork, &info );
@@ -97,10 +101,12 @@ inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hseqr( char job, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, std::complex<double>* h,
-        fortran_int_t ldh, std::complex<double>* w, std::complex<double>* z,
-        fortran_int_t ldz, std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t hseqr( const char job, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, std::complex<double>* h,
+        const fortran_int_t ldh, std::complex<double>* w,
+        std::complex<double>* z, const fortran_int_t ldz,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, w, z, &ldz, work,
             &lwork, &info );

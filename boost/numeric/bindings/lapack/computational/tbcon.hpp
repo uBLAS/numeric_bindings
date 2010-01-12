@@ -55,9 +55,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
-        fortran_int_t kd, const float* ab, fortran_int_t ldab, float& rcond,
-        float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t tbcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const fortran_int_t kd, const float* ab,
+        const fortran_int_t ldab, float& rcond, float* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STBCON( &norm, &uplo, &lapack_option< Diag >::value, &n, &kd, ab,
             &ldab, &rcond, work, iwork, &info );
@@ -70,9 +71,10 @@ inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
 // * double value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
-        fortran_int_t kd, const double* ab, fortran_int_t ldab, double& rcond,
-        double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t tbcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const fortran_int_t kd, const double* ab,
+        const fortran_int_t ldab, double& rcond, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTBCON( &norm, &uplo, &lapack_option< Diag >::value, &n, &kd, ab,
             &ldab, &rcond, work, iwork, &info );
@@ -85,9 +87,10 @@ inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
-        fortran_int_t kd, const std::complex<float>* ab, fortran_int_t ldab,
-        float& rcond, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t tbcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const fortran_int_t kd,
+        const std::complex<float>* ab, const fortran_int_t ldab, float& rcond,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTBCON( &norm, &uplo, &lapack_option< Diag >::value, &n, &kd, ab,
             &ldab, &rcond, work, rwork, &info );
@@ -100,8 +103,9 @@ inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t tbcon( char norm, char uplo, Diag, fortran_int_t n,
-        fortran_int_t kd, const std::complex<double>* ab, fortran_int_t ldab,
+inline std::ptrdiff_t tbcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const fortran_int_t kd,
+        const std::complex<double>* ab, const fortran_int_t ldab,
         double& rcond, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTBCON( &norm, &uplo, &lapack_option< Diag >::value, &n, &kd, ab,

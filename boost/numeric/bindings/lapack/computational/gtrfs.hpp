@@ -54,12 +54,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const float* dl, const float* d, const float* du, const float* dlf,
-        const float* df, const float* duf, const float* du2,
-        const fortran_int_t* ipiv, const float* b, fortran_int_t ldb,
-        float* x, fortran_int_t ldx, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* dl, const float* d,
+        const float* du, const float* dlf, const float* df, const float* duf,
+        const float* du2, const fortran_int_t* ipiv, const float* b,
+        const fortran_int_t ldb, float* x, const fortran_int_t ldx,
+        float* ferr, float* berr, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork,
@@ -73,12 +73,13 @@ inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const double* dl, const double* d, const double* du,
-        const double* dlf, const double* df, const double* duf,
-        const double* du2, const fortran_int_t* ipiv, const double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double* ferr,
-        double* berr, double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* dl, const double* d,
+        const double* du, const double* dlf, const double* df,
+        const double* duf, const double* du2, const fortran_int_t* ipiv,
+        const double* b, const fortran_int_t ldb, double* x,
+        const fortran_int_t ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork,
@@ -92,13 +93,14 @@ inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<float>* dl, const std::complex<float>* d,
-        const std::complex<float>* du, const std::complex<float>* dlf,
-        const std::complex<float>* df, const std::complex<float>* duf,
-        const std::complex<float>* du2, const fortran_int_t* ipiv,
-        const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* x, fortran_int_t ldx, float* ferr, float* berr,
+inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* dl,
+        const std::complex<float>* d, const std::complex<float>* du,
+        const std::complex<float>* dlf, const std::complex<float>* df,
+        const std::complex<float>* duf, const std::complex<float>* du2,
+        const fortran_int_t* ipiv, const std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* x,
+        const fortran_int_t ldx, float* ferr, float* berr,
         std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
@@ -113,14 +115,15 @@ inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<double>* dl, const std::complex<double>* d,
-        const std::complex<double>* du, const std::complex<double>* dlf,
-        const std::complex<double>* df, const std::complex<double>* duf,
-        const std::complex<double>* du2, const fortran_int_t* ipiv,
-        const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double* ferr,
-        double* berr, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t gtrfs( Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* dl,
+        const std::complex<double>* d, const std::complex<double>* du,
+        const std::complex<double>* dlf, const std::complex<double>* df,
+        const std::complex<double>* duf, const std::complex<double>* du2,
+        const fortran_int_t* ipiv, const std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* x,
+        const fortran_int_t ldx, double* ferr, double* berr,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
             df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork,

@@ -52,9 +52,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
-        const float* ab, fortran_int_t ldab, float* s, float& scond,
-        float& amax ) {
+inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const float* ab, const fortran_int_t ldab,
+        float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
     LAPACK_SPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
@@ -67,9 +67,9 @@ inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
-        const double* ab, fortran_int_t ldab, double* s, double& scond,
-        double& amax ) {
+inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const double* ab, const fortran_int_t ldab,
+        double* s, double& scond, double& amax ) {
     fortran_int_t info(0);
     LAPACK_DPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
@@ -82,9 +82,9 @@ inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
-        const std::complex<float>* ab, fortran_int_t ldab, float* s,
-        float& scond, float& amax ) {
+inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const std::complex<float>* ab,
+        const fortran_int_t ldab, float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
     LAPACK_CPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );
@@ -97,9 +97,9 @@ inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, fortran_int_t n, fortran_int_t kd,
-        const std::complex<double>* ab, fortran_int_t ldab, double* s,
-        double& scond, double& amax ) {
+inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
+        const fortran_int_t kd, const std::complex<double>* ab,
+        const fortran_int_t ldab, double* s, double& scond, double& amax ) {
     fortran_int_t info(0);
     LAPACK_ZPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
             &scond, &amax, &info );

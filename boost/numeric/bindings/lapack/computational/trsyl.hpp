@@ -50,10 +50,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
-        fortran_int_t m, fortran_int_t n, const float* a, fortran_int_t lda,
-        const float* b, fortran_int_t ldb, float* c, fortran_int_t ldc,
-        float& scale ) {
+inline std::ptrdiff_t trsyl( const char trana, const char tranb,
+        const fortran_int_t isgn, const fortran_int_t m,
+        const fortran_int_t n, const float* a, const fortran_int_t lda,
+        const float* b, const fortran_int_t ldb, float* c,
+        const fortran_int_t ldc, float& scale ) {
     fortran_int_t info(0);
     LAPACK_STRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
@@ -65,10 +66,11 @@ inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
-        fortran_int_t m, fortran_int_t n, const double* a, fortran_int_t lda,
-        const double* b, fortran_int_t ldb, double* c, fortran_int_t ldc,
-        double& scale ) {
+inline std::ptrdiff_t trsyl( const char trana, const char tranb,
+        const fortran_int_t isgn, const fortran_int_t m,
+        const fortran_int_t n, const double* a, const fortran_int_t lda,
+        const double* b, const fortran_int_t ldb, double* c,
+        const fortran_int_t ldc, double& scale ) {
     fortran_int_t info(0);
     LAPACK_DTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
@@ -80,10 +82,12 @@ inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
-        fortran_int_t m, fortran_int_t n, const std::complex<float>* a,
-        fortran_int_t lda, const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* c, fortran_int_t ldc, float& scale ) {
+inline std::ptrdiff_t trsyl( const char trana, const char tranb,
+        const fortran_int_t isgn, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* c,
+        const fortran_int_t ldc, float& scale ) {
     fortran_int_t info(0);
     LAPACK_CTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
@@ -95,10 +99,12 @@ inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t trsyl( char trana, char tranb, fortran_int_t isgn,
-        fortran_int_t m, fortran_int_t n, const std::complex<double>* a,
-        fortran_int_t lda, const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* c, fortran_int_t ldc, double& scale ) {
+inline std::ptrdiff_t trsyl( const char trana, const char tranb,
+        const fortran_int_t isgn, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* c,
+        const fortran_int_t ldc, double& scale ) {
     fortran_int_t info(0);
     LAPACK_ZTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );

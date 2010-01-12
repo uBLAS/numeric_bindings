@@ -50,9 +50,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n, const float* a,
-        fortran_int_t lda, float* r, float* c, float& rowcnd, float& colcnd,
-        float& amax ) {
+inline std::ptrdiff_t geequ( const fortran_int_t m, const fortran_int_t n,
+        const float* a, const fortran_int_t lda, float* r, float* c,
+        float& rowcnd, float& colcnd, float& amax ) {
     fortran_int_t info(0);
     LAPACK_SGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
     return info;
@@ -63,9 +63,9 @@ inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n, const float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n, const double* a,
-        fortran_int_t lda, double* r, double* c, double& rowcnd,
-        double& colcnd, double& amax ) {
+inline std::ptrdiff_t geequ( const fortran_int_t m, const fortran_int_t n,
+        const double* a, const fortran_int_t lda, double* r, double* c,
+        double& rowcnd, double& colcnd, double& amax ) {
     fortran_int_t info(0);
     LAPACK_DGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
     return info;
@@ -76,9 +76,9 @@ inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n, const double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda, float* r, float* c,
-        float& rowcnd, float& colcnd, float& amax ) {
+inline std::ptrdiff_t geequ( const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda, float* r,
+        float* c, float& rowcnd, float& colcnd, float& amax ) {
     fortran_int_t info(0);
     LAPACK_CGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
     return info;
@@ -89,8 +89,8 @@ inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t geequ( fortran_int_t m, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda, double* r,
+inline std::ptrdiff_t geequ( const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda, double* r,
         double* c, double& rowcnd, double& colcnd, double& amax ) {
     fortran_int_t info(0);
     LAPACK_ZGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );

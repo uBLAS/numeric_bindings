@@ -58,8 +58,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs, const float* a,
-        int lda, const int* ipiv, float* b, int ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const int n, const int nrhs,
+        const float* a, const int lda, const int* ipiv, float* b,
+        const int ldb ) {
     return clapack_sgetrs
    ( clapack_option< Order >::value, clapack_option< Trans >::value, n, nrhs,
            a, lda, ipiv, b, ldb );
@@ -71,8 +72,9 @@ inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs, const float* a,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs, const double* a,
-        int lda, const int* ipiv, double* b, int ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const int n, const int nrhs,
+        const double* a, const int lda, const int* ipiv, double* b,
+        const int ldb ) {
     return clapack_dgetrs
    ( clapack_option< Order >::value, clapack_option< Trans >::value, n, nrhs,
            a, lda, ipiv, b, ldb );
@@ -84,9 +86,9 @@ inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs, const double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs,
-        const std::complex<float>* a, int lda, const int* ipiv,
-        std::complex<float>* b, int ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const int n, const int nrhs,
+        const std::complex<float>* a, const int lda, const int* ipiv,
+        std::complex<float>* b, const int ldb ) {
     return clapack_cgetrs
    ( clapack_option< Order >::value, clapack_option< Trans >::value, n, nrhs,
            a, lda, ipiv, b, ldb );
@@ -98,9 +100,9 @@ inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs,
-        const std::complex<double>* a, int lda, const int* ipiv,
-        std::complex<double>* b, int ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const int n, const int nrhs,
+        const std::complex<double>* a, const int lda, const int* ipiv,
+        std::complex<double>* b, const int ldb ) {
     return clapack_zgetrs
    ( clapack_option< Order >::value, clapack_option< Trans >::value, n, nrhs,
            a, lda, ipiv, b, ldb );
@@ -113,9 +115,9 @@ inline std::ptrdiff_t getrs( Order, Trans, int n, int nrhs,
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const float* a, fortran_int_t lda, const fortran_int_t* ipiv,
-        float* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, float* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_SGETRS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, ipiv,
@@ -129,9 +131,9 @@ inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const double* a, fortran_int_t lda, const fortran_int_t* ipiv,
-        double* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, double* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_DGETRS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, ipiv,
@@ -145,10 +147,10 @@ inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<float>* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, std::complex<float>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv,
+        std::complex<float>* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_CGETRS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, ipiv,
@@ -162,10 +164,10 @@ inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline std::ptrdiff_t getrs( Order, Trans, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<double>* a, fortran_int_t lda,
-        const fortran_int_t* ipiv, std::complex<double>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t getrs( Order, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv,
+        std::complex<double>* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_ZGETRS( &lapack_option< Trans >::value, &n, &nrhs, a, &lda, ipiv,

@@ -52,8 +52,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
-        float* a, fortran_int_t lda, float* tau, float* work ) {
+inline std::ptrdiff_t latrz( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t l, float* a, const fortran_int_t lda, float* tau,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_SLATRZ( &m, &n, &l, a, &lda, tau, work );
     return info;
@@ -64,8 +65,9 @@ inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
-        double* a, fortran_int_t lda, double* tau, double* work ) {
+inline std::ptrdiff_t latrz( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t l, double* a, const fortran_int_t lda,
+        double* tau, double* work ) {
     fortran_int_t info(0);
     LAPACK_DLATRZ( &m, &n, &l, a, &lda, tau, work );
     return info;
@@ -76,8 +78,9 @@ inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* tau,
+inline std::ptrdiff_t latrz( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t l, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* tau,
         std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CLATRZ( &m, &n, &l, a, &lda, tau, work );
@@ -89,8 +92,9 @@ inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t latrz( fortran_int_t m, fortran_int_t n, fortran_int_t l,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* tau,
+inline std::ptrdiff_t latrz( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t l, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* tau,
         std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZLATRZ( &m, &n, &l, a, &lda, tau, work );

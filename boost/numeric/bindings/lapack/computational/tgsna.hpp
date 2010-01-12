@@ -53,12 +53,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const float* a, fortran_int_t lda, const float* b,
-        fortran_int_t ldb, const float* vl, fortran_int_t ldvl,
-        const float* vr, fortran_int_t ldvr, float* s, float* dif,
-        fortran_int_t mm, fortran_int_t& m, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, const float* b, const fortran_int_t ldb,
+        const float* vl, const fortran_int_t ldvl, const float* vr,
+        const fortran_int_t ldvr, float* s, float* dif,
+        const fortran_int_t mm, fortran_int_t& m, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
             &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
@@ -70,12 +71,13 @@ inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const double* a, fortran_int_t lda, const double* b,
-        fortran_int_t ldb, const double* vl, fortran_int_t ldvl,
-        const double* vr, fortran_int_t ldvr, double* s, double* dif,
-        fortran_int_t mm, fortran_int_t& m, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n, const double* a,
+        const fortran_int_t lda, const double* b, const fortran_int_t ldb,
+        const double* vl, const fortran_int_t ldvl, const double* vr,
+        const fortran_int_t ldvr, double* s, double* dif,
+        const fortran_int_t mm, fortran_int_t& m, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
             &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
@@ -87,13 +89,14 @@ inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* b, fortran_int_t ldb,
-        const std::complex<float>* vl, fortran_int_t ldvl,
-        const std::complex<float>* vr, fortran_int_t ldvr, float* s,
-        float* dif, fortran_int_t mm, fortran_int_t& m,
-        std::complex<float>* work, fortran_int_t lwork,
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        const std::complex<float>* vl, const fortran_int_t ldvl,
+        const std::complex<float>* vr, const fortran_int_t ldvr, float* s,
+        float* dif, const fortran_int_t mm, fortran_int_t& m,
+        std::complex<float>* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_CTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
@@ -106,13 +109,14 @@ inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* b, fortran_int_t ldb,
-        const std::complex<double>* vl, fortran_int_t ldvl,
-        const std::complex<double>* vr, fortran_int_t ldvr, double* s,
-        double* dif, fortran_int_t mm, fortran_int_t& m,
-        std::complex<double>* work, fortran_int_t lwork,
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        const std::complex<double>* vl, const fortran_int_t ldvl,
+        const std::complex<double>* vr, const fortran_int_t ldvr, double* s,
+        double* dif, const fortran_int_t mm, fortran_int_t& m,
+        std::complex<double>* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_ZTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,

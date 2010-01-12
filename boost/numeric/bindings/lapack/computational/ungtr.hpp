@@ -52,9 +52,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ungtr( UpLo, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, const std::complex<float>* tau,
-        std::complex<float>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ungtr( UpLo, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* tau, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CUNGTR( &lapack_option< UpLo >::value, &n, a, &lda, tau, work,
             &lwork, &info );
@@ -67,9 +68,10 @@ inline std::ptrdiff_t ungtr( UpLo, fortran_int_t n, std::complex<float>* a,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t ungtr( UpLo, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, const std::complex<double>* tau,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ungtr( UpLo, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* tau, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZUNGTR( &lapack_option< UpLo >::value, &n, a, &lda, tau, work,
             &lwork, &info );

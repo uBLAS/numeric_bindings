@@ -51,9 +51,10 @@ namespace detail {
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sposv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        double* a, fortran_int_t lda, const double* b, fortran_int_t ldb,
-        double* x, fortran_int_t ldx, double* work, float* swork,
+inline std::ptrdiff_t sposv( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, double* a, const fortran_int_t lda,
+        const double* b, const fortran_int_t ldb, double* x,
+        const fortran_int_t ldx, double* work, float* swork,
         fortran_int_t& iter ) {
     fortran_int_t info(0);
     LAPACK_DSPOSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,

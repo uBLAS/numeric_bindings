@@ -966,6 +966,10 @@
 #define LAPACK_CGBSVX FORTRAN_ID( cgbsvx )
 #define LAPACK_ZGBSVX FORTRAN_ID( zgbsvx )
 
+// Value-type variants of gejsv
+#define LAPACK_SGEJSV FORTRAN_ID( sgejsv )
+#define LAPACK_DGEJSV FORTRAN_ID( dgejsv )
+
 // Value-type variants of gesv
 #define LAPACK_SGESV FORTRAN_ID( sgesv )
 #define LAPACK_DGESV FORTRAN_ID( dgesv )
@@ -1245,6 +1249,120 @@
 #define LAPACK_DLALSD FORTRAN_ID( dlalsd )
 #define LAPACK_CLALSD FORTRAN_ID( clalsd )
 #define LAPACK_ZLALSD FORTRAN_ID( zlalsd )
+
+//
+// LAPACK auxiliary routines
+//
+
+// Value-type variants of larf
+#define LAPACK_SLARF FORTRAN_ID( slarf )
+#define LAPACK_DLARF FORTRAN_ID( dlarf )
+#define LAPACK_CLARF FORTRAN_ID( clarf )
+#define LAPACK_ZLARF FORTRAN_ID( zlarf )
+
+// Value-type variants of larfb
+#define LAPACK_SLARFB FORTRAN_ID( slarfb )
+#define LAPACK_DLARFB FORTRAN_ID( dlarfb )
+#define LAPACK_CLARFB FORTRAN_ID( clarfb )
+#define LAPACK_ZLARFB FORTRAN_ID( zlarfb )
+
+// Value-type variants of larfg
+#define LAPACK_SLARFG FORTRAN_ID( slarfg )
+#define LAPACK_DLARFG FORTRAN_ID( dlarfg )
+#define LAPACK_CLARFG FORTRAN_ID( clarfg )
+#define LAPACK_ZLARFG FORTRAN_ID( zlarfg )
+
+// Value-type variants of larft
+#define LAPACK_SLARFT FORTRAN_ID( slarft )
+#define LAPACK_DLARFT FORTRAN_ID( dlarft )
+#define LAPACK_CLARFT FORTRAN_ID( clarft )
+#define LAPACK_ZLARFT FORTRAN_ID( zlarft )
+
+// Value-type variants of larfx
+#define LAPACK_SLARFX FORTRAN_ID( slarfx )
+#define LAPACK_DLARFX FORTRAN_ID( dlarfx )
+#define LAPACK_CLARFX FORTRAN_ID( clarfx )
+#define LAPACK_ZLARFX FORTRAN_ID( zlarfx )
+
+// Value-type variants of largv
+#define LAPACK_SLARGV FORTRAN_ID( slargv )
+#define LAPACK_DLARGV FORTRAN_ID( dlargv )
+#define LAPACK_CLARGV FORTRAN_ID( clargv )
+#define LAPACK_ZLARGV FORTRAN_ID( zlargv )
+
+// Value-type variants of larnv
+#define LAPACK_SLARNV FORTRAN_ID( slarnv )
+#define LAPACK_DLARNV FORTRAN_ID( dlarnv )
+#define LAPACK_CLARNV FORTRAN_ID( clarnv )
+#define LAPACK_ZLARNV FORTRAN_ID( zlarnv )
+
+// Value-type variants of larrb
+#define LAPACK_SLARRB FORTRAN_ID( slarrb )
+#define LAPACK_DLARRB FORTRAN_ID( dlarrb )
+
+// Value-type variants of larre
+#define LAPACK_SLARRE FORTRAN_ID( slarre )
+#define LAPACK_DLARRE FORTRAN_ID( dlarre )
+
+// Value-type variants of langb
+#define LAPACK_SLANGB FORTRAN_ID( slangb )
+#define LAPACK_DLANGB FORTRAN_ID( dlangb )
+#define LAPACK_CLANGB FORTRAN_ID( clangb )
+#define LAPACK_ZLANGB FORTRAN_ID( zlangb )
+
+// Value-type variants of lange
+#define LAPACK_SLANGE FORTRAN_ID( slange )
+#define LAPACK_DLANGE FORTRAN_ID( dlange )
+#define LAPACK_CLANGE FORTRAN_ID( clange )
+#define LAPACK_ZLANGE FORTRAN_ID( zlange )
+
+// Value-type variants of lanhb
+#define LAPACK_CLANHB FORTRAN_ID( clanhb )
+#define LAPACK_ZLANHB FORTRAN_ID( zlanhb )
+
+// Value-type variants of lanhe
+#define LAPACK_CLANHE FORTRAN_ID( clanhe )
+#define LAPACK_ZLANHE FORTRAN_ID( zlanhe )
+
+// Value-type variants of lanhp
+#define LAPACK_CLANHP FORTRAN_ID( clanhp )
+#define LAPACK_ZLANHP FORTRAN_ID( zlanhp )
+
+// Value-type variants of lanhs
+#define LAPACK_SLANHS FORTRAN_ID( slanhs )
+#define LAPACK_DLANHS FORTRAN_ID( dlanhs )
+#define LAPACK_CLANHS FORTRAN_ID( clanhs )
+#define LAPACK_ZLANHS FORTRAN_ID( zlanhs )
+
+// Value-type variants of lansb
+#define LAPACK_SLANSB FORTRAN_ID( slansb )
+#define LAPACK_DLANSB FORTRAN_ID( dlansb )
+#define LAPACK_CLANSB FORTRAN_ID( clansb )
+#define LAPACK_ZLANSB FORTRAN_ID( zlansb )
+
+// Value-type variants of lansp
+#define LAPACK_SLANSP FORTRAN_ID( slansp )
+#define LAPACK_DLANSP FORTRAN_ID( dlansp )
+#define LAPACK_CLANSP FORTRAN_ID( clansp )
+#define LAPACK_ZLANSP FORTRAN_ID( zlansp )
+
+// Value-type variants of lansy
+#define LAPACK_SLANSY FORTRAN_ID( slansy )
+#define LAPACK_DLANSY FORTRAN_ID( dlansy )
+#define LAPACK_CLANSY FORTRAN_ID( clansy )
+#define LAPACK_ZLANSY FORTRAN_ID( zlansy )
+
+// Value-type variants of lantb
+#define LAPACK_SLANTB FORTRAN_ID( slantb )
+#define LAPACK_DLANTB FORTRAN_ID( dlantb )
+#define LAPACK_CLANTB FORTRAN_ID( clantb )
+#define LAPACK_ZLANTB FORTRAN_ID( zlantb )
+
+// Value-type variants of lantr
+#define LAPACK_SLANTR FORTRAN_ID( slantr )
+#define LAPACK_DLANTR FORTRAN_ID( dlantr )
+#define LAPACK_CLANTR FORTRAN_ID( clantr )
+#define LAPACK_ZLANTR FORTRAN_ID( zlantr )
 
 //
 // LAPACK auxiliary routines

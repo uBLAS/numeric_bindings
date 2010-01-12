@@ -60,7 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void swap( int n, float* x, int incx, float* y, int incy ) {
+inline void swap( const int n, float* x, const int incx, float* y,
+        const int incy ) {
     cblas_sswap( n, x, incx, y, incy );
 }
 
@@ -69,7 +70,8 @@ inline void swap( int n, float* x, int incx, float* y, int incy ) {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void swap( int n, double* x, int incx, double* y, int incy ) {
+inline void swap( const int n, double* x, const int incx, double* y,
+        const int incy ) {
     cblas_dswap( n, x, incx, y, incy );
 }
 
@@ -78,8 +80,8 @@ inline void swap( int n, double* x, int incx, double* y, int incy ) {
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void swap( int n, std::complex<float>* x, int incx,
-        std::complex<float>* y, int incy ) {
+inline void swap( const int n, std::complex<float>* x, const int incx,
+        std::complex<float>* y, const int incy ) {
     cblas_cswap( n, x, incx, y, incy );
 }
 
@@ -88,8 +90,8 @@ inline void swap( int n, std::complex<float>* x, int incx,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void swap( int n, std::complex<double>* x, int incx,
-        std::complex<double>* y, int incy ) {
+inline void swap( const int n, std::complex<double>* x, const int incx,
+        std::complex<double>* y, const int incy ) {
     cblas_zswap( n, x, incx, y, incy );
 }
 
@@ -99,7 +101,8 @@ inline void swap( int n, std::complex<double>* x, int incx,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void swap( int n, float* x, int incx, float* y, int incy ) {
+inline void swap( const int n, float* x, const int incx, float* y,
+        const int incy ) {
     cublasSswap( n, x, incx, y, incy );
 }
 
@@ -108,7 +111,8 @@ inline void swap( int n, float* x, int incx, float* y, int incy ) {
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void swap( int n, double* x, int incx, double* y, int incy ) {
+inline void swap( const int n, double* x, const int incx, double* y,
+        const int incy ) {
     cublasDswap( n, x, incx, y, incy );
 }
 
@@ -117,8 +121,8 @@ inline void swap( int n, double* x, int incx, double* y, int incy ) {
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void swap( int n, std::complex<float>* x, int incx,
-        std::complex<float>* y, int incy ) {
+inline void swap( const int n, std::complex<float>* x, const int incx,
+        std::complex<float>* y, const int incy ) {
     cublasCswap( n, x, incx, y, incy );
 }
 
@@ -127,8 +131,8 @@ inline void swap( int n, std::complex<float>* x, int incx,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void swap( int n, std::complex<double>* x, int incx,
-        std::complex<double>* y, int incy ) {
+inline void swap( const int n, std::complex<double>* x, const int incx,
+        std::complex<double>* y, const int incy ) {
     // NOT FOUND();
 }
 
@@ -138,8 +142,8 @@ inline void swap( int n, std::complex<double>* x, int incx,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void swap( fortran_int_t n, float* x, fortran_int_t incx, float* y,
-        fortran_int_t incy ) {
+inline void swap( const fortran_int_t n, float* x, const fortran_int_t incx,
+        float* y, const fortran_int_t incy ) {
     BLAS_SSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -148,8 +152,8 @@ inline void swap( fortran_int_t n, float* x, fortran_int_t incx, float* y,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void swap( fortran_int_t n, double* x, fortran_int_t incx, double* y,
-        fortran_int_t incy ) {
+inline void swap( const fortran_int_t n, double* x, const fortran_int_t incx,
+        double* y, const fortran_int_t incy ) {
     BLAS_DSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -158,8 +162,9 @@ inline void swap( fortran_int_t n, double* x, fortran_int_t incx, double* y,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void swap( fortran_int_t n, std::complex<float>* x, fortran_int_t incx,
-        std::complex<float>* y, fortran_int_t incy ) {
+inline void swap( const fortran_int_t n, std::complex<float>* x,
+        const fortran_int_t incx, std::complex<float>* y,
+        const fortran_int_t incy ) {
     BLAS_CSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -168,8 +173,9 @@ inline void swap( fortran_int_t n, std::complex<float>* x, fortran_int_t incx,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void swap( fortran_int_t n, std::complex<double>* x,
-        fortran_int_t incx, std::complex<double>* y, fortran_int_t incy ) {
+inline void swap( const fortran_int_t n, std::complex<double>* x,
+        const fortran_int_t incx, std::complex<double>* y,
+        const fortran_int_t incy ) {
     BLAS_ZSWAP( &n, x, &incx, y, &incy );
 }
 

@@ -52,10 +52,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t ormqr( char side, Trans, fortran_int_t m,
-        fortran_int_t n, fortran_int_t k, const float* a, fortran_int_t lda,
-        const float* tau, float* c, fortran_int_t ldc, float* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ormqr( const char side, Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, const float* a,
+        const fortran_int_t lda, const float* tau, float* c,
+        const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORMQR( &side, &lapack_option< Trans >::value, &m, &n, &k, a, &lda,
             tau, c, &ldc, work, &lwork, &info );
@@ -68,10 +68,10 @@ inline std::ptrdiff_t ormqr( char side, Trans, fortran_int_t m,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t ormqr( char side, Trans, fortran_int_t m,
-        fortran_int_t n, fortran_int_t k, const double* a, fortran_int_t lda,
-        const double* tau, double* c, fortran_int_t ldc, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ormqr( const char side, Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k, const double* a,
+        const fortran_int_t lda, const double* tau, double* c,
+        const fortran_int_t ldc, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORMQR( &side, &lapack_option< Trans >::value, &m, &n, &k, a, &lda,
             tau, c, &ldc, work, &lwork, &info );

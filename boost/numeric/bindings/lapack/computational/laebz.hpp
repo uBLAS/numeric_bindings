@@ -49,12 +49,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t laebz( fortran_int_t ijob, fortran_int_t nitmax,
-        fortran_int_t n, fortran_int_t mmax, fortran_int_t minp,
-        fortran_int_t nbmin, float abstol, float reltol, float pivmin,
-        const float* d, const float* e, const float* e2, fortran_int_t* nval,
-        float* ab, float* c, fortran_int_t& mout, fortran_int_t* nab,
-        float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t laebz( const fortran_int_t ijob,
+        const fortran_int_t nitmax, const fortran_int_t n,
+        const fortran_int_t mmax, const fortran_int_t minp,
+        const fortran_int_t nbmin, const float abstol, const float reltol,
+        const float pivmin, const float* d, const float* e, const float* e2,
+        fortran_int_t* nval, float* ab, float* c, fortran_int_t& mout,
+        fortran_int_t* nab, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
             &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
@@ -66,12 +67,14 @@ inline std::ptrdiff_t laebz( fortran_int_t ijob, fortran_int_t nitmax,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t laebz( fortran_int_t ijob, fortran_int_t nitmax,
-        fortran_int_t n, fortran_int_t mmax, fortran_int_t minp,
-        fortran_int_t nbmin, double abstol, double reltol, double pivmin,
-        const double* d, const double* e, const double* e2,
-        fortran_int_t* nval, double* ab, double* c, fortran_int_t& mout,
-        fortran_int_t* nab, double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t laebz( const fortran_int_t ijob,
+        const fortran_int_t nitmax, const fortran_int_t n,
+        const fortran_int_t mmax, const fortran_int_t minp,
+        const fortran_int_t nbmin, const double abstol, const double reltol,
+        const double pivmin, const double* d, const double* e,
+        const double* e2, fortran_int_t* nval, double* ab, double* c,
+        fortran_int_t& mout, fortran_int_t* nab, double* work,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
             &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );

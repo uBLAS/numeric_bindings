@@ -52,11 +52,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const float* t, fortran_int_t ldt, const float* vl,
-        fortran_int_t ldvl, const float* vr, fortran_int_t ldvr, float* s,
-        float* sep, fortran_int_t mm, fortran_int_t& m, float* work,
-        fortran_int_t ldwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t trsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n, const float* t,
+        const fortran_int_t ldt, const float* vl, const fortran_int_t ldvl,
+        const float* vr, const fortran_int_t ldvr, float* s, float* sep,
+        const fortran_int_t mm, fortran_int_t& m, float* work,
+        const fortran_int_t ldwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, iwork, &info );
@@ -68,11 +69,12 @@ inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const double* t, fortran_int_t ldt, const double* vl,
-        fortran_int_t ldvl, const double* vr, fortran_int_t ldvr, double* s,
-        double* sep, fortran_int_t mm, fortran_int_t& m, double* work,
-        fortran_int_t ldwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t trsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n, const double* t,
+        const fortran_int_t ldt, const double* vl, const fortran_int_t ldvl,
+        const double* vr, const fortran_int_t ldvr, double* s, double* sep,
+        const fortran_int_t mm, fortran_int_t& m, double* work,
+        const fortran_int_t ldwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, iwork, &info );
@@ -84,12 +86,13 @@ inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const std::complex<float>* t, fortran_int_t ldt,
-        const std::complex<float>* vl, fortran_int_t ldvl,
-        const std::complex<float>* vr, fortran_int_t ldvr, float* s,
-        float* sep, fortran_int_t mm, fortran_int_t& m,
-        std::complex<float>* work, fortran_int_t ldwork, float* rwork ) {
+inline std::ptrdiff_t trsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        const std::complex<float>* t, const fortran_int_t ldt,
+        const std::complex<float>* vl, const fortran_int_t ldvl,
+        const std::complex<float>* vr, const fortran_int_t ldvr, float* s,
+        float* sep, const fortran_int_t mm, fortran_int_t& m,
+        std::complex<float>* work, const fortran_int_t ldwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, rwork, &info );
@@ -101,12 +104,14 @@ inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t trsna( char job, char howmny, const logical_t* select,
-        fortran_int_t n, const std::complex<double>* t, fortran_int_t ldt,
-        const std::complex<double>* vl, fortran_int_t ldvl,
-        const std::complex<double>* vr, fortran_int_t ldvr, double* s,
-        double* sep, fortran_int_t mm, fortran_int_t& m,
-        std::complex<double>* work, fortran_int_t ldwork, double* rwork ) {
+inline std::ptrdiff_t trsna( const char job, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        const std::complex<double>* t, const fortran_int_t ldt,
+        const std::complex<double>* vl, const fortran_int_t ldvl,
+        const std::complex<double>* vr, const fortran_int_t ldvr, double* s,
+        double* sep, const fortran_int_t mm, fortran_int_t& m,
+        std::complex<double>* work, const fortran_int_t ldwork,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, rwork, &info );

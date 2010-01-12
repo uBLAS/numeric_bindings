@@ -49,8 +49,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stebz( char range, char order, fortran_int_t n, float vl,
-        float vu, fortran_int_t il, fortran_int_t iu, float abstol,
+inline std::ptrdiff_t stebz( const char range, const char order,
+        const fortran_int_t n, const float vl, const float vu,
+        const fortran_int_t il, const fortran_int_t iu, const float abstol,
         const float* d, const float* e, fortran_int_t& m,
         fortran_int_t& nsplit, float* w, fortran_int_t* iblock,
         fortran_int_t* isplit, float* work, fortran_int_t* iwork ) {
@@ -65,9 +66,10 @@ inline std::ptrdiff_t stebz( char range, char order, fortran_int_t n, float vl,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stebz( char range, char order, fortran_int_t n,
-        double vl, double vu, fortran_int_t il, fortran_int_t iu,
-        double abstol, const double* d, const double* e, fortran_int_t& m,
+inline std::ptrdiff_t stebz( const char range, const char order,
+        const fortran_int_t n, const double vl, const double vu,
+        const fortran_int_t il, const fortran_int_t iu, const double abstol,
+        const double* d, const double* e, fortran_int_t& m,
         fortran_int_t& nsplit, double* w, fortran_int_t* iblock,
         fortran_int_t* isplit, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);

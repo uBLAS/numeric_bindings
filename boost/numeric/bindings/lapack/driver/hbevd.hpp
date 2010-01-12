@@ -52,11 +52,12 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbevd( char jobz, UpLo, fortran_int_t n,
-        fortran_int_t kd, std::complex<float>* ab, fortran_int_t ldab,
-        float* w, std::complex<float>* z, fortran_int_t ldz,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t hbevd( const char jobz, UpLo, const fortran_int_t n,
+        const fortran_int_t kd, std::complex<float>* ab,
+        const fortran_int_t ldab, float* w, std::complex<float>* z,
+        const fortran_int_t ldz, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork, const fortran_int_t lrwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CHBEVD( &jobz, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
             w, z, &ldz, work, &lwork, rwork, &lrwork, iwork, &liwork, &info );
@@ -69,11 +70,12 @@ inline std::ptrdiff_t hbevd( char jobz, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbevd( char jobz, UpLo, fortran_int_t n,
-        fortran_int_t kd, std::complex<double>* ab, fortran_int_t ldab,
-        double* w, std::complex<double>* z, fortran_int_t ldz,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t hbevd( const char jobz, UpLo, const fortran_int_t n,
+        const fortran_int_t kd, std::complex<double>* ab,
+        const fortran_int_t ldab, double* w, std::complex<double>* z,
+        const fortran_int_t ldz, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork, const fortran_int_t lrwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZHBEVD( &jobz, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
             w, z, &ldz, work, &lwork, rwork, &lrwork, iwork, &liwork, &info );

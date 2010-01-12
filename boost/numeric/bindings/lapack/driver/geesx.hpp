@@ -53,12 +53,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
-        char sense, fortran_int_t n, float* a, fortran_int_t lda,
-        fortran_int_t& sdim, float* wr, float* wi, float* vs,
-        fortran_int_t ldvs, float& rconde, float& rcondv, float* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork,
-        logical_t* bwork ) {
+inline std::ptrdiff_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, const fortran_int_t n, float* a,
+        const fortran_int_t lda, fortran_int_t& sdim, float* wr, float* wi,
+        float* vs, const fortran_int_t ldvs, float& rconde, float& rcondv,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork, logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_SGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr, wi,
             vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
@@ -71,12 +71,12 @@ inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
-        char sense, fortran_int_t n, double* a, fortran_int_t lda,
-        fortran_int_t& sdim, double* wr, double* wi, double* vs,
-        fortran_int_t ldvs, double& rconde, double& rcondv, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork,
-        logical_t* bwork ) {
+inline std::ptrdiff_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, const fortran_int_t n, double* a,
+        const fortran_int_t lda, fortran_int_t& sdim, double* wr, double* wi,
+        double* vs, const fortran_int_t ldvs, double& rconde, double& rcondv,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork, logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_DGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr, wi,
             vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
@@ -89,12 +89,13 @@ inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
-        char sense, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, fortran_int_t& sdim, std::complex<float>* w,
-        std::complex<float>* vs, fortran_int_t ldvs, float& rconde,
-        float& rcondv, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork, logical_t* bwork ) {
+inline std::ptrdiff_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda, fortran_int_t& sdim,
+        std::complex<float>* w, std::complex<float>* vs,
+        const fortran_int_t ldvs, float& rconde, float& rcondv,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork,
+        logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_CGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, w, vs,
             &ldvs, &rconde, &rcondv, work, &lwork, rwork, bwork, &info );
@@ -106,12 +107,13 @@ inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t geesx( char jobvs, char sort, logical_t* select,
-        char sense, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, fortran_int_t& sdim, std::complex<double>* w,
-        std::complex<double>* vs, fortran_int_t ldvs, double& rconde,
-        double& rcondv, std::complex<double>* work, fortran_int_t lwork,
-        double* rwork, logical_t* bwork ) {
+inline std::ptrdiff_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda, fortran_int_t& sdim,
+        std::complex<double>* w, std::complex<double>* vs,
+        const fortran_int_t ldvs, double& rconde, double& rcondv,
+        std::complex<double>* work, const fortran_int_t lwork, double* rwork,
+        logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, w, vs,
             &ldvs, &rconde, &rcondv, work, &lwork, rwork, bwork, &info );

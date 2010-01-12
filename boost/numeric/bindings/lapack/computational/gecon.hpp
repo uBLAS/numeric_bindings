@@ -52,9 +52,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gecon( char norm, fortran_int_t n, const float* a,
-        fortran_int_t lda, float anorm, float& rcond, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gecon( const char norm, const fortran_int_t n,
+        const float* a, const fortran_int_t lda, const float anorm,
+        float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
     return info;
@@ -65,9 +65,9 @@ inline std::ptrdiff_t gecon( char norm, fortran_int_t n, const float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gecon( char norm, fortran_int_t n, const double* a,
-        fortran_int_t lda, double anorm, double& rcond, double* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gecon( const char norm, const fortran_int_t n,
+        const double* a, const fortran_int_t lda, const double anorm,
+        double& rcond, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
     return info;
@@ -78,9 +78,10 @@ inline std::ptrdiff_t gecon( char norm, fortran_int_t n, const double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gecon( char norm, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda, float anorm,
-        float& rcond, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t gecon( const char norm, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const float anorm, float& rcond, std::complex<float>* work,
+        float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGECON( &norm, &n, a, &lda, &anorm, &rcond, work, rwork, &info );
     return info;
@@ -91,9 +92,10 @@ inline std::ptrdiff_t gecon( char norm, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gecon( char norm, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda, double anorm,
-        double& rcond, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t gecon( const char norm, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const double anorm, double& rcond, std::complex<double>* work,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGECON( &norm, &n, a, &lda, &anorm, &rcond, work, rwork, &info );
     return info;

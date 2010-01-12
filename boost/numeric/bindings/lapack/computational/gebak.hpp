@@ -50,9 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, const float* scale,
-        fortran_int_t m, float* v, fortran_int_t ldv ) {
+inline std::ptrdiff_t gebak( const char job, const char side,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, const float* scale, const fortran_int_t m,
+        float* v, const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
     return info;
@@ -63,9 +64,10 @@ inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, const double* scale,
-        fortran_int_t m, double* v, fortran_int_t ldv ) {
+inline std::ptrdiff_t gebak( const char job, const char side,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, const double* scale, const fortran_int_t m,
+        double* v, const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
     return info;
@@ -76,9 +78,10 @@ inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, const float* scale,
-        fortran_int_t m, std::complex<float>* v, fortran_int_t ldv ) {
+inline std::ptrdiff_t gebak( const char job, const char side,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, const float* scale, const fortran_int_t m,
+        std::complex<float>* v, const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
     return info;
@@ -89,9 +92,10 @@ inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gebak( char job, char side, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, const double* scale,
-        fortran_int_t m, std::complex<double>* v, fortran_int_t ldv ) {
+inline std::ptrdiff_t gebak( const char job, const char side,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, const double* scale, const fortran_int_t m,
+        std::complex<double>* v, const fortran_int_t ldv ) {
     fortran_int_t info(0);
     LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
     return info;

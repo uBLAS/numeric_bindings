@@ -58,8 +58,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, int n, int nrhs, float* a, int lda,
-        int* ipiv, float* b, int ldb ) {
+inline std::ptrdiff_t gesv( Order, const int n, const int nrhs, float* a,
+        const int lda, int* ipiv, float* b, const int ldb ) {
     return clapack_sgesv( clapack_option< Order >::value, n, nrhs, a, lda,
             ipiv, b, ldb );
 }
@@ -70,8 +70,8 @@ inline std::ptrdiff_t gesv( Order, int n, int nrhs, float* a, int lda,
 // * double value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, int n, int nrhs, double* a, int lda,
-        int* ipiv, double* b, int ldb ) {
+inline std::ptrdiff_t gesv( Order, const int n, const int nrhs, double* a,
+        const int lda, int* ipiv, double* b, const int ldb ) {
     return clapack_dgesv( clapack_option< Order >::value, n, nrhs, a, lda,
             ipiv, b, ldb );
 }
@@ -82,8 +82,9 @@ inline std::ptrdiff_t gesv( Order, int n, int nrhs, double* a, int lda,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, int n, int nrhs, std::complex<float>* a,
-        int lda, int* ipiv, std::complex<float>* b, int ldb ) {
+inline std::ptrdiff_t gesv( Order, const int n, const int nrhs,
+        std::complex<float>* a, const int lda, int* ipiv,
+        std::complex<float>* b, const int ldb ) {
     return clapack_cgesv( clapack_option< Order >::value, n, nrhs, a, lda,
             ipiv, b, ldb );
 }
@@ -94,8 +95,9 @@ inline std::ptrdiff_t gesv( Order, int n, int nrhs, std::complex<float>* a,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, int n, int nrhs, std::complex<double>* a,
-        int lda, int* ipiv, std::complex<double>* b, int ldb ) {
+inline std::ptrdiff_t gesv( Order, const int n, const int nrhs,
+        std::complex<double>* a, const int lda, int* ipiv,
+        std::complex<double>* b, const int ldb ) {
     return clapack_zgesv( clapack_option< Order >::value, n, nrhs, a, lda,
             ipiv, b, ldb );
 }
@@ -107,9 +109,9 @@ inline std::ptrdiff_t gesv( Order, int n, int nrhs, std::complex<double>* a,
 // * float value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
-        float* a, fortran_int_t lda, fortran_int_t* ipiv, float* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gesv( Order, const fortran_int_t n,
+        const fortran_int_t nrhs, float* a, const fortran_int_t lda,
+        fortran_int_t* ipiv, float* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_SGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
@@ -122,9 +124,9 @@ inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
-        double* a, fortran_int_t lda, fortran_int_t* ipiv, double* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gesv( Order, const fortran_int_t n,
+        const fortran_int_t nrhs, double* a, const fortran_int_t lda,
+        fortran_int_t* ipiv, double* b, const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_DGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
@@ -137,9 +139,10 @@ inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* a, fortran_int_t lda, fortran_int_t* ipiv,
-        std::complex<float>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gesv( Order, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<float>* a,
+        const fortran_int_t lda, fortran_int_t* ipiv, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_CGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
@@ -152,9 +155,10 @@ inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t gesv( Order, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda, fortran_int_t* ipiv,
-        std::complex<double>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gesv( Order, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<double>* a,
+        const fortran_int_t lda, fortran_int_t* ipiv, std::complex<double>* b,
+        const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_ZGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );

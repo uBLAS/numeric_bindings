@@ -51,8 +51,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spev( char jobz, UpLo, fortran_int_t n, float* ap,
-        float* w, float* z, fortran_int_t ldz, float* work ) {
+inline std::ptrdiff_t spev( const char jobz, UpLo, const fortran_int_t n,
+        float* ap, float* w, float* z, const fortran_int_t ldz, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
             work, &info );
@@ -65,8 +65,9 @@ inline std::ptrdiff_t spev( char jobz, UpLo, fortran_int_t n, float* ap,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spev( char jobz, UpLo, fortran_int_t n, double* ap,
-        double* w, double* z, fortran_int_t ldz, double* work ) {
+inline std::ptrdiff_t spev( const char jobz, UpLo, const fortran_int_t n,
+        double* ap, double* w, double* z, const fortran_int_t ldz,
+        double* work ) {
     fortran_int_t info(0);
     LAPACK_DSPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
             work, &info );

@@ -63,8 +63,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, int n, float alpha, const float* x, int incx,
-        float* a, int lda ) {
+inline void syr( Order, UpLo, const int n, const float alpha, const float* x,
+        const int incx, float* a, const int lda ) {
     cblas_ssyr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -75,8 +75,8 @@ inline void syr( Order, UpLo, int n, float alpha, const float* x, int incx,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, int n, double alpha, const double* x, int incx,
-        double* a, int lda ) {
+inline void syr( Order, UpLo, const int n, const double alpha,
+        const double* x, const int incx, double* a, const int lda ) {
     cblas_dsyr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -88,8 +88,8 @@ inline void syr( Order, UpLo, int n, double alpha, const double* x, int incx,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, int n, float alpha, const float* x, int incx,
-        float* a, int lda ) {
+inline void syr( Order, UpLo, const int n, const float alpha, const float* x,
+        const int incx, float* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsyr( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -100,8 +100,8 @@ inline void syr( Order, UpLo, int n, float alpha, const float* x, int incx,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, int n, double alpha, const double* x, int incx,
-        double* a, int lda ) {
+inline void syr( Order, UpLo, const int n, const double alpha,
+        const double* x, const int incx, double* a, const int lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDsyr( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -113,8 +113,9 @@ inline void syr( Order, UpLo, int n, double alpha, const double* x, int incx,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, fortran_int_t n, float alpha, const float* x,
-        fortran_int_t incx, float* a, fortran_int_t lda ) {
+inline void syr( Order, UpLo, const fortran_int_t n, const float alpha,
+        const float* x, const fortran_int_t incx, float* a,
+        const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSYR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
 }
@@ -125,8 +126,9 @@ inline void syr( Order, UpLo, fortran_int_t n, float alpha, const float* x,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, fortran_int_t n, double alpha, const double* x,
-        fortran_int_t incx, double* a, fortran_int_t lda ) {
+inline void syr( Order, UpLo, const fortran_int_t n, const double alpha,
+        const double* x, const fortran_int_t incx, double* a,
+        const fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSYR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
 }

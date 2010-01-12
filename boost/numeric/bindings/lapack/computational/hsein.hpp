@@ -52,11 +52,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
-        logical_t* select, fortran_int_t n, const float* h, fortran_int_t ldh,
-        float* wr, const float* wi, float* vl, fortran_int_t ldvl, float* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m, float* work,
-        fortran_int_t* ifaill, fortran_int_t* ifailr ) {
+inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+        const char initv, logical_t* select, const fortran_int_t n,
+        const float* h, const fortran_int_t ldh, float* wr, const float* wi,
+        float* vl, const fortran_int_t ldvl, float* vr,
+        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
+        float* work, fortran_int_t* ifaill, fortran_int_t* ifailr ) {
     fortran_int_t info(0);
     LAPACK_SHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
             &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
@@ -68,12 +69,12 @@ inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
-        logical_t* select, fortran_int_t n, const double* h,
-        fortran_int_t ldh, double* wr, const double* wi, double* vl,
-        fortran_int_t ldvl, double* vr, fortran_int_t ldvr, fortran_int_t mm,
-        fortran_int_t& m, double* work, fortran_int_t* ifaill,
-        fortran_int_t* ifailr ) {
+inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+        const char initv, logical_t* select, const fortran_int_t n,
+        const double* h, const fortran_int_t ldh, double* wr,
+        const double* wi, double* vl, const fortran_int_t ldvl, double* vr,
+        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
+        double* work, fortran_int_t* ifaill, fortran_int_t* ifailr ) {
     fortran_int_t info(0);
     LAPACK_DHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
             &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
@@ -85,13 +86,14 @@ inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
-        const logical_t* select, fortran_int_t n,
-        const std::complex<float>* h, fortran_int_t ldh,
-        std::complex<float>* w, std::complex<float>* vl, fortran_int_t ldvl,
-        std::complex<float>* vr, fortran_int_t ldvr, fortran_int_t mm,
-        fortran_int_t& m, std::complex<float>* work, float* rwork,
-        fortran_int_t* ifaill, fortran_int_t* ifailr ) {
+inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+        const char initv, const logical_t* select, const fortran_int_t n,
+        const std::complex<float>* h, const fortran_int_t ldh,
+        std::complex<float>* w, std::complex<float>* vl,
+        const fortran_int_t ldvl, std::complex<float>* vr,
+        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
+        std::complex<float>* work, float* rwork, fortran_int_t* ifaill,
+        fortran_int_t* ifailr ) {
     fortran_int_t info(0);
     LAPACK_CHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, w, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, rwork, ifaill, ifailr, &info );
@@ -103,13 +105,14 @@ inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hsein( char side, char eigsrc, char initv,
-        const logical_t* select, fortran_int_t n,
-        const std::complex<double>* h, fortran_int_t ldh,
-        std::complex<double>* w, std::complex<double>* vl, fortran_int_t ldvl,
-        std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t mm,
-        fortran_int_t& m, std::complex<double>* work, double* rwork,
-        fortran_int_t* ifaill, fortran_int_t* ifailr ) {
+inline std::ptrdiff_t hsein( const char side, const char eigsrc,
+        const char initv, const logical_t* select, const fortran_int_t n,
+        const std::complex<double>* h, const fortran_int_t ldh,
+        std::complex<double>* w, std::complex<double>* vl,
+        const fortran_int_t ldvl, std::complex<double>* vr,
+        const fortran_int_t ldvr, const fortran_int_t mm, fortran_int_t& m,
+        std::complex<double>* work, double* rwork, fortran_int_t* ifaill,
+        fortran_int_t* ifailr ) {
     fortran_int_t info(0);
     LAPACK_ZHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, w, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, rwork, ifaill, ifailr, &info );

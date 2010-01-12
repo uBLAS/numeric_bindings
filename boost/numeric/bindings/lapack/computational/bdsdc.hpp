@@ -50,8 +50,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t bdsdc( char uplo, char compq, fortran_int_t n, float* d,
-        float* e, float* u, fortran_int_t ldu, float* vt, fortran_int_t ldvt,
+inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
+        const fortran_int_t n, float* d, float* e, float* u,
+        const fortran_int_t ldu, float* vt, const fortran_int_t ldvt,
         float* q, fortran_int_t* iq, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SBDSDC( &uplo, &compq, &n, d, e, u, &ldu, vt, &ldvt, q, iq, work,
@@ -64,10 +65,10 @@ inline std::ptrdiff_t bdsdc( char uplo, char compq, fortran_int_t n, float* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t bdsdc( char uplo, char compq, fortran_int_t n, double* d,
-        double* e, double* u, fortran_int_t ldu, double* vt,
-        fortran_int_t ldvt, double* q, fortran_int_t* iq, double* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t bdsdc( const char uplo, const char compq,
+        const fortran_int_t n, double* d, double* e, double* u,
+        const fortran_int_t ldu, double* vt, const fortran_int_t ldvt,
+        double* q, fortran_int_t* iq, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DBDSDC( &uplo, &compq, &n, d, e, u, &ldu, vt, &ldvt, q, iq, work,
             iwork, &info );

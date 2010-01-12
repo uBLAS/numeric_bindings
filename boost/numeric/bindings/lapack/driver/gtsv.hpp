@@ -47,8 +47,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs, float* dl,
-        float* d, float* du, float* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gtsv( const fortran_int_t n, const fortran_int_t nrhs,
+        float* dl, float* d, float* du, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
     return info;
@@ -59,8 +59,9 @@ inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs, float* dl,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs, double* dl,
-        double* d, double* du, double* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gtsv( const fortran_int_t n, const fortran_int_t nrhs,
+        double* dl, double* d, double* du, double* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
     return info;
@@ -71,9 +72,10 @@ inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs, double* dl,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gtsv( const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<float>* dl, std::complex<float>* d,
-        std::complex<float>* du, std::complex<float>* b, fortran_int_t ldb ) {
+        std::complex<float>* du, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
     return info;
@@ -84,10 +86,10 @@ inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gtsv( fortran_int_t n, fortran_int_t nrhs,
+inline std::ptrdiff_t gtsv( const fortran_int_t n, const fortran_int_t nrhs,
         std::complex<double>* dl, std::complex<double>* d,
         std::complex<double>* du, std::complex<double>* b,
-        fortran_int_t ldb ) {
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
     return info;

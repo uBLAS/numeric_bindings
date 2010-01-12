@@ -53,11 +53,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
-        logical_t* selctg, fortran_int_t n, float* a, fortran_int_t lda,
-        float* b, fortran_int_t ldb, fortran_int_t& sdim, float* alphar,
-        float* alphai, float* beta, float* vsl, fortran_int_t ldvsl,
-        float* vsr, fortran_int_t ldvsr, float* work, fortran_int_t lwork,
+inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const fortran_int_t n, float* a,
+        const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        fortran_int_t& sdim, float* alphar, float* alphai, float* beta,
+        float* vsl, const fortran_int_t ldvsl, float* vsr,
+        const fortran_int_t ldvsr, float* work, const fortran_int_t lwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_SGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
@@ -71,11 +72,12 @@ inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
-        logical_t* selctg, fortran_int_t n, double* a, fortran_int_t lda,
-        double* b, fortran_int_t ldb, fortran_int_t& sdim, double* alphar,
-        double* alphai, double* beta, double* vsl, fortran_int_t ldvsl,
-        double* vsr, fortran_int_t ldvsr, double* work, fortran_int_t lwork,
+inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const fortran_int_t n, double* a,
+        const fortran_int_t lda, double* b, const fortran_int_t ldb,
+        fortran_int_t& sdim, double* alphar, double* alphai, double* beta,
+        double* vsl, const fortran_int_t ldvsl, double* vsr,
+        const fortran_int_t ldvsr, double* work, const fortran_int_t lwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_DGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
@@ -89,13 +91,14 @@ inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
-        logical_t* selctg, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
-        fortran_int_t& sdim, std::complex<float>* alpha,
-        std::complex<float>* beta, std::complex<float>* vsl,
-        fortran_int_t ldvsl, std::complex<float>* vsr, fortran_int_t ldvsr,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
+inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* b, const fortran_int_t ldb, fortran_int_t& sdim,
+        std::complex<float>* alpha, std::complex<float>* beta,
+        std::complex<float>* vsl, const fortran_int_t ldvsl,
+        std::complex<float>* vsr, const fortran_int_t ldvsr,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_CGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
@@ -109,13 +112,14 @@ inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gges( char jobvsl, char jobvsr, char sort,
-        logical_t* selctg, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, std::complex<double>* b, fortran_int_t ldb,
-        fortran_int_t& sdim, std::complex<double>* alpha,
-        std::complex<double>* beta, std::complex<double>* vsl,
-        fortran_int_t ldvsl, std::complex<double>* vsr, fortran_int_t ldvsr,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
+inline std::ptrdiff_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* b, const fortran_int_t ldb, fortran_int_t& sdim,
+        std::complex<double>* alpha, std::complex<double>* beta,
+        std::complex<double>* vsl, const fortran_int_t ldvsl,
+        std::complex<double>* vsr, const fortran_int_t ldvsr,
+        std::complex<double>* work, const fortran_int_t lwork, double* rwork,
         logical_t* bwork ) {
     fortran_int_t info(0);
     LAPACK_ZGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,

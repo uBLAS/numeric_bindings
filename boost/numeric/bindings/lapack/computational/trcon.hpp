@@ -55,9 +55,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
-        const float* a, fortran_int_t lda, float& rcond, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t trcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const float* a, const fortran_int_t lda,
+        float& rcond, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_STRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, iwork, &info );
@@ -70,9 +70,9 @@ inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
 // * double value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
-        const double* a, fortran_int_t lda, double& rcond, double* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t trcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const double* a, const fortran_int_t lda,
+        double& rcond, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DTRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, iwork, &info );
@@ -85,9 +85,10 @@ inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda, float& rcond,
-        std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t trcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const std::complex<float>* a,
+        const fortran_int_t lda, float& rcond, std::complex<float>* work,
+        float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, rwork, &info );
@@ -100,9 +101,10 @@ inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Diag >
-inline std::ptrdiff_t trcon( char norm, char uplo, Diag, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda, double& rcond,
-        std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t trcon( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const std::complex<double>* a,
+        const fortran_int_t lda, double& rcond, std::complex<double>* work,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTRCON( &norm, &uplo, &lapack_option< Diag >::value, &n, a, &lda,
             &rcond, work, rwork, &info );

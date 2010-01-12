@@ -51,10 +51,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpgv( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, std::complex<float>* ap, std::complex<float>* bp,
-        float* w, std::complex<float>* z, fortran_int_t ldz,
-        std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t hpgv( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, std::complex<float>* ap,
+        std::complex<float>* bp, float* w, std::complex<float>* z,
+        const fortran_int_t ldz, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHPGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, ap, bp, w,
             z, &ldz, work, rwork, &info );
@@ -67,10 +67,10 @@ inline std::ptrdiff_t hpgv( fortran_int_t itype, char jobz, UpLo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpgv( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, std::complex<double>* ap, std::complex<double>* bp,
-        double* w, std::complex<double>* z, fortran_int_t ldz,
-        std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t hpgv( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, std::complex<double>* ap,
+        std::complex<double>* bp, double* w, std::complex<double>* z,
+        const fortran_int_t ldz, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHPGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, ap, bp, w,
             z, &ldz, work, rwork, &info );

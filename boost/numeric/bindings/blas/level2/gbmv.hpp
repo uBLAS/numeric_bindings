@@ -64,9 +64,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku, float alpha,
-        const float* a, int lda, const float* x, int incx, float beta,
-        float* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const float alpha, const float* a, const int lda,
+        const float* x, const int incx, const float beta, float* y,
+        const int incy ) {
     cblas_sgbmv( cblas_option< Order >::value, cblas_option< Trans >::value,
             m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -77,9 +78,10 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku, float alpha,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku, double alpha,
-        const double* a, int lda, const double* x, int incx, double beta,
-        double* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const double alpha, const double* a, const int lda,
+        const double* x, const int incx, const double beta, double* y,
+        const int incy ) {
     cblas_dgbmv( cblas_option< Order >::value, cblas_option< Trans >::value,
             m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -90,10 +92,12 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku, double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
-        std::complex<float> alpha, const std::complex<float>* a, int lda,
-        const std::complex<float>* x, int incx, std::complex<float> beta,
-        std::complex<float>* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* x, const int incx,
+        const std::complex<float> beta, std::complex<float>* y,
+        const int incy ) {
     cblas_cgbmv( cblas_option< Order >::value, cblas_option< Trans >::value,
             m, n, kl, ku, &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -104,10 +108,12 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
-        std::complex<double> alpha, const std::complex<double>* a, int lda,
-        const std::complex<double>* x, int incx, std::complex<double> beta,
-        std::complex<double>* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* x, const int incx,
+        const std::complex<double> beta, std::complex<double>* y,
+        const int incy ) {
     cblas_zgbmv( cblas_option< Order >::value, cblas_option< Trans >::value,
             m, n, kl, ku, &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -119,9 +125,10 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku, float alpha,
-        const float* a, int lda, const float* x, int incx, float beta,
-        float* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const float alpha, const float* a, const int lda,
+        const float* x, const int incx, const float beta, float* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSgbmv( blas_option< Trans >::value, m, n, kl, ku, alpha, a, lda, x,
             incx, beta, y, incy );
@@ -133,9 +140,10 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku, float alpha,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku, double alpha,
-        const double* a, int lda, const double* x, int incx, double beta,
-        double* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const double alpha, const double* a, const int lda,
+        const double* x, const int incx, const double beta, double* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -146,10 +154,12 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku, double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
-        std::complex<float> alpha, const std::complex<float>* a, int lda,
-        const std::complex<float>* x, int incx, std::complex<float> beta,
-        std::complex<float>* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda,
+        const std::complex<float>* x, const int incx,
+        const std::complex<float> beta, std::complex<float>* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCgbmv( blas_option< Trans >::value, m, n, kl, ku, alpha, a, lda, x,
             incx, beta, y, incy );
@@ -161,10 +171,12 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
-        std::complex<double> alpha, const std::complex<double>* a, int lda,
-        const std::complex<double>* x, int incx, std::complex<double> beta,
-        std::complex<double>* y, int incy ) {
+inline void gbmv( Order, Trans, const int m, const int n, const int kl,
+        const int ku, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda,
+        const std::complex<double>* x, const int incx,
+        const std::complex<double> beta, std::complex<double>* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -176,10 +188,11 @@ inline void gbmv( Order, Trans, int m, int n, int kl, int ku,
 // * float value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, float alpha, const float* a,
-        fortran_int_t lda, const float* x, fortran_int_t incx, float beta,
-        float* y, fortran_int_t incy ) {
+inline void gbmv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, const float alpha,
+        const float* a, const fortran_int_t lda, const float* x,
+        const fortran_int_t incx, const float beta, float* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SGBMV( &blas_option< Trans >::value, &m, &n, &kl, &ku, &alpha, a,
             &lda, x, &incx, &beta, y, &incy );
@@ -191,10 +204,11 @@ inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
 // * double value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, double alpha, const double* a,
-        fortran_int_t lda, const double* x, fortran_int_t incx, double beta,
-        double* y, fortran_int_t incy ) {
+inline void gbmv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, const double alpha,
+        const double* a, const fortran_int_t lda, const double* x,
+        const fortran_int_t incx, const double beta, double* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DGBMV( &blas_option< Trans >::value, &m, &n, &kl, &ku, &alpha, a,
             &lda, x, &incx, &beta, y, &incy );
@@ -206,12 +220,12 @@ inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, std::complex<float> alpha,
-        const std::complex<float>* a, fortran_int_t lda,
-        const std::complex<float>* x, fortran_int_t incx,
-        std::complex<float> beta, std::complex<float>* y,
-        fortran_int_t incy ) {
+inline void gbmv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* x,
+        const fortran_int_t incx, const std::complex<float> beta,
+        std::complex<float>* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CGBMV( &blas_option< Trans >::value, &m, &n, &kl, &ku, &alpha, a,
             &lda, x, &incx, &beta, y, &incy );
@@ -223,12 +237,12 @@ inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename Trans >
-inline void gbmv( Order, Trans, fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, std::complex<double> alpha,
-        const std::complex<double>* a, fortran_int_t lda,
-        const std::complex<double>* x, fortran_int_t incx,
-        std::complex<double> beta, std::complex<double>* y,
-        fortran_int_t incy ) {
+inline void gbmv( Order, Trans, const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* x,
+        const fortran_int_t incx, const std::complex<double> beta,
+        std::complex<double>* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZGBMV( &blas_option< Trans >::value, &m, &n, &kl, &ku, &alpha, a,
             &lda, x, &incx, &beta, y, &incy );

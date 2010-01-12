@@ -60,8 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void rotm( int n, float* x, int incx, float* y, int incy,
-        float* param ) {
+inline void rotm( const int n, float* x, const int incx, float* y,
+        const int incy, float* param ) {
     cblas_srotm( n, x, incx, y, incy, param );
 }
 
@@ -70,8 +70,8 @@ inline void rotm( int n, float* x, int incx, float* y, int incy,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void rotm( int n, double* x, int incx, double* y, int incy,
-        double* param ) {
+inline void rotm( const int n, double* x, const int incx, double* y,
+        const int incy, double* param ) {
     cblas_drotm( n, x, incx, y, incy, param );
 }
 
@@ -81,8 +81,8 @@ inline void rotm( int n, double* x, int incx, double* y, int incy,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void rotm( int n, float* x, int incx, float* y, int incy,
-        float* param ) {
+inline void rotm( const int n, float* x, const int incx, float* y,
+        const int incy, float* param ) {
     cublasSrotm( n, x, incx, y, incy, param );
 }
 
@@ -91,8 +91,8 @@ inline void rotm( int n, float* x, int incx, float* y, int incy,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void rotm( int n, double* x, int incx, double* y, int incy,
-        double* param ) {
+inline void rotm( const int n, double* x, const int incx, double* y,
+        const int incy, double* param ) {
     cublasDrotm( n, x, incx, y, incy, param );
 }
 
@@ -102,8 +102,8 @@ inline void rotm( int n, double* x, int incx, double* y, int incy,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void rotm( fortran_int_t n, float* x, fortran_int_t incx, float* y,
-        fortran_int_t incy, float* param ) {
+inline void rotm( const fortran_int_t n, float* x, const fortran_int_t incx,
+        float* y, const fortran_int_t incy, float* param ) {
     BLAS_SROTM( &n, x, &incx, y, &incy, param );
 }
 
@@ -112,8 +112,8 @@ inline void rotm( fortran_int_t n, float* x, fortran_int_t incx, float* y,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void rotm( fortran_int_t n, double* x, fortran_int_t incx, double* y,
-        fortran_int_t incy, double* param ) {
+inline void rotm( const fortran_int_t n, double* x, const fortran_int_t incx,
+        double* y, const fortran_int_t incy, double* param ) {
     BLAS_DROTM( &n, x, &incx, y, &incy, param );
 }
 

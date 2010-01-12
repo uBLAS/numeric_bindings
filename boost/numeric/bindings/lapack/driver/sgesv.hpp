@@ -49,10 +49,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sgesv( fortran_int_t n, fortran_int_t nrhs, double* a,
-        fortran_int_t lda, fortran_int_t* ipiv, const double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double* work,
-        float* swork, fortran_int_t& iter ) {
+inline std::ptrdiff_t sgesv( const fortran_int_t n, const fortran_int_t nrhs,
+        double* a, const fortran_int_t lda, fortran_int_t* ipiv,
+        const double* b, const fortran_int_t ldb, double* x,
+        const fortran_int_t ldx, double* work, float* swork,
+        fortran_int_t& iter ) {
     fortran_int_t info(0);
     LAPACK_DSGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, x, &ldx, work, swork,
             &iter, &info );

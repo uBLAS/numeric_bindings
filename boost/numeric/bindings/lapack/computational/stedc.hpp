@@ -53,9 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stedc( char compz, fortran_int_t n, float* d, float* e,
-        float* z, fortran_int_t ldz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n, float* d,
+        float* e, float* z, const fortran_int_t ldz, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
@@ -67,9 +68,10 @@ inline std::ptrdiff_t stedc( char compz, fortran_int_t n, float* d, float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stedc( char compz, fortran_int_t n, double* d, double* e,
-        double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        double* d, double* e, double* z, const fortran_int_t ldz,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
@@ -81,10 +83,11 @@ inline std::ptrdiff_t stedc( char compz, fortran_int_t n, double* d, double* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t stedc( char compz, fortran_int_t n, float* d, float* e,
-        std::complex<float>* z, fortran_int_t ldz, std::complex<float>* work,
-        fortran_int_t lwork, float* rwork, fortran_int_t lrwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n, float* d,
+        float* e, std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork,
+        const fortran_int_t lrwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, rwork, &lrwork,
             iwork, &liwork, &info );
@@ -96,10 +99,11 @@ inline std::ptrdiff_t stedc( char compz, fortran_int_t n, float* d, float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t stedc( char compz, fortran_int_t n, double* d, double* e,
-        std::complex<double>* z, fortran_int_t ldz,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        double* d, double* e, std::complex<double>* z,
+        const fortran_int_t ldz, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork, const fortran_int_t lrwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, rwork, &lrwork,
             iwork, &liwork, &info );

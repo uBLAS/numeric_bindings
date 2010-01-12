@@ -47,8 +47,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t lacgv( fortran_int_t n, std::complex<float>* x,
-        fortran_int_t incx ) {
+inline std::ptrdiff_t lacgv( const fortran_int_t n, std::complex<float>* x,
+        const fortran_int_t incx ) {
     fortran_int_t info(0);
     LAPACK_CLACGV( &n, x, &incx );
     return info;
@@ -59,8 +59,8 @@ inline std::ptrdiff_t lacgv( fortran_int_t n, std::complex<float>* x,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t lacgv( fortran_int_t n, std::complex<double>* x,
-        fortran_int_t incx ) {
+inline std::ptrdiff_t lacgv( const fortran_int_t n, std::complex<double>* x,
+        const fortran_int_t incx ) {
     fortran_int_t info(0);
     LAPACK_ZLACGV( &n, x, &incx );
     return info;

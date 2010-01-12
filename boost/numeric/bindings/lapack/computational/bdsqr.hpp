@@ -53,10 +53,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
-        fortran_int_t nru, fortran_int_t ncc, float* d, float* e, float* vt,
-        fortran_int_t ldvt, float* u, fortran_int_t ldu, float* c,
-        fortran_int_t ldc, float* work ) {
+inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
+        const fortran_int_t ncvt, const fortran_int_t nru,
+        const fortran_int_t ncc, float* d, float* e, float* vt,
+        const fortran_int_t ldvt, float* u, const fortran_int_t ldu, float* c,
+        const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
     LAPACK_SBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, work, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
-        fortran_int_t nru, fortran_int_t ncc, double* d, double* e,
-        double* vt, fortran_int_t ldvt, double* u, fortran_int_t ldu,
-        double* c, fortran_int_t ldc, double* work ) {
+inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
+        const fortran_int_t ncvt, const fortran_int_t nru,
+        const fortran_int_t ncc, double* d, double* e, double* vt,
+        const fortran_int_t ldvt, double* u, const fortran_int_t ldu,
+        double* c, const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
     LAPACK_DBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, work, &info );
@@ -83,11 +85,12 @@ inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
-        fortran_int_t nru, fortran_int_t ncc, float* d, float* e,
-        std::complex<float>* vt, fortran_int_t ldvt, std::complex<float>* u,
-        fortran_int_t ldu, std::complex<float>* c, fortran_int_t ldc,
-        float* rwork ) {
+inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
+        const fortran_int_t ncvt, const fortran_int_t nru,
+        const fortran_int_t ncc, float* d, float* e, std::complex<float>* vt,
+        const fortran_int_t ldvt, std::complex<float>* u,
+        const fortran_int_t ldu, std::complex<float>* c,
+        const fortran_int_t ldc, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, rwork, &info );
@@ -99,11 +102,12 @@ inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t bdsqr( char uplo, fortran_int_t n, fortran_int_t ncvt,
-        fortran_int_t nru, fortran_int_t ncc, double* d, double* e,
-        std::complex<double>* vt, fortran_int_t ldvt, std::complex<double>* u,
-        fortran_int_t ldu, std::complex<double>* c, fortran_int_t ldc,
-        double* rwork ) {
+inline std::ptrdiff_t bdsqr( const char uplo, const fortran_int_t n,
+        const fortran_int_t ncvt, const fortran_int_t nru,
+        const fortran_int_t ncc, double* d, double* e,
+        std::complex<double>* vt, const fortran_int_t ldvt,
+        std::complex<double>* u, const fortran_int_t ldu,
+        std::complex<double>* c, const fortran_int_t ldc, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, rwork, &info );

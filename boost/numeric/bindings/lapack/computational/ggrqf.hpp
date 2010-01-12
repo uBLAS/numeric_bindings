@@ -53,9 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
-        float* a, fortran_int_t lda, float* taua, float* b, fortran_int_t ldb,
-        float* taub, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ggrqf( const fortran_int_t m, const fortran_int_t p,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* taua,
+        float* b, const fortran_int_t ldb, float* taub, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
@@ -67,9 +68,10 @@ inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
-        double* a, fortran_int_t lda, double* taua, double* b,
-        fortran_int_t ldb, double* taub, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ggrqf( const fortran_int_t m, const fortran_int_t p,
+        const fortran_int_t n, double* a, const fortran_int_t lda,
+        double* taua, double* b, const fortran_int_t ldb, double* taub,
+        double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
@@ -81,10 +83,12 @@ inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* taua,
-        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* taub,
-        std::complex<float>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ggrqf( const fortran_int_t m, const fortran_int_t p,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* taua,
+        std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* taub, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
@@ -96,11 +100,12 @@ inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ggrqf( fortran_int_t m, fortran_int_t p, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* taua, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* taub,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ggrqf( const fortran_int_t m, const fortran_int_t p,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* taua,
+        std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* taub, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );

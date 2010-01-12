@@ -52,11 +52,13 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t syevx( char jobz, char range, UpLo, fortran_int_t n,
-        float* a, fortran_int_t lda, float vl, float vu, fortran_int_t il,
-        fortran_int_t iu, float abstol, fortran_int_t& m, float* w, float* z,
-        fortran_int_t ldz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t syevx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, float* a, const fortran_int_t lda,
+        const float vl, const float vu, const fortran_int_t il,
+        const fortran_int_t iu, const float abstol, fortran_int_t& m,
+        float* w, float* z, const fortran_int_t ldz, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_SSYEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
             &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
@@ -70,11 +72,13 @@ inline std::ptrdiff_t syevx( char jobz, char range, UpLo, fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t syevx( char jobz, char range, UpLo, fortran_int_t n,
-        double* a, fortran_int_t lda, double vl, double vu, fortran_int_t il,
-        fortran_int_t iu, double abstol, fortran_int_t& m, double* w,
-        double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t syevx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, double* a, const fortran_int_t lda,
+        const double vl, const double vu, const fortran_int_t il,
+        const fortran_int_t iu, const double abstol, fortran_int_t& m,
+        double* w, double* z, const fortran_int_t ldz, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_DSYEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
             &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,

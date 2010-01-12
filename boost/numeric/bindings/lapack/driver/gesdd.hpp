@@ -53,9 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
-        float* a, fortran_int_t lda, float* s, float* u, fortran_int_t ldu,
-        float* vt, fortran_int_t ldvt, float* work, fortran_int_t lwork,
+inline std::ptrdiff_t gesdd( const char jobz, const fortran_int_t m,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* s,
+        float* u, const fortran_int_t ldu, float* vt,
+        const fortran_int_t ldvt, float* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
@@ -68,9 +69,10 @@ inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
-        double* a, fortran_int_t lda, double* s, double* u, fortran_int_t ldu,
-        double* vt, fortran_int_t ldvt, double* work, fortran_int_t lwork,
+inline std::ptrdiff_t gesdd( const char jobz, const fortran_int_t m,
+        const fortran_int_t n, double* a, const fortran_int_t lda, double* s,
+        double* u, const fortran_int_t ldu, double* vt,
+        const fortran_int_t ldvt, double* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
@@ -83,11 +85,12 @@ inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, float* s,
-        std::complex<float>* u, fortran_int_t ldu, std::complex<float>* vt,
-        fortran_int_t ldvt, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t gesdd( const char jobz, const fortran_int_t m,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, float* s, std::complex<float>* u,
+        const fortran_int_t ldu, std::complex<float>* vt,
+        const fortran_int_t ldvt, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_CGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
             &lwork, rwork, iwork, &info );
@@ -99,11 +102,12 @@ inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gesdd( char jobz, fortran_int_t m, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, double* s,
-        std::complex<double>* u, fortran_int_t ldu, std::complex<double>* vt,
-        fortran_int_t ldvt, std::complex<double>* work, fortran_int_t lwork,
-        double* rwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t gesdd( const char jobz, const fortran_int_t m,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, double* s, std::complex<double>* u,
+        const fortran_int_t ldu, std::complex<double>* vt,
+        const fortran_int_t ldvt, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_ZGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
             &lwork, rwork, iwork, &info );

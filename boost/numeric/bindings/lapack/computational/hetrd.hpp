@@ -52,9 +52,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hetrd( UpLo, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, float* d, float* e, std::complex<float>* tau,
-        std::complex<float>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t hetrd( UpLo, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda, float* d, float* e,
+        std::complex<float>* tau, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CHETRD( &lapack_option< UpLo >::value, &n, a, &lda, d, e, tau,
             work, &lwork, &info );
@@ -67,9 +68,10 @@ inline std::ptrdiff_t hetrd( UpLo, fortran_int_t n, std::complex<float>* a,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hetrd( UpLo, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, double* d, double* e, std::complex<double>* tau,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t hetrd( UpLo, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda, double* d,
+        double* e, std::complex<double>* tau, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZHETRD( &lapack_option< UpLo >::value, &n, a, &lda, d, e, tau,
             work, &lwork, &info );

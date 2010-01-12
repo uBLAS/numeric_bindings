@@ -50,9 +50,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t orghr( fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, float* a, fortran_int_t lda, const float* tau,
-        float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t orghr( const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, float* a, const fortran_int_t lda,
+        const float* tau, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
     return info;
@@ -63,9 +63,9 @@ inline std::ptrdiff_t orghr( fortran_int_t n, fortran_int_t ilo,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t orghr( fortran_int_t n, fortran_int_t ilo,
-        fortran_int_t ihi, double* a, fortran_int_t lda, const double* tau,
-        double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t orghr( const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, double* a, const fortran_int_t lda,
+        const double* tau, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
     return info;

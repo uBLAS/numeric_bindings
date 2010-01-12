@@ -47,9 +47,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, float* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv ) {
+inline std::ptrdiff_t gbtrf( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, float* ab,
+        const fortran_int_t ldab, fortran_int_t* ipiv ) {
     fortran_int_t info(0);
     LAPACK_SGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
     return info;
@@ -60,9 +60,9 @@ inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, double* ab, fortran_int_t ldab,
-        fortran_int_t* ipiv ) {
+inline std::ptrdiff_t gbtrf( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku, double* ab,
+        const fortran_int_t ldab, fortran_int_t* ipiv ) {
     fortran_int_t info(0);
     LAPACK_DGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
     return info;
@@ -73,9 +73,10 @@ inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, std::complex<float>* ab,
-        fortran_int_t ldab, fortran_int_t* ipiv ) {
+inline std::ptrdiff_t gbtrf( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        fortran_int_t* ipiv ) {
     fortran_int_t info(0);
     LAPACK_CGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
     return info;
@@ -86,9 +87,10 @@ inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gbtrf( fortran_int_t m, fortran_int_t n,
-        fortran_int_t kl, fortran_int_t ku, std::complex<double>* ab,
-        fortran_int_t ldab, fortran_int_t* ipiv ) {
+inline std::ptrdiff_t gbtrf( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        fortran_int_t* ipiv ) {
     fortran_int_t info(0);
     LAPACK_ZGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
     return info;

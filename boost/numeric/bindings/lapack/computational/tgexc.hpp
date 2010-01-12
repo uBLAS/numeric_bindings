@@ -53,10 +53,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
-        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* q,
-        fortran_int_t ldq, float* z, fortran_int_t ldz, fortran_int_t& ifst,
-        fortran_int_t& ilst, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb, float* q, const fortran_int_t ldq, float* z,
+        const fortran_int_t ldz, fortran_int_t& ifst, fortran_int_t& ilst,
+        float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_STGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
             &ifst, &ilst, work, &lwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
-        double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* q,
-        fortran_int_t ldq, double* z, fortran_int_t ldz, fortran_int_t& ifst,
-        fortran_int_t& ilst, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
+        const fortran_int_t n, double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb, double* q, const fortran_int_t ldq,
+        double* z, const fortran_int_t ldz, fortran_int_t& ifst,
+        fortran_int_t& ilst, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
             &ifst, &ilst, work, &lwork, &info );
@@ -83,10 +85,12 @@ inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* q, fortran_int_t ldq,
-        std::complex<float>* z, fortran_int_t ldz, fortran_int_t ifst,
+inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* q,
+        const fortran_int_t ldq, std::complex<float>* z,
+        const fortran_int_t ldz, const fortran_int_t ifst,
         fortran_int_t& ilst ) {
     fortran_int_t info(0);
     LAPACK_CTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
@@ -99,10 +103,12 @@ inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t tgexc( logical_t wantq, logical_t wantz, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* q, fortran_int_t ldq,
-        std::complex<double>* z, fortran_int_t ldz, fortran_int_t ifst,
+inline std::ptrdiff_t tgexc( const logical_t wantq, const logical_t wantz,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* q,
+        const fortran_int_t ldq, std::complex<double>* z,
+        const fortran_int_t ldz, const fortran_int_t ifst,
         fortran_int_t& ilst ) {
     fortran_int_t info(0);
     LAPACK_ZTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,

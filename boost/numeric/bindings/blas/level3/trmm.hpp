@@ -65,8 +65,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        float alpha, const float* a, int lda, float* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const float alpha, const float* a, const int lda,
+        float* b, const int ldb ) {
     cblas_strmm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, cblas_option< TransA >::value,
             cblas_option< Diag >::value, m, n, alpha, a, lda, b, ldb );
@@ -78,8 +79,9 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        double alpha, const double* a, int lda, double* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const double alpha, const double* a, const int lda,
+        double* b, const int ldb ) {
     cblas_dtrmm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, cblas_option< TransA >::value,
             cblas_option< Diag >::value, m, n, alpha, a, lda, b, ldb );
@@ -91,9 +93,10 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        std::complex<float> alpha, const std::complex<float>* a, int lda,
-        std::complex<float>* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda, std::complex<float>* b,
+        const int ldb ) {
     cblas_ctrmm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, cblas_option< TransA >::value,
             cblas_option< Diag >::value, m, n, &alpha, a, lda, b, ldb );
@@ -105,9 +108,10 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        std::complex<double> alpha, const std::complex<double>* a, int lda,
-        std::complex<double>* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda, std::complex<double>* b,
+        const int ldb ) {
     cblas_ztrmm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, cblas_option< TransA >::value,
             cblas_option< Diag >::value, m, n, &alpha, a, lda, b, ldb );
@@ -120,8 +124,9 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        float alpha, const float* a, int lda, float* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const float alpha, const float* a, const int lda,
+        float* b, const int ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasStrmm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
@@ -134,8 +139,9 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        double alpha, const double* a, int lda, double* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const double alpha, const double* a, const int lda,
+        double* b, const int ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDtrmm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
@@ -148,9 +154,10 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        std::complex<float> alpha, const std::complex<float>* a, int lda,
-        std::complex<float>* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const std::complex<float> alpha,
+        const std::complex<float>* a, const int lda, std::complex<float>* b,
+        const int ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCtrmm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
@@ -163,9 +170,10 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
-        std::complex<double> alpha, const std::complex<double>* a, int lda,
-        std::complex<double>* b, int ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag, const int m,
+        const int n, const std::complex<double> alpha,
+        const std::complex<double>* a, const int lda, std::complex<double>* b,
+        const int ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -177,9 +185,10 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, int m, int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
-        fortran_int_t n, float alpha, const float* a, fortran_int_t lda,
-        float* b, fortran_int_t ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag,
+        const fortran_int_t m, const fortran_int_t n, const float alpha,
+        const float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_STRMM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
@@ -192,9 +201,10 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
-        fortran_int_t n, double alpha, const double* a, fortran_int_t lda,
-        double* b, fortran_int_t ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag,
+        const fortran_int_t m, const fortran_int_t n, const double alpha,
+        const double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DTRMM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
@@ -207,10 +217,11 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
-        fortran_int_t n, std::complex<float> alpha,
-        const std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CTRMM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
@@ -223,10 +234,11 @@ inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename TransA, typename Diag >
-inline void trmm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
-        fortran_int_t n, std::complex<double> alpha,
-        const std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb ) {
+inline void trmm( Order, const char side, UpLo, TransA, Diag,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZTRMM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,

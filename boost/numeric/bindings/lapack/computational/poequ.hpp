@@ -50,8 +50,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t poequ( fortran_int_t n, const float* a,
-        fortran_int_t lda, float* s, float& scond, float& amax ) {
+inline std::ptrdiff_t poequ( const fortran_int_t n, const float* a,
+        const fortran_int_t lda, float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
     LAPACK_SPOEQU( &n, a, &lda, s, &scond, &amax, &info );
     return info;
@@ -62,8 +62,8 @@ inline std::ptrdiff_t poequ( fortran_int_t n, const float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t poequ( fortran_int_t n, const double* a,
-        fortran_int_t lda, double* s, double& scond, double& amax ) {
+inline std::ptrdiff_t poequ( const fortran_int_t n, const double* a,
+        const fortran_int_t lda, double* s, double& scond, double& amax ) {
     fortran_int_t info(0);
     LAPACK_DPOEQU( &n, a, &lda, s, &scond, &amax, &info );
     return info;
@@ -74,8 +74,9 @@ inline std::ptrdiff_t poequ( fortran_int_t n, const double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t poequ( fortran_int_t n, const std::complex<float>* a,
-        fortran_int_t lda, float* s, float& scond, float& amax ) {
+inline std::ptrdiff_t poequ( const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda, float* s,
+        float& scond, float& amax ) {
     fortran_int_t info(0);
     LAPACK_CPOEQU( &n, a, &lda, s, &scond, &amax, &info );
     return info;
@@ -86,8 +87,9 @@ inline std::ptrdiff_t poequ( fortran_int_t n, const std::complex<float>* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t poequ( fortran_int_t n, const std::complex<double>* a,
-        fortran_int_t lda, double* s, double& scond, double& amax ) {
+inline std::ptrdiff_t poequ( const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda, double* s,
+        double& scond, double& amax ) {
     fortran_int_t info(0);
     LAPACK_ZPOEQU( &n, a, &lda, s, &scond, &amax, &info );
     return info;

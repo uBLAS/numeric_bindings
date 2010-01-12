@@ -51,11 +51,12 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgv( char jobz, UpLo, fortran_int_t n, fortran_int_t ka,
-        fortran_int_t kb, std::complex<float>* ab, fortran_int_t ldab,
-        std::complex<float>* bb, fortran_int_t ldbb, float* w,
-        std::complex<float>* z, fortran_int_t ldz, std::complex<float>* work,
-        float* rwork ) {
+inline std::ptrdiff_t hbgv( const char jobz, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        std::complex<float>* bb, const fortran_int_t ldbb, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHBGV( &jobz, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
             &ldab, bb, &ldbb, w, z, &ldz, work, rwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t hbgv( char jobz, UpLo, fortran_int_t n, fortran_int_t ka,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgv( char jobz, UpLo, fortran_int_t n, fortran_int_t ka,
-        fortran_int_t kb, std::complex<double>* ab, fortran_int_t ldab,
-        std::complex<double>* bb, fortran_int_t ldbb, double* w,
-        std::complex<double>* z, fortran_int_t ldz,
+inline std::ptrdiff_t hbgv( const char jobz, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        std::complex<double>* bb, const fortran_int_t ldbb, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
         std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHBGV( &jobz, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,

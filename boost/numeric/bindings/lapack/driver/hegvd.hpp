@@ -52,11 +52,12 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegvd( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb, float* w,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, float* w, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork, const fortran_int_t lrwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CHEGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, rwork, &lrwork, iwork, &liwork, &info );
@@ -69,11 +70,12 @@ inline std::ptrdiff_t hegvd( fortran_int_t itype, char jobz, UpLo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegvd( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb, double* w,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork,
-        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t hegvd( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, double* w, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork, const fortran_int_t lrwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZHEGVD( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, rwork, &lrwork, iwork, &liwork, &info );

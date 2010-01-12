@@ -49,10 +49,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, const float* ab,
-        fortran_int_t ldab, const fortran_int_t* ipiv, float* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gbtrs( Trans, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const fortran_int_t nrhs, const float* ab, const fortran_int_t ldab,
+        const fortran_int_t* ipiv, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SGBTRS( &lapack_option< Trans >::value, &n, &kl, &ku, &nrhs, ab,
             &ldab, ipiv, b, &ldb, &info );
@@ -65,10 +65,10 @@ inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, const double* ab,
-        fortran_int_t ldab, const fortran_int_t* ipiv, double* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gbtrs( Trans, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const fortran_int_t nrhs, const double* ab, const fortran_int_t ldab,
+        const fortran_int_t* ipiv, double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DGBTRS( &lapack_option< Trans >::value, &n, &kl, &ku, &nrhs, ab,
             &ldab, ipiv, b, &ldb, &info );
@@ -81,10 +81,11 @@ inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, const std::complex<float>* ab,
-        fortran_int_t ldab, const fortran_int_t* ipiv, std::complex<float>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t gbtrs( Trans, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const fortran_int_t nrhs, const std::complex<float>* ab,
+        const fortran_int_t ldab, const fortran_int_t* ipiv,
+        std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CGBTRS( &lapack_option< Trans >::value, &n, &kl, &ku, &nrhs, ab,
             &ldab, ipiv, b, &ldb, &info );
@@ -97,10 +98,11 @@ inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gbtrs( Trans, fortran_int_t n, fortran_int_t kl,
-        fortran_int_t ku, fortran_int_t nrhs, const std::complex<double>* ab,
-        fortran_int_t ldab, const fortran_int_t* ipiv,
-        std::complex<double>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t gbtrs( Trans, const fortran_int_t n,
+        const fortran_int_t kl, const fortran_int_t ku,
+        const fortran_int_t nrhs, const std::complex<double>* ab,
+        const fortran_int_t ldab, const fortran_int_t* ipiv,
+        std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZGBTRS( &lapack_option< Trans >::value, &n, &kl, &ku, &nrhs, ab,
             &ldab, ipiv, b, &ldb, &info );

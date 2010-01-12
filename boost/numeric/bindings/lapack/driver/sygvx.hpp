@@ -52,12 +52,14 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygvx( fortran_int_t itype, char jobz, char range, UpLo,
-        fortran_int_t n, float* a, fortran_int_t lda, float* b,
-        fortran_int_t ldb, float vl, float vu, fortran_int_t il,
-        fortran_int_t iu, float abstol, fortran_int_t& m, float* w, float* z,
-        fortran_int_t ldz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t sygvx( const fortran_int_t itype, const char jobz,
+        const char range, UpLo, const fortran_int_t n, float* a,
+        const fortran_int_t lda, float* b, const fortran_int_t ldb,
+        const float vl, const float vu, const fortran_int_t il,
+        const fortran_int_t iu, const float abstol, fortran_int_t& m,
+        float* w, float* z, const fortran_int_t ldz, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_SSYGVX( &itype, &jobz, &range, &lapack_option< UpLo >::value, &n,
             a, &lda, b, &ldb, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz,
@@ -71,12 +73,14 @@ inline std::ptrdiff_t sygvx( fortran_int_t itype, char jobz, char range, UpLo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sygvx( fortran_int_t itype, char jobz, char range, UpLo,
-        fortran_int_t n, double* a, fortran_int_t lda, double* b,
-        fortran_int_t ldb, double vl, double vu, fortran_int_t il,
-        fortran_int_t iu, double abstol, fortran_int_t& m, double* w,
-        double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t sygvx( const fortran_int_t itype, const char jobz,
+        const char range, UpLo, const fortran_int_t n, double* a,
+        const fortran_int_t lda, double* b, const fortran_int_t ldb,
+        const double vl, const double vu, const fortran_int_t il,
+        const fortran_int_t iu, const double abstol, fortran_int_t& m,
+        double* w, double* z, const fortran_int_t ldz, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_DSYGVX( &itype, &jobz, &range, &lapack_option< UpLo >::value, &n,
             a, &lda, b, &ldb, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz,

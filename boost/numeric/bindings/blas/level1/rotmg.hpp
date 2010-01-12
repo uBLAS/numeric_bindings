@@ -60,7 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
+        float* sparam ) {
     cblas_srotmg( &d1, &d2, &x1, &y1, sparam );
 }
 
@@ -69,7 +70,7 @@ inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void rotmg( double& d1, double& d2, double& x1, double y1,
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
     cblas_drotmg( &d1, &d2, &x1, &y1, dparam );
 }
@@ -80,7 +81,8 @@ inline void rotmg( double& d1, double& d2, double& x1, double y1,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
+        float* sparam ) {
     cublasSrotmg( &d1, &d2, &x1, &y1, sparam );
 }
 
@@ -89,7 +91,7 @@ inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void rotmg( double& d1, double& d2, double& x1, double y1,
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
     cublasDrotmg( &d1, &d2, &x1, &y1, dparam );
 }
@@ -100,7 +102,8 @@ inline void rotmg( double& d1, double& d2, double& x1, double y1,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
+        float* sparam ) {
     BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
 }
 
@@ -109,7 +112,7 @@ inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void rotmg( double& d1, double& d2, double& x1, double y1,
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
     BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
 }

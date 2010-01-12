@@ -63,8 +63,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, int n, float alpha, const float* ap,
-        const float* x, int incx, float beta, float* y, int incy ) {
+inline void spmv( Order, UpLo, const int n, const float alpha,
+        const float* ap, const float* x, const int incx, const float beta,
+        float* y, const int incy ) {
     cblas_sspmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, ap, x, incx, beta, y, incy );
 }
@@ -75,8 +76,9 @@ inline void spmv( Order, UpLo, int n, float alpha, const float* ap,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, int n, double alpha, const double* ap,
-        const double* x, int incx, double beta, double* y, int incy ) {
+inline void spmv( Order, UpLo, const int n, const double alpha,
+        const double* ap, const double* x, const int incx, const double beta,
+        double* y, const int incy ) {
     cblas_dspmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, ap, x, incx, beta, y, incy );
 }
@@ -88,8 +90,9 @@ inline void spmv( Order, UpLo, int n, double alpha, const double* ap,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, int n, float alpha, const float* ap,
-        const float* x, int incx, float beta, float* y, int incy ) {
+inline void spmv( Order, UpLo, const int n, const float alpha,
+        const float* ap, const float* x, const int incx, const float beta,
+        float* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSspmv( blas_option< UpLo >::value, n, alpha, ap, x, incx, beta, y,
             incy );
@@ -101,8 +104,9 @@ inline void spmv( Order, UpLo, int n, float alpha, const float* ap,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, int n, double alpha, const double* ap,
-        const double* x, int incx, double beta, double* y, int incy ) {
+inline void spmv( Order, UpLo, const int n, const double alpha,
+        const double* ap, const double* x, const int incx, const double beta,
+        double* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -114,9 +118,9 @@ inline void spmv( Order, UpLo, int n, double alpha, const double* ap,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, fortran_int_t n, float alpha, const float* ap,
-        const float* x, fortran_int_t incx, float beta, float* y,
-        fortran_int_t incy ) {
+inline void spmv( Order, UpLo, const fortran_int_t n, const float alpha,
+        const float* ap, const float* x, const fortran_int_t incx,
+        const float beta, float* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSPMV( &blas_option< UpLo >::value, &n, &alpha, ap, x, &incx, &beta,
             y, &incy );
@@ -128,9 +132,9 @@ inline void spmv( Order, UpLo, fortran_int_t n, float alpha, const float* ap,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, fortran_int_t n, double alpha,
-        const double* ap, const double* x, fortran_int_t incx, double beta,
-        double* y, fortran_int_t incy ) {
+inline void spmv( Order, UpLo, const fortran_int_t n, const double alpha,
+        const double* ap, const double* x, const fortran_int_t incx,
+        const double beta, double* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSPMV( &blas_option< UpLo >::value, &n, &alpha, ap, x, &incx, &beta,
             y, &incy );

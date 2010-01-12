@@ -52,9 +52,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t opmtr( char side, char uplo, Trans, fortran_int_t m,
-        fortran_int_t n, const float* ap, const float* tau, float* c,
-        fortran_int_t ldc, float* work ) {
+inline std::ptrdiff_t opmtr( const char side, const char uplo, Trans,
+        const fortran_int_t m, const fortran_int_t n, const float* ap,
+        const float* tau, float* c, const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
     LAPACK_SOPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
             tau, c, &ldc, work, &info );
@@ -67,9 +67,9 @@ inline std::ptrdiff_t opmtr( char side, char uplo, Trans, fortran_int_t m,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t opmtr( char side, char uplo, Trans, fortran_int_t m,
-        fortran_int_t n, const double* ap, const double* tau, double* c,
-        fortran_int_t ldc, double* work ) {
+inline std::ptrdiff_t opmtr( const char side, const char uplo, Trans,
+        const fortran_int_t m, const fortran_int_t n, const double* ap,
+        const double* tau, double* c, const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
     LAPACK_DOPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
             tau, c, &ldc, work, &info );

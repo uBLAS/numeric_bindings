@@ -55,12 +55,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const float* a, fortran_int_t lda, float* af,
-        fortran_int_t ldaf, fortran_int_t* ipiv, const float* b,
-        fortran_int_t ldb, float* x, fortran_int_t ldx, float& rcond,
-        float* ferr, float* berr, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t sysvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* a, const fortran_int_t lda,
+        float* af, const fortran_int_t ldaf, fortran_int_t* ipiv,
+        const float* b, const fortran_int_t ldb, float* x,
+        const fortran_int_t ldx, float& rcond, float* ferr, float* berr,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SSYSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
@@ -74,12 +74,12 @@ inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const double* a, fortran_int_t lda, double* af,
-        fortran_int_t ldaf, fortran_int_t* ipiv, const double* b,
-        fortran_int_t ldb, double* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t sysvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* a, const fortran_int_t lda,
+        double* af, const fortran_int_t ldaf, fortran_int_t* ipiv,
+        const double* b, const fortran_int_t ldb, double* x,
+        const fortran_int_t ldx, double& rcond, double* ferr, double* berr,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DSYSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
@@ -93,13 +93,14 @@ inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* af, fortran_int_t ldaf, fortran_int_t* ipiv,
-        const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* x, fortran_int_t ldx, float& rcond, float* ferr,
-        float* berr, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork ) {
+inline std::ptrdiff_t sysvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* af,
+        const fortran_int_t ldaf, fortran_int_t* ipiv,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float& rcond,
+        float* ferr, float* berr, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CSYSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
@@ -113,13 +114,14 @@ inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sysvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* af, fortran_int_t ldaf, fortran_int_t* ipiv,
-        const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double& rcond,
+inline std::ptrdiff_t sysvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* af,
+        const fortran_int_t ldaf, fortran_int_t* ipiv,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double& rcond,
         double* ferr, double* berr, std::complex<double>* work,
-        fortran_int_t lwork, double* rwork ) {
+        const fortran_int_t lwork, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZSYSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, a, &lda,
             af, &ldaf, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work,

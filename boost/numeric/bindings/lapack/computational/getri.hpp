@@ -63,8 +63,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, int n, float* a, int lda, const int* ipiv,
-        float* work, int lwork ) {
+inline std::ptrdiff_t getri( Order, const int n, float* a, const int lda,
+        const int* ipiv, float* work, const int lwork ) {
     return clapack_sgetri( clapack_option< Order >::value, n, a, lda, ipiv );
 }
 
@@ -74,8 +74,8 @@ inline std::ptrdiff_t getri( Order, int n, float* a, int lda, const int* ipiv,
 // * double value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, int n, double* a, int lda, const int* ipiv,
-        double* work, int lwork ) {
+inline std::ptrdiff_t getri( Order, const int n, double* a, const int lda,
+        const int* ipiv, double* work, const int lwork ) {
     return clapack_dgetri( clapack_option< Order >::value, n, a, lda, ipiv );
 }
 
@@ -85,8 +85,9 @@ inline std::ptrdiff_t getri( Order, int n, double* a, int lda, const int* ipiv,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, int n, std::complex<float>* a, int lda,
-        const int* ipiv, std::complex<float>* work, int lwork ) {
+inline std::ptrdiff_t getri( Order, const int n, std::complex<float>* a,
+        const int lda, const int* ipiv, std::complex<float>* work,
+        const int lwork ) {
     return clapack_cgetri( clapack_option< Order >::value, n, a, lda, ipiv );
 }
 
@@ -96,8 +97,9 @@ inline std::ptrdiff_t getri( Order, int n, std::complex<float>* a, int lda,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, int n, std::complex<double>* a, int lda,
-        const int* ipiv, std::complex<double>* work, int lwork ) {
+inline std::ptrdiff_t getri( Order, const int n, std::complex<double>* a,
+        const int lda, const int* ipiv, std::complex<double>* work,
+        const int lwork ) {
     return clapack_zgetri( clapack_option< Order >::value, n, a, lda, ipiv );
 }
 
@@ -108,9 +110,9 @@ inline std::ptrdiff_t getri( Order, int n, std::complex<double>* a, int lda,
 // * float value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, fortran_int_t n, float* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, float* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t getri( Order, const fortran_int_t n, float* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv, float* work,
+        const fortran_int_t lwork ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_SGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
@@ -123,9 +125,9 @@ inline std::ptrdiff_t getri( Order, fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, fortran_int_t n, double* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t getri( Order, const fortran_int_t n, double* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv, double* work,
+        const fortran_int_t lwork ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_DGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
@@ -138,9 +140,10 @@ inline std::ptrdiff_t getri( Order, fortran_int_t n, double* a,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, fortran_int_t n, std::complex<float>* a,
-        fortran_int_t lda, const fortran_int_t* ipiv,
-        std::complex<float>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t getri( Order, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_CGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
@@ -153,9 +156,10 @@ inline std::ptrdiff_t getri( Order, fortran_int_t n, std::complex<float>* a,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline std::ptrdiff_t getri( Order, fortran_int_t n, std::complex<double>* a,
-        fortran_int_t lda, const fortran_int_t* ipiv,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t getri( Order, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     fortran_int_t info(0);
     LAPACK_ZGETRI( &n, a, &lda, ipiv, work, &lwork, &info );

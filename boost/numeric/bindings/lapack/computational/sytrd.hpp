@@ -52,9 +52,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytrd( UpLo, fortran_int_t n, float* a,
-        fortran_int_t lda, float* d, float* e, float* tau, float* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t sytrd( UpLo, const fortran_int_t n, float* a,
+        const fortran_int_t lda, float* d, float* e, float* tau, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SSYTRD( &lapack_option< UpLo >::value, &n, a, &lda, d, e, tau,
             work, &lwork, &info );
@@ -67,9 +67,9 @@ inline std::ptrdiff_t sytrd( UpLo, fortran_int_t n, float* a,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sytrd( UpLo, fortran_int_t n, double* a,
-        fortran_int_t lda, double* d, double* e, double* tau, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t sytrd( UpLo, const fortran_int_t n, double* a,
+        const fortran_int_t lda, double* d, double* e, double* tau,
+        double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DSYTRD( &lapack_option< UpLo >::value, &n, a, &lda, d, e, tau,
             work, &lwork, &info );

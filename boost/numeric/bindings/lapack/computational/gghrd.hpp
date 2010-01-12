@@ -47,10 +47,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, float* a, fortran_int_t lda,
-        float* b, fortran_int_t ldb, float* q, fortran_int_t ldq, float* z,
-        fortran_int_t ldz ) {
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb, float* q, const fortran_int_t ldq, float* z,
+        const fortran_int_t ldz ) {
     fortran_int_t info(0);
     LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
@@ -62,10 +63,11 @@ inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, double* a, fortran_int_t lda,
-        double* b, fortran_int_t ldb, double* q, fortran_int_t ldq, double* z,
-        fortran_int_t ldz ) {
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, double* a, const fortran_int_t lda,
+        double* b, const fortran_int_t ldb, double* q,
+        const fortran_int_t ldq, double* z, const fortran_int_t ldz ) {
     fortran_int_t info(0);
     LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
@@ -77,11 +79,13 @@ inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, std::complex<float>* a,
-        fortran_int_t lda, std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* z,
-        fortran_int_t ldz ) {
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* q,
+        const fortran_int_t ldq, std::complex<float>* z,
+        const fortran_int_t ldz ) {
     fortran_int_t info(0);
     LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
@@ -93,11 +97,13 @@ inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gghrd( char compq, char compz, fortran_int_t n,
-        fortran_int_t ilo, fortran_int_t ihi, std::complex<double>* a,
-        fortran_int_t lda, std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* z,
-        fortran_int_t ldz ) {
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const fortran_int_t ihi, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* q,
+        const fortran_int_t ldq, std::complex<double>* z,
+        const fortran_int_t ldz ) {
     fortran_int_t info(0);
     LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );

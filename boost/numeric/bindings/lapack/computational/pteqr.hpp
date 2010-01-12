@@ -52,8 +52,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, float* d, float* e,
-        float* z, fortran_int_t ldz, float* work ) {
+inline std::ptrdiff_t pteqr( const char compz, const fortran_int_t n, float* d,
+        float* e, float* z, const fortran_int_t ldz, float* work ) {
     fortran_int_t info(0);
     LAPACK_SPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
     return info;
@@ -64,8 +64,9 @@ inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, float* d, float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, double* d, double* e,
-        double* z, fortran_int_t ldz, double* work ) {
+inline std::ptrdiff_t pteqr( const char compz, const fortran_int_t n,
+        double* d, double* e, double* z, const fortran_int_t ldz,
+        double* work ) {
     fortran_int_t info(0);
     LAPACK_DPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
     return info;
@@ -76,8 +77,9 @@ inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, double* d, double* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, float* d, float* e,
-        std::complex<float>* z, fortran_int_t ldz, float* work ) {
+inline std::ptrdiff_t pteqr( const char compz, const fortran_int_t n, float* d,
+        float* e, std::complex<float>* z, const fortran_int_t ldz,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_CPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
     return info;
@@ -88,8 +90,9 @@ inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, float* d, float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t pteqr( char compz, fortran_int_t n, double* d, double* e,
-        std::complex<double>* z, fortran_int_t ldz, double* work ) {
+inline std::ptrdiff_t pteqr( const char compz, const fortran_int_t n,
+        double* d, double* e, std::complex<double>* z,
+        const fortran_int_t ldz, double* work ) {
     fortran_int_t info(0);
     LAPACK_ZPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
     return info;

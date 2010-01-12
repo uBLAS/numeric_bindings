@@ -53,9 +53,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n, float* a,
-        fortran_int_t lda, fortran_int_t* jpvt, float* tau, float* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t geqp3( const fortran_int_t m, const fortran_int_t n,
+        float* a, const fortran_int_t lda, fortran_int_t* jpvt, float* tau,
+        float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
     return info;
@@ -66,9 +66,9 @@ inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n, double* a,
-        fortran_int_t lda, fortran_int_t* jpvt, double* tau, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t geqp3( const fortran_int_t m, const fortran_int_t n,
+        double* a, const fortran_int_t lda, fortran_int_t* jpvt, double* tau,
+        double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
     return info;
@@ -79,10 +79,10 @@ inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, fortran_int_t* jpvt,
+inline std::ptrdiff_t geqp3( const fortran_int_t m, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda, fortran_int_t* jpvt,
         std::complex<float>* tau, std::complex<float>* work,
-        fortran_int_t lwork, float* rwork ) {
+        const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, rwork, &info );
     return info;
@@ -93,10 +93,10 @@ inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t geqp3( fortran_int_t m, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, fortran_int_t* jpvt,
+inline std::ptrdiff_t geqp3( const fortran_int_t m, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda, fortran_int_t* jpvt,
         std::complex<double>* tau, std::complex<double>* work,
-        fortran_int_t lwork, double* rwork ) {
+        const fortran_int_t lwork, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, rwork, &info );
     return info;

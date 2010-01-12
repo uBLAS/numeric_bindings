@@ -53,11 +53,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, float* d,
-        float* e, float vl, float vu, fortran_int_t il, fortran_int_t iu,
-        float abstol, fortran_int_t& m, float* w, float* z, fortran_int_t ldz,
-        fortran_int_t* isuppz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stegr( const char jobz, const char range,
+        const fortran_int_t n, float* d, float* e, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        const float abstol, fortran_int_t& m, float* w, float* z,
+        const fortran_int_t ldz, fortran_int_t* isuppz, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
@@ -69,11 +71,13 @@ inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, float* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, double* d,
-        double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
-        double abstol, fortran_int_t& m, double* w, double* z,
-        fortran_int_t ldz, fortran_int_t* isuppz, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stegr( const char jobz, const char range,
+        const fortran_int_t n, double* d, double* e, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
+        const double abstol, fortran_int_t& m, double* w, double* z,
+        const fortran_int_t ldz, fortran_int_t* isuppz, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
@@ -85,11 +89,13 @@ inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, double* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, float* d,
-        float* e, float vl, float vu, fortran_int_t il, fortran_int_t iu,
-        float abstol, fortran_int_t& m, float* w, std::complex<float>* z,
-        fortran_int_t ldz, fortran_int_t* isuppz, float* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stegr( const char jobz, const char range,
+        const fortran_int_t n, float* d, float* e, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        const float abstol, fortran_int_t& m, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        fortran_int_t* isuppz, float* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
@@ -101,11 +107,13 @@ inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, float* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t stegr( char jobz, char range, fortran_int_t n, double* d,
-        double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
-        double abstol, fortran_int_t& m, double* w, std::complex<double>* z,
-        fortran_int_t ldz, fortran_int_t* isuppz, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stegr( const char jobz, const char range,
+        const fortran_int_t n, double* d, double* e, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
+        const double abstol, fortran_int_t& m, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
+        fortran_int_t* isuppz, double* work, const fortran_int_t lwork,
+        fortran_int_t* iwork, const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );

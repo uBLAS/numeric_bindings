@@ -50,8 +50,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t largv( fortran_int_t n, float* x, fortran_int_t incx,
-        float* y, fortran_int_t incy, float* c, fortran_int_t incc ) {
+inline std::ptrdiff_t largv( const fortran_int_t n, float* x,
+        const fortran_int_t incx, float* y, const fortran_int_t incy,
+        float* c, const fortran_int_t incc ) {
     fortran_int_t info(0);
     LAPACK_SLARGV( &n, x, &incx, y, &incy, c, &incc );
     return info;
@@ -62,8 +63,9 @@ inline std::ptrdiff_t largv( fortran_int_t n, float* x, fortran_int_t incx,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t largv( fortran_int_t n, double* x, fortran_int_t incx,
-        double* y, fortran_int_t incy, double* c, fortran_int_t incc ) {
+inline std::ptrdiff_t largv( const fortran_int_t n, double* x,
+        const fortran_int_t incx, double* y, const fortran_int_t incy,
+        double* c, const fortran_int_t incc ) {
     fortran_int_t info(0);
     LAPACK_DLARGV( &n, x, &incx, y, &incy, c, &incc );
     return info;
@@ -74,9 +76,9 @@ inline std::ptrdiff_t largv( fortran_int_t n, double* x, fortran_int_t incx,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t largv( fortran_int_t n, std::complex<float>* x,
-        fortran_int_t incx, std::complex<float>* y, fortran_int_t incy,
-        float* c, fortran_int_t incc ) {
+inline std::ptrdiff_t largv( const fortran_int_t n, std::complex<float>* x,
+        const fortran_int_t incx, std::complex<float>* y,
+        const fortran_int_t incy, float* c, const fortran_int_t incc ) {
     fortran_int_t info(0);
     LAPACK_CLARGV( &n, x, &incx, y, &incy, c, &incc );
     return info;
@@ -87,9 +89,9 @@ inline std::ptrdiff_t largv( fortran_int_t n, std::complex<float>* x,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t largv( fortran_int_t n, std::complex<double>* x,
-        fortran_int_t incx, std::complex<double>* y, fortran_int_t incy,
-        double* c, fortran_int_t incc ) {
+inline std::ptrdiff_t largv( const fortran_int_t n, std::complex<double>* x,
+        const fortran_int_t incx, std::complex<double>* y,
+        const fortran_int_t incy, double* c, const fortran_int_t incc ) {
     fortran_int_t info(0);
     LAPACK_ZLARGV( &n, x, &incx, y, &incy, c, &incc );
     return info;
@@ -121,9 +123,7 @@ struct largv_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename VectorX, typename VectorY, typename VectorC >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            const fortran_int_t incx, VectorY& y,
-            const fortran_int_t incy, VectorC& c,
-            const fortran_int_t incc ) {
+            VectorY& y, VectorC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorX >::type >::type,
                 typename remove_const< typename value<
@@ -135,11 +135,11 @@ struct largv_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( size(c) >= 1+(n-1)*incc );
-        BOOST_ASSERT( size(x) >= 1+(n-1)*incx );
-        BOOST_ASSERT( size(y) >= 1+(n-1)*incy );
-        return detail::largv( n, begin_value(x), incx, begin_value(y), incy,
-                begin_value(c), incc );
+        BOOST_ASSERT( size(c) >= 1+(n-1)*stride(c) );
+        BOOST_ASSERT( size(x) >= 1+(n-1)*stride(x) );
+        BOOST_ASSERT( size(y) >= 1+(n-1)*stride(y) );
+        return detail::largv( n, begin_value(x), stride(x), begin_value(y),
+                stride(y), begin_value(c), stride(c) );
     }
 
 };
@@ -161,9 +161,7 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename VectorX, typename VectorY, typename VectorC >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
-            const fortran_int_t incx, VectorY& y,
-            const fortran_int_t incy, VectorC& c,
-            const fortran_int_t incc ) {
+            VectorY& y, VectorC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorX >::type >::type,
                 typename remove_const< typename value<
@@ -171,11 +169,11 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( size(c) >= 1+(n-1)*incc );
-        BOOST_ASSERT( size(x) >= 1+(n-1)*incx );
-        BOOST_ASSERT( size(y) >= 1+(n-1)*incy );
-        return detail::largv( n, begin_value(x), incx, begin_value(y), incy,
-                begin_value(c), incc );
+        BOOST_ASSERT( size(c) >= 1+(n-1)*stride(c) );
+        BOOST_ASSERT( size(x) >= 1+(n-1)*stride(x) );
+        BOOST_ASSERT( size(y) >= 1+(n-1)*stride(y) );
+        return detail::largv( n, begin_value(x), stride(x), begin_value(y),
+                stride(y), begin_value(c), stride(c) );
     }
 
 };
@@ -198,11 +196,9 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        const fortran_int_t incx, VectorY& y,
-        const fortran_int_t incy, VectorC& c,
-        const fortran_int_t incc ) {
+        VectorY& y, VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -213,11 +209,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        const fortran_int_t incx, VectorY& y,
-        const fortran_int_t incy, VectorC& c,
-        const fortran_int_t incc ) {
+        VectorY& y, VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -228,11 +222,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        const fortran_int_t incx, const VectorY& y,
-        const fortran_int_t incy, VectorC& c,
-        const fortran_int_t incc ) {
+        const VectorY& y, VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -243,11 +235,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        const fortran_int_t incx, const VectorY& y,
-        const fortran_int_t incy, VectorC& c,
-        const fortran_int_t incc ) {
+        const VectorY& y, VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -258,11 +248,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        const fortran_int_t incx, VectorY& y,
-        const fortran_int_t incy, const VectorC& c,
-        const fortran_int_t incc ) {
+        VectorY& y, const VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -273,11 +261,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        const fortran_int_t incx, VectorY& y,
-        const fortran_int_t incy, const VectorC& c,
-        const fortran_int_t incc ) {
+        VectorY& y, const VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -288,11 +274,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
-        const fortran_int_t incx, const VectorY& y,
-        const fortran_int_t incy, const VectorC& c,
-        const fortran_int_t incc ) {
+        const VectorY& y, const VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 //
@@ -303,11 +287,9 @@ inline std::ptrdiff_t largv( const fortran_int_t n, VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorC >
 inline std::ptrdiff_t largv( const fortran_int_t n, const VectorX& x,
-        const fortran_int_t incx, const VectorY& y,
-        const fortran_int_t incy, const VectorC& c,
-        const fortran_int_t incc ) {
+        const VectorY& y, const VectorC& c ) {
     return largv_impl< typename value< VectorX >::type >::invoke( n, x,
-            incx, y, incy, c, incc );
+            y, c );
 }
 
 } // namespace lapack

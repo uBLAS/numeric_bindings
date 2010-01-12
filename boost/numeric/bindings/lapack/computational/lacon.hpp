@@ -52,7 +52,7 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t lacon( fortran_int_t n, float* v, float* x,
+inline std::ptrdiff_t lacon( const fortran_int_t n, float* v, float* x,
         fortran_int_t* isgn, float& est, fortran_int_t& kase ) {
     fortran_int_t info(0);
     LAPACK_SLACON( &n, v, x, isgn, &est, &kase );
@@ -64,7 +64,7 @@ inline std::ptrdiff_t lacon( fortran_int_t n, float* v, float* x,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t lacon( fortran_int_t n, double* v, double* x,
+inline std::ptrdiff_t lacon( const fortran_int_t n, double* v, double* x,
         fortran_int_t* isgn, double& est, fortran_int_t& kase ) {
     fortran_int_t info(0);
     LAPACK_DLACON( &n, v, x, isgn, &est, &kase );
@@ -76,7 +76,7 @@ inline std::ptrdiff_t lacon( fortran_int_t n, double* v, double* x,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t lacon( fortran_int_t n, std::complex<float>* v,
+inline std::ptrdiff_t lacon( const fortran_int_t n, std::complex<float>* v,
         std::complex<float>* x, float& est, fortran_int_t& kase ) {
     fortran_int_t info(0);
     LAPACK_CLACON( &n, v, x, &est, &kase );
@@ -88,7 +88,7 @@ inline std::ptrdiff_t lacon( fortran_int_t n, std::complex<float>* v,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t lacon( fortran_int_t n, std::complex<double>* v,
+inline std::ptrdiff_t lacon( const fortran_int_t n, std::complex<double>* v,
         std::complex<double>* x, double& est, fortran_int_t& kase ) {
     fortran_int_t info(0);
     LAPACK_ZLACON( &n, v, x, &est, &kase );

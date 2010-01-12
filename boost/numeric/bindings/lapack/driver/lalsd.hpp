@@ -53,9 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
-        fortran_int_t nrhs, float* d, float* e, float* b, fortran_int_t ldb,
-        float rcond, fortran_int_t& rank, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const fortran_int_t nrhs, float* d, float* e,
+        float* b, const fortran_int_t ldb, const float rcond,
+        fortran_int_t& rank, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, iwork, &info );
@@ -67,10 +68,10 @@ inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
-        fortran_int_t nrhs, double* d, double* e, double* b,
-        fortran_int_t ldb, double rcond, fortran_int_t& rank, double* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const fortran_int_t nrhs, double* d, double* e,
+        double* b, const fortran_int_t ldb, const double rcond,
+        fortran_int_t& rank, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, iwork, &info );
@@ -82,10 +83,11 @@ inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
-        fortran_int_t nrhs, float* d, float* e, std::complex<float>* b,
-        fortran_int_t ldb, float rcond, fortran_int_t& rank,
-        std::complex<float>* work, float* rwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const fortran_int_t nrhs, float* d, float* e,
+        std::complex<float>* b, const fortran_int_t ldb, const float rcond,
+        fortran_int_t& rank, std::complex<float>* work, float* rwork,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_CLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, rwork, iwork, &info );
@@ -97,10 +99,11 @@ inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t lalsd( char uplo, fortran_int_t smlsiz, fortran_int_t n,
-        fortran_int_t nrhs, double* d, double* e, std::complex<double>* b,
-        fortran_int_t ldb, double rcond, fortran_int_t& rank,
-        std::complex<double>* work, double* rwork, fortran_int_t* iwork ) {
+inline std::ptrdiff_t lalsd( const char uplo, const fortran_int_t smlsiz,
+        const fortran_int_t n, const fortran_int_t nrhs, double* d, double* e,
+        std::complex<double>* b, const fortran_int_t ldb, const double rcond,
+        fortran_int_t& rank, std::complex<double>* work, double* rwork,
+        fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_ZLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, rwork, iwork, &info );

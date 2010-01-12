@@ -48,9 +48,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const float* ab, fortran_int_t ldab, float* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs, const float* ab,
+        const fortran_int_t ldab, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     return info;
@@ -61,9 +61,9 @@ inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const double* ab, fortran_int_t ldab, double* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs, const double* ab,
+        const fortran_int_t ldab, double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     return info;
@@ -74,9 +74,10 @@ inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const std::complex<float>* ab, fortran_int_t ldab,
-        std::complex<float>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs,
+        const std::complex<float>* ab, const fortran_int_t ldab,
+        std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     return info;
@@ -87,9 +88,10 @@ inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t pbtrs( char uplo, fortran_int_t n, fortran_int_t kd,
-        fortran_int_t nrhs, const std::complex<double>* ab,
-        fortran_int_t ldab, std::complex<double>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
+        const fortran_int_t kd, const fortran_int_t nrhs,
+        const std::complex<double>* ab, const fortran_int_t ldab,
+        std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     return info;

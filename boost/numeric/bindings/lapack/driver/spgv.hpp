@@ -51,9 +51,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spgv( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, float* ap, float* bp, float* w, float* z,
-        fortran_int_t ldz, float* work ) {
+inline std::ptrdiff_t spgv( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, float* ap, float* bp, float* w, float* z,
+        const fortran_int_t ldz, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSPGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, ap, bp, w,
             z, &ldz, work, &info );
@@ -66,9 +66,9 @@ inline std::ptrdiff_t spgv( fortran_int_t itype, char jobz, UpLo,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spgv( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, double* ap, double* bp, double* w, double* z,
-        fortran_int_t ldz, double* work ) {
+inline std::ptrdiff_t spgv( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, double* ap, double* bp, double* w, double* z,
+        const fortran_int_t ldz, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSPGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, ap, bp, w,
             z, &ldz, work, &info );

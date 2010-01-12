@@ -54,10 +54,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const float* ap, const float* afp, const fortran_int_t* ipiv,
-        const float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
-        float* ferr, float* berr, float* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t sprfs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* ap, const float* afp,
+        const fortran_int_t* ipiv, const float* b, const fortran_int_t ldb,
+        float* x, const fortran_int_t ldx, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SSPRFS( &lapack_option< UpLo >::value, &n, &nrhs, ap, afp, ipiv, b,
             &ldb, x, &ldx, ferr, berr, work, iwork, &info );
@@ -70,10 +71,11 @@ inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const double* ap, const double* afp, const fortran_int_t* ipiv,
-        const double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double* ferr, double* berr, double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t sprfs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* ap, const double* afp,
+        const fortran_int_t* ipiv, const double* b, const fortran_int_t ldb,
+        double* x, const fortran_int_t ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DSPRFS( &lapack_option< UpLo >::value, &n, &nrhs, ap, afp, ipiv, b,
             &ldb, x, &ldx, ferr, berr, work, iwork, &info );
@@ -86,11 +88,12 @@ inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<float>* ap, const std::complex<float>* afp,
-        const fortran_int_t* ipiv, const std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t sprfs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* ap,
+        const std::complex<float>* afp, const fortran_int_t* ipiv,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float* ferr,
+        float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CSPRFS( &lapack_option< UpLo >::value, &n, &nrhs, ap, afp, ipiv, b,
             &ldb, x, &ldx, ferr, berr, work, rwork, &info );
@@ -103,12 +106,12 @@ inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sprfs( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        const std::complex<double>* ap, const std::complex<double>* afp,
-        const fortran_int_t* ipiv, const std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double* ferr, double* berr, std::complex<double>* work,
-        double* rwork ) {
+inline std::ptrdiff_t sprfs( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* ap,
+        const std::complex<double>* afp, const fortran_int_t* ipiv,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double* ferr,
+        double* berr, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZSPRFS( &lapack_option< UpLo >::value, &n, &nrhs, ap, afp, ipiv, b,
             &ldb, x, &ldx, ferr, berr, work, rwork, &info );

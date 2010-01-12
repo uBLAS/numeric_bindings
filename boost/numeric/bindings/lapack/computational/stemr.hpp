@@ -53,12 +53,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, float* d,
-        float* e, float vl, float vu, fortran_int_t il, fortran_int_t iu,
-        fortran_int_t& m, float* w, float* z, fortran_int_t ldz,
-        fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
-        float* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork ) {
+inline std::ptrdiff_t stemr( const char jobz, const char range,
+        const fortran_int_t n, float* d, float* e, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        fortran_int_t& m, float* w, float* z, const fortran_int_t ldz,
+        const fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
+        float* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
@@ -70,12 +71,13 @@ inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, float* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, double* d,
-        double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
-        fortran_int_t& m, double* w, double* z, fortran_int_t ldz,
-        fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
-        double* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork ) {
+inline std::ptrdiff_t stemr( const char jobz, const char range,
+        const fortran_int_t n, double* d, double* e, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
+        fortran_int_t& m, double* w, double* z, const fortran_int_t ldz,
+        const fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
+        double* work, const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
@@ -87,12 +89,14 @@ inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, double* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, float* d,
-        float* e, float vl, float vu, fortran_int_t il, fortran_int_t iu,
-        fortran_int_t& m, float* w, std::complex<float>* z, fortran_int_t ldz,
-        fortran_int_t nzc, fortran_int_t* isuppz, logical_t& tryrac,
-        float* work, fortran_int_t lwork, fortran_int_t* iwork,
-        fortran_int_t liwork ) {
+inline std::ptrdiff_t stemr( const char jobz, const char range,
+        const fortran_int_t n, float* d, float* e, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        fortran_int_t& m, float* w, std::complex<float>* z,
+        const fortran_int_t ldz, const fortran_int_t nzc,
+        fortran_int_t* isuppz, logical_t& tryrac, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_CSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
@@ -104,12 +108,14 @@ inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, float* d,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t stemr( char jobz, char range, fortran_int_t n, double* d,
-        double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
+inline std::ptrdiff_t stemr( const char jobz, const char range,
+        const fortran_int_t n, double* d, double* e, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
         fortran_int_t& m, double* w, std::complex<double>* z,
-        fortran_int_t ldz, fortran_int_t nzc, fortran_int_t* isuppz,
-        logical_t& tryrac, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+        const fortran_int_t ldz, const fortran_int_t nzc,
+        fortran_int_t* isuppz, logical_t& tryrac, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_ZSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );

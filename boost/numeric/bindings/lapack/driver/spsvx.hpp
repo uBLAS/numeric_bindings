@@ -54,11 +54,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const float* ap, float* afp, fortran_int_t* ipiv,
-        const float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
-        float& rcond, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t spsvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* ap, float* afp,
+        fortran_int_t* ipiv, const float* b, const fortran_int_t ldb,
+        float* x, const fortran_int_t ldx, float& rcond, float* ferr,
+        float* berr, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SSPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
@@ -71,11 +71,11 @@ inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const double* ap, double* afp,
-        fortran_int_t* ipiv, const double* b, fortran_int_t ldb, double* x,
-        fortran_int_t ldx, double& rcond, double* ferr, double* berr,
-        double* work, fortran_int_t* iwork ) {
+inline std::ptrdiff_t spsvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* ap, double* afp,
+        fortran_int_t* ipiv, const double* b, const fortran_int_t ldb,
+        double* x, const fortran_int_t ldx, double& rcond, double* ferr,
+        double* berr, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DSPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
@@ -88,12 +88,12 @@ inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<float>* ap,
+inline std::ptrdiff_t spsvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* ap,
         std::complex<float>* afp, fortran_int_t* ipiv,
-        const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* x, fortran_int_t ldx, float& rcond, float* ferr,
-        float* berr, std::complex<float>* work, float* rwork ) {
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float& rcond,
+        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CSPSVX( &fact, &lapack_option< UpLo >::value, &n, &nrhs, ap, afp,
             ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, rwork, &info );
@@ -106,11 +106,11 @@ inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsvx( char fact, UpLo, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<double>* ap,
+inline std::ptrdiff_t spsvx( const char fact, UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* ap,
         std::complex<double>* afp, fortran_int_t* ipiv,
-        const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double& rcond,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double& rcond,
         double* ferr, double* berr, std::complex<double>* work,
         double* rwork ) {
     fortran_int_t info(0);

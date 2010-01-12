@@ -60,8 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void axpy( int n, float a, const float* x, int incx, float* y,
-        int incy ) {
+inline void axpy( const int n, const float a, const float* x, const int incx,
+        float* y, const int incy ) {
     cblas_saxpy( n, a, x, incx, y, incy );
 }
 
@@ -70,8 +70,8 @@ inline void axpy( int n, float a, const float* x, int incx, float* y,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void axpy( int n, double a, const double* x, int incx, double* y,
-        int incy ) {
+inline void axpy( const int n, const double a, const double* x,
+        const int incx, double* y, const int incy ) {
     cblas_daxpy( n, a, x, incx, y, incy );
 }
 
@@ -80,8 +80,9 @@ inline void axpy( int n, double a, const double* x, int incx, double* y,
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void axpy( int n, std::complex<float> a, const std::complex<float>* x,
-        int incx, std::complex<float>* y, int incy ) {
+inline void axpy( const int n, const std::complex<float> a,
+        const std::complex<float>* x, const int incx, std::complex<float>* y,
+        const int incy ) {
     cblas_caxpy( n, &a, x, incx, y, incy );
 }
 
@@ -90,9 +91,9 @@ inline void axpy( int n, std::complex<float> a, const std::complex<float>* x,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void axpy( int n, std::complex<double> a,
-        const std::complex<double>* x, int incx, std::complex<double>* y,
-        int incy ) {
+inline void axpy( const int n, const std::complex<double> a,
+        const std::complex<double>* x, const int incx,
+        std::complex<double>* y, const int incy ) {
     cblas_zaxpy( n, &a, x, incx, y, incy );
 }
 
@@ -102,8 +103,8 @@ inline void axpy( int n, std::complex<double> a,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void axpy( int n, float a, const float* x, int incx, float* y,
-        int incy ) {
+inline void axpy( const int n, const float a, const float* x, const int incx,
+        float* y, const int incy ) {
     cublasSaxpy( n, a, x, incx, y, incy );
 }
 
@@ -112,8 +113,8 @@ inline void axpy( int n, float a, const float* x, int incx, float* y,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void axpy( int n, double a, const double* x, int incx, double* y,
-        int incy ) {
+inline void axpy( const int n, const double a, const double* x,
+        const int incx, double* y, const int incy ) {
     cublasDaxpy( n, a, x, incx, y, incy );
 }
 
@@ -122,8 +123,9 @@ inline void axpy( int n, double a, const double* x, int incx, double* y,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void axpy( int n, std::complex<float> a, const std::complex<float>* x,
-        int incx, std::complex<float>* y, int incy ) {
+inline void axpy( const int n, const std::complex<float> a,
+        const std::complex<float>* x, const int incx, std::complex<float>* y,
+        const int incy ) {
     cublasCaxpy( n, a, x, incx, y, incy );
 }
 
@@ -132,9 +134,9 @@ inline void axpy( int n, std::complex<float> a, const std::complex<float>* x,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void axpy( int n, std::complex<double> a,
-        const std::complex<double>* x, int incx, std::complex<double>* y,
-        int incy ) {
+inline void axpy( const int n, const std::complex<double> a,
+        const std::complex<double>* x, const int incx,
+        std::complex<double>* y, const int incy ) {
     // NOT FOUND();
 }
 
@@ -144,8 +146,8 @@ inline void axpy( int n, std::complex<double> a,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void axpy( fortran_int_t n, float a, const float* x,
-        fortran_int_t incx, float* y, fortran_int_t incy ) {
+inline void axpy( const fortran_int_t n, const float a, const float* x,
+        const fortran_int_t incx, float* y, const fortran_int_t incy ) {
     BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -154,8 +156,8 @@ inline void axpy( fortran_int_t n, float a, const float* x,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void axpy( fortran_int_t n, double a, const double* x,
-        fortran_int_t incx, double* y, fortran_int_t incy ) {
+inline void axpy( const fortran_int_t n, const double a, const double* x,
+        const fortran_int_t incx, double* y, const fortran_int_t incy ) {
     BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -164,9 +166,9 @@ inline void axpy( fortran_int_t n, double a, const double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void axpy( fortran_int_t n, std::complex<float> a,
-        const std::complex<float>* x, fortran_int_t incx,
-        std::complex<float>* y, fortran_int_t incy ) {
+inline void axpy( const fortran_int_t n, const std::complex<float> a,
+        const std::complex<float>* x, const fortran_int_t incx,
+        std::complex<float>* y, const fortran_int_t incy ) {
     BLAS_CAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -175,9 +177,9 @@ inline void axpy( fortran_int_t n, std::complex<float> a,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void axpy( fortran_int_t n, std::complex<double> a,
-        const std::complex<double>* x, fortran_int_t incx,
-        std::complex<double>* y, fortran_int_t incy ) {
+inline void axpy( const fortran_int_t n, const std::complex<double> a,
+        const std::complex<double>* x, const fortran_int_t incx,
+        std::complex<double>* y, const fortran_int_t incy ) {
     BLAS_ZAXPY( &n, &a, x, &incx, y, &incy );
 }
 

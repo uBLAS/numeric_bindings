@@ -52,10 +52,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
-        const float* d, const float* e, float* df, float* ef, const float* b,
-        fortran_int_t ldb, float* x, fortran_int_t ldx, float& rcond,
-        float* ferr, float* berr, float* work ) {
+inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* d, const float* e, float* df,
+        float* ef, const float* b, const fortran_int_t ldb, float* x,
+        const fortran_int_t ldx, float& rcond, float* ferr, float* berr,
+        float* work ) {
     fortran_int_t info(0);
     LAPACK_SPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, &info );
@@ -67,10 +68,11 @@ inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
-        const double* d, const double* e, double* df, double* ef,
-        const double* b, fortran_int_t ldb, double* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, double* work ) {
+inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* d, const double* e,
+        double* df, double* ef, const double* b, const fortran_int_t ldb,
+        double* x, const fortran_int_t ldx, double& rcond, double* ferr,
+        double* berr, double* work ) {
     fortran_int_t info(0);
     LAPACK_DPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, &info );
@@ -82,12 +84,12 @@ inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
-        const float* d, const std::complex<float>* e, float* df,
-        std::complex<float>* ef, const std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* x, fortran_int_t ldx,
-        float& rcond, float* ferr, float* berr, std::complex<float>* work,
-        float* rwork ) {
+inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* d,
+        const std::complex<float>* e, float* df, std::complex<float>* ef,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        std::complex<float>* x, const fortran_int_t ldx, float& rcond,
+        float* ferr, float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, rwork, &info );
@@ -99,11 +101,12 @@ inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t ptsvx( char fact, fortran_int_t n, fortran_int_t nrhs,
-        const double* d, const std::complex<double>* e, double* df,
-        std::complex<double>* ef, const std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* x, fortran_int_t ldx,
-        double& rcond, double* ferr, double* berr, std::complex<double>* work,
+inline std::ptrdiff_t ptsvx( const char fact, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* d,
+        const std::complex<double>* e, double* df, std::complex<double>* ef,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx, double& rcond,
+        double* ferr, double* berr, std::complex<double>* work,
         double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,

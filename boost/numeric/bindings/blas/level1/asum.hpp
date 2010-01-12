@@ -60,7 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline float asum( int n, const float* x, int incx ) {
+inline float asum( const int n, const float* x, const int incx ) {
     return cblas_sasum( n, x, incx );
 }
 
@@ -69,7 +69,7 @@ inline float asum( int n, const float* x, int incx ) {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline double asum( int n, const double* x, int incx ) {
+inline double asum( const int n, const double* x, const int incx ) {
     return cblas_dasum( n, x, incx );
 }
 
@@ -79,7 +79,7 @@ inline double asum( int n, const double* x, int incx ) {
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline float asum( int n, const float* x, int incx ) {
+inline float asum( const int n, const float* x, const int incx ) {
     return cublasSasum( n, x, incx );
 }
 
@@ -88,7 +88,7 @@ inline float asum( int n, const float* x, int incx ) {
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline double asum( int n, const double* x, int incx ) {
+inline double asum( const int n, const double* x, const int incx ) {
     return cublasDasum( n, x, incx );
 }
 
@@ -98,7 +98,8 @@ inline double asum( int n, const double* x, int incx ) {
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline float asum( fortran_int_t n, const float* x, fortran_int_t incx ) {
+inline float asum( const fortran_int_t n, const float* x,
+        const fortran_int_t incx ) {
     return BLAS_SASUM( &n, x, &incx );
 }
 
@@ -107,7 +108,8 @@ inline float asum( fortran_int_t n, const float* x, fortran_int_t incx ) {
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline double asum( fortran_int_t n, const double* x, fortran_int_t incx ) {
+inline double asum( const fortran_int_t n, const double* x,
+        const fortran_int_t incx ) {
     return BLAS_DASUM( &n, x, &incx );
 }
 

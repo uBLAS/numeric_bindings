@@ -52,10 +52,11 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegv( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb, float* w,
-        std::complex<float>* work, fortran_int_t lwork, float* rwork ) {
+inline std::ptrdiff_t hegv( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, float* w, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHEGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, rwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t hegv( fortran_int_t itype, char jobz, UpLo,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hegv( fortran_int_t itype, char jobz, UpLo,
-        fortran_int_t n, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb, double* w,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork ) {
+inline std::ptrdiff_t hegv( const fortran_int_t itype, const char jobz, UpLo,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, double* w, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHEGV( &itype, &jobz, &lapack_option< UpLo >::value, &n, a, &lda,
             b, &ldb, w, work, &lwork, rwork, &info );

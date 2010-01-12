@@ -64,10 +64,11 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
-        const std::complex<float>* a, int lda, const std::complex<float>* x,
-        int incx, std::complex<float> beta, std::complex<float>* y,
-        int incy ) {
+inline void hbmv( Order, UpLo, const int n, const int k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const int lda, const std::complex<float>* x, const int incx,
+        const std::complex<float> beta, std::complex<float>* y,
+        const int incy ) {
     cblas_chbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -78,10 +79,11 @@ inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
-        const std::complex<double>* a, int lda, const std::complex<double>* x,
-        int incx, std::complex<double> beta, std::complex<double>* y,
-        int incy ) {
+inline void hbmv( Order, UpLo, const int n, const int k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const int lda, const std::complex<double>* x, const int incx,
+        const std::complex<double> beta, std::complex<double>* y,
+        const int incy ) {
     cblas_zhbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -93,10 +95,11 @@ inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
-        const std::complex<float>* a, int lda, const std::complex<float>* x,
-        int incx, std::complex<float> beta, std::complex<float>* y,
-        int incy ) {
+inline void hbmv( Order, UpLo, const int n, const int k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const int lda, const std::complex<float>* x, const int incx,
+        const std::complex<float> beta, std::complex<float>* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -108,10 +111,11 @@ inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
-        const std::complex<double>* a, int lda, const std::complex<double>* x,
-        int incx, std::complex<double> beta, std::complex<double>* y,
-        int incy ) {
+inline void hbmv( Order, UpLo, const int n, const int k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const int lda, const std::complex<double>* x, const int incx,
+        const std::complex<double> beta, std::complex<double>* y,
+        const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -123,11 +127,11 @@ inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
-        std::complex<float> alpha, const std::complex<float>* a,
-        fortran_int_t lda, const std::complex<float>* x, fortran_int_t incx,
-        std::complex<float> beta, std::complex<float>* y,
-        fortran_int_t incy ) {
+inline void hbmv( Order, UpLo, const fortran_int_t n, const fortran_int_t k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const fortran_int_t lda, const std::complex<float>* x,
+        const fortran_int_t incx, const std::complex<float> beta,
+        std::complex<float>* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -139,11 +143,11 @@ inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
-        std::complex<double> alpha, const std::complex<double>* a,
-        fortran_int_t lda, const std::complex<double>* x, fortran_int_t incx,
-        std::complex<double> beta, std::complex<double>* y,
-        fortran_int_t incy ) {
+inline void hbmv( Order, UpLo, const fortran_int_t n, const fortran_int_t k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const fortran_int_t lda, const std::complex<double>* x,
+        const fortran_int_t incx, const std::complex<double> beta,
+        std::complex<double>* y, const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );

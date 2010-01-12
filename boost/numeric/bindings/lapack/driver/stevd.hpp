@@ -50,9 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t stevd( char jobz, fortran_int_t n, float* d, float* e,
-        float* z, fortran_int_t ldz, float* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n, float* d,
+        float* e, float* z, const fortran_int_t ldz, float* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_SSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
@@ -64,9 +65,10 @@ inline std::ptrdiff_t stevd( char jobz, fortran_int_t n, float* d, float* e,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t stevd( char jobz, fortran_int_t n, double* d, double* e,
-        double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork, fortran_int_t liwork ) {
+inline std::ptrdiff_t stevd( const char jobz, const fortran_int_t n, double* d,
+        double* e, double* z, const fortran_int_t ldz, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork,
+        const fortran_int_t liwork ) {
     fortran_int_t info(0);
     LAPACK_DSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );

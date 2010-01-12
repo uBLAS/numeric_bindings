@@ -51,12 +51,13 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbevx( char jobz, char range, UpLo, fortran_int_t n,
-        fortran_int_t kd, float* ab, fortran_int_t ldab, float* q,
-        fortran_int_t ldq, float vl, float vu, fortran_int_t il,
-        fortran_int_t iu, float abstol, fortran_int_t& m, float* w, float* z,
-        fortran_int_t ldz, float* work, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+inline std::ptrdiff_t sbevx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, const fortran_int_t kd, float* ab,
+        const fortran_int_t ldab, float* q, const fortran_int_t ldq,
+        const float vl, const float vu, const fortran_int_t il,
+        const fortran_int_t iu, const float abstol, fortran_int_t& m,
+        float* w, float* z, const fortran_int_t ldz, float* work,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_SSBEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, &kd, ab,
             &ldab, q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work,
@@ -70,12 +71,13 @@ inline std::ptrdiff_t sbevx( char jobz, char range, UpLo, fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t sbevx( char jobz, char range, UpLo, fortran_int_t n,
-        fortran_int_t kd, double* ab, fortran_int_t ldab, double* q,
-        fortran_int_t ldq, double vl, double vu, fortran_int_t il,
-        fortran_int_t iu, double abstol, fortran_int_t& m, double* w,
-        double* z, fortran_int_t ldz, double* work, fortran_int_t* iwork,
-        fortran_int_t* ifail ) {
+inline std::ptrdiff_t sbevx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, const fortran_int_t kd, double* ab,
+        const fortran_int_t ldab, double* q, const fortran_int_t ldq,
+        const double vl, const double vu, const fortran_int_t il,
+        const fortran_int_t iu, const double abstol, fortran_int_t& m,
+        double* w, double* z, const fortran_int_t ldz, double* work,
+        fortran_int_t* iwork, fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_DSBEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, &kd, ab,
             &ldab, q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work,

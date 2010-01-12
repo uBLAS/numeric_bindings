@@ -53,9 +53,10 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Trans >
-inline std::ptrdiff_t ormtr( char side, UpLo, Trans, fortran_int_t m,
-        fortran_int_t n, const float* a, fortran_int_t lda, const float* tau,
-        float* c, fortran_int_t ldc, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t ormtr( const char side, UpLo, Trans,
+        const fortran_int_t m, const fortran_int_t n, const float* a,
+        const fortran_int_t lda, const float* tau, float* c,
+        const fortran_int_t ldc, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SORMTR( &side, &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &m, &n, a, &lda, tau, c, &ldc, work, &lwork,
@@ -69,10 +70,10 @@ inline std::ptrdiff_t ormtr( char side, UpLo, Trans, fortran_int_t m,
 // * double value-type.
 //
 template< typename UpLo, typename Trans >
-inline std::ptrdiff_t ormtr( char side, UpLo, Trans, fortran_int_t m,
-        fortran_int_t n, const double* a, fortran_int_t lda,
-        const double* tau, double* c, fortran_int_t ldc, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t ormtr( const char side, UpLo, Trans,
+        const fortran_int_t m, const fortran_int_t n, const double* a,
+        const fortran_int_t lda, const double* tau, double* c,
+        const fortran_int_t ldc, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DORMTR( &side, &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &m, &n, a, &lda, tau, c, &ldc, work, &lwork,

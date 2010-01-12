@@ -53,8 +53,8 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t sytri( char uplo, fortran_int_t n, float* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, float* work ) {
+inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n, float* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv, float* work ) {
     fortran_int_t info(0);
     LAPACK_SSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
     return info;
@@ -65,8 +65,8 @@ inline std::ptrdiff_t sytri( char uplo, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sytri( char uplo, fortran_int_t n, double* a,
-        fortran_int_t lda, const fortran_int_t* ipiv, double* work ) {
+inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n, double* a,
+        const fortran_int_t lda, const fortran_int_t* ipiv, double* work ) {
     fortran_int_t info(0);
     LAPACK_DSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
     return info;
@@ -77,9 +77,9 @@ inline std::ptrdiff_t sytri( char uplo, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t sytri( char uplo, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, const fortran_int_t* ipiv,
-        std::complex<float>* work ) {
+inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
     return info;
@@ -90,9 +90,9 @@ inline std::ptrdiff_t sytri( char uplo, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t sytri( char uplo, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, const fortran_int_t* ipiv,
-        std::complex<double>* work ) {
+inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        const fortran_int_t* ipiv, std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
     return info;

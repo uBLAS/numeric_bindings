@@ -52,9 +52,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t trevc( char side, char howmny, logical_t* select,
-        fortran_int_t n, const float* t, fortran_int_t ldt, float* vl,
-        fortran_int_t ldvl, float* vr, fortran_int_t ldvr, fortran_int_t mm,
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        logical_t* select, const fortran_int_t n, const float* t,
+        const fortran_int_t ldt, float* vl, const fortran_int_t ldvl,
+        float* vr, const fortran_int_t ldvr, const fortran_int_t mm,
         fortran_int_t& m, float* work ) {
     fortran_int_t info(0);
     LAPACK_STREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
@@ -67,9 +68,10 @@ inline std::ptrdiff_t trevc( char side, char howmny, logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t trevc( char side, char howmny, logical_t* select,
-        fortran_int_t n, const double* t, fortran_int_t ldt, double* vl,
-        fortran_int_t ldvl, double* vr, fortran_int_t ldvr, fortran_int_t mm,
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        logical_t* select, const fortran_int_t n, const double* t,
+        const fortran_int_t ldt, double* vl, const fortran_int_t ldvl,
+        double* vr, const fortran_int_t ldvr, const fortran_int_t mm,
         fortran_int_t& m, double* work ) {
     fortran_int_t info(0);
     LAPACK_DTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
@@ -82,11 +84,13 @@ inline std::ptrdiff_t trevc( char side, char howmny, logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t trevc( char side, char howmny, const logical_t* select,
-        fortran_int_t n, std::complex<float>* t, fortran_int_t ldt,
-        std::complex<float>* vl, fortran_int_t ldvl, std::complex<float>* vr,
-        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
-        std::complex<float>* work, float* rwork ) {
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        std::complex<float>* t, const fortran_int_t ldt,
+        std::complex<float>* vl, const fortran_int_t ldvl,
+        std::complex<float>* vr, const fortran_int_t ldvr,
+        const fortran_int_t mm, fortran_int_t& m, std::complex<float>* work,
+        float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             &mm, &m, work, rwork, &info );
@@ -98,11 +102,13 @@ inline std::ptrdiff_t trevc( char side, char howmny, const logical_t* select,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t trevc( char side, char howmny, const logical_t* select,
-        fortran_int_t n, std::complex<double>* t, fortran_int_t ldt,
-        std::complex<double>* vl, fortran_int_t ldvl,
-        std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t mm,
-        fortran_int_t& m, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const logical_t* select, const fortran_int_t n,
+        std::complex<double>* t, const fortran_int_t ldt,
+        std::complex<double>* vl, const fortran_int_t ldvl,
+        std::complex<double>* vr, const fortran_int_t ldvr,
+        const fortran_int_t mm, fortran_int_t& m, std::complex<double>* work,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             &mm, &m, work, rwork, &info );

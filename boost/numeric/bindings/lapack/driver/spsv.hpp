@@ -49,8 +49,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        float* ap, fortran_int_t* ipiv, float* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t spsv( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, float* ap, fortran_int_t* ipiv, float* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_SSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
@@ -63,8 +64,9 @@ inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        double* ap, fortran_int_t* ipiv, double* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t spsv( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, double* ap, fortran_int_t* ipiv, double* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_DSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
@@ -77,9 +79,10 @@ inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<float>* ap, fortran_int_t* ipiv, std::complex<float>* b,
-        fortran_int_t ldb ) {
+inline std::ptrdiff_t spsv( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<float>* ap,
+        fortran_int_t* ipiv, std::complex<float>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_CSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );
@@ -92,9 +95,10 @@ inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t spsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* ap, fortran_int_t* ipiv,
-        std::complex<double>* b, fortran_int_t ldb ) {
+inline std::ptrdiff_t spsv( UpLo, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<double>* ap,
+        fortran_int_t* ipiv, std::complex<double>* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
     LAPACK_ZSPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b, &ldb,
             &info );

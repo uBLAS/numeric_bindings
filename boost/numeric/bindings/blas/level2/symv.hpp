@@ -63,8 +63,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
-        const float* x, int incx, float beta, float* y, int incy ) {
+inline void symv( Order, UpLo, const int n, const float alpha, const float* a,
+        const int lda, const float* x, const int incx, const float beta,
+        float* y, const int incy ) {
     cblas_ssymv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -75,8 +76,9 @@ inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
-        const double* x, int incx, double beta, double* y, int incy ) {
+inline void symv( Order, UpLo, const int n, const double alpha,
+        const double* a, const int lda, const double* x, const int incx,
+        const double beta, double* y, const int incy ) {
     cblas_dsymv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -88,8 +90,9 @@ inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
-        const float* x, int incx, float beta, float* y, int incy ) {
+inline void symv( Order, UpLo, const int n, const float alpha, const float* a,
+        const int lda, const float* x, const int incx, const float beta,
+        float* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsymv( blas_option< UpLo >::value, n, alpha, a, lda, x, incx, beta,
             y, incy );
@@ -101,8 +104,9 @@ inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
-        const double* x, int incx, double beta, double* y, int incy ) {
+inline void symv( Order, UpLo, const int n, const double alpha,
+        const double* a, const int lda, const double* x, const int incx,
+        const double beta, double* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -114,9 +118,10 @@ inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, fortran_int_t n, float alpha, const float* a,
-        fortran_int_t lda, const float* x, fortran_int_t incx, float beta,
-        float* y, fortran_int_t incy ) {
+inline void symv( Order, UpLo, const fortran_int_t n, const float alpha,
+        const float* a, const fortran_int_t lda, const float* x,
+        const fortran_int_t incx, const float beta, float* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
@@ -128,9 +133,10 @@ inline void symv( Order, UpLo, fortran_int_t n, float alpha, const float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, fortran_int_t n, double alpha, const double* a,
-        fortran_int_t lda, const double* x, fortran_int_t incx, double beta,
-        double* y, fortran_int_t incy ) {
+inline void symv( Order, UpLo, const fortran_int_t n, const double alpha,
+        const double* a, const fortran_int_t lda, const double* x,
+        const fortran_int_t incx, const double beta, double* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );

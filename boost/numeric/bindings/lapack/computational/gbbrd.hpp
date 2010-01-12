@@ -52,11 +52,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku, float* ab,
-        fortran_int_t ldab, float* d, float* e, float* q, fortran_int_t ldq,
-        float* pt, fortran_int_t ldpt, float* c, fortran_int_t ldc,
-        float* work ) {
+inline std::ptrdiff_t gbbrd( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ncc,
+        const fortran_int_t kl, const fortran_int_t ku, float* ab,
+        const fortran_int_t ldab, float* d, float* e, float* q,
+        const fortran_int_t ldq, float* pt, const fortran_int_t ldpt,
+        float* c, const fortran_int_t ldc, float* work ) {
     fortran_int_t info(0);
     LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
@@ -68,11 +69,12 @@ inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku, double* ab,
-        fortran_int_t ldab, double* d, double* e, double* q,
-        fortran_int_t ldq, double* pt, fortran_int_t ldpt, double* c,
-        fortran_int_t ldc, double* work ) {
+inline std::ptrdiff_t gbbrd( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ncc,
+        const fortran_int_t kl, const fortran_int_t ku, double* ab,
+        const fortran_int_t ldab, double* d, double* e, double* q,
+        const fortran_int_t ldq, double* pt, const fortran_int_t ldpt,
+        double* c, const fortran_int_t ldc, double* work ) {
     fortran_int_t info(0);
     LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
@@ -84,11 +86,13 @@ inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku,
-        std::complex<float>* ab, fortran_int_t ldab, float* d, float* e,
-        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* pt,
-        fortran_int_t ldpt, std::complex<float>* c, fortran_int_t ldc,
+inline std::ptrdiff_t gbbrd( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ncc,
+        const fortran_int_t kl, const fortran_int_t ku,
+        std::complex<float>* ab, const fortran_int_t ldab, float* d, float* e,
+        std::complex<float>* q, const fortran_int_t ldq,
+        std::complex<float>* pt, const fortran_int_t ldpt,
+        std::complex<float>* c, const fortran_int_t ldc,
         std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
@@ -101,11 +105,13 @@ inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gbbrd( char vect, fortran_int_t m, fortran_int_t n,
-        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku,
-        std::complex<double>* ab, fortran_int_t ldab, double* d, double* e,
-        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* pt,
-        fortran_int_t ldpt, std::complex<double>* c, fortran_int_t ldc,
+inline std::ptrdiff_t gbbrd( const char vect, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t ncc,
+        const fortran_int_t kl, const fortran_int_t ku,
+        std::complex<double>* ab, const fortran_int_t ldab, double* d,
+        double* e, std::complex<double>* q, const fortran_int_t ldq,
+        std::complex<double>* pt, const fortran_int_t ldpt,
+        std::complex<double>* c, const fortran_int_t ldc,
         std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,

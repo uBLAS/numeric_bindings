@@ -51,11 +51,13 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpevx( char jobz, char range, UpLo, fortran_int_t n,
-        std::complex<float>* ap, float vl, float vu, fortran_int_t il,
-        fortran_int_t iu, float abstol, fortran_int_t& m, float* w,
-        std::complex<float>* z, fortran_int_t ldz, std::complex<float>* work,
-        float* rwork, fortran_int_t* iwork, fortran_int_t* ifail ) {
+inline std::ptrdiff_t hpevx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, std::complex<float>* ap, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        const float abstol, fortran_int_t& m, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
+        std::complex<float>* work, float* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail ) {
     fortran_int_t info(0);
     LAPACK_CHPEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, ap, &vl,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, rwork, iwork, ifail,
@@ -69,10 +71,11 @@ inline std::ptrdiff_t hpevx( char jobz, char range, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hpevx( char jobz, char range, UpLo, fortran_int_t n,
-        std::complex<double>* ap, double vl, double vu, fortran_int_t il,
-        fortran_int_t iu, double abstol, fortran_int_t& m, double* w,
-        std::complex<double>* z, fortran_int_t ldz,
+inline std::ptrdiff_t hpevx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, std::complex<double>* ap, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
+        const double abstol, fortran_int_t& m, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
         std::complex<double>* work, double* rwork, fortran_int_t* iwork,
         fortran_int_t* ifail ) {
     fortran_int_t info(0);

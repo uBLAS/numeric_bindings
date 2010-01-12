@@ -51,11 +51,12 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgst( char vect, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, std::complex<float>* ab,
-        fortran_int_t ldab, const std::complex<float>* bb, fortran_int_t ldbb,
-        std::complex<float>* x, fortran_int_t ldx, std::complex<float>* work,
-        float* rwork ) {
+inline std::ptrdiff_t hbgst( const char vect, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        const std::complex<float>* bb, const fortran_int_t ldbb,
+        std::complex<float>* x, const fortran_int_t ldx,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CHBGST( &vect, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,
             &ldab, bb, &ldbb, x, &ldx, work, rwork, &info );
@@ -68,10 +69,11 @@ inline std::ptrdiff_t hbgst( char vect, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgst( char vect, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, std::complex<double>* ab,
-        fortran_int_t ldab, const std::complex<double>* bb,
-        fortran_int_t ldbb, std::complex<double>* x, fortran_int_t ldx,
+inline std::ptrdiff_t hbgst( const char vect, UpLo, const fortran_int_t n,
+        const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        const std::complex<double>* bb, const fortran_int_t ldbb,
+        std::complex<double>* x, const fortran_int_t ldx,
         std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZHBGST( &vect, &lapack_option< UpLo >::value, &n, &ka, &kb, ab,

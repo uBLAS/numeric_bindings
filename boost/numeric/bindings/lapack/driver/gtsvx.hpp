@@ -54,12 +54,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, const float* dl, const float* d, const float* du,
-        float* dlf, float* df, float* duf, float* du2, fortran_int_t* ipiv,
-        const float* b, fortran_int_t ldb, float* x, fortran_int_t ldx,
-        float& rcond, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork ) {
+inline std::ptrdiff_t gtsvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* dl, const float* d,
+        const float* du, float* dlf, float* df, float* duf, float* du2,
+        fortran_int_t* ipiv, const float* b, const fortran_int_t ldb,
+        float* x, const fortran_int_t ldx, float& rcond, float* ferr,
+        float* berr, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
@@ -73,12 +73,12 @@ inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
 // * double value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, const double* dl, const double* d,
+inline std::ptrdiff_t gtsvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* dl, const double* d,
         const double* du, double* dlf, double* df, double* duf, double* du2,
-        fortran_int_t* ipiv, const double* b, fortran_int_t ldb, double* x,
-        fortran_int_t ldx, double& rcond, double* ferr, double* berr,
-        double* work, fortran_int_t* iwork ) {
+        fortran_int_t* ipiv, const double* b, const fortran_int_t ldb,
+        double* x, const fortran_int_t ldx, double& rcond, double* ferr,
+        double* berr, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
@@ -92,14 +92,15 @@ inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<float>* dl,
+inline std::ptrdiff_t gtsvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* dl,
         const std::complex<float>* d, const std::complex<float>* du,
         std::complex<float>* dlf, std::complex<float>* df,
         std::complex<float>* duf, std::complex<float>* du2,
-        fortran_int_t* ipiv, const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float>* x, fortran_int_t ldx, float& rcond, float* ferr,
-        float* berr, std::complex<float>* work, float* rwork ) {
+        fortran_int_t* ipiv, const std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* x,
+        const fortran_int_t ldx, float& rcond, float* ferr, float* berr,
+        std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,
@@ -113,15 +114,15 @@ inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t gtsvx( char fact, Trans, fortran_int_t n,
-        fortran_int_t nrhs, const std::complex<double>* dl,
+inline std::ptrdiff_t gtsvx( const char fact, Trans, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* dl,
         const std::complex<double>* d, const std::complex<double>* du,
         std::complex<double>* dlf, std::complex<double>* df,
         std::complex<double>* duf, std::complex<double>* du2,
-        fortran_int_t* ipiv, const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx, double& rcond,
-        double* ferr, double* berr, std::complex<double>* work,
-        double* rwork ) {
+        fortran_int_t* ipiv, const std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* x,
+        const fortran_int_t ldx, double& rcond, double* ferr, double* berr,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGTSVX( &fact, &lapack_option< Trans >::value, &n, &nrhs, dl, d,
             du, dlf, df, duf, du2, ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr,

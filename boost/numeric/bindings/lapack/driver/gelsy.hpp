@@ -53,10 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, float* a, fortran_int_t lda, float* b,
-        fortran_int_t ldb, fortran_int_t* jpvt, float rcond,
-        fortran_int_t& rank, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gelsy( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nrhs, float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb, fortran_int_t* jpvt, const float rcond,
+        fortran_int_t& rank, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGELSY( &m, &n, &nrhs, a, &lda, b, &ldb, jpvt, &rcond, &rank, work,
             &lwork, &info );
@@ -68,10 +68,11 @@ inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, double* a, fortran_int_t lda, double* b,
-        fortran_int_t ldb, fortran_int_t* jpvt, double rcond,
-        fortran_int_t& rank, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gelsy( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nrhs, double* a, const fortran_int_t lda,
+        double* b, const fortran_int_t ldb, fortran_int_t* jpvt,
+        const double rcond, fortran_int_t& rank, double* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGELSY( &m, &n, &nrhs, a, &lda, b, &ldb, jpvt, &rcond, &rank, work,
             &lwork, &info );
@@ -83,11 +84,12 @@ inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* b, fortran_int_t ldb, fortran_int_t* jpvt,
-        float rcond, fortran_int_t& rank, std::complex<float>* work,
-        fortran_int_t lwork, float* rwork ) {
+inline std::ptrdiff_t gelsy( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, fortran_int_t* jpvt, const float rcond,
+        fortran_int_t& rank, std::complex<float>* work,
+        const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGELSY( &m, &n, &nrhs, a, &lda, b, &ldb, jpvt, &rcond, &rank, work,
             &lwork, rwork, &info );
@@ -99,11 +101,12 @@ inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gelsy( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nrhs, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* b, fortran_int_t ldb, fortran_int_t* jpvt,
-        double rcond, fortran_int_t& rank, std::complex<double>* work,
-        fortran_int_t lwork, double* rwork ) {
+inline std::ptrdiff_t gelsy( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nrhs, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, fortran_int_t* jpvt, const double rcond,
+        fortran_int_t& rank, std::complex<double>* work,
+        const fortran_int_t lwork, double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGELSY( &m, &n, &nrhs, a, &lda, b, &ldb, jpvt, &rcond, &rank, work,
             &lwork, rwork, &info );

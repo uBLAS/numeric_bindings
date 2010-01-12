@@ -53,11 +53,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
-        fortran_int_t n, float* a, fortran_int_t lda, float* wr, float* wi,
-        float* vl, fortran_int_t ldvl, float* vr, fortran_int_t ldvr,
+inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, const fortran_int_t n, float* a,
+        const fortran_int_t lda, float* wr, float* wi, float* vl,
+        const fortran_int_t ldvl, float* vr, const fortran_int_t ldvr,
         fortran_int_t& ilo, fortran_int_t& ihi, float* scale, float& abnrm,
-        float* rconde, float* rcondv, float* work, fortran_int_t lwork,
+        float* rconde, float* rcondv, float* work, const fortran_int_t lwork,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_SGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi, vl,
@@ -71,12 +72,13 @@ inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
-        fortran_int_t n, double* a, fortran_int_t lda, double* wr, double* wi,
-        double* vl, fortran_int_t ldvl, double* vr, fortran_int_t ldvr,
+inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, const fortran_int_t n, double* a,
+        const fortran_int_t lda, double* wr, double* wi, double* vl,
+        const fortran_int_t ldvl, double* vr, const fortran_int_t ldvr,
         fortran_int_t& ilo, fortran_int_t& ihi, double* scale, double& abnrm,
-        double* rconde, double* rcondv, double* work, fortran_int_t lwork,
-        fortran_int_t* iwork ) {
+        double* rconde, double* rcondv, double* work,
+        const fortran_int_t lwork, fortran_int_t* iwork ) {
     fortran_int_t info(0);
     LAPACK_DGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi, vl,
             &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
@@ -89,13 +91,14 @@ inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
-        fortran_int_t n, std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* w, std::complex<float>* vl, fortran_int_t ldvl,
-        std::complex<float>* vr, fortran_int_t ldvr, fortran_int_t& ilo,
-        fortran_int_t& ihi, float* scale, float& abnrm, float* rconde,
-        float* rcondv, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork ) {
+inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* w, std::complex<float>* vl,
+        const fortran_int_t ldvl, std::complex<float>* vr,
+        const fortran_int_t ldvr, fortran_int_t& ilo, fortran_int_t& ihi,
+        float* scale, float& abnrm, float* rconde, float* rcondv,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, w, vl, &ldvl,
             vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
@@ -108,12 +111,14 @@ inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t geevx( char balanc, char jobvl, char jobvr, char sense,
-        fortran_int_t n, std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* w, std::complex<double>* vl, fortran_int_t ldvl,
-        std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t& ilo,
-        fortran_int_t& ihi, double* scale, double& abnrm, double* rconde,
-        double* rcondv, std::complex<double>* work, fortran_int_t lwork,
+inline std::ptrdiff_t geevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* w, std::complex<double>* vl,
+        const fortran_int_t ldvl, std::complex<double>* vr,
+        const fortran_int_t ldvr, fortran_int_t& ilo, fortran_int_t& ihi,
+        double* scale, double& abnrm, double* rconde, double* rcondv,
+        std::complex<double>* work, const fortran_int_t lwork,
         double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, w, vl, &ldvl,

@@ -53,10 +53,12 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Trans >
-inline std::ptrdiff_t unmtr( char side, UpLo, Trans, fortran_int_t m,
-        fortran_int_t n, const std::complex<float>* a, fortran_int_t lda,
+inline std::ptrdiff_t unmtr( const char side, UpLo, Trans,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda,
         const std::complex<float>* tau, std::complex<float>* c,
-        fortran_int_t ldc, std::complex<float>* work, fortran_int_t lwork ) {
+        const fortran_int_t ldc, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CUNMTR( &side, &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &m, &n, a, &lda, tau, c, &ldc, work, &lwork,
@@ -70,10 +72,12 @@ inline std::ptrdiff_t unmtr( char side, UpLo, Trans, fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Trans >
-inline std::ptrdiff_t unmtr( char side, UpLo, Trans, fortran_int_t m,
-        fortran_int_t n, const std::complex<double>* a, fortran_int_t lda,
+inline std::ptrdiff_t unmtr( const char side, UpLo, Trans,
+        const fortran_int_t m, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda,
         const std::complex<double>* tau, std::complex<double>* c,
-        fortran_int_t ldc, std::complex<double>* work, fortran_int_t lwork ) {
+        const fortran_int_t ldc, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZUNMTR( &side, &lapack_option< UpLo >::value, &lapack_option<
             Trans >::value, &m, &n, a, &lda, tau, c, &ldc, work, &lwork,

@@ -63,9 +63,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr2( Order, UpLo, int n, std::complex<float> alpha,
-        const std::complex<float>* x, int incx, const std::complex<float>* y,
-        int incy, std::complex<float>* ap ) {
+inline void hpr2( Order, UpLo, const int n, const std::complex<float> alpha,
+        const std::complex<float>* x, const int incx,
+        const std::complex<float>* y, const int incy,
+        std::complex<float>* ap ) {
     cblas_chpr2( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             &alpha, x, incx, y, incy, ap );
 }
@@ -76,9 +77,10 @@ inline void hpr2( Order, UpLo, int n, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr2( Order, UpLo, int n, std::complex<double> alpha,
-        const std::complex<double>* x, int incx,
-        const std::complex<double>* y, int incy, std::complex<double>* ap ) {
+inline void hpr2( Order, UpLo, const int n, const std::complex<double> alpha,
+        const std::complex<double>* x, const int incx,
+        const std::complex<double>* y, const int incy,
+        std::complex<double>* ap ) {
     cblas_zhpr2( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             &alpha, x, incx, y, incy, ap );
 }
@@ -90,9 +92,10 @@ inline void hpr2( Order, UpLo, int n, std::complex<double> alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr2( Order, UpLo, int n, std::complex<float> alpha,
-        const std::complex<float>* x, int incx, const std::complex<float>* y,
-        int incy, std::complex<float>* ap ) {
+inline void hpr2( Order, UpLo, const int n, const std::complex<float> alpha,
+        const std::complex<float>* x, const int incx,
+        const std::complex<float>* y, const int incy,
+        std::complex<float>* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChpr2( blas_option< UpLo >::value, n, alpha, x, incx, y, incy, ap );
 }
@@ -103,9 +106,10 @@ inline void hpr2( Order, UpLo, int n, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr2( Order, UpLo, int n, std::complex<double> alpha,
-        const std::complex<double>* x, int incx,
-        const std::complex<double>* y, int incy, std::complex<double>* ap ) {
+inline void hpr2( Order, UpLo, const int n, const std::complex<double> alpha,
+        const std::complex<double>* x, const int incx,
+        const std::complex<double>* y, const int incy,
+        std::complex<double>* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -117,10 +121,10 @@ inline void hpr2( Order, UpLo, int n, std::complex<double> alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr2( Order, UpLo, fortran_int_t n, std::complex<float> alpha,
-        const std::complex<float>* x, fortran_int_t incx,
-        const std::complex<float>* y, fortran_int_t incy,
-        std::complex<float>* ap ) {
+inline void hpr2( Order, UpLo, const fortran_int_t n,
+        const std::complex<float> alpha, const std::complex<float>* x,
+        const fortran_int_t incx, const std::complex<float>* y,
+        const fortran_int_t incy, std::complex<float>* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHPR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             ap );
@@ -132,10 +136,10 @@ inline void hpr2( Order, UpLo, fortran_int_t n, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr2( Order, UpLo, fortran_int_t n, std::complex<double> alpha,
-        const std::complex<double>* x, fortran_int_t incx,
-        const std::complex<double>* y, fortran_int_t incy,
-        std::complex<double>* ap ) {
+inline void hpr2( Order, UpLo, const fortran_int_t n,
+        const std::complex<double> alpha, const std::complex<double>* x,
+        const fortran_int_t incx, const std::complex<double>* y,
+        const fortran_int_t incy, std::complex<double>* ap ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHPR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             ap );

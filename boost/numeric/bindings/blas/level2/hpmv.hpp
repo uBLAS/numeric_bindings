@@ -63,9 +63,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( Order, UpLo, int n, std::complex<float> alpha,
-        const std::complex<float>* ap, const std::complex<float>* x, int incx,
-        std::complex<float> beta, std::complex<float>* y, int incy ) {
+inline void hpmv( Order, UpLo, const int n, const std::complex<float> alpha,
+        const std::complex<float>* ap, const std::complex<float>* x,
+        const int incx, const std::complex<float> beta,
+        std::complex<float>* y, const int incy ) {
     cblas_chpmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             &alpha, ap, x, incx, &beta, y, incy );
 }
@@ -76,10 +77,10 @@ inline void hpmv( Order, UpLo, int n, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( Order, UpLo, int n, std::complex<double> alpha,
+inline void hpmv( Order, UpLo, const int n, const std::complex<double> alpha,
         const std::complex<double>* ap, const std::complex<double>* x,
-        int incx, std::complex<double> beta, std::complex<double>* y,
-        int incy ) {
+        const int incx, const std::complex<double> beta,
+        std::complex<double>* y, const int incy ) {
     cblas_zhpmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             &alpha, ap, x, incx, &beta, y, incy );
 }
@@ -91,9 +92,10 @@ inline void hpmv( Order, UpLo, int n, std::complex<double> alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( Order, UpLo, int n, std::complex<float> alpha,
-        const std::complex<float>* ap, const std::complex<float>* x, int incx,
-        std::complex<float> beta, std::complex<float>* y, int incy ) {
+inline void hpmv( Order, UpLo, const int n, const std::complex<float> alpha,
+        const std::complex<float>* ap, const std::complex<float>* x,
+        const int incx, const std::complex<float> beta,
+        std::complex<float>* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChpmv( blas_option< UpLo >::value, n, alpha, ap, x, incx, beta, y,
             incy );
@@ -105,10 +107,10 @@ inline void hpmv( Order, UpLo, int n, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( Order, UpLo, int n, std::complex<double> alpha,
+inline void hpmv( Order, UpLo, const int n, const std::complex<double> alpha,
         const std::complex<double>* ap, const std::complex<double>* x,
-        int incx, std::complex<double> beta, std::complex<double>* y,
-        int incy ) {
+        const int incx, const std::complex<double> beta,
+        std::complex<double>* y, const int incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -120,10 +122,11 @@ inline void hpmv( Order, UpLo, int n, std::complex<double> alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( Order, UpLo, fortran_int_t n, std::complex<float> alpha,
-        const std::complex<float>* ap, const std::complex<float>* x,
-        fortran_int_t incx, std::complex<float> beta, std::complex<float>* y,
-        fortran_int_t incy ) {
+inline void hpmv( Order, UpLo, const fortran_int_t n,
+        const std::complex<float> alpha, const std::complex<float>* ap,
+        const std::complex<float>* x, const fortran_int_t incx,
+        const std::complex<float> beta, std::complex<float>* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHPMV( &blas_option< UpLo >::value, &n, &alpha, ap, x, &incx, &beta,
             y, &incy );
@@ -135,10 +138,11 @@ inline void hpmv( Order, UpLo, fortran_int_t n, std::complex<float> alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpmv( Order, UpLo, fortran_int_t n, std::complex<double> alpha,
-        const std::complex<double>* ap, const std::complex<double>* x,
-        fortran_int_t incx, std::complex<double> beta,
-        std::complex<double>* y, fortran_int_t incy ) {
+inline void hpmv( Order, UpLo, const fortran_int_t n,
+        const std::complex<double> alpha, const std::complex<double>* ap,
+        const std::complex<double>* x, const fortran_int_t incx,
+        const std::complex<double> beta, std::complex<double>* y,
+        const fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHPMV( &blas_option< UpLo >::value, &n, &alpha, ap, x, &incx, &beta,
             y, &incy );

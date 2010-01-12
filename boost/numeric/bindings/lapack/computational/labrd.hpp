@@ -50,10 +50,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nb, float* a, fortran_int_t lda, float* d, float* e,
-        float* tauq, float* taup, float* x, fortran_int_t ldx, float* y,
-        fortran_int_t ldy ) {
+inline std::ptrdiff_t labrd( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nb, float* a, const fortran_int_t lda, float* d,
+        float* e, float* tauq, float* taup, float* x, const fortran_int_t ldx,
+        float* y, const fortran_int_t ldy ) {
     fortran_int_t info(0);
     LAPACK_SLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
     return info;
@@ -64,10 +64,10 @@ inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nb, double* a, fortran_int_t lda, double* d, double* e,
-        double* tauq, double* taup, double* x, fortran_int_t ldx, double* y,
-        fortran_int_t ldy ) {
+inline std::ptrdiff_t labrd( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nb, double* a, const fortran_int_t lda, double* d,
+        double* e, double* tauq, double* taup, double* x,
+        const fortran_int_t ldx, double* y, const fortran_int_t ldy ) {
     fortran_int_t info(0);
     LAPACK_DLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
     return info;
@@ -78,11 +78,12 @@ inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nb, std::complex<float>* a, fortran_int_t lda, float* d,
-        float* e, std::complex<float>* tauq, std::complex<float>* taup,
-        std::complex<float>* x, fortran_int_t ldx, std::complex<float>* y,
-        fortran_int_t ldy ) {
+inline std::ptrdiff_t labrd( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nb, std::complex<float>* a,
+        const fortran_int_t lda, float* d, float* e,
+        std::complex<float>* tauq, std::complex<float>* taup,
+        std::complex<float>* x, const fortran_int_t ldx,
+        std::complex<float>* y, const fortran_int_t ldy ) {
     fortran_int_t info(0);
     LAPACK_CLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
     return info;
@@ -93,11 +94,12 @@ inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t labrd( fortran_int_t m, fortran_int_t n,
-        fortran_int_t nb, std::complex<double>* a, fortran_int_t lda,
-        double* d, double* e, std::complex<double>* tauq,
-        std::complex<double>* taup, std::complex<double>* x,
-        fortran_int_t ldx, std::complex<double>* y, fortran_int_t ldy ) {
+inline std::ptrdiff_t labrd( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t nb, std::complex<double>* a,
+        const fortran_int_t lda, double* d, double* e,
+        std::complex<double>* tauq, std::complex<double>* taup,
+        std::complex<double>* x, const fortran_int_t ldx,
+        std::complex<double>* y, const fortran_int_t ldy ) {
     fortran_int_t info(0);
     LAPACK_ZLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
     return info;

@@ -60,7 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline float nrm2( int n, const float* x, int incx ) {
+inline float nrm2( const int n, const float* x, const int incx ) {
     return cblas_snrm2( n, x, incx );
 }
 
@@ -69,7 +69,7 @@ inline float nrm2( int n, const float* x, int incx ) {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline double nrm2( int n, const double* x, int incx ) {
+inline double nrm2( const int n, const double* x, const int incx ) {
     return cblas_dnrm2( n, x, incx );
 }
 
@@ -79,7 +79,7 @@ inline double nrm2( int n, const double* x, int incx ) {
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline float nrm2( int n, const float* x, int incx ) {
+inline float nrm2( const int n, const float* x, const int incx ) {
     return cublasSnrm2( n, x, incx );
 }
 
@@ -88,7 +88,7 @@ inline float nrm2( int n, const float* x, int incx ) {
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline double nrm2( int n, const double* x, int incx ) {
+inline double nrm2( const int n, const double* x, const int incx ) {
     return cublasDnrm2( n, x, incx );
 }
 
@@ -98,7 +98,8 @@ inline double nrm2( int n, const double* x, int incx ) {
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline float nrm2( fortran_int_t n, const float* x, fortran_int_t incx ) {
+inline float nrm2( const fortran_int_t n, const float* x,
+        const fortran_int_t incx ) {
     return BLAS_SNRM2( &n, x, &incx );
 }
 
@@ -107,7 +108,8 @@ inline float nrm2( fortran_int_t n, const float* x, fortran_int_t incx ) {
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline double nrm2( fortran_int_t n, const double* x, fortran_int_t incx ) {
+inline double nrm2( const fortran_int_t n, const double* x,
+        const fortran_int_t incx ) {
     return BLAS_DNRM2( &n, x, &incx );
 }
 

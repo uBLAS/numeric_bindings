@@ -52,11 +52,12 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t unmrq( char side, Trans, fortran_int_t m,
-        fortran_int_t n, fortran_int_t k, const std::complex<float>* a,
-        fortran_int_t lda, const std::complex<float>* tau,
-        std::complex<float>* c, fortran_int_t ldc, std::complex<float>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t unmrq( const char side, Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* tau, std::complex<float>* c,
+        const fortran_int_t ldc, std::complex<float>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CUNMRQ( &side, &lapack_option< Trans >::value, &m, &n, &k, a, &lda,
             tau, c, &ldc, work, &lwork, &info );
@@ -69,11 +70,12 @@ inline std::ptrdiff_t unmrq( char side, Trans, fortran_int_t m,
 // * complex<double> value-type.
 //
 template< typename Trans >
-inline std::ptrdiff_t unmrq( char side, Trans, fortran_int_t m,
-        fortran_int_t n, fortran_int_t k, const std::complex<double>* a,
-        fortran_int_t lda, const std::complex<double>* tau,
-        std::complex<double>* c, fortran_int_t ldc,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t unmrq( const char side, Trans, const fortran_int_t m,
+        const fortran_int_t n, const fortran_int_t k,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* tau, std::complex<double>* c,
+        const fortran_int_t ldc, std::complex<double>* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZUNMRQ( &side, &lapack_option< Trans >::value, &m, &n, &k, a, &lda,
             tau, c, &ldc, work, &lwork, &info );

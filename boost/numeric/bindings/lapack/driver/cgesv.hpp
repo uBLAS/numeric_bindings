@@ -49,10 +49,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t cgesv( fortran_int_t n, fortran_int_t nrhs,
-        std::complex<double>* a, fortran_int_t lda, fortran_int_t* ipiv,
-        const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double>* x, fortran_int_t ldx,
+inline std::ptrdiff_t cgesv( const fortran_int_t n, const fortran_int_t nrhs,
+        std::complex<double>* a, const fortran_int_t lda, fortran_int_t* ipiv,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        std::complex<double>* x, const fortran_int_t ldx,
         std::complex<double>* work, std::complex<float>* swork, double* rwork,
         fortran_int_t& iter ) {
     fortran_int_t info(0);

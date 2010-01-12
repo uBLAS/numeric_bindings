@@ -53,9 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
-        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* c,
-        float* d, float* x, float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gglse( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t p, float* a, const fortran_int_t lda, float* b,
+        const fortran_int_t ldb, float* c, float* d, float* x, float* work,
+        const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
@@ -67,9 +68,10 @@ inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
-        double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* c,
-        double* d, double* x, double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gglse( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t p, double* a, const fortran_int_t lda, double* b,
+        const fortran_int_t ldb, double* c, double* d, double* x,
+        double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
@@ -81,11 +83,12 @@ inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* b,
-        fortran_int_t ldb, std::complex<float>* c, std::complex<float>* d,
-        std::complex<float>* x, std::complex<float>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t gglse( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t p, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* b,
+        const fortran_int_t ldb, std::complex<float>* c,
+        std::complex<float>* d, std::complex<float>* x,
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
@@ -97,11 +100,12 @@ inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gglse( fortran_int_t m, fortran_int_t n, fortran_int_t p,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* b,
-        fortran_int_t ldb, std::complex<double>* c, std::complex<double>* d,
-        std::complex<double>* x, std::complex<double>* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t gglse( const fortran_int_t m, const fortran_int_t n,
+        const fortran_int_t p, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* b,
+        const fortran_int_t ldb, std::complex<double>* c,
+        std::complex<double>* d, std::complex<double>* x,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );

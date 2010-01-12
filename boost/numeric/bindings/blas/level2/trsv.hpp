@@ -65,8 +65,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n, const float* a, int lda,
-        float* x, int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n, const float* a,
+        const int lda, float* x, const int incx ) {
     cblas_strsv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -78,8 +78,8 @@ inline void trsv( Order, UpLo, Trans, Diag, int n, const float* a, int lda,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n, const double* a, int lda,
-        double* x, int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n, const double* a,
+        const int lda, double* x, const int incx ) {
     cblas_dtrsv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -91,9 +91,9 @@ inline void trsv( Order, UpLo, Trans, Diag, int n, const double* a, int lda,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n,
-        const std::complex<float>* a, int lda, std::complex<float>* x,
-        int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n,
+        const std::complex<float>* a, const int lda, std::complex<float>* x,
+        const int incx ) {
     cblas_ctrsv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -105,9 +105,9 @@ inline void trsv( Order, UpLo, Trans, Diag, int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n,
-        const std::complex<double>* a, int lda, std::complex<double>* x,
-        int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n,
+        const std::complex<double>* a, const int lda, std::complex<double>* x,
+        const int incx ) {
     cblas_ztrsv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
             lda, x, incx );
@@ -120,8 +120,8 @@ inline void trsv( Order, UpLo, Trans, Diag, int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n, const float* a, int lda,
-        float* x, int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n, const float* a,
+        const int lda, float* x, const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasStrsv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, a, lda, x, incx );
@@ -133,8 +133,8 @@ inline void trsv( Order, UpLo, Trans, Diag, int n, const float* a, int lda,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n, const double* a, int lda,
-        double* x, int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n, const double* a,
+        const int lda, double* x, const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDtrsv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, a, lda, x, incx );
@@ -146,9 +146,9 @@ inline void trsv( Order, UpLo, Trans, Diag, int n, const double* a, int lda,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n,
-        const std::complex<float>* a, int lda, std::complex<float>* x,
-        int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n,
+        const std::complex<float>* a, const int lda, std::complex<float>* x,
+        const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCtrsv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, a, lda, x, incx );
@@ -160,9 +160,9 @@ inline void trsv( Order, UpLo, Trans, Diag, int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, int n,
-        const std::complex<double>* a, int lda, std::complex<double>* x,
-        int incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const int n,
+        const std::complex<double>* a, const int lda, std::complex<double>* x,
+        const int incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -174,8 +174,9 @@ inline void trsv( Order, UpLo, Trans, Diag, int n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n, const float* a,
-        fortran_int_t lda, float* x, fortran_int_t incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const fortran_int_t n,
+        const float* a, const fortran_int_t lda, float* x,
+        const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_STRSV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
@@ -187,8 +188,9 @@ inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n, const float* a,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n, const double* a,
-        fortran_int_t lda, double* x, fortran_int_t incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const fortran_int_t n,
+        const double* a, const fortran_int_t lda, double* x,
+        const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DTRSV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
@@ -200,9 +202,9 @@ inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n, const double* a,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n,
-        const std::complex<float>* a, fortran_int_t lda,
-        std::complex<float>* x, fortran_int_t incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const fortran_int_t n,
+        const std::complex<float>* a, const fortran_int_t lda,
+        std::complex<float>* x, const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CTRSV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
@@ -214,9 +216,9 @@ inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void trsv( Order, UpLo, Trans, Diag, fortran_int_t n,
-        const std::complex<double>* a, fortran_int_t lda,
-        std::complex<double>* x, fortran_int_t incx ) {
+inline void trsv( Order, UpLo, Trans, Diag, const fortran_int_t n,
+        const std::complex<double>* a, const fortran_int_t lda,
+        std::complex<double>* x, const fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZTRSV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );

@@ -63,10 +63,11 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemm( Order, char side, UpLo, int m, int n,
-        std::complex<float> alpha, const std::complex<float>* a, int lda,
-        const std::complex<float>* b, int ldb, std::complex<float> beta,
-        std::complex<float>* c, int ldc ) {
+inline void hemm( Order, const char side, UpLo, const int m, const int n,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const int lda, const std::complex<float>* b, const int ldb,
+        const std::complex<float> beta, std::complex<float>* c,
+        const int ldc ) {
     cblas_chemm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, m, n, &alpha, a, lda, b, ldb, &beta,
             c, ldc );
@@ -78,10 +79,11 @@ inline void hemm( Order, char side, UpLo, int m, int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemm( Order, char side, UpLo, int m, int n,
-        std::complex<double> alpha, const std::complex<double>* a, int lda,
-        const std::complex<double>* b, int ldb, std::complex<double> beta,
-        std::complex<double>* c, int ldc ) {
+inline void hemm( Order, const char side, UpLo, const int m, const int n,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const int lda, const std::complex<double>* b, const int ldb,
+        const std::complex<double> beta, std::complex<double>* c,
+        const int ldc ) {
     cblas_zhemm( cblas_option< Order >::value, cblas_option< Side >::value,
             cblas_option< UpLo >::value, m, n, &alpha, a, lda, b, ldb, &beta,
             c, ldc );
@@ -94,10 +96,11 @@ inline void hemm( Order, char side, UpLo, int m, int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemm( Order, char side, UpLo, int m, int n,
-        std::complex<float> alpha, const std::complex<float>* a, int lda,
-        const std::complex<float>* b, int ldb, std::complex<float> beta,
-        std::complex<float>* c, int ldc ) {
+inline void hemm( Order, const char side, UpLo, const int m, const int n,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const int lda, const std::complex<float>* b, const int ldb,
+        const std::complex<float> beta, std::complex<float>* c,
+        const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChemm( side, blas_option< UpLo >::value, m, n, alpha, a, lda, b,
             ldb, beta, c, ldc );
@@ -109,10 +112,11 @@ inline void hemm( Order, char side, UpLo, int m, int n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemm( Order, char side, UpLo, int m, int n,
-        std::complex<double> alpha, const std::complex<double>* a, int lda,
-        const std::complex<double>* b, int ldb, std::complex<double> beta,
-        std::complex<double>* c, int ldc ) {
+inline void hemm( Order, const char side, UpLo, const int m, const int n,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const int lda, const std::complex<double>* b, const int ldb,
+        const std::complex<double> beta, std::complex<double>* c,
+        const int ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
@@ -124,10 +128,12 @@ inline void hemm( Order, char side, UpLo, int m, int n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemm( Order, char side, UpLo, fortran_int_t m, fortran_int_t n,
-        std::complex<float> alpha, const std::complex<float>* a,
-        fortran_int_t lda, const std::complex<float>* b, fortran_int_t ldb,
-        std::complex<float> beta, std::complex<float>* c, fortran_int_t ldc ) {
+inline void hemm( Order, const char side, UpLo, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<float> alpha,
+        const std::complex<float>* a, const fortran_int_t lda,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        const std::complex<float> beta, std::complex<float>* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHEMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
             b, &ldb, &beta, c, &ldc );
@@ -139,11 +145,12 @@ inline void hemm( Order, char side, UpLo, fortran_int_t m, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemm( Order, char side, UpLo, fortran_int_t m, fortran_int_t n,
-        std::complex<double> alpha, const std::complex<double>* a,
-        fortran_int_t lda, const std::complex<double>* b, fortran_int_t ldb,
-        std::complex<double> beta, std::complex<double>* c,
-        fortran_int_t ldc ) {
+inline void hemm( Order, const char side, UpLo, const fortran_int_t m,
+        const fortran_int_t n, const std::complex<double> alpha,
+        const std::complex<double>* a, const fortran_int_t lda,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        const std::complex<double> beta, std::complex<double>* c,
+        const fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHEMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
             b, &ldb, &beta, c, &ldc );

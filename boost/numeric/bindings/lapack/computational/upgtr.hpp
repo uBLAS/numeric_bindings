@@ -50,9 +50,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t upgtr( char uplo, fortran_int_t n,
+inline std::ptrdiff_t upgtr( const char uplo, const fortran_int_t n,
         const std::complex<float>* ap, const std::complex<float>* tau,
-        std::complex<float>* q, fortran_int_t ldq,
+        std::complex<float>* q, const fortran_int_t ldq,
         std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CUPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
@@ -64,9 +64,9 @@ inline std::ptrdiff_t upgtr( char uplo, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t upgtr( char uplo, fortran_int_t n,
+inline std::ptrdiff_t upgtr( const char uplo, const fortran_int_t n,
         const std::complex<double>* ap, const std::complex<double>* tau,
-        std::complex<double>* q, fortran_int_t ldq,
+        std::complex<double>* q, const fortran_int_t ldq,
         std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZUPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );

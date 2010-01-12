@@ -53,10 +53,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n, float* a,
-        fortran_int_t lda, float* wr, float* wi, float* vl,
-        fortran_int_t ldvl, float* vr, fortran_int_t ldvr, float* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
+        const fortran_int_t n, float* a, const fortran_int_t lda, float* wr,
+        float* wi, float* vl, const fortran_int_t ldvl, float* vr,
+        const fortran_int_t ldvr, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr,
             work, &lwork, &info );
@@ -68,10 +68,10 @@ inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n, double* a,
-        fortran_int_t lda, double* wr, double* wi, double* vl,
-        fortran_int_t ldvl, double* vr, fortran_int_t ldvr, double* work,
-        fortran_int_t lwork ) {
+inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
+        const fortran_int_t n, double* a, const fortran_int_t lda, double* wr,
+        double* wi, double* vl, const fortran_int_t ldvl, double* vr,
+        const fortran_int_t ldvr, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr,
             work, &lwork, &info );
@@ -83,11 +83,12 @@ inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, std::complex<float>* w,
-        std::complex<float>* vl, fortran_int_t ldvl, std::complex<float>* vr,
-        fortran_int_t ldvr, std::complex<float>* work, fortran_int_t lwork,
-        float* rwork ) {
+inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
+        const fortran_int_t n, std::complex<float>* a,
+        const fortran_int_t lda, std::complex<float>* w,
+        std::complex<float>* vl, const fortran_int_t ldvl,
+        std::complex<float>* vr, const fortran_int_t ldvr,
+        std::complex<float>* work, const fortran_int_t lwork, float* rwork ) {
     fortran_int_t info(0);
     LAPACK_CGEEV( &jobvl, &jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work,
             &lwork, rwork, &info );
@@ -99,11 +100,13 @@ inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t geev( char jobvl, char jobvr, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, std::complex<double>* w,
-        std::complex<double>* vl, fortran_int_t ldvl,
-        std::complex<double>* vr, fortran_int_t ldvr,
-        std::complex<double>* work, fortran_int_t lwork, double* rwork ) {
+inline std::ptrdiff_t geev( const char jobvl, const char jobvr,
+        const fortran_int_t n, std::complex<double>* a,
+        const fortran_int_t lda, std::complex<double>* w,
+        std::complex<double>* vl, const fortran_int_t ldvl,
+        std::complex<double>* vr, const fortran_int_t ldvr,
+        std::complex<double>* work, const fortran_int_t lwork,
+        double* rwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEEV( &jobvl, &jobvr, &n, a, &lda, w, vl, &ldvl, vr, &ldvr, work,
             &lwork, rwork, &info );

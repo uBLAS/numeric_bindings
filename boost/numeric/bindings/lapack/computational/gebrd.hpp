@@ -53,9 +53,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n, float* a,
-        fortran_int_t lda, float* d, float* e, float* tauq, float* taup,
-        float* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gebrd( const fortran_int_t m, const fortran_int_t n,
+        float* a, const fortran_int_t lda, float* d, float* e, float* tauq,
+        float* taup, float* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_SGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
     return info;
@@ -66,9 +66,9 @@ inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n, double* a,
-        fortran_int_t lda, double* d, double* e, double* tauq, double* taup,
-        double* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gebrd( const fortran_int_t m, const fortran_int_t n,
+        double* a, const fortran_int_t lda, double* d, double* e,
+        double* tauq, double* taup, double* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_DGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
     return info;
@@ -79,10 +79,10 @@ inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n,
-        std::complex<float>* a, fortran_int_t lda, float* d, float* e,
+inline std::ptrdiff_t gebrd( const fortran_int_t m, const fortran_int_t n,
+        std::complex<float>* a, const fortran_int_t lda, float* d, float* e,
         std::complex<float>* tauq, std::complex<float>* taup,
-        std::complex<float>* work, fortran_int_t lwork ) {
+        std::complex<float>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_CGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
     return info;
@@ -93,10 +93,10 @@ inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t gebrd( fortran_int_t m, fortran_int_t n,
-        std::complex<double>* a, fortran_int_t lda, double* d, double* e,
-        std::complex<double>* tauq, std::complex<double>* taup,
-        std::complex<double>* work, fortran_int_t lwork ) {
+inline std::ptrdiff_t gebrd( const fortran_int_t m, const fortran_int_t n,
+        std::complex<double>* a, const fortran_int_t lda, double* d,
+        double* e, std::complex<double>* tauq, std::complex<double>* taup,
+        std::complex<double>* work, const fortran_int_t lwork ) {
     fortran_int_t info(0);
     LAPACK_ZGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
     return info;

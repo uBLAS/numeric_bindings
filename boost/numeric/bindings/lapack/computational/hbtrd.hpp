@@ -51,10 +51,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbtrd( char vect, UpLo, fortran_int_t n,
-        fortran_int_t kd, std::complex<float>* ab, fortran_int_t ldab,
-        float* d, float* e, std::complex<float>* q, fortran_int_t ldq,
-        std::complex<float>* work ) {
+inline std::ptrdiff_t hbtrd( const char vect, UpLo, const fortran_int_t n,
+        const fortran_int_t kd, std::complex<float>* ab,
+        const fortran_int_t ldab, float* d, float* e, std::complex<float>* q,
+        const fortran_int_t ldq, std::complex<float>* work ) {
     fortran_int_t info(0);
     LAPACK_CHBTRD( &vect, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
             d, e, q, &ldq, work, &info );
@@ -67,9 +67,10 @@ inline std::ptrdiff_t hbtrd( char vect, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbtrd( char vect, UpLo, fortran_int_t n,
-        fortran_int_t kd, std::complex<double>* ab, fortran_int_t ldab,
-        double* d, double* e, std::complex<double>* q, fortran_int_t ldq,
+inline std::ptrdiff_t hbtrd( const char vect, UpLo, const fortran_int_t n,
+        const fortran_int_t kd, std::complex<double>* ab,
+        const fortran_int_t ldab, double* d, double* e,
+        std::complex<double>* q, const fortran_int_t ldq,
         std::complex<double>* work ) {
     fortran_int_t info(0);
     LAPACK_ZHBTRD( &vect, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,

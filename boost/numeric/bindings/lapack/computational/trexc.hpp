@@ -52,9 +52,9 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t trexc( char compq, fortran_int_t n, float* t,
-        fortran_int_t ldt, float* q, fortran_int_t ldq, fortran_int_t& ifst,
-        fortran_int_t& ilst, float* work ) {
+inline std::ptrdiff_t trexc( const char compq, const fortran_int_t n, float* t,
+        const fortran_int_t ldt, float* q, const fortran_int_t ldq,
+        fortran_int_t& ifst, fortran_int_t& ilst, float* work ) {
     fortran_int_t info(0);
     LAPACK_STREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work, &info );
     return info;
@@ -65,9 +65,10 @@ inline std::ptrdiff_t trexc( char compq, fortran_int_t n, float* t,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t trexc( char compq, fortran_int_t n, double* t,
-        fortran_int_t ldt, double* q, fortran_int_t ldq, fortran_int_t& ifst,
-        fortran_int_t& ilst, double* work ) {
+inline std::ptrdiff_t trexc( const char compq, const fortran_int_t n,
+        double* t, const fortran_int_t ldt, double* q,
+        const fortran_int_t ldq, fortran_int_t& ifst, fortran_int_t& ilst,
+        double* work ) {
     fortran_int_t info(0);
     LAPACK_DTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work, &info );
     return info;
@@ -78,9 +79,10 @@ inline std::ptrdiff_t trexc( char compq, fortran_int_t n, double* t,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t trexc( char compq, fortran_int_t n,
-        std::complex<float>* t, fortran_int_t ldt, std::complex<float>* q,
-        fortran_int_t ldq, fortran_int_t ifst, fortran_int_t ilst ) {
+inline std::ptrdiff_t trexc( const char compq, const fortran_int_t n,
+        std::complex<float>* t, const fortran_int_t ldt,
+        std::complex<float>* q, const fortran_int_t ldq,
+        const fortran_int_t ifst, const fortran_int_t ilst ) {
     fortran_int_t info(0);
     LAPACK_CTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, &info );
     return info;
@@ -91,9 +93,10 @@ inline std::ptrdiff_t trexc( char compq, fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t trexc( char compq, fortran_int_t n,
-        std::complex<double>* t, fortran_int_t ldt, std::complex<double>* q,
-        fortran_int_t ldq, fortran_int_t ifst, fortran_int_t ilst ) {
+inline std::ptrdiff_t trexc( const char compq, const fortran_int_t n,
+        std::complex<double>* t, const fortran_int_t ldt,
+        std::complex<double>* q, const fortran_int_t ldq,
+        const fortran_int_t ifst, const fortran_int_t ilst ) {
     fortran_int_t info(0);
     LAPACK_ZTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, &info );
     return info;

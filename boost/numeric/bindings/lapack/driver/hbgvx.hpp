@@ -51,12 +51,14 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvx( char jobz, char range, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, std::complex<float>* ab,
-        fortran_int_t ldab, std::complex<float>* bb, fortran_int_t ldbb,
-        std::complex<float>* q, fortran_int_t ldq, float vl, float vu,
-        fortran_int_t il, fortran_int_t iu, float abstol, fortran_int_t& m,
-        float* w, std::complex<float>* z, fortran_int_t ldz,
+inline std::ptrdiff_t hbgvx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<float>* ab, const fortran_int_t ldab,
+        std::complex<float>* bb, const fortran_int_t ldbb,
+        std::complex<float>* q, const fortran_int_t ldq, const float vl,
+        const float vu, const fortran_int_t il, const fortran_int_t iu,
+        const float abstol, fortran_int_t& m, float* w,
+        std::complex<float>* z, const fortran_int_t ldz,
         std::complex<float>* work, float* rwork, fortran_int_t* iwork,
         fortran_int_t* ifail ) {
     fortran_int_t info(0);
@@ -72,12 +74,14 @@ inline std::ptrdiff_t hbgvx( char jobz, char range, UpLo, fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t hbgvx( char jobz, char range, UpLo, fortran_int_t n,
-        fortran_int_t ka, fortran_int_t kb, std::complex<double>* ab,
-        fortran_int_t ldab, std::complex<double>* bb, fortran_int_t ldbb,
-        std::complex<double>* q, fortran_int_t ldq, double vl, double vu,
-        fortran_int_t il, fortran_int_t iu, double abstol, fortran_int_t& m,
-        double* w, std::complex<double>* z, fortran_int_t ldz,
+inline std::ptrdiff_t hbgvx( const char jobz, const char range, UpLo,
+        const fortran_int_t n, const fortran_int_t ka, const fortran_int_t kb,
+        std::complex<double>* ab, const fortran_int_t ldab,
+        std::complex<double>* bb, const fortran_int_t ldbb,
+        std::complex<double>* q, const fortran_int_t ldq, const double vl,
+        const double vu, const fortran_int_t il, const fortran_int_t iu,
+        const double abstol, fortran_int_t& m, double* w,
+        std::complex<double>* z, const fortran_int_t ldz,
         std::complex<double>* work, double* rwork, fortran_int_t* iwork,
         fortran_int_t* ifail ) {
     fortran_int_t info(0);

@@ -290,6 +290,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           typedef_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'keyword_type' ] != None:
           keyword_type_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'keyword_type' ] ]
+        if 'banded' in info_map[ subroutine ][ 'argument_map' ][ arg ]:
+            includes += [ '#include <boost/numeric/bindings/bandwidth.hpp' ]
 
       if info_map[ subroutine ][ 'user_defined_variables' ] != None:
         for arg in info_map[ subroutine ][ 'user_defined_variables' ]:

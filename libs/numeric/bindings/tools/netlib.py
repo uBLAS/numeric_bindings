@@ -1205,6 +1205,11 @@ def parse_file( filename, template_map ):
               # TODO
               # TODO
             else:
+              #
+              # Try to look for different matrices, e.g., if the code
+              # refers to Matrix A, then look for argument A, AB, and AP.
+              # Allocate the trait to the first matrix found (usually this is A).
+              #
               references = match_matrix_traits[0][3].split( 'and' )
               for matrix_name in references:
                 try_names = [ matrix_name.strip(), 
@@ -1215,11 +1220,6 @@ def parse_file( filename, template_map ):
                           'trait_of' not in argument_properties:
                       argument_properties[ 'trait_type' ] = 'num_columns'
                       argument_properties[ 'trait_of' ] = [ try_name.strip() ]
-
-            #elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
-              ## because it is both #rows and #columns, we have to choose one
-              #argument_properties[ 'trait_type' ] = 'num_columns'
-              #argument_properties[ 'trait_of' ] = [ match_matrix_traits[0][3].strip() ]
 
           # if we're not dealing with order
           else:

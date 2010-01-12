@@ -140,12 +140,13 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        return detail::pbequ( uplo(), n, bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(s), scond, amax );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        return detail::pbequ( uplo(), n, bandwidth(ab, uplo()),
+                begin_value(ab), stride_major(ab), begin_value(s), scond,
+                amax );
     }
 
 };
@@ -170,12 +171,13 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixAB& ab, VectorS& s, real_type& scond,
             real_type& amax ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        return detail::pbequ( uplo(), n, bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(s), scond, amax );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        return detail::pbequ( uplo(), n, bandwidth(ab, uplo()),
+                begin_value(ab), stride_major(ab), begin_value(s), scond,
+                amax );
     }
 
 };

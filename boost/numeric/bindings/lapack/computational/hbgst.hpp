@@ -115,19 +115,19 @@ struct hbgst_impl {
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(bb) >= bandwidth_upper(bb) );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bandwidth(bb, uplo()) >= bandwidth(bb, uplo()) );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        BOOST_ASSERT( stride_major(bb) >= bandwidth_upper(bb)+1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'V' );
-        return detail::hbgst( vect, uplo(), n, bandwidth_upper(ab),
-                bandwidth_upper(bb), begin_value(ab), stride_major(ab),
+        return detail::hbgst( vect, uplo(), n, bandwidth(ab, uplo()),
+                bandwidth(bb, uplo()), begin_value(ab), stride_major(ab),
                 begin_value(bb), stride_major(bb), begin_value(x),
                 stride_major(x), begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())) );

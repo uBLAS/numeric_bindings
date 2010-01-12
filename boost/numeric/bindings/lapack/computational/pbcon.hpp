@@ -136,14 +136,14 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const MatrixAB& ab, const real_type anorm, real_type& rcond,
             detail::workspace2< WORK, IWORK > work ) {
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        return detail::pbcon( uplo, n, bandwidth_upper(ab), begin_value(ab),
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        return detail::pbcon( uplo, n, bandwidth(ab, uplo()), begin_value(ab),
                 stride_major(ab), anorm, rcond,
                 begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())) );

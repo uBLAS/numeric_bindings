@@ -108,7 +108,7 @@ struct hbev_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
                 size_column(ab) ));
@@ -117,10 +117,10 @@ struct hbev_impl {
         BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab) );
-        return detail::hbev( jobz, uplo(), size_column(ab),
-                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
-                begin_value(w), begin_value(z), stride_major(z),
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo()) );
+        return detail::hbev( jobz, uplo(), size_column(ab), bandwidth(ab,
+                uplo()), begin_value(ab), stride_major(ab), begin_value(w),
+                begin_value(z), stride_major(z),
                 begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())) );
     }

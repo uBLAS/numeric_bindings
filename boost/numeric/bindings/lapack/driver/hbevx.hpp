@@ -132,7 +132,7 @@ struct hbevx_impl {
         BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
@@ -144,9 +144,9 @@ struct hbevx_impl {
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab) );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo()) );
         BOOST_ASSERT( stride_major(q) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::hbevx( jobz, range, uplo(), n, bandwidth_upper(ab),
+        return detail::hbevx( jobz, range, uplo(), n, bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab), begin_value(q),
                 stride_major(q), vl, vu, il, iu, abstol, m, begin_value(w),
                 begin_value(z), stride_major(z),

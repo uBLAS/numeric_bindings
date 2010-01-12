@@ -117,7 +117,7 @@ struct sbevd_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -126,8 +126,8 @@ struct sbevd_impl {
                 n ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab) );
-        return detail::sbevd( jobz, uplo(), n, bandwidth_upper(ab),
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo()) );
+        return detail::sbevd( jobz, uplo(), n, bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab), begin_value(w),
                 begin_value(z), stride_major(z),
                 begin_value(work.select(real_type())),
@@ -169,7 +169,7 @@ struct sbevd_impl {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::sbevd( jobz, uplo(), n, bandwidth_upper(ab),
+        detail::sbevd( jobz, uplo(), n, bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab), begin_value(w),
                 begin_value(z), stride_major(z), &opt_size_work, -1,
                 &opt_size_iwork, -1 );

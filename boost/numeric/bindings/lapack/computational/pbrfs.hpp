@@ -177,7 +177,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(berr) >= size_column(x) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -188,15 +188,16 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(afb) == 1 || stride_minor(afb) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        BOOST_ASSERT( stride_major(afb) >= bandwidth_upper(ab)+1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_ASSERT( stride_major(afb) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pbrfs( uplo(), n, bandwidth_upper(ab), size_column(x),
-                begin_value(ab), stride_major(ab), begin_value(afb),
-                stride_major(afb), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), begin_value(ferr),
-                begin_value(berr), begin_value(work.select(real_type())),
+        return detail::pbrfs( uplo(), n, bandwidth(ab, uplo()),
+                size_column(x), begin_value(ab), stride_major(ab),
+                begin_value(afb), stride_major(afb), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x),
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())) );
     }
 
@@ -294,7 +295,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(berr) >= size_column(x) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
@@ -304,15 +305,16 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(afb) == 1 || stride_minor(afb) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        BOOST_ASSERT( stride_major(afb) >= bandwidth_upper(ab)+1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_ASSERT( stride_major(afb) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pbrfs( uplo(), n, bandwidth_upper(ab), size_column(x),
-                begin_value(ab), stride_major(ab), begin_value(afb),
-                stride_major(afb), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), begin_value(ferr),
-                begin_value(berr), begin_value(work.select(value_type())),
+        return detail::pbrfs( uplo(), n, bandwidth(ab, uplo()),
+                size_column(x), begin_value(ab), stride_major(ab),
+                begin_value(afb), stride_major(afb), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x),
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())) );
     }
 

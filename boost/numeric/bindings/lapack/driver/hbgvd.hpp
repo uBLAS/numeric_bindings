@@ -125,8 +125,8 @@ struct hbgvd_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixBB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(bb) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bandwidth(bb, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -138,10 +138,10 @@ struct hbgvd_impl {
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        BOOST_ASSERT( stride_major(bb) >= bandwidth_upper(bb)+1 );
-        return detail::hbgvd( jobz, uplo(), n, bandwidth_upper(ab),
-                bandwidth_upper(bb), begin_value(ab), stride_major(ab),
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
+        return detail::hbgvd( jobz, uplo(), n, bandwidth(ab, uplo()),
+                bandwidth(bb, uplo()), begin_value(ab), stride_major(ab),
                 begin_value(bb), stride_major(bb), begin_value(w),
                 begin_value(z), stride_major(z),
                 begin_value(work.select(value_type())),
@@ -191,8 +191,8 @@ struct hbgvd_impl {
         value_type opt_size_work;
         real_type opt_size_rwork;
         fortran_int_t opt_size_iwork;
-        detail::hbgvd( jobz, uplo(), n, bandwidth_upper(ab),
-                bandwidth_upper(bb), begin_value(ab), stride_major(ab),
+        detail::hbgvd( jobz, uplo(), n, bandwidth(ab, uplo()),
+                bandwidth(bb, uplo()), begin_value(ab), stride_major(ab),
                 begin_value(bb), stride_major(bb), begin_value(w),
                 begin_value(z), stride_major(z), &opt_size_work, -1,
                 &opt_size_rwork, -1, &opt_size_iwork, -1 );

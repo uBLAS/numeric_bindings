@@ -119,12 +119,12 @@ struct pbstf_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const fortran_int_t n, MatrixAB& ab ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        return detail::pbstf( uplo(), n, bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab) );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        return detail::pbstf( uplo(), n, bandwidth(ab, uplo()),
+                begin_value(ab), stride_major(ab) );
     }
 
 };

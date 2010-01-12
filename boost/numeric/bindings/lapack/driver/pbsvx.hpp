@@ -191,7 +191,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( equed == 'N' || equed == 'Y' );
         BOOST_ASSERT( fact == 'F' || fact == 'Y' || fact == 'N' ||
                 fact == 'E' );
@@ -205,11 +205,11 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(afb) == 1 || stride_minor(afb) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        BOOST_ASSERT( stride_major(afb) >= bandwidth_upper(ab)+1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_ASSERT( stride_major(afb) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pbsvx( fact, uplo(), n, bandwidth_upper(ab),
+        return detail::pbsvx( fact, uplo(), n, bandwidth(ab, uplo()),
                 size_column(x), begin_value(ab), stride_major(ab),
                 begin_value(afb), stride_major(afb), equed, begin_value(s),
                 begin_value(b), stride_major(b), begin_value(x),
@@ -326,7 +326,7 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( equed == 'N' || equed == 'Y' );
         BOOST_ASSERT( fact == 'F' || fact == 'Y' || fact == 'N' ||
                 fact == 'E' );
@@ -339,11 +339,11 @@ struct pbsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(afb) == 1 || stride_minor(afb) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        BOOST_ASSERT( stride_major(afb) >= bandwidth_upper(ab)+1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_ASSERT( stride_major(afb) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pbsvx( fact, uplo(), n, bandwidth_upper(ab),
+        return detail::pbsvx( fact, uplo(), n, bandwidth(ab, uplo()),
                 size_column(x), begin_value(ab), stride_major(ab),
                 begin_value(afb), stride_major(afb), equed, begin_value(s),
                 begin_value(b), stride_major(b), begin_value(x),

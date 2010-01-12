@@ -114,15 +114,15 @@ struct hbtrd_impl {
         BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(d) >= n );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'V' || vect == 'U' );
-        return detail::hbtrd( vect, uplo(), n, bandwidth_upper(ab),
+        return detail::hbtrd( vect, uplo(), n, bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab), begin_value(d),
                 begin_value(e), begin_value(q), stride_major(q),
                 begin_value(work.select(value_type())) );

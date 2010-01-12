@@ -42,11 +42,11 @@ struct basic_ublas_adaptor {
         return bindings::end_value( id.data() );
     }
 
-    static typename result_of::stride1< adapted_type >::type stride1( const Id& id ) {
+    static std::ptrdiff_t stride1( const Id& id ) {
         return bindings::stride1( id.data() );
     }
 
-    static typename result_of::stride2< adapted_type >::type stride2( const Id& id ) {
+    static std::ptrdiff_t stride2( const Id& id ) {
         return bindings::stride2( id.data() );
     }
 

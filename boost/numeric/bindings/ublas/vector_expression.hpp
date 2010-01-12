@@ -40,7 +40,7 @@ struct adaptor< ublas::vector_reference< T >, Id, Enable > {
         return bindings::end_value( id.expression() );
     }
 
-    static typename result_of::stride1< adapted_type >::type stride1( const Id& id ) {
+    static std::ptrdiff_t stride1( const Id& id ) {
         return bindings::stride1( id.expression() );
     }
 

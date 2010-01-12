@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_LANGB_HPP
 
 #include <boost/assert.hpp>
+#include <boost/numeric/bindings/bandwidth.hpp
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>

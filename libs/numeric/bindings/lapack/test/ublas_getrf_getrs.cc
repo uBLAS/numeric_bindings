@@ -9,12 +9,13 @@
 #include <boost/numeric/bindings/lapack/computational/getri.hpp>
 #include <boost/numeric/bindings/lapack/computational/getrs.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/trans.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 namespace lapack = boost::numeric::bindings::lapack;
 
 using std::size_t; 
@@ -82,7 +83,7 @@ int main (int argc, char **argv) {
 
   lapack::getrf (a, ipiv);      // factor a
   m_t ia (a);
-  lapack::getrs ('N', a, ipiv, b);   // solve from factorization 
+  lapack::getrs ( a, ipiv, b);   // solve from factorization 
   print_m (b, "X"); 
   cout << endl; 
   lapack::getri (ia, ipiv);     // invert a
@@ -104,7 +105,7 @@ int main (int argc, char **argv) {
   
   lapack::getrf (a2, ipiv); // factor a
   m_t ia2 (a2);
-  lapack::getrs ('T', a2, ipiv, b2); // solve 
+  lapack::getrs ( bindings::trans( a2 ), ipiv, b2); // solve 
   print_m (b2, "X"); 
   cout << endl; 
   lapack::getri (ia2, ipiv); // invert a2

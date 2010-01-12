@@ -6,4 +6,6 @@ $TEMPLATE[hegv.complex.min_size_work.args]
 N
 $TEMPLATE[hegv.complex.min_size_work]
 return std::max< $INTEGER_TYPE >( 1, 2*n-1 );
+$TEMPLATE[hegv.all.N.trait_of]
+A
 $TEMPLATE[end]

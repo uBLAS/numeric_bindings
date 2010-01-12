@@ -608,6 +608,18 @@ value_type_groups = {}
 value_type_groups = group_by_value_type( function_info_map )
 
 routines = {}
+
+routines[ 'auxiliary' ] = {}
+routines[ 'auxiliary' ][ 'generic' ] = {}
+routines[ 'auxiliary' ][ 'generic' ][ 'endings' ] = \
+    [ 'LARF', 'LARFB', 'LARFG', 'LARFT', 'LARFX', 'LARGV', 'LARNV', 'LARRB', 'LARRE' ]
+
+routines[ 'auxiliary' ][ 'norms' ] = {}
+routines[ 'auxiliary' ][ 'norms' ][ 'endings' ] = \
+    [ 'LANGB', 'LANGE', 'LANGT', 'LANHB', 'LANHE', 'LANHP', 'LANHS', 'LANHT', 'LANSB',
+      'LANSP', 'LANST', 'LANSY', 'LANTB', 'LANTP', 'LANTR' ]
+
+
 routines[ 'driver' ] = {}
 routines[ 'driver' ][ 'linear_equations' ] = {}
 routines[ 'driver' ][ 'linear_equations' ][ 'endings' ] = [ 'SV', 'SVX' ]
@@ -670,7 +682,8 @@ for name in value_type_groups.keys():
     for problem_type, problem_properties in level_properties.iteritems():
       if name[ -2: ] in problem_properties[ 'endings' ] or \
          name[ -3: ] in problem_properties[ 'endings' ] or \
-         name[ -4: ] in problem_properties[ 'endings' ]:
+         name[ -4: ] in problem_properties[ 'endings' ] or \
+         name[ -5: ] in problem_properties[ 'endings' ]:
         print name, "is in {"+level+", "+  problem_type + "}"
         if not problem_properties.has_key( 'routines_by_value_type' ):
           problem_properties[ 'routines_by_value_type' ] = {}

@@ -25,6 +25,7 @@ fortran_complex_double_ptr = 'void'   # was dcomplex_t
 
 global_type_map = { 
   'CHARACTER': 'char',
+  'CHARACTER*1': 'char',
   'LOGICAL': 'logical_t', 
   'INTEGER': library_integer_type,
   'REAL': 'float', 
@@ -32,6 +33,7 @@ global_type_map = {
 
 global_type_variant_map = {
   'CHARACTER': None,
+  'CHARACTER*1': None,
   'LOGICAL': None, 
   'INTEGER': None,
   'REAL': 'real', 
@@ -112,8 +114,6 @@ def level0_type( name, properties ):
     if 'trait_type' in properties:
         if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
             result = level0_types[ name ]
-    if '*' not in result and '&' not in result and 'const ' in result:
-        result = result.replace( 'const ', '' )
     if name == 'INFO':
         result = None
     return result
@@ -836,16 +836,18 @@ def parse_file( filename, template_map ):
     # Special case: in e.g. CHEEVR comments are lead by many stars instead of 1
     # replace those (more than 1) with spaces so that it becomes a regular comment
     # block.
-    leading_stars = re.compile( '^[ ]*\*(\*+)' ).match( i )
+    # Another exception is the commenting done by DGEJSV, which is a star followed
+    # by dot(s), e.g., *. and *.......
+    leading_stars = re.compile( '^[ ]*\*([\*\.]+)' ).match( i )
     if leading_stars != None:
-      spaces = i[ leading_stars.start(1):leading_stars.end(1) ].replace( '*', ' ' )
+      spaces = i[ leading_stars.start(1):leading_stars.end(1) ].replace( '*', ' ' ).replace( '.', ' ' )
       i = i[0:leading_stars.start(1)] + spaces + \
         i[leading_stars.end(1):len(i)]
 
     # Continue for the regular case
     match_comment = re.compile( '^[ ]*\*(.*)' ).search( i )
     if match_comment == None:
-      match_multi = re.compile( '^[ ]*[\$\+][ ]*(.*)$' ).search( i )
+      match_multi = re.compile( '^[ ]*[\$\+\&][ ]*(.*)$' ).search( i )
       if match_multi == None:
         code += [ i ]
       else:
@@ -863,13 +865,15 @@ def parse_file( filename, template_map ):
 
   code_line_nr = 0
   while code_line_nr < len(code) and not subroutine_found:
-    match_subroutine_name = re.compile( '(DOUBLE COMPLEX FUNCTION|COMPLEX FUNCTION|DOUBLE PRECISION FUNCTION|REAL FUNCTION|SUBROUTINE)[ ]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
+    match_subroutine_name = re.compile( '(DOUBLE\s+COMPLEX\s+FUNCTION|COMPLEX\s+FUNCTION|DOUBLE\s+PRECISION\s+FUNCTION|REAL\s+FUNCTION|SUBROUTINE)[\s]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
     if match_subroutine_name != None:
       subroutine_found = True
       subroutine_name = match_subroutine_name.group( 2 )
       subroutine_arguments = match_subroutine_name.group( 3 ).replace( ' ', '' ).split( "," )
       if match_subroutine_name.group(1) != 'SUBROUTINE':
-        subroutine_return_type = " ".join( match_subroutine_name.group(1).split(" ")[0:-1] )
+        subroutine_return_type = (" ".join( match_subroutine_name.group(1).split(" ")[0:-1] )).strip()
+        while '  ' in subroutine_return_type:
+          subroutine_return_type = subroutine_return_type.replace( '  ', ' ' )
 
     code_line_nr += 1
 
@@ -911,7 +915,8 @@ def parse_file( filename, template_map ):
   arguments_found = False
   argument_map = {}
   while code_line_nr < len(code) and len( argument_map ) < len( subroutine_arguments ):
-    match_argument_declaration = re.compile( '^[ ]*(EXTERNAL|LOGICAL|CHARACTER|REAL|INTEGER' + \
+    match_argument_declaration = re.compile( \
+      '^[ ]*(EXTERNAL|LOGICAL|CHARACTER\*1|CHARACTER|REAL|INTEGER' + \
       '|DOUBLE PRECISION|DOUBLE COMPLEX|COMPLEX\*16|COMPLEX)[ ]+(.*)$' ).search( code[ code_line_nr] )
     if match_argument_declaration != None:
       for argument_match in re.findall( '([A-Z0-9_]+(\([^\)]+\))?)[, ]?', match_argument_declaration.group( 2 ) ):
@@ -1106,7 +1111,8 @@ def parse_file( filename, template_map ):
   #
   if no_commented_arguments != len( subroutine_arguments ):
     print str(no_commented_arguments) + " out of " + str(len(subroutine_arguments)) + \
-      " arguments are commented, bailing out"
+      " arguments are commented, bailing out. Found so far:"
+    pp.pprint( argument_map )
     return subroutine_name, None
 
   #
@@ -1234,11 +1240,11 @@ def parse_file( filename, template_map ):
         argument_properties[ 'trait_type' ] = 'size'
         argument_properties[ 'trait_of' ] = [ match_array_traits[ 0 ][ 3 ] ]
 
-      match_stride_traits = re.compile( '([Tt]he increment)(\s|for|the|elements|of)+([A-Z]+)', re.M | re.S ).findall( comment_block )
+      match_stride_traits = re.compile( '([Tt]he increment)(\s|between|for|the|elements|of)+([A-Z]+|[a-z])', re.M | re.S ).findall( comment_block )
       print match_stride_traits
-      if len( match_stride_traits ) > 0 and match_stride_traits[ 0 ][ 2 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
+      if len( match_stride_traits ) > 0 and match_stride_traits[ 0 ][ 2 ].upper() in grouped_arguments[ 'by_type' ][ 'vector' ]:
         argument_properties[ 'trait_type' ] = 'stride'
-        argument_properties[ 'trait_of' ] = [ match_stride_traits[ 0 ][ 2 ] ]
+        argument_properties[ 'trait_of' ] = [ match_stride_traits[ 0 ][ 2 ].upper() ]
 
       # Fetch greater-than-or-equal-to integer asserts, such as 
       # M >= 0.

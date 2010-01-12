@@ -38,10 +38,20 @@ struct bandwidth_impl {
 
 };
 
-template< typename T, typename Index >
-struct bandwidth_impl< T, Index,
+template< typename T >
+struct bandwidth_impl< T, tag::lower >:
+    bandwidth_impl< T, tag::index<1> > {};
+
+
+template< typename T >
+struct bandwidth_impl< T, tag::upper >:
+    bandwidth_impl< T, tag::index<2> > {};
+
+
+template< typename T, int N >
+struct bandwidth_impl< T, tag::index<N>,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Index, rank<T> >,
+            mpl::greater< tag::index<N>, rank<T> >,
             is_same_at< T, tag::bandwidth_type<1>, std::ptrdiff_t >
         >::type >::type > {
 
@@ -53,10 +63,10 @@ struct bandwidth_impl< T, Index,
 
 };
 
-template< typename T, typename Index >
-struct bandwidth_impl< T, Index,
+template< typename T, int N >
+struct bandwidth_impl< T, tag::index<N>,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Index, rank<T> >,
+            mpl::greater< tag::index<N>, rank<T> >,
             mpl::not_< is_same_at< T, tag::bandwidth_type<1>, std::ptrdiff_t > >
         >::type >::type > {
 

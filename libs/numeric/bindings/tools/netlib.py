@@ -1204,22 +1204,38 @@ def parse_file( filename, template_map ):
               return subroutine_name, None
               # TODO
               # TODO
-            elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
-              # because it is both #rows and #columns, we have to choose one
-              argument_properties[ 'trait_type' ] = 'num_columns'
-              argument_properties[ 'trait_of' ] = [ match_matrix_traits[0][3].strip() ]
+            else:
+              references = match_matrix_traits[0][3].split( 'and' )
+              for matrix_name in references:
+                try_names = [ matrix_name.strip(), 
+                              matrix_name.strip() + 'B',
+                              matrix_name.strip() + 'P' ]
+                for try_name in try_names:
+                   if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ] and \
+                          'trait_of' not in argument_properties:
+                      argument_properties[ 'trait_type' ] = 'num_columns'
+                      argument_properties[ 'trait_of' ] = [ try_name.strip() ]
+
+            #elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
+              ## because it is both #rows and #columns, we have to choose one
+              #argument_properties[ 'trait_type' ] = 'num_columns'
+              #argument_properties[ 'trait_of' ] = [ match_matrix_traits[0][3].strip() ]
 
           # if we're not dealing with order
           else:
             references = match_matrix_traits[0][3].split( 'and' )
             for matrix_name in references:
-              try_names = [ matrix_name.strip(), matrix_name.strip() + 'B' ]
+              try_names = [ matrix_name.strip(), 
+                            matrix_name.strip() + 'B',
+                            matrix_name.strip() + 'P' ]
               for try_name in try_names:
-                if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ]:
+                if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ] and \
+                        'trait_of' not in argument_properties:
                   if len( match_banded_uplo ) == 0:
                     argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
                   else:
                     argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0] + '_uplo'
+                  # only store the first matrix found (usually A)
                   argument_properties[ 'trait_of' ] = [ try_name.strip() ]
 
         #

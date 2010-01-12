@@ -293,7 +293,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
           level2_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
         if 'banded' in info_map[ subroutine ][ 'argument_map' ][ arg ]:
-            includes += [ '#include <boost/numeric/bindings/bandwidth.hpp' ]
+            includes += [ '#include <boost/numeric/bindings/bandwidth.hpp>' ]
 
       # Insert the order_type() if appropriate
       if info_map[ subroutine ][ "has_cblas_order_arg" ]:

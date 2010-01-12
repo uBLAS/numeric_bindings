@@ -110,12 +110,11 @@ struct sbgvx_impl {
             typename VectorW, typename MatrixZ, typename VectorIFAIL,
             typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const char jobz, const char range,
-            const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-            const real_type vl, const real_type vu,
-            const fortran_int_t il, const fortran_int_t iu,
-            const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
-            IWORK > work ) {
+            MatrixAB& ab, MatrixBB& bb, MatrixQ& q, const real_type vl,
+            const real_type vu, const fortran_int_t il,
+            const fortran_int_t iu, const real_type abstol,
+            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+            detail::workspace2< WORK, IWORK > work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -142,22 +141,23 @@ struct sbgvx_impl {
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( bandwidth(bb, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+                min_size_iwork( size_column(ab) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
-        return detail::sbgvx( jobz, range, uplo(), n, bandwidth(ab, uplo()),
-                bandwidth(bb, uplo()), begin_value(ab), stride_major(ab),
-                begin_value(bb), stride_major(bb), begin_value(q),
-                stride_major(q), vl, vu, il, iu, abstol, m, begin_value(w),
-                begin_value(z), stride_major(z),
+        return detail::sbgvx( jobz, range, uplo(), size_column(ab),
+                bandwidth(ab, uplo()), bandwidth(bb, uplo()), begin_value(ab),
+                stride_major(ab), begin_value(bb), stride_major(bb),
+                begin_value(q), stride_major(q), vl, vu, il, iu, abstol, m,
+                begin_value(w), begin_value(z), stride_major(z),
                 begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
                 begin_value(ifail) );
@@ -173,17 +173,18 @@ struct sbgvx_impl {
     template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
             typename VectorW, typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const char jobz, const char range,
-            const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-            const real_type vl, const real_type vu,
-            const fortran_int_t il, const fortran_int_t iu,
-            const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+            MatrixAB& ab, MatrixBB& bb, MatrixQ& q, const real_type vl,
+            const real_type vu, const fortran_int_t il,
+            const fortran_int_t iu, const real_type abstol,
+            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+            minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( jobz, range, n, ab, bb, q, vl, vu, il, iu, abstol, m,
-                w, z, ifail, workspace( tmp_work, tmp_iwork ) );
+                min_size_iwork( size_column(ab) ) );
+        return invoke( jobz, range, ab, bb, q, vl, vu, il, iu, abstol, m, w,
+                z, ifail, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -196,14 +197,14 @@ struct sbgvx_impl {
     template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
             typename VectorW, typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const char jobz, const char range,
-            const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-            const real_type vl, const real_type vu,
-            const fortran_int_t il, const fortran_int_t iu,
-            const real_type abstol, fortran_int_t& m, VectorW& w,
-            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+            MatrixAB& ab, MatrixBB& bb, MatrixQ& q, const real_type vl,
+            const real_type vu, const fortran_int_t il,
+            const fortran_int_t iu, const real_type abstol,
+            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+            optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
-        return invoke( jobz, range, n, ab, bb, q, vl, vu, il, iu, abstol, m,
-                w, z, ifail, minimal_workspace() );
+        return invoke( jobz, range, ab, bb, q, vl, vu, il, iu, abstol, m, w,
+                z, ifail, minimal_workspace() );
     }
 
     //
@@ -247,7 +248,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -256,8 +257,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -273,7 +273,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -282,7 +282,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -300,8 +300,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -309,8 +309,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -326,8 +325,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -335,7 +334,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -353,8 +352,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -362,8 +361,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -379,8 +377,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -388,7 +386,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -406,8 +404,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -415,8 +413,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -432,8 +429,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -441,7 +438,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -459,8 +456,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -468,8 +465,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -485,8 +481,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -494,7 +490,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -512,8 +508,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -521,8 +517,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -538,8 +533,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -547,7 +542,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -565,8 +560,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -574,8 +569,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -591,8 +585,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -600,7 +594,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -618,8 +612,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -627,8 +621,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -644,8 +637,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -653,7 +646,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -671,7 +664,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -680,8 +673,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -697,7 +689,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -706,7 +698,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -724,8 +716,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -733,8 +725,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -750,8 +741,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -759,7 +750,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -777,8 +768,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -786,8 +777,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -803,8 +793,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -812,7 +802,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -830,8 +820,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -839,8 +829,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -856,8 +845,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -865,7 +854,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -883,8 +872,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -892,8 +881,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -909,8 +897,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -918,7 +906,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -936,8 +924,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -945,8 +933,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -962,8 +949,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -971,7 +958,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -989,8 +976,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -998,8 +985,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1015,8 +1001,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1024,7 +1010,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1042,8 +1028,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1051,8 +1037,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1068,8 +1053,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1077,7 +1062,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1095,7 +1080,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -1104,8 +1089,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1121,7 +1105,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -1130,7 +1114,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1148,8 +1132,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1157,8 +1141,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1174,8 +1157,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1183,7 +1166,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1201,8 +1184,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1210,8 +1193,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1227,8 +1209,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1236,7 +1218,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1254,8 +1236,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1263,8 +1245,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1280,8 +1261,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1289,7 +1270,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1307,8 +1288,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1316,8 +1297,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1333,8 +1313,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1342,7 +1322,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1360,8 +1340,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1369,8 +1349,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1386,8 +1365,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1395,7 +1374,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1413,8 +1392,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1422,8 +1401,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1439,8 +1417,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1448,7 +1426,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1466,8 +1444,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1475,8 +1453,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1492,8 +1469,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1501,7 +1478,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1519,7 +1496,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -1529,8 +1506,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1546,7 +1522,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -1555,7 +1531,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1573,8 +1549,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1583,8 +1559,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1600,8 +1575,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1609,7 +1584,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1627,8 +1602,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1637,8 +1612,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1654,8 +1628,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1663,7 +1637,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1681,8 +1655,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1691,8 +1665,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1708,8 +1681,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1717,7 +1690,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1735,8 +1708,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1745,8 +1718,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1762,8 +1734,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1771,7 +1743,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1789,8 +1761,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1799,8 +1771,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1816,8 +1787,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1825,7 +1796,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1843,8 +1814,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1853,8 +1824,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1870,8 +1840,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1879,7 +1849,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1897,8 +1867,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1907,8 +1877,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1924,8 +1893,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -1933,7 +1902,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1951,7 +1920,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -1960,8 +1929,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1977,7 +1945,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -1986,7 +1954,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2004,8 +1972,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2013,8 +1981,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2030,8 +1997,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2039,7 +2006,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2057,8 +2024,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2066,8 +2033,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2083,8 +2049,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2092,7 +2058,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2110,8 +2076,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2119,8 +2085,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2136,8 +2101,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2145,7 +2110,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2163,8 +2128,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2172,8 +2137,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2189,8 +2153,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2198,7 +2162,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2216,8 +2180,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2225,8 +2189,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2242,8 +2205,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2251,7 +2214,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2269,8 +2232,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2278,8 +2241,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2295,8 +2257,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2304,7 +2266,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2322,8 +2284,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2331,8 +2293,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2348,8 +2309,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2357,7 +2318,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2375,7 +2336,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -2385,8 +2346,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2402,7 +2362,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -2411,7 +2371,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2429,8 +2389,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2439,8 +2399,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2456,8 +2415,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2465,7 +2424,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2483,8 +2442,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2493,8 +2452,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2510,8 +2468,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2519,7 +2477,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2537,8 +2495,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2547,8 +2505,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2564,8 +2521,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2573,7 +2530,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2591,8 +2548,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2601,8 +2558,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2618,8 +2574,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2627,7 +2583,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2645,8 +2601,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2655,8 +2611,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2672,8 +2627,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2681,7 +2636,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2699,8 +2654,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2709,8 +2664,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2726,8 +2680,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2735,7 +2689,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2753,8 +2707,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2763,8 +2717,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2780,8 +2733,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2789,7 +2742,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2807,7 +2760,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -2816,8 +2769,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2833,7 +2785,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -2842,7 +2794,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2860,8 +2812,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2869,8 +2821,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2886,8 +2837,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2895,7 +2846,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2913,8 +2864,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2922,8 +2873,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2939,8 +2889,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2948,7 +2898,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -2966,8 +2916,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -2975,8 +2925,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -2992,8 +2941,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3001,7 +2950,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3019,8 +2968,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3028,8 +2977,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3045,8 +2993,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3054,7 +3002,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3072,8 +3020,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3081,8 +3029,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3098,8 +3045,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3107,7 +3054,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3125,8 +3072,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3134,8 +3081,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3151,8 +3097,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3160,7 +3106,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3178,8 +3124,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3187,8 +3133,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3204,8 +3149,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3213,7 +3158,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3231,7 +3176,7 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -3241,8 +3186,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3258,7 +3202,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
@@ -3267,7 +3211,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3285,8 +3229,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3295,8 +3239,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3312,8 +3255,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3321,7 +3264,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3339,8 +3282,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3349,8 +3292,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3366,8 +3308,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3375,7 +3317,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3393,8 +3335,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3403,8 +3345,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3420,8 +3361,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3429,7 +3370,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3447,8 +3388,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3457,8 +3398,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3474,8 +3414,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3483,7 +3423,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3501,8 +3441,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3511,8 +3451,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3528,8 +3467,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3537,7 +3476,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3555,8 +3494,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3565,8 +3504,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3582,8 +3520,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3591,7 +3529,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -3609,8 +3547,8 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL,
         typename Workspace >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3619,8 +3557,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -3636,8 +3573,8 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
 template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t sbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
+        const MatrixAB& ab, const MatrixBB& bb, const MatrixQ& q,
+        const typename remove_imaginary< typename value<
         MatrixAB >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAB >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -3645,7 +3582,7 @@ inline std::ptrdiff_t sbgvx( const char jobz, const char range,
         MatrixAB >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return sbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            range, n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 

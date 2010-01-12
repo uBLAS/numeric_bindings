@@ -132,19 +132,18 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorS >
-    static std::ptrdiff_t invoke( const fortran_int_t n,
-            const MatrixAB& ab, VectorS& s, real_type& scond,
-            real_type& amax ) {
+    static std::ptrdiff_t invoke( const MatrixAB& ab, VectorS& s,
+            real_type& scond, real_type& amax ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbequ( uplo(), n, bandwidth(ab, uplo()),
+        return detail::pbequ( uplo(), size_column(ab), bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab), begin_value(s), scond,
                 amax );
     }
@@ -167,15 +166,14 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorS >
-    static std::ptrdiff_t invoke( const fortran_int_t n,
-            const MatrixAB& ab, VectorS& s, real_type& scond,
-            real_type& amax ) {
+    static std::ptrdiff_t invoke( const MatrixAB& ab, VectorS& s,
+            real_type& scond, real_type& amax ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbequ( uplo(), n, bandwidth(ab, uplo()),
+        return detail::pbequ( uplo(), size_column(ab), bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab), begin_value(s), scond,
                 amax );
     }
@@ -197,13 +195,12 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * VectorS&
 //
 template< typename MatrixAB, typename VectorS >
-inline std::ptrdiff_t pbequ( const fortran_int_t n,
-        const MatrixAB& ab, VectorS& s, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& scond,
+inline std::ptrdiff_t pbequ( const MatrixAB& ab, VectorS& s,
         typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& amax ) {
-    return pbequ_impl< typename value< MatrixAB >::type >::invoke( n, ab,
-            s, scond, amax );
+        MatrixAB >::type >::type& scond, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& amax ) {
+    return pbequ_impl< typename value< MatrixAB >::type >::invoke( ab, s,
+            scond, amax );
 }
 
 //
@@ -211,13 +208,12 @@ inline std::ptrdiff_t pbequ( const fortran_int_t n,
 // * const VectorS&
 //
 template< typename MatrixAB, typename VectorS >
-inline std::ptrdiff_t pbequ( const fortran_int_t n,
-        const MatrixAB& ab, const VectorS& s, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& scond,
+inline std::ptrdiff_t pbequ( const MatrixAB& ab, const VectorS& s,
         typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& amax ) {
-    return pbequ_impl< typename value< MatrixAB >::type >::invoke( n, ab,
-            s, scond, amax );
+        MatrixAB >::type >::type& scond, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& amax ) {
+    return pbequ_impl< typename value< MatrixAB >::type >::invoke( ab, s,
+            scond, amax );
 }
 
 } // namespace lapack

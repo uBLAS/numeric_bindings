@@ -193,13 +193,13 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( equed == 'N' || equed == 'Y' );
         BOOST_ASSERT( fact == 'F' || fact == 'Y' || fact == 'N' ||
                 fact == 'E' );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( size_column(a) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 size_column(a) ));
         BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(af) == 1 || stride_minor(af) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
@@ -212,7 +212,7 @@ struct posvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        return detail::posvx( fact, uplo(), size_column(a), size_column(x),
+        return detail::posvx( fact, uplo(), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(af),
                 stride_major(af), equed, begin_value(s), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x), rcond,
@@ -331,13 +331,13 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( equed == 'N' || equed == 'Y' );
         BOOST_ASSERT( fact == 'F' || fact == 'Y' || fact == 'N' ||
                 fact == 'E' );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
                 size_column(a) ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 size_column(a) ));
         BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(af) == 1 || stride_minor(af) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
@@ -350,7 +350,7 @@ struct posvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_column(a)) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        return detail::posvx( fact, uplo(), size_column(a), size_column(x),
+        return detail::posvx( fact, uplo(), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(af),
                 stride_major(af), equed, begin_value(s), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x), rcond,

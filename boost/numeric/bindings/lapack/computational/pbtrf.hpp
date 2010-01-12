@@ -117,13 +117,13 @@ struct pbtrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const fortran_int_t n, MatrixAB& ab ) {
+    static std::ptrdiff_t invoke( MatrixAB& ab ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbtrf( uplo(), n, bandwidth(ab, uplo()),
+        return detail::pbtrf( uplo(), size_column(ab), bandwidth(ab, uplo()),
                 begin_value(ab), stride_major(ab) );
     }
 
@@ -144,9 +144,8 @@ struct pbtrf_impl {
 // * MatrixAB&
 //
 template< typename MatrixAB >
-inline std::ptrdiff_t pbtrf( const fortran_int_t n, MatrixAB& ab ) {
-    return pbtrf_impl< typename value< MatrixAB >::type >::invoke( n,
-            ab );
+inline std::ptrdiff_t pbtrf( MatrixAB& ab ) {
+    return pbtrf_impl< typename value< MatrixAB >::type >::invoke( ab );
 }
 
 //
@@ -154,10 +153,8 @@ inline std::ptrdiff_t pbtrf( const fortran_int_t n, MatrixAB& ab ) {
 // * const MatrixAB&
 //
 template< typename MatrixAB >
-inline std::ptrdiff_t pbtrf( const fortran_int_t n,
-        const MatrixAB& ab ) {
-    return pbtrf_impl< typename value< MatrixAB >::type >::invoke( n,
-            ab );
+inline std::ptrdiff_t pbtrf( const MatrixAB& ab ) {
+    return pbtrf_impl< typename value< MatrixAB >::type >::invoke( ab );
 }
 
 } // namespace lapack

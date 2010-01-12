@@ -117,23 +117,24 @@ struct pbtrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAB& ab, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
+            MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pbtrs( uplo, n, bandwidth(ab, uplo()), size_column(b),
-                begin_value(ab), stride_major(ab), begin_value(b),
-                stride_major(b) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ab)) );
+        return detail::pbtrs( uplo, size_column(ab), bandwidth(ab, uplo()),
+                size_column(b), begin_value(ab), stride_major(ab),
+                begin_value(b), stride_major(b) );
     }
 
 };
@@ -153,10 +154,10 @@ struct pbtrs_impl {
 // * MatrixB&
 //
 template< typename MatrixAB, typename MatrixB >
-inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
-        const MatrixAB& ab, MatrixB& b ) {
+inline std::ptrdiff_t pbtrs( const char uplo, const MatrixAB& ab,
+        MatrixB& b ) {
     return pbtrs_impl< typename value< MatrixAB >::type >::invoke( uplo,
-            n, ab, b );
+            ab, b );
 }
 
 //
@@ -164,10 +165,10 @@ inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
 // * const MatrixB&
 //
 template< typename MatrixAB, typename MatrixB >
-inline std::ptrdiff_t pbtrs( const char uplo, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixB& b ) {
+inline std::ptrdiff_t pbtrs( const char uplo, const MatrixAB& ab,
+        const MatrixB& b ) {
     return pbtrs_impl< typename value< MatrixAB >::type >::invoke( uplo,
-            n, ab, b );
+            ab, b );
 }
 
 } // namespace lapack

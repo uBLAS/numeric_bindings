@@ -191,12 +191,12 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( jobq == 'Q' || jobq == 'N' );
         BOOST_ASSERT( jobu == 'U' || jobu == 'N' );
         BOOST_ASSERT( jobv == 'V' || jobv == 'N' );
-        BOOST_ASSERT( size(alpha) >= size_column(b) );
+        BOOST_ASSERT( size(alpha) >= size_column(a) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(b) ));
+                min_size_iwork( size_column(a) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(b), size_row(a), size_row(b) ));
-        BOOST_ASSERT( size_column(b) >= 0 );
+                size_column(a), size_row(a), size_row(b) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
@@ -208,7 +208,7 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        return detail::ggsvd( jobu, jobv, jobq, size_row(a), size_column(b),
+        return detail::ggsvd( jobu, jobv, jobq, size_row(a), size_column(a),
                 size_row(b), k, l, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), begin_value(alpha),
                 begin_value(beta), begin_value(u), stride_major(u),
@@ -232,9 +232,9 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
             MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(b), size_row(a), size_row(b) ) );
+                size_column(a), size_row(a), size_row(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(b) ) );
+                min_size_iwork( size_column(a) ) );
         return invoke( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -328,14 +328,14 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( jobq == 'Q' || jobq == 'N' );
         BOOST_ASSERT( jobu == 'U' || jobu == 'N' );
         BOOST_ASSERT( jobv == 'V' || jobv == 'N' );
-        BOOST_ASSERT( size(alpha) >= size_column(b) );
+        BOOST_ASSERT( size(alpha) >= size_column(a) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(b) ));
+                min_size_iwork( size_column(a) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(b) ));
+                size_column(a) ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(b), size_row(a), size_row(b) ));
-        BOOST_ASSERT( size_column(b) >= 0 );
+                size_column(a), size_row(a), size_row(b) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
@@ -347,7 +347,7 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
-        return detail::ggsvd( jobu, jobv, jobq, size_row(a), size_column(b),
+        return detail::ggsvd( jobu, jobv, jobq, size_row(a), size_column(a),
                 size_row(b), k, l, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), begin_value(alpha),
                 begin_value(beta), begin_value(u), stride_major(u),
@@ -372,11 +372,11 @@ struct ggsvd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
             MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(b), size_row(a), size_row(b) ) );
+                size_column(a), size_row(a), size_row(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(b) ) );
+                size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(b) ) );
+                min_size_iwork( size_column(a) ) );
         return invoke( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }

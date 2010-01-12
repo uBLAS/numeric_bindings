@@ -129,17 +129,18 @@ struct lantb_impl {
     //
     template< typename MatrixAB, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t k,
-            const MatrixAB& ab, detail::workspace1< WORK > work ) {
+            const fortran_int_t k, const MatrixAB& ab, detail::workspace1<
+            WORK > work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_ASSERT( k >= 0 );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= k+1 );
-        return detail::lantb( norm, uplo, diag(), n, k, begin_value(ab),
-                stride_major(ab), begin_value(work.select(real_type())) );
+        return detail::lantb( norm, uplo, diag(), size_column(ab), k,
+                begin_value(ab), stride_major(ab),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -151,12 +152,12 @@ struct lantb_impl {
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t k,
-            const MatrixAB& ab, minimal_workspace work ) {
+            const fortran_int_t k, const MatrixAB& ab,
+            minimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        return invoke( norm, uplo, n, k, ab, workspace( tmp_work ) );
+        return invoke( norm, uplo, k, ab, workspace( tmp_work ) );
     }
 
     //
@@ -168,10 +169,10 @@ struct lantb_impl {
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t k,
-            const MatrixAB& ab, optimal_workspace work ) {
+            const fortran_int_t k, const MatrixAB& ab,
+            optimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        return invoke( norm, uplo, n, k, ab, minimal_workspace() );
+        return invoke( norm, uplo, k, ab, minimal_workspace() );
     }
 
     //
@@ -199,10 +200,9 @@ struct lantb_impl {
 //
 template< typename MatrixAB, typename Workspace >
 inline std::ptrdiff_t lantb( const char norm, const char uplo,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixAB& ab, Workspace work ) {
+        const fortran_int_t k, const MatrixAB& ab, Workspace work ) {
     return lantb_impl< typename value< MatrixAB >::type >::invoke( norm,
-            uplo, n, k, ab, work );
+            uplo, k, ab, work );
 }
 
 //
@@ -211,10 +211,9 @@ inline std::ptrdiff_t lantb( const char norm, const char uplo,
 //
 template< typename MatrixAB >
 inline std::ptrdiff_t lantb( const char norm, const char uplo,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixAB& ab ) {
+        const fortran_int_t k, const MatrixAB& ab ) {
     return lantb_impl< typename value< MatrixAB >::type >::invoke( norm,
-            uplo, n, k, ab, optimal_workspace() );
+            uplo, k, ab, optimal_workspace() );
 }
 
 } // namespace lapack

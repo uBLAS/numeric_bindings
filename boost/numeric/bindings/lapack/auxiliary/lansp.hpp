@@ -116,12 +116,12 @@ struct lansp_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename WORK >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t n,
-            const MatrixAP& ap, detail::workspace1< WORK > work ) {
-        BOOST_ASSERT( n >= 0 );
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            detail::workspace1< WORK > work ) {
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
-        return detail::lansp( norm, uplo(), n, begin_value(ap),
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::lansp( norm, uplo(), size_column(ap), begin_value(ap),
                 begin_value(work.select(real_type())) );
     }
 
@@ -133,11 +133,11 @@ struct lansp_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAP >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t n,
-            const MatrixAP& ap, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        return invoke( norm, n, ap, workspace( tmp_work ) );
+        return invoke( norm, ap, workspace( tmp_work ) );
     }
 
     //
@@ -148,9 +148,9 @@ struct lansp_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAP >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t n,
-            const MatrixAP& ap, optimal_workspace work ) {
-        return invoke( norm, n, ap, minimal_workspace() );
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            optimal_workspace work ) {
+        return invoke( norm, ap, minimal_workspace() );
     }
 
     //
@@ -177,10 +177,10 @@ struct lansp_impl {
 // * User-defined workspace
 //
 template< typename MatrixAP, typename Workspace >
-inline std::ptrdiff_t lansp( const char norm, const fortran_int_t n,
-        const MatrixAP& ap, Workspace work ) {
+inline std::ptrdiff_t lansp( const char norm, const MatrixAP& ap,
+        Workspace work ) {
     return lansp_impl< typename value< MatrixAP >::type >::invoke( norm,
-            n, ap, work );
+            ap, work );
 }
 
 //
@@ -188,10 +188,9 @@ inline std::ptrdiff_t lansp( const char norm, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t lansp( const char norm, const fortran_int_t n,
-        const MatrixAP& ap ) {
+inline std::ptrdiff_t lansp( const char norm, const MatrixAP& ap ) {
     return lansp_impl< typename value< MatrixAP >::type >::invoke( norm,
-            n, ap, optimal_workspace() );
+            ap, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -114,12 +114,12 @@ struct sptrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const fortran_int_t n, MatrixAP& ap,
-            VectorIPIV& ipiv ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, VectorIPIV& ipiv ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_ASSERT( n >= 0 );
-        return detail::sptrf( uplo(), n, begin_value(ap), begin_value(ipiv) );
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::sptrf( uplo(), size_column(ap), begin_value(ap),
+                begin_value(ipiv) );
     }
 
 };
@@ -140,9 +140,8 @@ struct sptrf_impl {
 // * VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptrf( const fortran_int_t n, MatrixAP& ap,
-        VectorIPIV& ipiv ) {
-    return sptrf_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+inline std::ptrdiff_t sptrf( MatrixAP& ap, VectorIPIV& ipiv ) {
+    return sptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv );
 }
 
@@ -152,9 +151,8 @@ inline std::ptrdiff_t sptrf( const fortran_int_t n, MatrixAP& ap,
 // * VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptrf( const fortran_int_t n,
-        const MatrixAP& ap, VectorIPIV& ipiv ) {
-    return sptrf_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+inline std::ptrdiff_t sptrf( const MatrixAP& ap, VectorIPIV& ipiv ) {
+    return sptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv );
 }
 
@@ -164,9 +162,8 @@ inline std::ptrdiff_t sptrf( const fortran_int_t n,
 // * const VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptrf( const fortran_int_t n, MatrixAP& ap,
-        const VectorIPIV& ipiv ) {
-    return sptrf_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+inline std::ptrdiff_t sptrf( MatrixAP& ap, const VectorIPIV& ipiv ) {
+    return sptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv );
 }
 
@@ -176,9 +173,8 @@ inline std::ptrdiff_t sptrf( const fortran_int_t n, MatrixAP& ap,
 // * const VectorIPIV&
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptrf( const fortran_int_t n,
-        const MatrixAP& ap, const VectorIPIV& ipiv ) {
-    return sptrf_impl< typename value< MatrixAP >::type >::invoke( n, ap,
+inline std::ptrdiff_t sptrf( const MatrixAP& ap, const VectorIPIV& ipiv ) {
+    return sptrf_impl< typename value< MatrixAP >::type >::invoke( ap,
             ipiv );
 }
 

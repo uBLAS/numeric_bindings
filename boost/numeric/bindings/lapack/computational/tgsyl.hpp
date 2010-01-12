@@ -163,7 +163,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixD, typename MatrixE, typename MatrixF,
             typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const fortran_int_t m, const fortran_int_t n,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             detail::workspace2< WORK, IWORK > work ) {
@@ -191,7 +190,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixF >::value) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( m, n ));
+                min_size_iwork( size_column_op(a, trans()), size_column(b) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
@@ -200,11 +199,12 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(d) == 1 || stride_minor(d) == 1 );
         BOOST_ASSERT( size_minor(e) == 1 || stride_minor(e) == 1 );
         BOOST_ASSERT( size_minor(f) == 1 || stride_minor(f) == 1 );
-        return detail::tgsyl( trans(), ijob, m, n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), begin_value(d),
-                stride_major(d), begin_value(e), stride_major(e),
-                begin_value(f), stride_major(f), scale, dif,
+        return detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
+                size_column(b), begin_value(a), stride_major(a),
+                begin_value(b), stride_major(b), begin_value(c),
+                stride_major(c), begin_value(d), stride_major(d),
+                begin_value(e), stride_major(e), begin_value(f),
+                stride_major(f), scale, dif,
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())) );
@@ -220,7 +220,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const fortran_int_t m, const fortran_int_t n,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             minimal_workspace work ) {
@@ -228,8 +227,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( m, n ) );
-        return invoke( ijob, m, n, a, b, c, d, e, f, scale, dif,
+                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
+        return invoke( ijob, a, b, c, d, e, f, scale, dif,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -243,23 +242,23 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const fortran_int_t m, const fortran_int_t n,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( m, n ) );
-        detail::tgsyl( trans(), ijob, m, n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), begin_value(d),
-                stride_major(d), begin_value(e), stride_major(e),
-                begin_value(f), stride_major(f), scale, dif, &opt_size_work,
-                -1, begin_value(tmp_iwork) );
+                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
+        detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
+                size_column(b), begin_value(a), stride_major(a),
+                begin_value(b), stride_major(b), begin_value(c),
+                stride_major(c), begin_value(d), stride_major(d),
+                begin_value(e), stride_major(e), begin_value(f),
+                stride_major(f), scale, dif, &opt_size_work, -1,
+                begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( ijob, m, n, a, b, c, d, e, f, scale, dif,
+        return invoke( ijob, a, b, c, d, e, f, scale, dif,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -300,7 +299,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixD, typename MatrixE, typename MatrixF,
             typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const fortran_int_t m, const fortran_int_t n,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             detail::workspace2< WORK, IWORK > work ) {
@@ -328,7 +326,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixF >::value) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( m, n ));
+                min_size_iwork( size_column_op(a, trans()), size_column(b) ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
@@ -337,11 +335,12 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(d) == 1 || stride_minor(d) == 1 );
         BOOST_ASSERT( size_minor(e) == 1 || stride_minor(e) == 1 );
         BOOST_ASSERT( size_minor(f) == 1 || stride_minor(f) == 1 );
-        return detail::tgsyl( trans(), ijob, m, n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), begin_value(d),
-                stride_major(d), begin_value(e), stride_major(e),
-                begin_value(f), stride_major(f), scale, dif,
+        return detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
+                size_column(b), begin_value(a), stride_major(a),
+                begin_value(b), stride_major(b), begin_value(c),
+                stride_major(c), begin_value(d), stride_major(d),
+                begin_value(e), stride_major(e), begin_value(f),
+                stride_major(f), scale, dif,
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
                 begin_value(work.select(fortran_int_t())) );
@@ -357,7 +356,6 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const fortran_int_t m, const fortran_int_t n,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             minimal_workspace work ) {
@@ -365,8 +363,8 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( m, n ) );
-        return invoke( ijob, m, n, a, b, c, d, e, f, scale, dif,
+                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
+        return invoke( ijob, a, b, c, d, e, f, scale, dif,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -380,23 +378,23 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
     static std::ptrdiff_t invoke( const fortran_int_t ijob,
-            const fortran_int_t m, const fortran_int_t n,
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( m, n ) );
-        detail::tgsyl( trans(), ijob, m, n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), begin_value(d),
-                stride_major(d), begin_value(e), stride_major(e),
-                begin_value(f), stride_major(f), scale, dif, &opt_size_work,
-                -1, begin_value(tmp_iwork) );
+                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
+        detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
+                size_column(b), begin_value(a), stride_major(a),
+                begin_value(b), stride_major(b), begin_value(c),
+                stride_major(c), begin_value(d), stride_major(d),
+                begin_value(e), stride_major(e), begin_value(f),
+                stride_major(f), scale, dif, &opt_size_work, -1,
+                begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( ijob, m, n, a, b, c, d, e, f, scale, dif,
+        return invoke( ijob, a, b, c, d, e, f, scale, dif,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -438,14 +436,13 @@ template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
         const MatrixE& e, MatrixF& f, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, work );
+            a, b, c, d, e, f, scale, dif, work );
 }
 
 //
@@ -457,14 +454,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
         const MatrixE& e, MatrixF& f, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, optimal_workspace() );
+            a, b, c, d, e, f, scale, dif, optimal_workspace() );
 }
 
 //
@@ -477,14 +473,13 @@ template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, const MatrixC& c,
         const MatrixD& d, const MatrixE& e, MatrixF& f,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, work );
+            a, b, c, d, e, f, scale, dif, work );
 }
 
 //
@@ -496,14 +491,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, const MatrixC& c,
         const MatrixD& d, const MatrixE& e, MatrixF& f,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, optimal_workspace() );
+            a, b, c, d, e, f, scale, dif, optimal_workspace() );
 }
 
 //
@@ -516,14 +510,13 @@ template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
         const MatrixE& e, const MatrixF& f, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, work );
+            a, b, c, d, e, f, scale, dif, work );
 }
 
 //
@@ -535,14 +528,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
         const MatrixE& e, const MatrixF& f, typename remove_imaginary<
         typename value< MatrixA >::type >::type& scale,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, optimal_workspace() );
+            a, b, c, d, e, f, scale, dif, optimal_workspace() );
 }
 
 //
@@ -555,14 +547,13 @@ template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, const MatrixC& c,
         const MatrixD& d, const MatrixE& e, const MatrixF& f,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif, Workspace work ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, work );
+            a, b, c, d, e, f, scale, dif, work );
 }
 
 //
@@ -574,14 +565,13 @@ inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
 inline std::ptrdiff_t tgsyl( const fortran_int_t ijob,
-        const fortran_int_t m, const fortran_int_t n,
         const MatrixA& a, const MatrixB& b, const MatrixC& c,
         const MatrixD& d, const MatrixE& e, const MatrixF& f,
         typename remove_imaginary< typename value<
         MatrixA >::type >::type& scale, typename remove_imaginary<
         typename value< MatrixA >::type >::type& dif ) {
     return tgsyl_impl< typename value< MatrixA >::type >::invoke( ijob,
-            m, n, a, b, c, d, e, f, scale, dif, optimal_workspace() );
+            a, b, c, d, e, f, scale, dif, optimal_workspace() );
 }
 
 } // namespace lapack

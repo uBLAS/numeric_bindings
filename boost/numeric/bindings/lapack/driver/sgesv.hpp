@@ -93,27 +93,27 @@ struct sgesv_impl {
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_ASSERT( size(ipiv) >= size_column(a) );
+        BOOST_ASSERT( size(ipiv) >= stride_major(work) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_swork(
-                size_column(a), size_column(b) ));
+                stride_major(work), size_column(b) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
+                stride_major(work)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
+                stride_major(work)) );
+        BOOST_ASSERT( stride_major(work) >= 0 );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::sgesv( size_column(a), size_column(b), begin_value(a),
-                stride_major(a), begin_value(ipiv), begin_value(b),
-                stride_major(b), begin_value(x), stride_major(x),
-                begin_value(work), begin_value(work.select(real_type())),
-                iter );
+                stride_major(work)) );
+        return detail::sgesv( stride_major(work), size_column(b),
+                begin_value(a), stride_major(a), begin_value(ipiv),
+                begin_value(b), stride_major(b), begin_value(x),
+                stride_major(x), begin_value(work),
+                begin_value(work.select(real_type())), iter );
     }
 
     //
@@ -131,7 +131,7 @@ struct sgesv_impl {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< real_type > tmp_swork( min_size_swork(
-                size_column(a), size_column(b) ) );
+                stride_major(work), size_column(b) ) );
         return invoke( a, ipiv, b, x, iter, workspace( tmp_work, tmp_swork ) );
     }
 

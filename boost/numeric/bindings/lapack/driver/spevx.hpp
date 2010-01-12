@@ -102,11 +102,11 @@ struct spevx_impl {
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const char jobz, const char range,
-            const fortran_int_t n, MatrixAP& ap, const real_type vl,
-            const real_type vu, const fortran_int_t il,
-            const fortran_int_t iu, const real_type abstol,
-            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-            detail::workspace2< WORK, IWORK > work ) {
+            MatrixAP& ap, const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
+            IWORK > work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -121,15 +121,17 @@ struct spevx_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+                min_size_iwork( size_column(ap) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(ap) ));
+        BOOST_ASSERT( size_column(ap) >= 0 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::spevx( jobz, range, uplo(), n, begin_value(ap), vl, vu,
-                il, iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(work.select(real_type())),
+        return detail::spevx( jobz, range, uplo(), size_column(ap),
+                begin_value(ap), vl, vu, il, iu, abstol, m, begin_value(w),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
                 begin_value(ifail) );
     }
@@ -144,16 +146,16 @@ struct spevx_impl {
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
     static std::ptrdiff_t invoke( const char jobz, const char range,
-            const fortran_int_t n, MatrixAP& ap, const real_type vl,
-            const real_type vu, const fortran_int_t il,
-            const fortran_int_t iu, const real_type abstol,
-            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-            minimal_workspace work ) {
+            MatrixAP& ap, const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( jobz, range, n, ap, vl, vu, il, iu, abstol, m, w, z,
+                min_size_iwork( size_column(ap) ) );
+        return invoke( jobz, range, ap, vl, vu, il, iu, abstol, m, w, z,
                 ifail, workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -167,13 +169,12 @@ struct spevx_impl {
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
     static std::ptrdiff_t invoke( const char jobz, const char range,
-            const fortran_int_t n, MatrixAP& ap, const real_type vl,
-            const real_type vu, const fortran_int_t il,
-            const fortran_int_t iu, const real_type abstol,
-            fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-            optimal_workspace work ) {
+            MatrixAP& ap, const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        return invoke( jobz, range, n, ap, vl, vu, il, iu, abstol, m, w, z,
+        return invoke( jobz, range, ap, vl, vu, il, iu, abstol, m, w, z,
                 ifail, minimal_workspace() );
     }
 
@@ -215,8 +216,7 @@ struct spevx_impl {
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -224,7 +224,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -238,8 +238,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -247,7 +246,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -262,8 +261,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -271,7 +269,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -285,8 +283,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -294,7 +291,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -309,8 +306,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -318,7 +314,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -332,8 +328,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -341,7 +336,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -356,8 +351,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -365,7 +359,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -379,8 +373,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -388,7 +381,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -403,8 +396,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -412,7 +404,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -426,8 +418,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -435,7 +426,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -450,8 +441,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -459,7 +449,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -473,8 +463,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -482,7 +471,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -497,8 +486,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -507,7 +495,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -521,8 +509,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -530,7 +517,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -545,8 +532,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -555,7 +541,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -569,8 +555,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -578,7 +563,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -593,8 +578,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -602,7 +586,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -616,8 +600,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -625,7 +608,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -640,8 +623,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -649,7 +631,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -663,8 +645,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -672,7 +653,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -687,8 +668,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -697,7 +677,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -711,8 +691,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -720,7 +699,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -735,8 +714,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -745,7 +723,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -759,8 +737,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -768,7 +745,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -783,8 +760,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -792,7 +768,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -806,8 +782,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -815,7 +790,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -830,8 +805,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -839,7 +813,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -853,8 +827,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -862,7 +835,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m, VectorW& w,
         const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -877,8 +850,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -887,7 +859,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -901,8 +873,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -910,7 +881,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -925,8 +896,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -935,7 +905,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -949,8 +919,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
 inline std::ptrdiff_t spevx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAP& ap,
-        const typename remove_imaginary< typename value<
+        const MatrixAP& ap, const typename remove_imaginary< typename value<
         MatrixAP >::type >::type vl, const typename remove_imaginary<
         typename value< MatrixAP >::type >::type vu,
         const fortran_int_t il, const fortran_int_t iu,
@@ -958,7 +927,7 @@ inline std::ptrdiff_t spevx( const char jobz, const char range,
         MatrixAP >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return spevx_impl< typename value< MatrixAP >::type >::invoke( jobz,
-            range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
+            range, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 

@@ -156,9 +156,9 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< VectorTAUA >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorTAUB >::value) );
-        BOOST_ASSERT( size(taua) >= std::min< std::ptrdiff_t >(size_row(b),
+        BOOST_ASSERT( size(taua) >= std::min< std::ptrdiff_t >(size_row(a),
                 size_column(a)) );
-        BOOST_ASSERT( size(taub) >= std::min< std::ptrdiff_t >(size_row(b),
+        BOOST_ASSERT( size(taub) >= std::min< std::ptrdiff_t >(size_row(a),
                 size_column(b)) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
@@ -166,12 +166,12 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_row(b) >= 0 );
+        BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
+                size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
-        return detail::ggqrf( size_row(b), size_column(a), size_column(b),
+                size_row(a)) );
+        return detail::ggqrf( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
                 begin_value(work.select(real_type())),
@@ -206,7 +206,7 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
             VectorTAUB& taub, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ggqrf( size_row(b), size_column(a), size_column(b),
+        detail::ggqrf( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
                 &opt_size_work, -1 );
@@ -259,9 +259,9 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< VectorTAUA >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorTAUB >::value) );
-        BOOST_ASSERT( size(taua) >= std::min< std::ptrdiff_t >(size_row(b),
+        BOOST_ASSERT( size(taua) >= std::min< std::ptrdiff_t >(size_row(a),
                 size_column(a)) );
-        BOOST_ASSERT( size(taub) >= std::min< std::ptrdiff_t >(size_row(b),
+        BOOST_ASSERT( size(taub) >= std::min< std::ptrdiff_t >(size_row(a),
                 size_column(b)) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
@@ -269,12 +269,12 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_row(b) >= 0 );
+        BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
+                size_row(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
-        return detail::ggqrf( size_row(b), size_column(a), size_column(b),
+                size_row(a)) );
+        return detail::ggqrf( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
                 begin_value(work.select(value_type())),
@@ -309,7 +309,7 @@ struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
             VectorTAUB& taub, optimal_workspace work ) {
         value_type opt_size_work;
-        detail::ggqrf( size_row(b), size_column(a), size_column(b),
+        detail::ggqrf( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(taua),
                 begin_value(b), stride_major(b), begin_value(taub),
                 &opt_size_work, -1 );

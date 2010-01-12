@@ -140,20 +140,20 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB, typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, detail::workspace2< WORK,
-            IWORK > work ) {
+            const fortran_int_t kd, const MatrixAB& ab, real_type& rcond,
+            detail::workspace2< WORK, IWORK > work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_ASSERT( kd >= 0 );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+                min_size_iwork( size_column(ab) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= kd+1 );
-        return detail::tbcon( norm, uplo, diag(), n, kd, begin_value(ab),
-                stride_major(ab), rcond,
+        return detail::tbcon( norm, uplo, diag(), size_column(ab), kd,
+                begin_value(ab), stride_major(ab), rcond,
                 begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())) );
     }
@@ -167,13 +167,14 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
+            const fortran_int_t kd, const MatrixAB& ab, real_type& rcond,
+            minimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( norm, uplo, n, kd, ab, rcond, workspace( tmp_work,
+                min_size_iwork( size_column(ab) ) );
+        return invoke( norm, uplo, kd, ab, rcond, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -186,10 +187,10 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
+            const fortran_int_t kd, const MatrixAB& ab, real_type& rcond,
+            optimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        return invoke( norm, uplo, n, kd, ab, rcond, minimal_workspace() );
+        return invoke( norm, uplo, kd, ab, rcond, minimal_workspace() );
     }
 
     //
@@ -226,19 +227,20 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB, typename WORK, typename RWORK >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, detail::workspace2< WORK,
-            RWORK > work ) {
+            const fortran_int_t kd, const MatrixAB& ab, real_type& rcond,
+            detail::workspace2< WORK, RWORK > work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         BOOST_ASSERT( kd >= 0 );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(ab) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= kd+1 );
-        return detail::tbcon( norm, uplo, diag(), n, kd, begin_value(ab),
-                stride_major(ab), rcond,
+        return detail::tbcon( norm, uplo, diag(), size_column(ab), kd,
+                begin_value(ab), stride_major(ab), rcond,
                 begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())) );
     }
@@ -252,12 +254,14 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
+            const fortran_int_t kd, const MatrixAB& ab, real_type& rcond,
+            minimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        return invoke( norm, uplo, n, kd, ab, rcond, workspace( tmp_work,
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(ab) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(ab) ) );
+        return invoke( norm, uplo, kd, ab, rcond, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -270,10 +274,10 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const char uplo,
-            const fortran_int_t n, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
+            const fortran_int_t kd, const MatrixAB& ab, real_type& rcond,
+            optimal_workspace work ) {
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        return invoke( norm, uplo, n, kd, ab, rcond, minimal_workspace() );
+        return invoke( norm, uplo, kd, ab, rcond, minimal_workspace() );
     }
 
     //
@@ -309,11 +313,11 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixAB, typename Workspace >
 inline std::ptrdiff_t tbcon( const char norm, const char uplo,
-        const fortran_int_t n, const fortran_int_t kd,
-        const MatrixAB& ab, typename remove_imaginary< typename value<
+        const fortran_int_t kd, const MatrixAB& ab,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond, Workspace work ) {
     return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            uplo, n, kd, ab, rcond, work );
+            uplo, kd, ab, rcond, work );
 }
 
 //
@@ -322,11 +326,11 @@ inline std::ptrdiff_t tbcon( const char norm, const char uplo,
 //
 template< typename MatrixAB >
 inline std::ptrdiff_t tbcon( const char norm, const char uplo,
-        const fortran_int_t n, const fortran_int_t kd,
-        const MatrixAB& ab, typename remove_imaginary< typename value<
+        const fortran_int_t kd, const MatrixAB& ab,
+        typename remove_imaginary< typename value<
         MatrixAB >::type >::type& rcond ) {
     return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            uplo, n, kd, ab, rcond, optimal_workspace() );
+            uplo, kd, ab, rcond, optimal_workspace() );
 }
 
 } // namespace lapack

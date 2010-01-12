@@ -98,9 +98,8 @@ struct sbgv_impl {
     //
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ, typename WORK >
-    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
+            VectorW& w, MatrixZ& z, detail::workspace1< WORK > work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -121,17 +120,18 @@ struct sbgv_impl {
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( bandwidth(bb, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
-        return detail::sbgv( jobz, uplo(), n, bandwidth(ab, uplo()),
-                bandwidth(bb, uplo()), begin_value(ab), stride_major(ab),
-                begin_value(bb), stride_major(bb), begin_value(w),
-                begin_value(z), stride_major(z),
+        return detail::sbgv( jobz, uplo(), size_column(ab), bandwidth(ab,
+                uplo()), bandwidth(bb, uplo()), begin_value(ab),
+                stride_major(ab), begin_value(bb), stride_major(bb),
+                begin_value(w), begin_value(z), stride_major(z),
                 begin_value(work.select(real_type())) );
     }
 
@@ -144,12 +144,12 @@ struct sbgv_impl {
     //
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ >
-    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
+            VectorW& w, MatrixZ& z, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        return invoke( jobz, n, ab, bb, w, z, workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(ab) ) );
+        return invoke( jobz, ab, bb, w, z, workspace( tmp_work ) );
     }
 
     //
@@ -161,11 +161,10 @@ struct sbgv_impl {
     //
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ >
-    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
+            VectorW& w, MatrixZ& z, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
-        return invoke( jobz, n, ab, bb, w, z, minimal_workspace() );
+        return invoke( jobz, ab, bb, w, z, minimal_workspace() );
     }
 
     //
@@ -197,10 +196,10 @@ struct sbgv_impl {
 //
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        VectorW& w, MatrixZ& z, Workspace work ) {
     return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
+            ab, bb, w, z, work );
 }
 
 //
@@ -213,10 +212,10 @@ inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z ) {
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        VectorW& w, MatrixZ& z ) {
     return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
+            ab, bb, w, z, optimal_workspace() );
 }
 
 //
@@ -229,477 +228,460 @@ inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z,
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        const VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        const VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, const VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, const VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        VectorW& w, const MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, VectorW& w, const MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, const MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, const MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        const VectorW& w, const MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab, MatrixBB& bb,
+        const VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, const VectorW& w, const MatrixZ& z, Workspace work ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, work );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * MatrixBB&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        MatrixBB& bb, const VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * MatrixAB&
+// * const MatrixBB&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, const MatrixZ& z,
         Workspace work ) {
     return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
+            ab, bb, w, z, work );
 }
 
 //
 // Overloaded function for sbgv. Its overload differs for
 // * MatrixAB&
 // * const MatrixBB&
-// * VectorW&
-// * MatrixZ&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline std::ptrdiff_t sbgv( const char jobz, MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, const MatrixZ& z ) {
+    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
+            ab, bb, w, z, optimal_workspace() );
+}
+
+//
+// Overloaded function for sbgv. Its overload differs for
+// * const MatrixAB&
+// * const MatrixBB&
+// * const VectorW&
+// * const MatrixZ&
 // * User-defined workspace
 //
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, VectorW& w, MatrixZ& z,
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, const MatrixZ& z,
         Workspace work ) {
     return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, const VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, const VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, const VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, const VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, const VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, const VectorW& w, MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, const VectorW& w, MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, const VectorW& w,
-        MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, VectorW& w,
-        const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, const VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, MatrixBB& bb, const VectorW& w, const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, const VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, MatrixBB& bb, const VectorW& w,
-        const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, const VectorW& w, const MatrixZ& z,
-        Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, const VectorW& w,
-        const MatrixZ& z ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
-}
-
-//
-// Overloaded function for sbgv. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const VectorW&
-// * const MatrixZ&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename VectorW,
-        typename MatrixZ, typename Workspace >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, const VectorW& w,
-        const MatrixZ& z, Workspace work ) {
-    return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, work );
+            ab, bb, w, z, work );
 }
 
 //
@@ -712,11 +694,10 @@ inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ >
-inline std::ptrdiff_t sbgv( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, const VectorW& w,
-        const MatrixZ& z ) {
+inline std::ptrdiff_t sbgv( const char jobz, const MatrixAB& ab,
+        const MatrixBB& bb, const VectorW& w, const MatrixZ& z ) {
     return sbgv_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, bb, w, z, optimal_workspace() );
+            ab, bb, w, z, optimal_workspace() );
 }
 
 } // namespace lapack

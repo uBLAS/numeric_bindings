@@ -98,9 +98,8 @@ struct sbgst_impl {
     //
     template< typename MatrixAB, typename MatrixBB, typename MatrixX,
             typename WORK >
-    static std::ptrdiff_t invoke( const char vect, const fortran_int_t n,
-            MatrixAB& ab, const MatrixBB& bb, MatrixX& x, detail::workspace1<
-            WORK > work ) {
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
+            const MatrixBB& bb, MatrixX& x, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -113,18 +112,20 @@ struct sbgst_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( bandwidth(bb, uplo()) >= bandwidth(bb, uplo()) );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
         BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'V' );
-        return detail::sbgst( vect, uplo(), n, bandwidth(ab, uplo()),
-                bandwidth(bb, uplo()), begin_value(ab), stride_major(ab),
-                begin_value(bb), stride_major(bb), begin_value(x),
-                stride_major(x), begin_value(work.select(real_type())) );
+        return detail::sbgst( vect, uplo(), size_column(ab), bandwidth(ab,
+                uplo()), bandwidth(bb, uplo()), begin_value(ab),
+                stride_major(ab), begin_value(bb), stride_major(bb),
+                begin_value(x), stride_major(x),
+                begin_value(work.select(real_type())) );
     }
 
     //
@@ -135,11 +136,11 @@ struct sbgst_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-    static std::ptrdiff_t invoke( const char vect, const fortran_int_t n,
-            MatrixAB& ab, const MatrixBB& bb, MatrixX& x,
-            minimal_workspace work ) {
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
-        return invoke( vect, n, ab, bb, x, workspace( tmp_work ) );
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
+            const MatrixBB& bb, MatrixX& x, minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(ab) ) );
+        return invoke( vect, ab, bb, x, workspace( tmp_work ) );
     }
 
     //
@@ -150,10 +151,9 @@ struct sbgst_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-    static std::ptrdiff_t invoke( const char vect, const fortran_int_t n,
-            MatrixAB& ab, const MatrixBB& bb, MatrixX& x,
-            optimal_workspace work ) {
-        return invoke( vect, n, ab, bb, x, minimal_workspace() );
+    static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
+            const MatrixBB& bb, MatrixX& x, optimal_workspace work ) {
+        return invoke( vect, ab, bb, x, minimal_workspace() );
     }
 
     //
@@ -183,10 +183,10 @@ struct sbgst_impl {
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, MatrixX& x, Workspace work ) {
+inline std::ptrdiff_t sbgst( const char vect, MatrixAB& ab,
+        const MatrixBB& bb, MatrixX& x, Workspace work ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, work );
+            ab, bb, x, work );
 }
 
 //
@@ -196,10 +196,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, MatrixX& x ) {
+inline std::ptrdiff_t sbgst( const char vect, MatrixAB& ab,
+        const MatrixBB& bb, MatrixX& x ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, optimal_workspace() );
+            ab, bb, x, optimal_workspace() );
 }
 
 //
@@ -210,10 +210,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixX& x, Workspace work ) {
+inline std::ptrdiff_t sbgst( const char vect, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixX& x, Workspace work ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, work );
+            ab, bb, x, work );
 }
 
 //
@@ -223,10 +223,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, MatrixX& x ) {
+inline std::ptrdiff_t sbgst( const char vect, const MatrixAB& ab,
+        const MatrixBB& bb, MatrixX& x ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, optimal_workspace() );
+            ab, bb, x, optimal_workspace() );
 }
 
 //
@@ -237,10 +237,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixX& x, Workspace work ) {
+inline std::ptrdiff_t sbgst( const char vect, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixX& x, Workspace work ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, work );
+            ab, bb, x, work );
 }
 
 //
@@ -250,10 +250,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        MatrixAB& ab, const MatrixBB& bb, const MatrixX& x ) {
+inline std::ptrdiff_t sbgst( const char vect, MatrixAB& ab,
+        const MatrixBB& bb, const MatrixX& x ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, optimal_workspace() );
+            ab, bb, x, optimal_workspace() );
 }
 
 //
@@ -264,11 +264,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX,
         typename Workspace >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixX& x,
-        Workspace work ) {
+inline std::ptrdiff_t sbgst( const char vect, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixX& x, Workspace work ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, work );
+            ab, bb, x, work );
 }
 
 //
@@ -278,10 +277,10 @@ inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-inline std::ptrdiff_t sbgst( const char vect, const fortran_int_t n,
-        const MatrixAB& ab, const MatrixBB& bb, const MatrixX& x ) {
+inline std::ptrdiff_t sbgst( const char vect, const MatrixAB& ab,
+        const MatrixBB& bb, const MatrixX& x ) {
     return sbgst_impl< typename value< MatrixAB >::type >::invoke( vect,
-            n, ab, bb, x, optimal_workspace() );
+            ab, bb, x, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -59,7 +59,6 @@ struct adaptor< ublas::matrix_range< T >, Id, Enable > {
     }
 
     static std::ptrdiff_t bandwidth2( const Id& id ) {
-        std::cout << "proxy bandwidth 2 requested.." << std::endl;
         return bindings::bandwidth2( id.data() );
     }
 

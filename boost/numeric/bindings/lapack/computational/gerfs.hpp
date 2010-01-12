@@ -177,13 +177,13 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(ipiv) >= size_column_op(a, trans()) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( size_column_op(a, trans()) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 size_column_op(a, trans()) ));
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(af) == 1 || stride_minor(af) == 1 );
@@ -198,7 +198,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column_op(a, trans())) );
         return detail::gerfs( trans(), size_column_op(a, trans()),
-                size_column(x), begin_value(a), stride_major(a),
+                size_column(b), begin_value(a), stride_major(a),
                 begin_value(af), stride_major(af), begin_value(ipiv),
                 begin_value(b), stride_major(b), begin_value(x),
                 stride_major(x), begin_value(ferr), begin_value(berr),
@@ -304,13 +304,13 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(ipiv) >= size_column_op(a, trans()) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
                 size_column_op(a, trans()) ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 size_column_op(a, trans()) ));
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(af) == 1 || stride_minor(af) == 1 );
@@ -325,7 +325,7 @@ struct gerfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
                 size_column_op(a, trans())) );
         return detail::gerfs( trans(), size_column_op(a, trans()),
-                size_column(x), begin_value(a), stride_major(a),
+                size_column(b), begin_value(a), stride_major(a),
                 begin_value(af), stride_major(af), begin_value(ipiv),
                 begin_value(b), stride_major(b), begin_value(x),
                 stride_major(x), begin_value(ferr), begin_value(berr),

@@ -112,10 +112,10 @@ struct pptrf_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP >
-    static std::ptrdiff_t invoke( const fortran_int_t n, MatrixAP& ap ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_ASSERT( n >= 0 );
-        return detail::pptrf( uplo(), n, begin_value(ap) );
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::pptrf( uplo(), size_column(ap), begin_value(ap) );
     }
 
 };
@@ -135,9 +135,8 @@ struct pptrf_impl {
 // * MatrixAP&
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t pptrf( const fortran_int_t n, MatrixAP& ap ) {
-    return pptrf_impl< typename value< MatrixAP >::type >::invoke( n,
-            ap );
+inline std::ptrdiff_t pptrf( MatrixAP& ap ) {
+    return pptrf_impl< typename value< MatrixAP >::type >::invoke( ap );
 }
 
 //
@@ -145,10 +144,8 @@ inline std::ptrdiff_t pptrf( const fortran_int_t n, MatrixAP& ap ) {
 // * const MatrixAP&
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t pptrf( const fortran_int_t n,
-        const MatrixAP& ap ) {
-    return pptrf_impl< typename value< MatrixAP >::type >::invoke( n,
-            ap );
+inline std::ptrdiff_t pptrf( const MatrixAP& ap ) {
+    return pptrf_impl< typename value< MatrixAP >::type >::invoke( ap );
 }
 
 } // namespace lapack

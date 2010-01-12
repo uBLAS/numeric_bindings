@@ -175,16 +175,16 @@ struct tprfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tprfs( uplo, trans(), diag(), n, size_column(x),
+        return detail::tprfs( uplo, trans(), diag(), n, size_column(b),
                 begin_value(ap), begin_value(b), stride_major(b),
                 begin_value(x), stride_major(x), begin_value(ferr),
                 begin_value(berr), begin_value(work.select(real_type())),
@@ -282,15 +282,15 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tprfs( uplo, trans(), diag(), n, size_column(x),
+        return detail::tprfs( uplo, trans(), diag(), n, size_column(b),
                 begin_value(ap), begin_value(b), stride_major(b),
                 begin_value(x), stride_major(x), begin_value(ferr),
                 begin_value(berr), begin_value(work.select(value_type())),

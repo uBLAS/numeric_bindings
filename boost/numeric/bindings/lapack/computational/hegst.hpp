@@ -94,20 +94,22 @@ struct hegst_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename MatrixB >
-    static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const fortran_int_t n, MatrixA& a, const MatrixB& b ) {
+    static std::ptrdiff_t invoke( const fortran_int_t itype, MatrixA& a,
+            const MatrixB& b ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::hegst( itype, uplo(), n, begin_value(a),
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        return detail::hegst( itype, uplo(), size_column(a), begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b) );
     }
 
@@ -128,10 +130,10 @@ struct hegst_impl {
 // * MatrixA&
 //
 template< typename MatrixA, typename MatrixB >
-inline std::ptrdiff_t hegst( const fortran_int_t itype,
-        const fortran_int_t n, MatrixA& a, const MatrixB& b ) {
+inline std::ptrdiff_t hegst( const fortran_int_t itype, MatrixA& a,
+        const MatrixB& b ) {
     return hegst_impl< typename value< MatrixA >::type >::invoke( itype,
-            n, a, b );
+            a, b );
 }
 
 //
@@ -140,9 +142,9 @@ inline std::ptrdiff_t hegst( const fortran_int_t itype,
 //
 template< typename MatrixA, typename MatrixB >
 inline std::ptrdiff_t hegst( const fortran_int_t itype,
-        const fortran_int_t n, const MatrixA& a, const MatrixB& b ) {
+        const MatrixA& a, const MatrixB& b ) {
     return hegst_impl< typename value< MatrixA >::type >::invoke( itype,
-            n, a, b );
+            a, b );
 }
 
 } // namespace lapack

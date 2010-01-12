@@ -129,8 +129,8 @@ struct gbtrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-    static std::ptrdiff_t invoke( const fortran_int_t n,
-            const MatrixAB& ab, const VectorIPIV& ipiv, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const MatrixAB& ab, const VectorIPIV& ipiv,
+            MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -138,14 +138,15 @@ struct gbtrs_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(ipiv) >= n );
+        BOOST_ASSERT( size(ipiv) >= size_column(ab) );
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( stride_major(ab) >= 2 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::gbtrs( trans(), n, bandwidth_lower(ab),
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ab)) );
+        return detail::gbtrs( trans(), size_column(ab), bandwidth_lower(ab),
                 bandwidth_upper(ab), size_column(b), begin_value(ab),
                 stride_major(ab), begin_value(ipiv), begin_value(b),
                 stride_major(b) );
@@ -168,9 +169,9 @@ struct gbtrs_impl {
 // * MatrixB&
 //
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gbtrs( const fortran_int_t n,
-        const MatrixAB& ab, const VectorIPIV& ipiv, MatrixB& b ) {
-    return gbtrs_impl< typename value< MatrixAB >::type >::invoke( n, ab,
+inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
+        MatrixB& b ) {
+    return gbtrs_impl< typename value< MatrixAB >::type >::invoke( ab,
             ipiv, b );
 }
 
@@ -179,9 +180,9 @@ inline std::ptrdiff_t gbtrs( const fortran_int_t n,
 // * const MatrixB&
 //
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t gbtrs( const fortran_int_t n,
-        const MatrixAB& ab, const VectorIPIV& ipiv, const MatrixB& b ) {
-    return gbtrs_impl< typename value< MatrixAB >::type >::invoke( n, ab,
+inline std::ptrdiff_t gbtrs( const MatrixAB& ab, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    return gbtrs_impl< typename value< MatrixAB >::type >::invoke( ab,
             ipiv, b );
 }
 

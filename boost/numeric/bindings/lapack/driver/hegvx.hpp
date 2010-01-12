@@ -112,8 +112,8 @@ struct hegvx_impl {
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename RWORK, typename IWORK >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, const real_type vl, const real_type vu,
+            const char jobz, const char range, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace3< WORK, RWORK,
@@ -133,22 +133,27 @@ struct hegvx_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(w) >= n );
+        BOOST_ASSERT( size(w) >= size_column(a) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
+                min_size_iwork( size_column(a) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(a) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::hegvx( itype, jobz, range, uplo(), n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), vl, vu, il,
-                iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(work.select(value_type())),
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        return detail::hegvx( itype, jobz, range, uplo(), size_column(a),
+                begin_value(a), stride_major(a), begin_value(b),
+                stride_major(b), vl, vu, il, iu, abstol, m, begin_value(w),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(value_type())),
                 size(work.select(value_type())),
                 begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())),
@@ -165,18 +170,20 @@ struct hegvx_impl {
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, const real_type vl, const real_type vu,
+            const char jobz, const char range, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(a) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,
-                w, z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
+                min_size_iwork( size_column(a) ) );
+        return invoke( itype, jobz, range, a, b, vl, vu, il, iu, abstol, m, w,
+                z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     //
@@ -189,25 +196,27 @@ struct hegvx_impl {
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
     static std::ptrdiff_t invoke( const fortran_int_t itype,
-            const char jobz, const char range, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, const real_type vl, const real_type vu,
+            const char jobz, const char range, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu,
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        detail::hegvx( itype, jobz, range, uplo(), n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), vl, vu, il,
-                iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), &opt_size_work, -1, begin_value(tmp_rwork),
-                begin_value(tmp_iwork), begin_value(ifail) );
+                min_size_iwork( size_column(a) ) );
+        detail::hegvx( itype, jobz, range, uplo(), size_column(a),
+                begin_value(a), stride_major(a), begin_value(b),
+                stride_major(b), vl, vu, il, iu, abstol, m, begin_value(w),
+                begin_value(z), stride_major(z), &opt_size_work, -1,
+                begin_value(tmp_rwork), begin_value(tmp_iwork),
+                begin_value(ifail) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,
-                w, z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
+        return invoke( itype, jobz, range, a, b, vl, vu, il, iu, abstol, m, w,
+                z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     //
@@ -257,17 +266,16 @@ struct hegvx_impl {
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -282,16 +290,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -307,17 +315,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -332,16 +339,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -357,17 +364,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -382,16 +388,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -407,17 +413,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -432,16 +437,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -457,17 +462,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -482,16 +486,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -507,17 +511,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -532,16 +535,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -557,17 +560,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -582,16 +584,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -607,17 +609,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -632,16 +633,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -657,17 +658,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -682,16 +682,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -707,17 +707,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -732,16 +731,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -757,17 +756,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -782,16 +780,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -807,17 +805,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -832,16 +829,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -857,18 +854,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -883,16 +879,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -908,18 +904,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -934,16 +929,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -959,18 +954,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -985,16 +979,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1010,18 +1004,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1036,16 +1029,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1061,17 +1054,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1086,16 +1078,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1111,17 +1103,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1136,16 +1127,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1161,17 +1152,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1186,16 +1176,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1211,17 +1201,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1236,16 +1225,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1261,18 +1250,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1287,16 +1275,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1312,18 +1300,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1338,16 +1325,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1363,18 +1350,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1389,16 +1375,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1414,18 +1400,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1440,16 +1425,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1465,18 +1450,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1491,16 +1474,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1516,18 +1499,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1542,16 +1523,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1567,18 +1548,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1593,16 +1572,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1618,18 +1597,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1644,16 +1621,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1669,18 +1646,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1695,16 +1671,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1720,18 +1696,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1746,16 +1721,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1771,18 +1746,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1797,16 +1771,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 
@@ -1822,18 +1796,17 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
         Workspace work ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
-            work );
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, work );
 }
 
 //
@@ -1848,16 +1821,16 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
+        const char jobz, const char range, const MatrixA& a, const MatrixB& b,
         const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     return hegvx_impl< typename value< MatrixA >::type >::invoke( itype,
-            jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
+            jobz, range, a, b, vl, vu, il, iu, abstol, m, w, z, ifail,
             optimal_workspace() );
 }
 

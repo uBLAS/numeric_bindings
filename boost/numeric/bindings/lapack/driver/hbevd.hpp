@@ -103,9 +103,8 @@ struct hbevd_impl {
     //
     template< typename MatrixAB, typename VectorW, typename MatrixZ,
             typename WORK, typename RWORK, typename IWORK >
-    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            MatrixAB& ab, VectorW& w, MatrixZ& z, detail::workspace3< WORK,
-            RWORK, IWORK > work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, VectorW& w,
+            MatrixZ& z, detail::workspace3< WORK, RWORK, IWORK > work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -116,18 +115,18 @@ struct hbevd_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( jobz, n ));
+                min_size_iwork( jobz, size_column(ab) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( jobz,
-                n ));
+                size_column(ab) ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( jobz,
-                n ));
+                size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo()) );
-        return detail::hbevd( jobz, uplo(), n, bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab), begin_value(w),
+        return detail::hbevd( jobz, uplo(), size_column(ab), bandwidth(ab,
+                uplo()), begin_value(ab), stride_major(ab), begin_value(w),
                 begin_value(z), stride_major(z),
                 begin_value(work.select(value_type())),
                 size(work.select(value_type())),
@@ -145,16 +144,16 @@ struct hbevd_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            MatrixAB& ab, VectorW& w, MatrixZ& z, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, VectorW& w,
+            MatrixZ& z, minimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work( jobz,
-                n ) );
+                size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( jobz,
-                n ) );
+                size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( jobz, n ) );
-        return invoke( jobz, n, ab, w, z, workspace( tmp_work, tmp_rwork,
+                min_size_iwork( jobz, size_column(ab) ) );
+        return invoke( jobz, ab, w, z, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -166,14 +165,14 @@ struct hbevd_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
-            MatrixAB& ab, VectorW& w, MatrixZ& z, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, VectorW& w,
+            MatrixZ& z, optimal_workspace work ) {
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         value_type opt_size_work;
         real_type opt_size_rwork;
         fortran_int_t opt_size_iwork;
-        detail::hbevd( jobz, uplo(), n, bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab), begin_value(w),
+        detail::hbevd( jobz, uplo(), size_column(ab), bandwidth(ab,
+                uplo()), begin_value(ab), stride_major(ab), begin_value(w),
                 begin_value(z), stride_major(z), &opt_size_work, -1,
                 &opt_size_rwork, -1, &opt_size_iwork, -1 );
         bindings::detail::array< value_type > tmp_work(
@@ -182,7 +181,7 @@ struct hbevd_impl {
                 traits::detail::to_int( opt_size_rwork ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 opt_size_iwork );
-        return invoke( jobz, n, ab, w, z, workspace( tmp_work, tmp_rwork,
+        return invoke( jobz, ab, w, z, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -250,10 +249,10 @@ struct hbevd_impl {
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, VectorW& w, MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab, VectorW& w,
+        MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -264,10 +263,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, VectorW& w, MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab, VectorW& w,
+        MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -279,10 +278,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, VectorW& w, MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        VectorW& w, MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -293,10 +292,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, VectorW& w, MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        VectorW& w, MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -308,10 +307,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const VectorW& w, MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab,
+        const VectorW& w, MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -322,10 +321,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const VectorW& w, MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab,
+        const VectorW& w, MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -337,10 +336,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const VectorW& w, MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        const VectorW& w, MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -351,10 +350,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const VectorW& w, MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        const VectorW& w, MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -366,10 +365,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, VectorW& w, const MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab, VectorW& w,
+        const MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -380,10 +379,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, VectorW& w, const MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab, VectorW& w,
+        const MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -395,10 +394,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, VectorW& w, const MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        VectorW& w, const MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -409,10 +408,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, VectorW& w, const MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        VectorW& w, const MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -424,10 +423,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const VectorW& w, const MatrixZ& z, Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab,
+        const VectorW& w, const MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -438,10 +437,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        MatrixAB& ab, const VectorW& w, const MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, MatrixAB& ab,
+        const VectorW& w, const MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 //
@@ -453,11 +452,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const VectorW& w, const MatrixZ& z,
-        Workspace work ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        const VectorW& w, const MatrixZ& z, Workspace work ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, work );
+            ab, w, z, work );
 }
 
 //
@@ -468,10 +466,10 @@ inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline std::ptrdiff_t hbevd( const char jobz, const fortran_int_t n,
-        const MatrixAB& ab, const VectorW& w, const MatrixZ& z ) {
+inline std::ptrdiff_t hbevd( const char jobz, const MatrixAB& ab,
+        const VectorW& w, const MatrixZ& z ) {
     return hbevd_impl< typename value< MatrixAB >::type >::invoke( jobz,
-            n, ab, w, z, optimal_workspace() );
+            ab, w, z, optimal_workspace() );
 }
 
 } // namespace lapack

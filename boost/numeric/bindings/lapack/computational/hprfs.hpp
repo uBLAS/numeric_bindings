@@ -127,16 +127,16 @@ struct hprfs_impl {
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(afp) >= n*(n+1)/2 );
-        BOOST_ASSERT( size(berr) >= size_column(x) );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(ipiv) >= n );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_column(x) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::hprfs( uplo(), n, size_column(x), begin_value(ap),
+        return detail::hprfs( uplo(), n, size_column(b), begin_value(ap),
                 begin_value(afp), begin_value(ipiv), begin_value(b),
                 stride_major(b), begin_value(x), stride_major(x),
                 begin_value(ferr), begin_value(berr),

@@ -133,10 +133,10 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE, typename WORK >
-    static std::ptrdiff_t invoke( const char job, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorLSCALE& lscale,
-            VectorRSCALE& rscale, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorLSCALE& lscale, VectorRSCALE& rscale, detail::workspace1<
+            WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -154,15 +154,17 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_STATIC_ASSERT( (is_mutable< VectorLSCALE >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorRSCALE >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::ggbal( job, n, begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), ilo, ihi,
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        return detail::ggbal( job, size_column(a), begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b), ilo, ihi,
                 begin_value(lscale), begin_value(rscale),
                 begin_value(work.select(real_type())) );
     }
@@ -176,13 +178,13 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static std::ptrdiff_t invoke( const char job, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorLSCALE& lscale,
-            VectorRSCALE& rscale, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorLSCALE& lscale, VectorRSCALE& rscale,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        return invoke( job, n, a, b, ilo, ihi, lscale, rscale,
+        return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 workspace( tmp_work ) );
     }
 
@@ -195,11 +197,11 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static std::ptrdiff_t invoke( const char job, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorLSCALE& lscale,
-            VectorRSCALE& rscale, optimal_workspace work ) {
-        return invoke( job, n, a, b, ilo, ihi, lscale, rscale,
+    static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorLSCALE& lscale, VectorRSCALE& rscale,
+            optimal_workspace work ) {
+        return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 minimal_workspace() );
     }
 
@@ -229,10 +231,10 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE, typename WORK >
-    static std::ptrdiff_t invoke( const char job, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorLSCALE& lscale,
-            VectorRSCALE& rscale, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorLSCALE& lscale, VectorRSCALE& rscale, detail::workspace1<
+            WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorLSCALE >::type >::type,
                 typename remove_const< typename value<
@@ -246,15 +248,17 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_STATIC_ASSERT( (is_mutable< VectorLSCALE >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorRSCALE >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::ggbal( job, n, begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), ilo, ihi,
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        return detail::ggbal( job, size_column(a), begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b), ilo, ihi,
                 begin_value(lscale), begin_value(rscale),
                 begin_value(work.select(real_type())) );
     }
@@ -268,13 +272,13 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static std::ptrdiff_t invoke( const char job, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorLSCALE& lscale,
-            VectorRSCALE& rscale, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorLSCALE& lscale, VectorRSCALE& rscale,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        return invoke( job, n, a, b, ilo, ihi, lscale, rscale,
+        return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 workspace( tmp_work ) );
     }
 
@@ -287,11 +291,11 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static std::ptrdiff_t invoke( const char job, const fortran_int_t n,
-            MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-            fortran_int_t& ihi, VectorLSCALE& lscale,
-            VectorRSCALE& rscale, optimal_workspace work ) {
-        return invoke( job, n, a, b, ilo, ihi, lscale, rscale,
+    static std::ptrdiff_t invoke( const char job, MatrixA& a, MatrixB& b,
+            fortran_int_t& ilo, fortran_int_t& ihi,
+            VectorLSCALE& lscale, VectorRSCALE& rscale,
+            optimal_workspace work ) {
+        return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 minimal_workspace() );
     }
 
@@ -324,242 +328,232 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
-        Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
-        Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
-        Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
-        Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorLSCALE&
-// * VectorRSCALE&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
-}
-
-//
-// Overloaded function for ggbal. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorLSCALE&
-// * VectorRSCALE&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
-        typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
 // Overloaded function for ggbal. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const VectorLSCALE&
+// * VectorLSCALE&
 // * VectorRSCALE&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggbal. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * const VectorLSCALE&
+// * VectorLSCALE&
 // * VectorRSCALE&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
 // Overloaded function for ggbal. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * const VectorLSCALE&
+// * VectorLSCALE&
 // * VectorRSCALE&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
 // Overloaded function for ggbal. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * const VectorLSCALE&
+// * VectorLSCALE&
 // * VectorRSCALE&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
 // Overloaded function for ggbal. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * const VectorLSCALE&
+// * VectorLSCALE&
 // * VectorRSCALE&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorLSCALE&
+// * VectorRSCALE&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE, typename Workspace >
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        VectorLSCALE& lscale, VectorRSCALE& rscale, Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * VectorLSCALE&
+// * VectorRSCALE&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE >
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        VectorLSCALE& lscale, VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorLSCALE&
+// * VectorRSCALE&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE, typename Workspace >
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale, Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const VectorLSCALE&
+// * VectorRSCALE&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE >
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorLSCALE&
+// * VectorRSCALE&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE, typename Workspace >
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale, Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const VectorLSCALE&
+// * VectorRSCALE&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE >
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorLSCALE&
+// * VectorRSCALE&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE, typename Workspace >
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale, Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
+}
+
+//
+// Overloaded function for ggbal. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const VectorLSCALE&
+// * VectorRSCALE&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
+        typename VectorRSCALE >
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -572,12 +566,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale, Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -590,12 +583,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -608,12 +600,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -626,12 +617,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -644,12 +634,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -662,12 +651,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -680,12 +668,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -698,12 +685,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi, VectorLSCALE& lscale,
         const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -716,12 +702,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
-        const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        VectorLSCALE& lscale, const VectorRSCALE& rscale, Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -734,12 +719,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, VectorLSCALE& lscale,
-        const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        VectorLSCALE& lscale, const VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -752,12 +736,12 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+        Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -770,12 +754,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -788,12 +771,12 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+        Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -806,12 +789,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a, MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -824,12 +806,12 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+        Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -842,12 +824,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+inline std::ptrdiff_t ggbal( const char job, MatrixA& a, const MatrixB& b,
+        fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 //
@@ -860,12 +841,12 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE, typename Workspace >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale, Workspace work ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, work );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+        Workspace work ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, work );
 }
 
 //
@@ -878,12 +859,11 @@ inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
 //
 template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
         typename VectorRSCALE >
-inline std::ptrdiff_t ggbal( const char job, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, fortran_int_t& ilo,
-        fortran_int_t& ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale ) {
-    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, n,
-            a, b, ilo, ihi, lscale, rscale, optimal_workspace() );
+inline std::ptrdiff_t ggbal( const char job, const MatrixA& a,
+        const MatrixB& b, fortran_int_t& ilo, fortran_int_t& ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale ) {
+    return ggbal_impl< typename value< MatrixA >::type >::invoke( job, a,
+            b, ilo, ihi, lscale, rscale, optimal_workspace() );
 }
 
 } // namespace lapack

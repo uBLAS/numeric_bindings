@@ -95,16 +95,16 @@ struct lanhb_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAB, typename WORK >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t n,
-            const MatrixAB& ab, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
+            detail::workspace1< WORK > work ) {
         BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
         BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
         BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+1 );
-        return detail::lanhb( norm, uplo(), n, bandwidth_lower(ab),
-                begin_value(ab), stride_major(ab),
+        return detail::lanhb( norm, uplo(), size_column(ab),
+                bandwidth_lower(ab), begin_value(ab), stride_major(ab),
                 begin_value(work.select(real_type())) );
     }
 
@@ -116,11 +116,11 @@ struct lanhb_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t n,
-            const MatrixAB& ab, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
+            minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        return invoke( norm, n, ab, workspace( tmp_work ) );
+        return invoke( norm, ab, workspace( tmp_work ) );
     }
 
     //
@@ -131,9 +131,9 @@ struct lanhb_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t n,
-            const MatrixAB& ab, optimal_workspace work ) {
-        return invoke( norm, n, ab, minimal_workspace() );
+    static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
+            optimal_workspace work ) {
+        return invoke( norm, ab, minimal_workspace() );
     }
 
     //
@@ -160,10 +160,10 @@ struct lanhb_impl {
 // * User-defined workspace
 //
 template< typename MatrixAB, typename Workspace >
-inline std::ptrdiff_t lanhb( const char norm, const fortran_int_t n,
-        const MatrixAB& ab, Workspace work ) {
+inline std::ptrdiff_t lanhb( const char norm, const MatrixAB& ab,
+        Workspace work ) {
     return lanhb_impl< typename value< MatrixAB >::type >::invoke( norm,
-            n, ab, work );
+            ab, work );
 }
 
 //
@@ -171,10 +171,9 @@ inline std::ptrdiff_t lanhb( const char norm, const fortran_int_t n,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAB >
-inline std::ptrdiff_t lanhb( const char norm, const fortran_int_t n,
-        const MatrixAB& ab ) {
+inline std::ptrdiff_t lanhb( const char norm, const MatrixAB& ab ) {
     return lanhb_impl< typename value< MatrixAB >::type >::invoke( norm,
-            n, ab, optimal_workspace() );
+            ab, optimal_workspace() );
 }
 
 } // namespace lapack

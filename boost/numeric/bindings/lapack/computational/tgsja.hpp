@@ -198,10 +198,10 @@ struct tgsja_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( jobq == 'Q' || jobq == 'I' || jobq == 'N' );
         BOOST_ASSERT( jobu == 'U' || jobu == 'I' || jobu == 'N' );
         BOOST_ASSERT( jobv == 'V' || jobv == 'I' || jobv == 'N' );
-        BOOST_ASSERT( size(alpha) >= size_column(b) );
+        BOOST_ASSERT( size(alpha) >= size_column(a) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(b) ));
-        BOOST_ASSERT( size_column(b) >= 0 );
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
@@ -214,7 +214,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
         return detail::tgsja( jobu, jobv, jobq, size_row(a), size_row(b),
-                size_column(b), k, l, begin_value(a), stride_major(a),
+                size_column(a), k, l, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), tola, tolb,
                 begin_value(alpha), begin_value(beta), begin_value(u),
                 stride_major(u), begin_value(v), stride_major(v),
@@ -239,7 +239,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             fortran_int_t& ncycle, minimal_workspace work ) {
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(b) ) );
+                size_column(a) ) );
         return invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta,
                 u, v, q, ncycle, workspace( tmp_work ) );
     }
@@ -327,10 +327,10 @@ struct tgsja_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( jobq == 'Q' || jobq == 'I' || jobq == 'N' );
         BOOST_ASSERT( jobu == 'U' || jobu == 'I' || jobu == 'N' );
         BOOST_ASSERT( jobv == 'V' || jobv == 'I' || jobv == 'N' );
-        BOOST_ASSERT( size(alpha) >= size_column(b) );
+        BOOST_ASSERT( size(alpha) >= size_column(a) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(b) ));
-        BOOST_ASSERT( size_column(b) >= 0 );
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
@@ -343,7 +343,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_row(b)) );
         return detail::tgsja( jobu, jobv, jobq, size_row(a), size_row(b),
-                size_column(b), k, l, begin_value(a), stride_major(a),
+                size_column(a), k, l, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), tola, tolb,
                 begin_value(alpha), begin_value(beta), begin_value(u),
                 stride_major(u), begin_value(v), stride_major(v),
@@ -368,7 +368,7 @@ struct tgsja_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             fortran_int_t& ncycle, minimal_workspace work ) {
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(b) ) );
+                size_column(a) ) );
         return invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta,
                 u, v, q, ncycle, workspace( tmp_work ) );
     }

@@ -48,12 +48,14 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hetrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t hetrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<float>* a,
         const fortran_int_t lda, const fortran_int_t* ipiv,
         std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_CHETRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    LAPACK_CHETRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -62,12 +64,14 @@ inline std::ptrdiff_t hetrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hetrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t hetrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<double>* a,
         const fortran_int_t lda, const fortran_int_t* ipiv,
         std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_ZHETRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    LAPACK_ZHETRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -90,8 +94,9 @@ struct hetrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
-            const VectorIPIV& ipiv, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
+            MatrixB& b ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -106,7 +111,7 @@ struct hetrs_impl {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        return detail::hetrs( uplo, size_column(a), size_column(b),
+        return detail::hetrs( uplo(), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(ipiv),
                 begin_value(b), stride_major(b) );
     }
@@ -128,10 +133,10 @@ struct hetrs_impl {
 // * MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hetrs( const char uplo, const MatrixA& a,
-        const VectorIPIV& ipiv, MatrixB& b ) {
-    return hetrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, b );
+inline std::ptrdiff_t hetrs( const MatrixA& a, const VectorIPIV& ipiv,
+        MatrixB& b ) {
+    return hetrs_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -139,10 +144,10 @@ inline std::ptrdiff_t hetrs( const char uplo, const MatrixA& a,
 // * const MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hetrs( const char uplo, const MatrixA& a,
-        const VectorIPIV& ipiv, const MatrixB& b ) {
-    return hetrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, b );
+inline std::ptrdiff_t hetrs( const MatrixA& a, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    return hetrs_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 } // namespace lapack

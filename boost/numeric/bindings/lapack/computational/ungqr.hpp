@@ -92,23 +92,25 @@ struct ungqr_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static std::ptrdiff_t invoke( const fortran_int_t m,
-            const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( k >= k );
-        BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= n );
-        BOOST_ASSERT( size(tau) >= k );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size(tau) >= size(tau) );
+        BOOST_ASSERT( size(tau) >= size(tau) );
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= size_column(a) );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,m) );
-        return detail::ungqr( m, n, k, begin_value(a), stride_major(a),
-                begin_value(tau), begin_value(work.select(value_type())),
+        BOOST_ASSERT( size_row(a) >= 0 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_row(a)) );
+        return detail::ungqr( size_row(a), size_column(a), size(tau),
+                begin_value(a), stride_major(a), begin_value(tau),
+                begin_value(work.select(value_type())),
                 size(work.select(value_type())) );
     }
 
@@ -120,11 +122,11 @@ struct ungqr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU >
-    static std::ptrdiff_t invoke( const fortran_int_t m,
-            const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, minimal_workspace work ) {
-        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
-        return invoke( m, n, k, a, tau, workspace( tmp_work ) );
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
+            minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(a) ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -135,15 +137,15 @@ struct ungqr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU >
-    static std::ptrdiff_t invoke( const fortran_int_t m,
-            const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-            const VectorTAU& tau, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorTAU& tau,
+            optimal_workspace work ) {
         value_type opt_size_work;
-        detail::ungqr( m, n, k, begin_value(a), stride_major(a),
-                begin_value(tau), &opt_size_work, -1 );
+        detail::ungqr( size_row(a), size_column(a), size(tau),
+                begin_value(a), stride_major(a), begin_value(tau),
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( m, n, k, a, tau, workspace( tmp_work ) );
+        return invoke( a, tau, workspace( tmp_work ) );
     }
 
     //
@@ -171,11 +173,10 @@ struct ungqr_impl {
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t ungqr( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-        const VectorTAU& tau, Workspace work ) {
-    return ungqr_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, work );
+inline std::ptrdiff_t ungqr( MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
+    return ungqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            work );
 }
 
 //
@@ -184,11 +185,9 @@ inline std::ptrdiff_t ungqr( const fortran_int_t m,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t ungqr( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k, MatrixA& a,
-        const VectorTAU& tau ) {
-    return ungqr_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, optimal_workspace() );
+inline std::ptrdiff_t ungqr( MatrixA& a, const VectorTAU& tau ) {
+    return ungqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            optimal_workspace() );
 }
 
 //
@@ -197,11 +196,10 @@ inline std::ptrdiff_t ungqr( const fortran_int_t m,
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline std::ptrdiff_t ungqr( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return ungqr_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, work );
+inline std::ptrdiff_t ungqr( const MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
+    return ungqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            work );
 }
 
 //
@@ -210,11 +208,9 @@ inline std::ptrdiff_t ungqr( const fortran_int_t m,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU >
-inline std::ptrdiff_t ungqr( const fortran_int_t m,
-        const fortran_int_t n, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau ) {
-    return ungqr_impl< typename value< MatrixA >::type >::invoke( m, n,
-            k, a, tau, optimal_workspace() );
+inline std::ptrdiff_t ungqr( const MatrixA& a, const VectorTAU& tau ) {
+    return ungqr_impl< typename value< MatrixA >::type >::invoke( a, tau,
+            optimal_workspace() );
 }
 
 } // namespace lapack

@@ -98,9 +98,9 @@ struct ormqr_impl {
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
-            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, detail::workspace1<
+            WORK > work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -112,7 +112,7 @@ struct ormqr_impl {
                 MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size(tau) >= k );
+        BOOST_ASSERT( size(tau) >= size(tau) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( side,
                 size_row(c), size_column(c) ));
         BOOST_ASSERT( size_column(c) >= 0 );
@@ -121,8 +121,8 @@ struct ormqr_impl {
         BOOST_ASSERT( size_row(c) >= 0 );
         BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
                 size_row(c)) );
-        return detail::ormqr( side, trans(), size_row(c), size_column(c), k,
-                begin_value(a), stride_major(a), begin_value(tau),
+        return detail::ormqr( side, trans(), size_row(c), size_column(c),
+                size(tau), begin_value(a), stride_major(a), begin_value(tau),
                 begin_value(c), stride_major(c),
                 begin_value(work.select(real_type())),
                 size(work.select(real_type())) );
@@ -136,13 +136,12 @@ struct ormqr_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
-            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, minimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
                 size_row(c), size_column(c) ) );
-        return invoke( side, k, a, tau, c, workspace( tmp_work ) );
+        return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -153,17 +152,16 @@ struct ormqr_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
-            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
-            optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const char side, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, optimal_workspace work ) {
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
-        detail::ormqr( side, trans(), size_row(c), size_column(c), k,
-                begin_value(a), stride_major(a), begin_value(tau),
+        detail::ormqr( side, trans(), size_row(c), size_column(c),
+                size(tau), begin_value(a), stride_major(a), begin_value(tau),
                 begin_value(c), stride_major(c), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        return invoke( side, k, a, tau, c, workspace( tmp_work ) );
+        return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
     //
@@ -196,10 +194,10 @@ struct ormqr_impl {
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, MatrixC& c, Workspace work ) {
+inline std::ptrdiff_t ormqr( const char side, const MatrixA& a,
+        const VectorTAU& tau, MatrixC& c, Workspace work ) {
     return ormqr_impl< typename value< MatrixA >::type >::invoke( side,
-            k, a, tau, c, work );
+            a, tau, c, work );
 }
 
 //
@@ -208,10 +206,10 @@ inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, MatrixC& c ) {
+inline std::ptrdiff_t ormqr( const char side, const MatrixA& a,
+        const VectorTAU& tau, MatrixC& c ) {
     return ormqr_impl< typename value< MatrixA >::type >::invoke( side,
-            k, a, tau, c, optimal_workspace() );
+            a, tau, c, optimal_workspace() );
 }
 
 //
@@ -221,11 +219,10 @@ inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, const MatrixC& c,
-        Workspace work ) {
+inline std::ptrdiff_t ormqr( const char side, const MatrixA& a,
+        const VectorTAU& tau, const MatrixC& c, Workspace work ) {
     return ormqr_impl< typename value< MatrixA >::type >::invoke( side,
-            k, a, tau, c, work );
+            a, tau, c, work );
 }
 
 //
@@ -234,10 +231,10 @@ inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline std::ptrdiff_t ormqr( const char side, const fortran_int_t k,
-        const MatrixA& a, const VectorTAU& tau, const MatrixC& c ) {
+inline std::ptrdiff_t ormqr( const char side, const MatrixA& a,
+        const VectorTAU& tau, const MatrixC& c ) {
     return ormqr_impl< typename value< MatrixA >::type >::invoke( side,
-            k, a, tau, c, optimal_workspace() );
+            a, tau, c, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -48,11 +48,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sytrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const float* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, float* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_SSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    LAPACK_SSYTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -61,11 +63,13 @@ inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sytrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const double* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, double* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_DSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    LAPACK_DSYTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -74,12 +78,14 @@ inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sytrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<float>* a,
         const fortran_int_t lda, const fortran_int_t* ipiv,
         std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_CSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    LAPACK_CSYTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -88,12 +94,14 @@ inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t sytrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sytrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<double>* a,
         const fortran_int_t lda, const fortran_int_t* ipiv,
         std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_ZSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+    LAPACK_ZSYTRS( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -116,8 +124,9 @@ struct sytrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const MatrixA& a,
-            const VectorIPIV& ipiv, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
+            MatrixB& b ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -132,7 +141,7 @@ struct sytrs_impl {
                 size_column(a)) );
         BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        return detail::sytrs( uplo, size_column(a), size_column(b),
+        return detail::sytrs( uplo(), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(ipiv),
                 begin_value(b), stride_major(b) );
     }
@@ -154,10 +163,10 @@ struct sytrs_impl {
 // * MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t sytrs( const char uplo, const MatrixA& a,
-        const VectorIPIV& ipiv, MatrixB& b ) {
-    return sytrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, b );
+inline std::ptrdiff_t sytrs( const MatrixA& a, const VectorIPIV& ipiv,
+        MatrixB& b ) {
+    return sytrs_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 //
@@ -165,10 +174,10 @@ inline std::ptrdiff_t sytrs( const char uplo, const MatrixA& a,
 // * const MatrixB&
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t sytrs( const char uplo, const MatrixA& a,
-        const VectorIPIV& ipiv, const MatrixB& b ) {
-    return sytrs_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, b );
+inline std::ptrdiff_t sytrs( const MatrixA& a, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    return sytrs_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, b );
 }
 
 } // namespace lapack

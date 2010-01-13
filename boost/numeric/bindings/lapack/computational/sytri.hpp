@@ -53,10 +53,12 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n, float* a,
+template< typename UpLo >
+inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n, float* a,
         const fortran_int_t lda, const fortran_int_t* ipiv, float* work ) {
     fortran_int_t info(0);
-    LAPACK_SSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
+    LAPACK_SSYTRI( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, work,
+            &info );
     return info;
 }
 
@@ -65,10 +67,12 @@ inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n, float* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n, double* a,
+template< typename UpLo >
+inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n, double* a,
         const fortran_int_t lda, const fortran_int_t* ipiv, double* work ) {
     fortran_int_t info(0);
-    LAPACK_DSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
+    LAPACK_DSYTRI( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, work,
+            &info );
     return info;
 }
 
@@ -77,11 +81,13 @@ inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n, double* a,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n,
         std::complex<float>* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, std::complex<float>* work ) {
     fortran_int_t info(0);
-    LAPACK_CSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
+    LAPACK_CSYTRI( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, work,
+            &info );
     return info;
 }
 
@@ -90,11 +96,13 @@ inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t sytri( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sytri( UpLo, const fortran_int_t n,
         std::complex<double>* a, const fortran_int_t lda,
         const fortran_int_t* ipiv, std::complex<double>* work ) {
     fortran_int_t info(0);
-    LAPACK_ZSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
+    LAPACK_ZSYTRI( &lapack_option< UpLo >::value, &n, a, &lda, ipiv, work,
+            &info );
     return info;
 }
 
@@ -123,8 +131,9 @@ struct sytri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static std::ptrdiff_t invoke( const char uplo, MatrixA& a,
-            const VectorIPIV& ipiv, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size(ipiv) >= size_column(a) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
@@ -133,7 +142,7 @@ struct sytri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        return detail::sytri( uplo, size_column(a), begin_value(a),
+        return detail::sytri( uplo(), size_column(a), begin_value(a),
                 stride_major(a), begin_value(ipiv),
                 begin_value(work.select(real_type())) );
     }
@@ -146,11 +155,12 @@ struct sytri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixA& a,
-            const VectorIPIV& ipiv, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        return invoke( uplo, a, ipiv, workspace( tmp_work ) );
+        return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -161,9 +171,10 @@ struct sytri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixA& a,
-            const VectorIPIV& ipiv, optimal_workspace work ) {
-        return invoke( uplo, a, ipiv, minimal_workspace() );
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        return invoke( a, ipiv, minimal_workspace() );
     }
 
     //
@@ -191,8 +202,9 @@ struct sytri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static std::ptrdiff_t invoke( const char uplo, MatrixA& a,
-            const VectorIPIV& ipiv, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size(ipiv) >= size_column(a) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
@@ -201,7 +213,7 @@ struct sytri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
                 size_column(a)) );
-        return detail::sytri( uplo, size_column(a), begin_value(a),
+        return detail::sytri( uplo(), size_column(a), begin_value(a),
                 stride_major(a), begin_value(ipiv),
                 begin_value(work.select(value_type())) );
     }
@@ -214,11 +226,12 @@ struct sytri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixA& a,
-            const VectorIPIV& ipiv, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(a) ) );
-        return invoke( uplo, a, ipiv, workspace( tmp_work ) );
+        return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -229,9 +242,10 @@ struct sytri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixA& a,
-            const VectorIPIV& ipiv, optimal_workspace work ) {
-        return invoke( uplo, a, ipiv, minimal_workspace() );
+    static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        return invoke( a, ipiv, minimal_workspace() );
     }
 
     //
@@ -259,10 +273,10 @@ struct sytri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sytri( const char uplo, MatrixA& a,
-        const VectorIPIV& ipiv, Workspace work ) {
-    return sytri_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, work );
+inline std::ptrdiff_t sytri( MatrixA& a, const VectorIPIV& ipiv,
+        Workspace work ) {
+    return sytri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, work );
 }
 
 //
@@ -271,10 +285,9 @@ inline std::ptrdiff_t sytri( const char uplo, MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sytri( const char uplo, MatrixA& a,
-        const VectorIPIV& ipiv ) {
-    return sytri_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, optimal_workspace() );
+inline std::ptrdiff_t sytri( MatrixA& a, const VectorIPIV& ipiv ) {
+    return sytri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, optimal_workspace() );
 }
 
 //
@@ -283,10 +296,10 @@ inline std::ptrdiff_t sytri( const char uplo, MatrixA& a,
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sytri( const char uplo, const MatrixA& a,
-        const VectorIPIV& ipiv, Workspace work ) {
-    return sytri_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, work );
+inline std::ptrdiff_t sytri( const MatrixA& a, const VectorIPIV& ipiv,
+        Workspace work ) {
+    return sytri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, work );
 }
 
 //
@@ -295,10 +308,9 @@ inline std::ptrdiff_t sytri( const char uplo, const MatrixA& a,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV >
-inline std::ptrdiff_t sytri( const char uplo, const MatrixA& a,
-        const VectorIPIV& ipiv ) {
-    return sytri_impl< typename value< MatrixA >::type >::invoke( uplo,
-            a, ipiv, optimal_workspace() );
+inline std::ptrdiff_t sytri( const MatrixA& a, const VectorIPIV& ipiv ) {
+    return sytri_impl< typename value< MatrixA >::type >::invoke( a,
+            ipiv, optimal_workspace() );
 }
 
 } // namespace lapack

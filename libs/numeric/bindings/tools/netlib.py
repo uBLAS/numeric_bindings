@@ -1392,7 +1392,9 @@ def parse_file( filename, template_map ):
           argument_properties[ 'trait_type' ] = 'uplo'
         
         else:
-          match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|part|of|the|band|hermitian|Hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
+          match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|' + \
+                'factor is stored in|\, form is|part|of|the|band|hermitian|' + \
+                'Hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
           match_uplo_alt = re.compile( '(A) is (upper|lower) triangular', re.M | re.S ).findall( comment_block )
           uplo_trait_of = None
           if len( match_uplo ) > 0:

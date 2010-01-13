@@ -12,11 +12,12 @@
 #include <boost/numeric/bindings/lapack/driver/heevx.hpp>
 #include <boost/numeric/bindings/lapack/driver/syevx.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/vector_proxy.hpp>
 #include <boost/numeric/bindings/ublas/hermitian.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/mpl/if.hpp>
 
@@ -25,40 +26,39 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
-  template< typename MatrixA, typename VectorW, typename MatrixZ,
+template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-  static inline integer_t heevx( const char jobz, const char range, MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+static inline std::ptrdiff_t heevx( const char jobz, const char range,
+        MatrixA& a, const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixA >::type >::type vl, const typename bindings::remove_imaginary<
+        typename bindings::value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return lapack::syevx( jobz, range, a, vl, vu, il, iu,
-            abstol, m, w, z, ifail, work );
-  }
+    return lapack::syevx( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
+
 };
 
 struct apply_complex {
-  template< typename MatrixA, typename VectorW, typename MatrixZ,
+template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-  static inline integer_t heevx( const char jobz, const char range, MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+static inline std::ptrdiff_t heevx( const char jobz, const char range,
+        MatrixA& a, const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixA >::type >::type vl, const typename bindings::remove_imaginary<
+        typename bindings::value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename bindings::remove_imaginary< typename bindings::value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    return lapack::heevx( jobz, range, a, vl, vu, il, iu,
-            abstol, m, w, z, ifail, work );
-  }
+    return lapack::heevx( jobz,
+            range, a, vl, vu, il, iu, abstol, m, w, z, ifail, work );
+}
 };
 
 

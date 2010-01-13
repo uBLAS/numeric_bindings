@@ -445,7 +445,10 @@ def level1_assert( name, properties, arg_map ):
     result += [ assert_line ]
 
   if properties.has_key( 'assert_ge' ) and not properties.has_key( 'workspace_query_for' ):
-    result += [ "BOOST_ASSERT( " + call_level0_type( name, properties, arg_map ) + " >= " + expand_nested_list( properties[ 'assert_ge' ], arg_map ) + ' );' ]
+    lhs = call_level0_type( name, properties, arg_map )
+    rhs = expand_nested_list( properties[ 'assert_ge' ], arg_map )
+    if lhs != rhs:
+        result += [ "BOOST_ASSERT( " + lhs + " >= " + rhs + ' );' ]
 
   #if properties[ 'type' ] == 'vector' and properties[ 'call_level1' ] != None:
     #result = "BOOST_ASSERT( min_tensor_rank( " + call_level1_type( name, properties ) + \
@@ -463,7 +466,8 @@ def level1_assert( name, properties, arg_map ):
                 'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));' ]
 
   # assert_size is vector-type specific
-  elif properties.has_key( 'assert_size' ):
+  elif properties.has_key( 'assert_size' ) and \
+       properties[ 'type' ] == 'vector':
     result += [ "BOOST_ASSERT( size(" + call_level1_type( name, properties ) + ") >= " + \
       expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );' ]
 
@@ -1188,10 +1192,19 @@ def parse_file( filename, template_map ):
         if len( match_matrix_traits ) == 1:
             print "Matched trait:", match_matrix_traits
 
-            # PANIC: return none
+            #
+            # PANIC: there is no matrix found (yet) of which this can be a trait
             # e.g., in tridiagonal case, there is no matrix, but a number of 
-            # vectors (the diagonals)
+            # vectors (the diagonals). In the packed case, it could take 
+            #
             if not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
+                #
+                # Try and see if an argument exists with name
+                #
+                try_name = match_matrix_traits[0][3].strip() + 'P'
+                if try_name in grouped_arguments[ 'by_type' ][ 'vector' ]:
+                    print "Should upgrade ", try_name, " to matrix!!"
+
                 print "PANIC: returning none"
                 # TODO
                 # TODO
@@ -1345,12 +1358,13 @@ def parse_file( filename, template_map ):
       if argument_name == 'UPLO':
         # see if the traits are overruled through the template system
         # the trait_of key will be added below
-        traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
+        traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' \
+                + argument_name + '.trait_of'
         if my_has_key( traits_key, template_map ):
           argument_properties[ 'trait_type' ] = 'uplo'
         
         else:
-          match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|part|of|the|band|hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
+          match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|part|of|the|band|hermitian|Hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
           print "UPLO:", match_uplo
           uplo_trait_of = None
           if len( match_uplo ) > 0:
@@ -1359,9 +1373,17 @@ def parse_file( filename, template_map ):
             if uplo_trait_of != None and match[2] != uplo_trait_of:
               uplo_trait_of = None
           if uplo_trait_of != None:
-            print "adding uplo trait"
-            argument_properties[ 'trait_type' ] = 'uplo'
-            argument_properties[ 'trait_of' ] = [ uplo_trait_of ]
+            try_names = [ uplo_trait_of,
+                          uplo_trait_of + 'P',
+                          uplo_trait_of + 'B' ]
+            for try_name in try_names:
+                print "Trying to attach uplo trait to", try_name
+                if try_name in argument_map:
+                    print "Adding uplo trait of argument", try_name
+                    argument_properties[ 'trait_type' ] = 'uplo'
+                    argument_properties[ 'trait_of' ] = [ try_name ]
+            if 'trait_of' not in argument_properties:
+                print "WARNING: Could not allocate uplo argument!"
 
       # Transpose character detection
       if argument_name[0:5] == 'TRANS':
@@ -1435,11 +1457,12 @@ def parse_file( filename, template_map ):
       # Try to detect packed storage stuff. Typically these are vectors in Fortran, but 
       # matrices in our bindings. E.g. as used in spsv. 
       #
-      packed_keywords = re.compile( '(/s|packed|matrix)+', re.M ).findall( comment_block )
-      if 'matrix' in packed_keywords and 'packed' in packed_keywords:
+      packed_keywords = re.compile( '(stored|packed)\s+(columnwise|triangular\s+matrix)', re.M | re.S ).findall( comment_block )
+      if len( packed_keywords ) > 0:
         #
         # Overrule my type :-)
         #
+        print "Identified triangular array data structure of ", argument_name
         argument_properties[ 'type' ] = 'matrix'
         argument_properties[ 'packed' ] = True
 

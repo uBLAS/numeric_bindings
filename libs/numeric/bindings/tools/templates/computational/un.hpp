@@ -6,6 +6,12 @@ $TEMPLATE[ungql.all.min_size_work.args]
 N
 $TEMPLATE[ungql.all.min_size_work]
 return std::max< $INTEGER_TYPE >( 1, n );
+$TEMPLATE[ungqr.all.M.trait_of]
+A
+$TEMPLATE[ungqr.all.N.trait_of]
+A
+$TEMPLATE[ungqr.all.K.trait]
+size,TAU
 $TEMPLATE[ungqr.all.min_size_work.args]
 N
 $TEMPLATE[ungqr.all.min_size_work]
@@ -46,6 +52,8 @@ if ( side == 'L' )
     return std::max< $INTEGER_TYPE >( 1, n );
 else
     return std::max< $INTEGER_TYPE >( 1, m );
+$TEMPLATE[unmqr.all.K.trait]
+size,TAU
 $TEMPLATE[unmqr.all.min_size_work.args]
 SIDE,M,N
 $TEMPLATE[unmqr.all.min_size_work]

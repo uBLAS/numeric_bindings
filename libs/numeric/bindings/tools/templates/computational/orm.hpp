@@ -12,6 +12,8 @@ if ( side == 'L' )
     return std::max< $INTEGER_TYPE >( 1, n );
 else
     return std::max< $INTEGER_TYPE >( 1, m );
+$TEMPLATE[ormqr.all.K.trait]
+size,TAU
 $TEMPLATE[ormqr.all.min_size_work.args]
 SIDE,M,N
 $TEMPLATE[ormqr.all.min_size_work]

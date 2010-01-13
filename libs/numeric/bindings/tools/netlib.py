@@ -1165,7 +1165,8 @@ def parse_file( filename, template_map ):
       #
       # First: perhaps there's something in the templating system
       #
-      traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait'
+      traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + \
+            argument_name + '.trait'
       if my_has_key( traits_key, template_map ):
         data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
         argument_properties[ 'trait_type' ] = data[0].strip()
@@ -1185,58 +1186,60 @@ def parse_file( filename, template_map ):
             '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
         match_banded_uplo = re.compile( '(number|of|sub|super|\s)+diagonals(if|\s)+UPLO', re.M | re.S ).findall( comment_block )
         if len( match_matrix_traits ) == 1:
-          print "Matched trait:", match_matrix_traits
-          if match_matrix_traits[0][0] == 'order':
-            #
-            # see if the traits are overruled through the template system
-            # logically, these come first
-            traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
-            if my_has_key( traits_key, template_map ):
-                argument_properties[ 'trait_type' ] = 'num_columns'
-                argument_properties[ 'trait_of' ] = [ template_map[ my_has_key( traits_key, template_map ) ].strip() ]
+            print "Matched trait:", match_matrix_traits
+
             # PANIC: return none
             # e.g., in tridiagonal case, there is no matrix, but a number of 
             # vectors (the diagonals)
-            elif not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
-              print "PANIC: returning none"
-              # TODO
-              # TODO
-              return subroutine_name, None
-              # TODO
-              # TODO
-            else:
-              #
-              # Try to look for different matrices, e.g., if the code
-              # refers to Matrix A, then look for argument A, AB, and AP.
-              # Allocate the trait to the first matrix found (usually this is A).
-              #
-              references = match_matrix_traits[0][3].split( 'and' )
-              for matrix_name in references:
+            if not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
+                print "PANIC: returning none"
+                # TODO
+                # TODO
+                return subroutine_name, None
+                # TODO
+                # TODO
+
+            #
+            # Apparently there are matrices found, let's try to allocate this 
+            # trait to one of these matrices
+            #
+            # trait_name can be num_columns, num_rows, num_super, num_sub,
+            #                   num_super_uplo, num_sub_uplo
+            trait_name = 'num_' + match_matrix_traits[0][0]
+            if match_matrix_traits[0][0] == 'order':
+              trait_name = 'num_columns'
+            if len( match_banded_uplo ) > 0:
+              trait_name += '_uplo'
+
+            #
+            # Try to look for different matrices, e.g., if the code
+            # refers to Matrix A, then look for argument A, AB, and AP.
+            # Allocate the trait to the first matrix found (usually this is A).
+            #
+            references = match_matrix_traits[0][3].split( 'and' )
+            for matrix_name in references:
                 try_names = [ matrix_name.strip(), 
                               matrix_name.strip() + 'B',
                               matrix_name.strip() + 'P' ]
                 for try_name in try_names:
-                   if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ] and \
-                          'trait_of' not in argument_properties:
-                      argument_properties[ 'trait_type' ] = 'num_columns'
-                      argument_properties[ 'trait_of' ] = [ try_name.strip() ]
+                    print "Looking for matrix named", try_name
+                    if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ] and \
+                            'trait_of' not in argument_properties:
+                        print "Assigning trait to matrix", try_name.strip()
+                        argument_properties[ 'trait_type' ] = trait_name
+                        argument_properties[ 'trait_of' ] = [ try_name.strip() ]
 
-          # if we're not dealing with order
-          else:
-            references = match_matrix_traits[0][3].split( 'and' )
-            for matrix_name in references:
-              try_names = [ matrix_name.strip(), 
-                            matrix_name.strip() + 'B',
-                            matrix_name.strip() + 'P' ]
-              for try_name in try_names:
-                if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ] and \
-                        'trait_of' not in argument_properties:
-                  if len( match_banded_uplo ) == 0:
-                    argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
-                  else:
-                    argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0] + '_uplo'
-                  # only store the first matrix found (usually A)
-                  argument_properties[ 'trait_of' ] = [ try_name.strip() ]
+            #
+            # see if the traits are overruled through the template system
+            # these overwrite whatever has been found
+            #
+            traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + \
+                '.' + argument_name + '.trait_of'
+            if my_has_key( traits_key, template_map ):
+                argument_properties[ 'trait_type' ] = trait_name
+                argument_properties[ 'trait_of' ] = [ template_map[ my_has_key( traits_key, template_map ) ].strip() ]
+
+
 
         #
         # Matrix traits detection, continued

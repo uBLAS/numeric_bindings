@@ -14,6 +14,12 @@ $TEMPLATE[orgql.all.min_size_work.args]
 N
 $TEMPLATE[orgql.all.min_size_work]
 return std::max< $INTEGER_TYPE >( 1, n );
+$TEMPLATE[orgqr.all.M.trait_of]
+A
+$TEMPLATE[orgqr.all.N.trait_of]
+A
+$TEMPLATE[orgqr.all.K.trait]
+size,TAU
 $TEMPLATE[orgqr.all.min_size_work.args]
 N
 $TEMPLATE[orgqr.all.min_size_work]

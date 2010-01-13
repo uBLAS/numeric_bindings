@@ -806,9 +806,21 @@ def add_user_defined_args( arg, argument_map, template_map, base_name ):
   return
 
 
+def upgrade_vector_to_matrix( name, properties, grouped ):
+    # don't proceed if there's nothing to do
+    if properties[ 'type' ] == 'matrix':
+        print "Re-tried to upgrade", name, "to matrix type, which is already the case."
+        return
 
+    print "Upgrading packed triangular array data structure of ", name, "to matrix type"
+    properties[ 'type' ] = 'matrix'
+    properties[ 'packed' ] = True
 
-
+    # Update the grouped arguments stuff
+    grouped[ 'by_type' ][ 'vector' ].remove( name )
+    if 'matrix' not in grouped[ 'by_type' ]:
+        grouped[ 'by_type' ][ 'matrix' ] = []
+    grouped[ 'by_type' ][ 'matrix' ].append( name )
 
 
 #
@@ -1199,18 +1211,24 @@ def parse_file( filename, template_map ):
             #
             if not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
                 #
-                # Try and see if an argument exists with name
+                # Try and see if an argument exists with name + 'P',
+                # this would be the triangular array case (packed)
                 #
                 try_name = match_matrix_traits[0][3].strip() + 'P'
                 if try_name in grouped_arguments[ 'by_type' ][ 'vector' ]:
-                    print "Should upgrade ", try_name, " to matrix!!"
+                    # this will very likely be upgraded to a matrix.
+                    print "Should upgrade ", try_name, " to a matrix type"
+                    upgrade_vector_to_matrix( try_name, argument_map[ try_name ],
+                            grouped_arguments )
 
-                print "PANIC: returning none"
-                # TODO
-                # TODO
-                return subroutine_name, None
-                # TODO
-                # TODO
+                    # what's left is the tridiagonal stuff.
+                else:
+                    print "PANIC: returning none"
+                    # TODO
+                    # TODO
+                    return subroutine_name, None
+                    # TODO
+                    # TODO
 
             #
             # Apparently there are matrices found, let's try to allocate this 
@@ -1236,6 +1254,16 @@ def parse_file( filename, template_map ):
                               matrix_name.strip() + 'P' ]
                 for try_name in try_names:
                     print "Looking for matrix named", try_name
+
+                    # Try to see if we're dealing with the triangular array case
+                    # which is packed.
+                    if try_name[ -1: ] == 'P' and \
+                            'vector' in grouped_arguments[ 'by_type' ] and \
+                            try_name in grouped_arguments[ 'by_type' ][ 'vector' ]:
+                        print "Found",try_name,"as a vector. Upgrading to matrix first..."
+                        upgrade_vector_to_matrix( try_name, argument_map[ try_name ],
+                                grouped_arguments )
+
                     if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ] and \
                             'trait_of' not in argument_properties:
                         print "Assigning trait to matrix", try_name.strip()
@@ -1365,13 +1393,17 @@ def parse_file( filename, template_map ):
         
         else:
           match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|part|of|the|band|hermitian|Hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
-          print "UPLO:", match_uplo
+          match_uplo_alt = re.compile( '(A) is (upper|lower) triangular', re.M | re.S ).findall( comment_block )
           uplo_trait_of = None
           if len( match_uplo ) > 0:
-            uplo_trait_of = match_uplo[ 0 ][ 2 ]
+              print "UPLO match:", match_uplo
+              uplo_trait_of = match_uplo[ 0 ][ 2 ]
           for match in match_uplo:
             if uplo_trait_of != None and match[2] != uplo_trait_of:
               uplo_trait_of = None
+          if uplo_trait_of == None and len( match_uplo_alt ) == 2:
+              print "UPLO alt match:", match_uplo_alt
+              uplo_trait_of = match_uplo_alt[ 0 ][ 0 ]
           if uplo_trait_of != None:
             try_names = [ uplo_trait_of,
                           uplo_trait_of + 'P',
@@ -1462,15 +1494,7 @@ def parse_file( filename, template_map ):
         #
         # Overrule my type :-)
         #
-        print "Identified triangular array data structure of ", argument_name
-        argument_properties[ 'type' ] = 'matrix'
-        argument_properties[ 'packed' ] = True
-
-        # Update the grouped arguments stuff
-        grouped_arguments[ 'by_type' ][ 'vector' ].remove( argument_name )
-        if 'matrix' not in grouped_arguments[ 'by_type' ]:
-            grouped_arguments[ 'by_type' ][ 'matrix' ] = []
-        grouped_arguments[ 'by_type' ][ 'matrix' ].append( argument_name )
+        upgrade_vector_to_matrix( argument_name, argument_properties, grouped_arguments )
 
     #
     # Matrix related detection code

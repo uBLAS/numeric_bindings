@@ -17,6 +17,7 @@
 #include <boost/numeric/bindings/lapack/computational/ungqr.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/conj.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
@@ -75,25 +76,6 @@ void randomize(M& m) {
    }
 } // randomize()
 
-
-template <typename T>
-struct transpose {
-   static const char value ;
-};
-
-template <typename T>
-const char transpose<T>::value = 'T';
-
-
-
-template <typename T>
-struct transpose< std::complex<T> > {
-   static const char value ;
-};
-
-template <typename T>
-const char transpose< std::complex<T> >::value = 'C';
-
 template <typename M>
 ublas::triangular_adaptor<const M, ublas::upper> upper_part(const M& m) {
    return ublas::triangular_adaptor<const M, ublas::upper>( m );
@@ -120,7 +102,11 @@ int do_memory_type(int n, W workspace) {
    lapack::geqrf( a, tau, workspace ) ;
 
    // Apply the orthogonal transformations to a2
-   apply_t::ormqr( 'L', a, tau, a2, workspace );
+   if( boost::is_complex<T>::value ) {
+        apply_t::ormqr( 'L', bindings::conj( a ), tau, a2, workspace );
+   } else {
+        apply_t::ormqr( 'L', bindings::trans( a ), tau, a2, workspace );
+   }
 
    // The upper triangular parts of a and a2 must be equal.
    if (norm_frobenius( upper_part( a - a2 ) )

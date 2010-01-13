@@ -53,10 +53,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n, float* ap,
+template< typename UpLo >
+inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n, float* ap,
         const fortran_int_t* ipiv, float* work ) {
     fortran_int_t info(0);
-    LAPACK_SSPTRI( &uplo, &n, ap, ipiv, work, &info );
+    LAPACK_SSPTRI( &lapack_option< UpLo >::value, &n, ap, ipiv, work, &info );
     return info;
 }
 
@@ -65,10 +66,11 @@ inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n, float* ap,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n,
-        double* ap, const fortran_int_t* ipiv, double* work ) {
+template< typename UpLo >
+inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n, double* ap,
+        const fortran_int_t* ipiv, double* work ) {
     fortran_int_t info(0);
-    LAPACK_DSPTRI( &uplo, &n, ap, ipiv, work, &info );
+    LAPACK_DSPTRI( &lapack_option< UpLo >::value, &n, ap, ipiv, work, &info );
     return info;
 }
 
@@ -77,11 +79,12 @@ inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n,
         std::complex<float>* ap, const fortran_int_t* ipiv,
         std::complex<float>* work ) {
     fortran_int_t info(0);
-    LAPACK_CSPTRI( &uplo, &n, ap, ipiv, work, &info );
+    LAPACK_CSPTRI( &lapack_option< UpLo >::value, &n, ap, ipiv, work, &info );
     return info;
 }
 
@@ -90,11 +93,12 @@ inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t sptri( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t sptri( UpLo, const fortran_int_t n,
         std::complex<double>* ap, const fortran_int_t* ipiv,
         std::complex<double>* work ) {
     fortran_int_t info(0);
-    LAPACK_ZSPTRI( &uplo, &n, ap, ipiv, work, &info );
+    LAPACK_ZSPTRI( &lapack_option< UpLo >::value, &n, ap, ipiv, work, &info );
     return info;
 }
 
@@ -123,14 +127,15 @@ struct sptri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV, typename WORK >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap,
-            const VectorIPIV& ipiv, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
+            detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
         BOOST_ASSERT( size(ipiv) >= size_column(ap) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 size_column(ap) ));
         BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::sptri( uplo, size_column(ap), begin_value(ap),
+        return detail::sptri( uplo(), size_column(ap), begin_value(ap),
                 begin_value(ipiv), begin_value(work.select(real_type())) );
     }
 
@@ -142,11 +147,12 @@ struct sptri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap,
-            const VectorIPIV& ipiv, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(ap) ) );
-        return invoke( uplo, ap, ipiv, workspace( tmp_work ) );
+        return invoke( ap, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -157,9 +163,10 @@ struct sptri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap,
-            const VectorIPIV& ipiv, optimal_workspace work ) {
-        return invoke( uplo, ap, ipiv, minimal_workspace() );
+    static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        return invoke( ap, ipiv, minimal_workspace() );
     }
 
     //
@@ -187,14 +194,15 @@ struct sptri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV, typename WORK >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap,
-            const VectorIPIV& ipiv, detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
+            detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
         BOOST_ASSERT( size(ipiv) >= size_column(ap) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 size_column(ap) ));
         BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::sptri( uplo, size_column(ap), begin_value(ap),
+        return detail::sptri( uplo(), size_column(ap), begin_value(ap),
                 begin_value(ipiv), begin_value(work.select(value_type())) );
     }
 
@@ -206,11 +214,12 @@ struct sptri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap,
-            const VectorIPIV& ipiv, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(ap) ) );
-        return invoke( uplo, ap, ipiv, workspace( tmp_work ) );
+        return invoke( ap, ipiv, workspace( tmp_work ) );
     }
 
     //
@@ -221,9 +230,10 @@ struct sptri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap,
-            const VectorIPIV& ipiv, optimal_workspace work ) {
-        return invoke( uplo, ap, ipiv, minimal_workspace() );
+    static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        return invoke( ap, ipiv, minimal_workspace() );
     }
 
     //
@@ -251,10 +261,10 @@ struct sptri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sptri( const char uplo, MatrixAP& ap,
-        const VectorIPIV& ipiv, Workspace work ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap, ipiv, work );
+inline std::ptrdiff_t sptri( MatrixAP& ap, const VectorIPIV& ipiv,
+        Workspace work ) {
+    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, work );
 }
 
 //
@@ -263,10 +273,9 @@ inline std::ptrdiff_t sptri( const char uplo, MatrixAP& ap,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptri( const char uplo, MatrixAP& ap,
-        const VectorIPIV& ipiv ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap, ipiv, optimal_workspace() );
+inline std::ptrdiff_t sptri( MatrixAP& ap, const VectorIPIV& ipiv ) {
+    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, optimal_workspace() );
 }
 
 //
@@ -275,10 +284,10 @@ inline std::ptrdiff_t sptri( const char uplo, MatrixAP& ap,
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t sptri( const char uplo, const MatrixAP& ap,
-        const VectorIPIV& ipiv, Workspace work ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap, ipiv, work );
+inline std::ptrdiff_t sptri( const MatrixAP& ap, const VectorIPIV& ipiv,
+        Workspace work ) {
+    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, work );
 }
 
 //
@@ -287,10 +296,9 @@ inline std::ptrdiff_t sptri( const char uplo, const MatrixAP& ap,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t sptri( const char uplo, const MatrixAP& ap,
-        const VectorIPIV& ipiv ) {
-    return sptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap, ipiv, optimal_workspace() );
+inline std::ptrdiff_t sptri( const MatrixAP& ap, const VectorIPIV& ipiv ) {
+    return sptri_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -50,11 +50,13 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hpcon( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t hpcon( UpLo, const fortran_int_t n,
         const std::complex<float>* ap, const fortran_int_t* ipiv,
         const float anorm, float& rcond, std::complex<float>* work ) {
     fortran_int_t info(0);
-    LAPACK_CHPCON( &uplo, &n, ap, ipiv, &anorm, &rcond, work, &info );
+    LAPACK_CHPCON( &lapack_option< UpLo >::value, &n, ap, ipiv, &anorm,
+            &rcond, work, &info );
     return info;
 }
 
@@ -63,11 +65,13 @@ inline std::ptrdiff_t hpcon( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hpcon( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t hpcon( UpLo, const fortran_int_t n,
         const std::complex<double>* ap, const fortran_int_t* ipiv,
         const double anorm, double& rcond, std::complex<double>* work ) {
     fortran_int_t info(0);
-    LAPACK_ZHPCON( &uplo, &n, ap, ipiv, &anorm, &rcond, work, &info );
+    LAPACK_ZHPCON( &lapack_option< UpLo >::value, &n, ap, ipiv, &anorm,
+            &rcond, work, &info );
     return info;
 }
 
@@ -90,14 +94,15 @@ struct hpcon_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV, typename WORK >
-    static std::ptrdiff_t invoke( const char uplo, const MatrixAP& ap,
-            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            detail::workspace1< WORK > work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
+            const real_type anorm, real_type& rcond, detail::workspace1<
+            WORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_ASSERT( size(ipiv) >= size_column(ap) );
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
                 size_column(ap) ));
         BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::hpcon( uplo, size_column(ap), begin_value(ap),
+        return detail::hpcon( uplo(), size_column(ap), begin_value(ap),
                 begin_value(ipiv), anorm, rcond,
                 begin_value(work.select(value_type())) );
     }
@@ -110,12 +115,12 @@ struct hpcon_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, const MatrixAP& ap,
-            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
+            const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(ap) ) );
-        return invoke( uplo, ap, ipiv, anorm, rcond, workspace( tmp_work ) );
+        return invoke( ap, ipiv, anorm, rcond, workspace( tmp_work ) );
     }
 
     //
@@ -126,10 +131,10 @@ struct hpcon_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAP, typename VectorIPIV >
-    static std::ptrdiff_t invoke( const char uplo, const MatrixAP& ap,
-            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
-            optimal_workspace work ) {
-        return invoke( uplo, ap, ipiv, anorm, rcond, minimal_workspace() );
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
+            const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );
     }
 
     //
@@ -156,13 +161,12 @@ struct hpcon_impl {
 // * User-defined workspace
 //
 template< typename MatrixAP, typename VectorIPIV, typename Workspace >
-inline std::ptrdiff_t hpcon( const char uplo, const MatrixAP& ap,
-        const VectorIPIV& ipiv, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type anorm,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond, Workspace work ) {
-    return hpcon_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap, ipiv, anorm, rcond, work );
+inline std::ptrdiff_t hpcon( const MatrixAP& ap, const VectorIPIV& ipiv,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type anorm, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond, Workspace work ) {
+    return hpcon_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, anorm, rcond, work );
 }
 
 //
@@ -170,13 +174,12 @@ inline std::ptrdiff_t hpcon( const char uplo, const MatrixAP& ap,
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP, typename VectorIPIV >
-inline std::ptrdiff_t hpcon( const char uplo, const MatrixAP& ap,
-        const VectorIPIV& ipiv, const typename remove_imaginary<
-        typename value< MatrixAP >::type >::type anorm,
-        typename remove_imaginary< typename value<
-        MatrixAP >::type >::type& rcond ) {
-    return hpcon_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap, ipiv, anorm, rcond, optimal_workspace() );
+inline std::ptrdiff_t hpcon( const MatrixAP& ap, const VectorIPIV& ipiv,
+        const typename remove_imaginary< typename value<
+        MatrixAP >::type >::type anorm, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& rcond ) {
+    return hpcon_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, anorm, rcond, optimal_workspace() );
 }
 
 } // namespace lapack

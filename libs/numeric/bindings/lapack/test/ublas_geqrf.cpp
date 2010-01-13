@@ -32,31 +32,29 @@ namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixA, typename VectorTAU, typename Workspace >
-  static inline integer_t orgqr( const integer_t m, const integer_t n,
-        const integer_t k, MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return lapack::orgqr( m, n, k, a, tau, work );
+  static inline integer_t orgqr(  MatrixA& a, const VectorTAU& tau, Workspace work ) {
+    return lapack::orgqr( a, tau, work );
   }
   template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-  static inline integer_t ormqr( const char side, const char trans,
-        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+  static inline integer_t ormqr( const char side, 
+        const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
-    return lapack::ormqr( side, trans, k, a, tau, c, work );
+    return lapack::ormqr( side, a, tau, c, work );
   }
 };
 
 struct apply_complex {
   template< typename MatrixA, typename VectorTAU, typename Workspace >
-  static inline integer_t orgqr( const integer_t m, const integer_t n,
-        const integer_t k, MatrixA& a, const VectorTAU& tau, Workspace work ) {
-    return lapack::ungqr( m, n, k, a, tau, work );
+  static inline integer_t orgqr( MatrixA& a, const VectorTAU& tau, Workspace work ) {
+    return lapack::ungqr( a, tau, work );
   }
   template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-  static inline integer_t ormqr( const char side, const char trans,
-        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+  static inline integer_t ormqr( const char side, 
+        const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
-    return lapack::unmqr( side, trans, k, a, tau, c, work );
+    return lapack::unmqr( side, a, tau, c, work );
   }
 };
 
@@ -122,14 +120,14 @@ int do_memory_type(int n, W workspace) {
    lapack::geqrf( a, tau, workspace ) ;
 
    // Apply the orthogonal transformations to a2
-   apply_t::ormqr( 'L', transpose<T>::value, bindings::size (tau), a, tau, a2, workspace );
+   apply_t::ormqr( 'L', a, tau, a2, workspace );
 
    // The upper triangular parts of a and a2 must be equal.
    if (norm_frobenius( upper_part( a - a2 ) )
             > std::numeric_limits<real_type>::epsilon() * 10.0 * norm_frobenius( upper_part( a ) ) ) return 255 ;
 
    // Generate orthogonal matrix
-   apply_t::orgqr( bindings::size_row (a), bindings::size_column (a), bindings::size (tau), a, tau, workspace );
+   apply_t::orgqr( a, tau, workspace );
 
    // The result of lapack::ormqr and the equivalent matrix product must be equal.
    if (norm_frobenius( a2 - prod(herm(a), a3) )

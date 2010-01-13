@@ -78,9 +78,10 @@ struct adaptor< ublas::banded_matrix< T, F, A >, Id, Enable > {
         return id.upper();
     }
 
+    // These strides are over the band array structure; not over
+    // the band matrix representation of this structure
     static std::ptrdiff_t stride1( const Id& id ) {
-        // ?
-        return 1; 
+        return id.lower() + id.upper() + 1;
     }
 
     static std::ptrdiff_t stride2( const Id& id ) {

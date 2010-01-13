@@ -11,6 +11,7 @@
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/detail/offset.hpp>
 #include <boost/numeric/bindings/detail/property_map.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -37,9 +38,7 @@ struct adaptor< ublas::matrix_range< T >, Id, Enable > {
     }
 
     static typename result_of::begin_value< adapted_type >::type begin_value( Id& id ) {
-        return bindings::begin_value( id.data() ) + 
-               id.start1() * stride1( id ) + 
-               id.start2() * stride2( id );
+        return bindings::begin_value( id.data() ) + offset( id, id.start1(), id.start2() );
     }
 
     static typename result_of::end_value< adapted_type >::type end_value( Id& id ) {

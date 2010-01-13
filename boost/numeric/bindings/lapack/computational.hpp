@@ -88,8 +88,10 @@
 #include <boost/numeric/bindings/lapack/computational/hetrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/hetri.hpp>
 #include <boost/numeric/bindings/lapack/computational/hetrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/hpcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/hprfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/hptrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/hptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/hptrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/lacon.hpp>
 #include <boost/numeric/bindings/lapack/computational/latrs.hpp>
@@ -98,8 +100,6 @@
 #include <boost/numeric/bindings/lapack/computational/pbrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbtrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbtrs.hpp>
-#include <boost/numeric/bindings/lapack/computational/pftrf.hpp>
-#include <boost/numeric/bindings/lapack/computational/pftri.hpp>
 #include <boost/numeric/bindings/lapack/computational/pftrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pocon.hpp>
 #include <boost/numeric/bindings/lapack/computational/poequ.hpp>
@@ -107,13 +107,18 @@
 #include <boost/numeric/bindings/lapack/computational/potrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/potri.hpp>
 #include <boost/numeric/bindings/lapack/computational/potrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/ppcon.hpp>
+#include <boost/numeric/bindings/lapack/computational/ppequ.hpp>
 #include <boost/numeric/bindings/lapack/computational/pprfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/pptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/ptrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pttrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/spcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/sprfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/sptrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/sptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/sptrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/sycon.hpp>
 #include <boost/numeric/bindings/lapack/computational/syrfs.hpp>
@@ -123,7 +128,7 @@
 #include <boost/numeric/bindings/lapack/computational/tbcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/tbrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/tbtrs.hpp>
-#include <boost/numeric/bindings/lapack/computational/tftri.hpp>
+#include <boost/numeric/bindings/lapack/computational/tpcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/tprfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/tptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/tptrs.hpp>
@@ -133,6 +138,7 @@
 #include <boost/numeric/bindings/lapack/computational/trtrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/hbtrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/hetrd.hpp>
+#include <boost/numeric/bindings/lapack/computational/hptrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/laebz.hpp>
 #include <boost/numeric/bindings/lapack/computational/latrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/opgtr.hpp>
@@ -141,6 +147,7 @@
 #include <boost/numeric/bindings/lapack/computational/ormtr.hpp>
 #include <boost/numeric/bindings/lapack/computational/pteqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/sbtrd.hpp>
+#include <boost/numeric/bindings/lapack/computational/sptrd.hpp>
 #include <boost/numeric/bindings/lapack/computational/stebz.hpp>
 #include <boost/numeric/bindings/lapack/computational/stedc.hpp>
 #include <boost/numeric/bindings/lapack/computational/stegr.hpp>

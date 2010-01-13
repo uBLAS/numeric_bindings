@@ -98,10 +98,8 @@ struct orgqr_impl {
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( size(tau) >= size(tau) );
-        BOOST_ASSERT( size(tau) >= size(tau) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= size_column(a) );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,

@@ -100,6 +100,7 @@ struct sbgst_impl {
             typename WORK >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
             const MatrixBB& bb, MatrixX& x, detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -111,7 +112,6 @@ struct sbgst_impl {
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( bandwidth(bb, uplo()) >= bandwidth(bb, uplo()) );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 size_column(ab) ));
         BOOST_ASSERT( size_column(ab) >= 0 );
@@ -138,6 +138,7 @@ struct sbgst_impl {
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
             const MatrixBB& bb, MatrixX& x, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(ab) ) );
         return invoke( vect, ab, bb, x, workspace( tmp_work ) );
@@ -153,6 +154,7 @@ struct sbgst_impl {
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
             const MatrixBB& bb, MatrixX& x, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( vect, ab, bb, x, minimal_workspace() );
     }
 

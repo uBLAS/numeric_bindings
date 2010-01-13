@@ -97,6 +97,7 @@ struct lanhb_impl {
     template< typename MatrixAB, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
@@ -118,6 +119,7 @@ struct lanhb_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( norm, ab, workspace( tmp_work ) );
@@ -133,6 +135,7 @@ struct lanhb_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( norm, ab, minimal_workspace() );
     }
 

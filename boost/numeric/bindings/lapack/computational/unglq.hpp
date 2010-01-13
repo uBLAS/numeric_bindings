@@ -100,7 +100,6 @@ struct unglq_impl {
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( k >= k );
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( n >= m );
         BOOST_ASSERT( size(tau) >= k );

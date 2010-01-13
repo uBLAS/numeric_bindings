@@ -153,6 +153,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -215,6 +216,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -235,6 +237,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( ab, afb, b, x, ferr, berr, minimal_workspace() );
     }
 
@@ -276,6 +279,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
                 typename remove_const< typename value<
@@ -334,6 +338,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -354,6 +359,7 @@ struct pbrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAB& ab, const MatrixAFB& afb,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( ab, afb, b, x, ferr, berr, minimal_workspace() );
     }
 

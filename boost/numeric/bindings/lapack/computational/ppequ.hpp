@@ -11,11 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBEQU_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBEQU_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PPEQU_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PPEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_complex.hpp>
@@ -31,7 +30,7 @@
 #include <boost/utility/enable_if.hpp>
 
 //
-// The LAPACK-backend for pbequ is the netlib-compatible backend.
+// The LAPACK-backend for ppequ is the netlib-compatible backend.
 //
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
@@ -53,12 +52,11 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, const float* ab, const fortran_int_t ldab,
+inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n, const float* ap,
         float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
-    LAPACK_SPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
-            &scond, &amax, &info );
+    LAPACK_SPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
+            &info );
     return info;
 }
 
@@ -68,12 +66,11 @@ inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
 // * double value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, const double* ab, const fortran_int_t ldab,
+inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n, const double* ap,
         double* s, double& scond, double& amax ) {
     fortran_int_t info(0);
-    LAPACK_DPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
-            &scond, &amax, &info );
+    LAPACK_DPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
+            &info );
     return info;
 }
 
@@ -83,12 +80,11 @@ inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
 // * complex<float> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, const std::complex<float>* ab,
-        const fortran_int_t ldab, float* s, float& scond, float& amax ) {
+inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n,
+        const std::complex<float>* ap, float* s, float& scond, float& amax ) {
     fortran_int_t info(0);
-    LAPACK_CPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
-            &scond, &amax, &info );
+    LAPACK_CPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
+            &info );
     return info;
 }
 
@@ -98,12 +94,12 @@ inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
 // * complex<double> value-type.
 //
 template< typename UpLo >
-inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, const std::complex<double>* ab,
-        const fortran_int_t ldab, double* s, double& scond, double& amax ) {
+inline std::ptrdiff_t ppequ( UpLo, const fortran_int_t n,
+        const std::complex<double>* ap, double* s, double& scond,
+        double& amax ) {
     fortran_int_t info(0);
-    LAPACK_ZPBEQU( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, s,
-            &scond, &amax, &info );
+    LAPACK_ZPPEQU( &lapack_option< UpLo >::value, &n, ap, s, &scond, &amax,
+            &info );
     return info;
 }
 
@@ -111,16 +107,16 @@ inline std::ptrdiff_t pbequ( UpLo, const fortran_int_t n,
 
 //
 // Value-type based template class. Use this class if you need a type
-// for dispatching to pbequ.
+// for dispatching to ppequ.
 //
 template< typename Value, typename Enable = void >
-struct pbequ_impl {};
+struct ppequ_impl {};
 
 //
 // This implementation is enabled if Value is a real type.
 //
 template< typename Value >
-struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
+struct ppequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
@@ -131,22 +127,18 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAB, typename VectorS >
-    static std::ptrdiff_t invoke( const MatrixAB& ab, VectorS& s,
+    template< typename MatrixAP, typename VectorS >
+    static std::ptrdiff_t invoke( const MatrixAP& ap, VectorS& s,
             real_type& scond, real_type& amax ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< MatrixAB >::type >::type,
+                typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbequ( uplo(), size_column(ab), bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab), begin_value(s), scond,
-                amax );
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::ppequ( uplo(), size_column(ap), begin_value(ap),
+                begin_value(s), scond, amax );
     }
 
 };
@@ -155,7 +147,7 @@ struct pbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 // This implementation is enabled if Value is a complex type.
 //
 template< typename Value >
-struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
+struct ppequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
@@ -166,18 +158,14 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAB, typename VectorS >
-    static std::ptrdiff_t invoke( const MatrixAB& ab, VectorS& s,
+    template< typename MatrixAP, typename VectorS >
+    static std::ptrdiff_t invoke( const MatrixAP& ap, VectorS& s,
             real_type& scond, real_type& amax ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbequ( uplo(), size_column(ab), bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab), begin_value(s), scond,
-                amax );
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::ppequ( uplo(), size_column(ap), begin_value(ap),
+                begin_value(s), scond, amax );
     }
 
 };
@@ -187,34 +175,34 @@ struct pbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // Functions for direct use. These functions are overloaded for temporaries,
 // so that wrapped types can still be passed and used for write-access. In
 // addition, if applicable, they are overloaded for user-defined workspaces.
-// Calls to these functions are passed to the pbequ_impl classes. In the 
+// Calls to these functions are passed to the ppequ_impl classes. In the 
 // documentation, most overloads are collapsed to avoid a large number of
 // prototypes which are very similar.
 //
 
 //
-// Overloaded function for pbequ. Its overload differs for
+// Overloaded function for ppequ. Its overload differs for
 // * VectorS&
 //
-template< typename MatrixAB, typename VectorS >
-inline std::ptrdiff_t pbequ( const MatrixAB& ab, VectorS& s,
+template< typename MatrixAP, typename VectorS >
+inline std::ptrdiff_t ppequ( const MatrixAP& ap, VectorS& s,
         typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& amax ) {
-    return pbequ_impl< typename value< MatrixAB >::type >::invoke( ab, s,
+        MatrixAP >::type >::type& scond, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& amax ) {
+    return ppequ_impl< typename value< MatrixAP >::type >::invoke( ap, s,
             scond, amax );
 }
 
 //
-// Overloaded function for pbequ. Its overload differs for
+// Overloaded function for ppequ. Its overload differs for
 // * const VectorS&
 //
-template< typename MatrixAB, typename VectorS >
-inline std::ptrdiff_t pbequ( const MatrixAB& ab, const VectorS& s,
+template< typename MatrixAP, typename VectorS >
+inline std::ptrdiff_t ppequ( const MatrixAP& ap, const VectorS& s,
         typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& scond, typename remove_imaginary<
-        typename value< MatrixAB >::type >::type& amax ) {
-    return pbequ_impl< typename value< MatrixAB >::type >::invoke( ab, s,
+        MatrixAP >::type >::type& scond, typename remove_imaginary<
+        typename value< MatrixAP >::type >::type& amax ) {
+    return ppequ_impl< typename value< MatrixAP >::type >::invoke( ap, s,
             scond, amax );
 }
 

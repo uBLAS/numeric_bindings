@@ -118,6 +118,7 @@ struct pbstf_impl {
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( MatrixAB& ab ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
         BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
         BOOST_ASSERT( size_column(ab) >= 0 );

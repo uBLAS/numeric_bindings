@@ -113,7 +113,6 @@ struct gejsv_impl {
                 min_size_v( $CALL_MIN_SIZE ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= size_column(a) );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         BOOST_ASSERT( size_row(a) >= 0 );
         BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,

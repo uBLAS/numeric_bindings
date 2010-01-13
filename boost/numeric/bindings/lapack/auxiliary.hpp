@@ -33,6 +33,7 @@
 #include <boost/numeric/bindings/lapack/auxiliary/lansp.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/lansy.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/lantb.hpp>
+#include <boost/numeric/bindings/lapack/auxiliary/lantp.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/lantr.hpp>
 
 #endif

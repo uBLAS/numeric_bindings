@@ -55,16 +55,15 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs, const float* ap,
-        const float* b, const fortran_int_t ldb, const float* x,
-        const fortran_int_t ldx, float* ferr, float* berr, float* work,
-        fortran_int_t* iwork ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tprfs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* ap, const float* b,
+        const fortran_int_t ldb, const float* x, const fortran_int_t ldx,
+        float* ferr, float* berr, float* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
-    LAPACK_STPRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, x, &ldx, ferr, berr, work,
-            iwork, &info );
+    LAPACK_STPRFS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, x, &ldx, ferr, berr, work, iwork, &info );
     return info;
 }
 
@@ -73,16 +72,15 @@ inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs, const double* ap,
-        const double* b, const fortran_int_t ldb, const double* x,
-        const fortran_int_t ldx, double* ferr, double* berr, double* work,
-        fortran_int_t* iwork ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tprfs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* ap, const double* b,
+        const fortran_int_t ldb, const double* x, const fortran_int_t ldx,
+        double* ferr, double* berr, double* work, fortran_int_t* iwork ) {
     fortran_int_t info(0);
-    LAPACK_DTPRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, x, &ldx, ferr, berr, work,
-            iwork, &info );
+    LAPACK_DTPRFS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, x, &ldx, ferr, berr, work, iwork, &info );
     return info;
 }
 
@@ -91,17 +89,16 @@ inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs,
-        const std::complex<float>* ap, const std::complex<float>* b,
-        const fortran_int_t ldb, const std::complex<float>* x,
-        const fortran_int_t ldx, float* ferr, float* berr,
-        std::complex<float>* work, float* rwork ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tprfs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* ap,
+        const std::complex<float>* b, const fortran_int_t ldb,
+        const std::complex<float>* x, const fortran_int_t ldx, float* ferr,
+        float* berr, std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
-    LAPACK_CTPRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, x, &ldx, ferr, berr, work,
-            rwork, &info );
+    LAPACK_CTPRFS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, x, &ldx, ferr, berr, work, rwork, &info );
     return info;
 }
 
@@ -110,17 +107,16 @@ inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tprfs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs,
-        const std::complex<double>* ap, const std::complex<double>* b,
-        const fortran_int_t ldb, const std::complex<double>* x,
-        const fortran_int_t ldx, double* ferr, double* berr,
-        std::complex<double>* work, double* rwork ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tprfs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* ap,
+        const std::complex<double>* b, const fortran_int_t ldb,
+        const std::complex<double>* x, const fortran_int_t ldx, double* ferr,
+        double* berr, std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
-    LAPACK_ZTPRFS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, x, &ldx, ferr, berr, work,
-            rwork, &info );
+    LAPACK_ZTPRFS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, x, &ldx, ferr, berr, work, rwork, &info );
     return info;
 }
 
@@ -151,10 +147,10 @@ struct tprfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename IWORK >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
-            IWORK > work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const MatrixB& b,
+            const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            detail::workspace2< WORK, IWORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -174,20 +170,24 @@ struct tprfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 VectorBERR >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(berr) >= size_column(b) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+                min_size_iwork( size_column(ap) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(ap) ));
+        BOOST_ASSERT( size_column(ap) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tprfs( uplo, trans(), diag(), n, size_column(b),
-                begin_value(ap), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), begin_value(ferr),
-                begin_value(berr), begin_value(work.select(real_type())),
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        return detail::tprfs( uplo(), trans(), diag(), size_column(ap),
+                size_column(b), begin_value(ap), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x),
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())) );
     }
 
@@ -200,14 +200,16 @@ struct tprfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const MatrixB& b,
+            const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( n ) );
-        return invoke( uplo, n, ap, b, x, ferr, berr, workspace( tmp_work,
+                min_size_iwork( size_column(ap) ) );
+        return invoke( ap, b, x, ferr, berr, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -220,11 +222,12 @@ struct tprfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const MatrixB& b,
+            const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        return invoke( uplo, n, ap, b, x, ferr, berr, minimal_workspace() );
+        return invoke( ap, b, x, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -262,10 +265,10 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename RWORK >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
-            RWORK > work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const MatrixB& b,
+            const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            detail::workspace2< WORK, RWORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
@@ -281,19 +284,24 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 MatrixX >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
-        BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( size(berr) >= size_column(b) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(ap) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(ap) ));
+        BOOST_ASSERT( size_column(ap) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tprfs( uplo, trans(), diag(), n, size_column(b),
-                begin_value(ap), begin_value(b), stride_major(b),
-                begin_value(x), stride_major(x), begin_value(ferr),
-                begin_value(berr), begin_value(work.select(value_type())),
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        return detail::tprfs( uplo(), trans(), diag(), size_column(ap),
+                size_column(b), begin_value(ap), begin_value(b),
+                stride_major(b), begin_value(x), stride_major(x),
+                begin_value(ferr), begin_value(berr),
+                begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())) );
     }
 
@@ -306,13 +314,16 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const MatrixB& b,
+            const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
-        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        return invoke( uplo, n, ap, b, x, ferr, berr, workspace( tmp_work,
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(ap) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(ap) ) );
+        return invoke( ap, b, x, ferr, berr, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
@@ -325,11 +336,12 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const MatrixB& b,
+            const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        return invoke( uplo, n, ap, b, x, ferr, berr, minimal_workspace() );
+        return invoke( ap, b, x, ferr, berr, minimal_workspace() );
     }
 
     //
@@ -367,11 +379,11 @@ struct tprfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, work );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, work );
 }
 
 //
@@ -382,11 +394,10 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, optimal_workspace() );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -397,11 +408,11 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, work );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, work );
 }
 
 //
@@ -412,11 +423,10 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, optimal_workspace() );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -427,11 +437,11 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, work );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, work );
 }
 
 //
@@ -442,11 +452,10 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        VectorFERR& ferr, const VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, optimal_workspace() );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, optimal_workspace() );
 }
 
 //
@@ -457,11 +466,11 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr, Workspace work ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, work );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, work );
 }
 
 //
@@ -472,11 +481,10 @@ inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
 //
 template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline std::ptrdiff_t tprfs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b, const MatrixX& x,
-        const VectorFERR& ferr, const VectorBERR& berr ) {
-    return tprfs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b, x, ferr, berr, optimal_workspace() );
+inline std::ptrdiff_t tprfs( const MatrixAP& ap, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
+    return tprfs_impl< typename value< MatrixAP >::type >::invoke( ap, b,
+            x, ferr, berr, optimal_workspace() );
 }
 
 } // namespace lapack

@@ -11,13 +11,14 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_LANSP_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_LANSP_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_LANTP_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_AUXILIARY_LANTP_HPP
 
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/diag_tag.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
@@ -29,7 +30,7 @@
 #include <boost/type_traits/remove_const.hpp>
 
 //
-// The LAPACK-backend for lansp is the netlib-compatible backend.
+// The LAPACK-backend for lantp is the netlib-compatible backend.
 //
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
@@ -50,11 +51,11 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const float* ap, float* work ) {
+template< typename Diag >
+inline std::ptrdiff_t lantp( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const float* ap, float* work ) {
     fortran_int_t info(0);
-    LAPACK_SLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
+    LAPACK_SLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
     return info;
 }
 
@@ -63,11 +64,11 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const double* ap, double* work ) {
+template< typename Diag >
+inline std::ptrdiff_t lantp( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const double* ap, double* work ) {
     fortran_int_t info(0);
-    LAPACK_DLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
+    LAPACK_DLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
     return info;
 }
 
@@ -76,11 +77,11 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<float>* ap, float* work ) {
+template< typename Diag >
+inline std::ptrdiff_t lantp( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const std::complex<float>* ap, float* work ) {
     fortran_int_t info(0);
-    LAPACK_CLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
+    LAPACK_CLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
     return info;
 }
 
@@ -89,11 +90,11 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
-        const std::complex<double>* ap, double* work ) {
+template< typename Diag >
+inline std::ptrdiff_t lantp( const char norm, const char uplo, Diag,
+        const fortran_int_t n, const std::complex<double>* ap, double* work ) {
     fortran_int_t info(0);
-    LAPACK_ZLANSP( &norm, &lapack_option< UpLo >::value, &n, ap, work );
+    LAPACK_ZLANTP( &norm, &uplo, &lapack_option< Diag >::value, &n, ap, work );
     return info;
 }
 
@@ -101,10 +102,10 @@ inline std::ptrdiff_t lansp( const char norm, UpLo, const fortran_int_t n,
 
 //
 // Value-type based template class. Use this class if you need a type
-// for dispatching to lansp.
+// for dispatching to lantp.
 //
 template< typename Value >
-struct lansp_impl {
+struct lantp_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
@@ -116,14 +117,14 @@ struct lansp_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename WORK >
-    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            detail::workspace1< WORK > work ) {
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixAP& ap, detail::workspace1< WORK > work ) {
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
         BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::lansp( norm, uplo(), size_column(ap), begin_value(ap),
-                begin_value(work.select(real_type())) );
+        return detail::lantp( norm, uplo, diag(), size_column(ap),
+                begin_value(ap), begin_value(work.select(real_type())) );
     }
 
     //
@@ -134,12 +135,12 @@ struct lansp_impl {
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixAP >
-    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            minimal_workspace work ) {
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixAP& ap, minimal_workspace work ) {
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        return invoke( norm, ap, workspace( tmp_work ) );
+        return invoke( norm, uplo, ap, workspace( tmp_work ) );
     }
 
     //
@@ -150,10 +151,10 @@ struct lansp_impl {
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixAP >
-    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
-            optimal_workspace work ) {
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
-        return invoke( norm, ap, minimal_workspace() );
+    static std::ptrdiff_t invoke( const char norm, const char uplo,
+            const MatrixAP& ap, optimal_workspace work ) {
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
+        return invoke( norm, uplo, ap, minimal_workspace() );
     }
 
     //
@@ -170,30 +171,31 @@ struct lansp_impl {
 // Functions for direct use. These functions are overloaded for temporaries,
 // so that wrapped types can still be passed and used for write-access. In
 // addition, if applicable, they are overloaded for user-defined workspaces.
-// Calls to these functions are passed to the lansp_impl classes. In the 
+// Calls to these functions are passed to the lantp_impl classes. In the 
 // documentation, most overloads are collapsed to avoid a large number of
 // prototypes which are very similar.
 //
 
 //
-// Overloaded function for lansp. Its overload differs for
+// Overloaded function for lantp. Its overload differs for
 // * User-defined workspace
 //
 template< typename MatrixAP, typename Workspace >
-inline std::ptrdiff_t lansp( const char norm, const MatrixAP& ap,
-        Workspace work ) {
-    return lansp_impl< typename value< MatrixAP >::type >::invoke( norm,
-            ap, work );
+inline std::ptrdiff_t lantp( const char norm, const char uplo,
+        const MatrixAP& ap, Workspace work ) {
+    return lantp_impl< typename value< MatrixAP >::type >::invoke( norm,
+            uplo, ap, work );
 }
 
 //
-// Overloaded function for lansp. Its overload differs for
+// Overloaded function for lantp. Its overload differs for
 // * Default workspace-type (optimal)
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t lansp( const char norm, const MatrixAP& ap ) {
-    return lansp_impl< typename value< MatrixAP >::type >::invoke( norm,
-            ap, optimal_workspace() );
+inline std::ptrdiff_t lantp( const char norm, const char uplo,
+        const MatrixAP& ap ) {
+    return lantp_impl< typename value< MatrixAP >::type >::invoke( norm,
+            uplo, ap, optimal_workspace() );
 }
 
 } // namespace lapack

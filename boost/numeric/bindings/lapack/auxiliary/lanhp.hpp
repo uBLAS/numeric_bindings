@@ -92,6 +92,7 @@ struct lanhp_impl {
     template< typename MatrixAP, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
             detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
                 $CALL_MIN_SIZE ));
         BOOST_ASSERT( size_column(ap) >= 0 );
@@ -109,6 +110,7 @@ struct lanhp_impl {
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
             minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( norm, ap, workspace( tmp_work ) );
@@ -124,6 +126,7 @@ struct lanhp_impl {
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
             optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( norm, ap, minimal_workspace() );
     }
 

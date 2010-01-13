@@ -11,11 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBTRF_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBTRF_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PPTRI_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PPTRI_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
@@ -28,7 +27,7 @@
 #include <boost/type_traits/remove_const.hpp>
 
 //
-// The LAPACK-backend for pbtrf is the netlib-compatible backend.
+// The LAPACK-backend for pptri is the netlib-compatible backend.
 //
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
@@ -49,11 +48,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, float* ab, const fortran_int_t ldab ) {
+inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
+        float* ap ) {
     fortran_int_t info(0);
-    LAPACK_SPBTRF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
+    LAPACK_SPPTRI( &uplo, &n, ap, &info );
     return info;
 }
 
@@ -62,11 +60,10 @@ inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, double* ab, const fortran_int_t ldab ) {
+inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
+        double* ap ) {
     fortran_int_t info(0);
-    LAPACK_DPBTRF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
+    LAPACK_DPPTRI( &uplo, &n, ap, &info );
     return info;
 }
 
@@ -75,12 +72,10 @@ inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, std::complex<float>* ab,
-        const fortran_int_t ldab ) {
+inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
+        std::complex<float>* ap ) {
     fortran_int_t info(0);
-    LAPACK_CPBTRF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
+    LAPACK_CPPTRI( &uplo, &n, ap, &info );
     return info;
 }
 
@@ -89,12 +84,10 @@ inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename UpLo >
-inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
-        const fortran_int_t kd, std::complex<double>* ab,
-        const fortran_int_t ldab ) {
+inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
+        std::complex<double>* ap ) {
     fortran_int_t info(0);
-    LAPACK_ZPBTRF( &lapack_option< UpLo >::value, &n, &kd, ab, &ldab, &info );
+    LAPACK_ZPPTRI( &uplo, &n, ap, &info );
     return info;
 }
 
@@ -102,10 +95,10 @@ inline std::ptrdiff_t pbtrf( UpLo, const fortran_int_t n,
 
 //
 // Value-type based template class. Use this class if you need a type
-// for dispatching to pbtrf.
+// for dispatching to pptri.
 //
 template< typename Value >
-struct pbtrf_impl {
+struct pptri_impl {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
@@ -116,16 +109,11 @@ struct pbtrf_impl {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAB >
-    static std::ptrdiff_t invoke( MatrixAB& ab ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbtrf( uplo(), size_column(ab), bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab) );
+    template< typename MatrixAP >
+    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap ) {
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::pptri( uplo, size_column(ap), begin_value(ap) );
     }
 
 };
@@ -135,27 +123,29 @@ struct pbtrf_impl {
 // Functions for direct use. These functions are overloaded for temporaries,
 // so that wrapped types can still be passed and used for write-access. In
 // addition, if applicable, they are overloaded for user-defined workspaces.
-// Calls to these functions are passed to the pbtrf_impl classes. In the 
+// Calls to these functions are passed to the pptri_impl classes. In the 
 // documentation, most overloads are collapsed to avoid a large number of
 // prototypes which are very similar.
 //
 
 //
-// Overloaded function for pbtrf. Its overload differs for
-// * MatrixAB&
+// Overloaded function for pptri. Its overload differs for
+// * MatrixAP&
 //
-template< typename MatrixAB >
-inline std::ptrdiff_t pbtrf( MatrixAB& ab ) {
-    return pbtrf_impl< typename value< MatrixAB >::type >::invoke( ab );
+template< typename MatrixAP >
+inline std::ptrdiff_t pptri( const char uplo, MatrixAP& ap ) {
+    return pptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
+            ap );
 }
 
 //
-// Overloaded function for pbtrf. Its overload differs for
-// * const MatrixAB&
+// Overloaded function for pptri. Its overload differs for
+// * const MatrixAP&
 //
-template< typename MatrixAB >
-inline std::ptrdiff_t pbtrf( const MatrixAB& ab ) {
-    return pbtrf_impl< typename value< MatrixAB >::type >::invoke( ab );
+template< typename MatrixAP >
+inline std::ptrdiff_t pptri( const char uplo, const MatrixAP& ap ) {
+    return pptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
+            ap );
 }
 
 } // namespace lapack

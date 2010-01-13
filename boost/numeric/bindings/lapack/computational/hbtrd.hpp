@@ -101,6 +101,7 @@ struct hbtrd_impl {
             typename MatrixQ, typename WORK >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -139,6 +140,7 @@ struct hbtrd_impl {
             typename MatrixQ >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 size_column(ab) ) );
         return invoke( vect, ab, d, e, q, workspace( tmp_work ) );
@@ -155,6 +157,7 @@ struct hbtrd_impl {
             typename MatrixQ >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( vect, ab, d, e, q, minimal_workspace() );
     }
 

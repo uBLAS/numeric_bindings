@@ -98,9 +98,7 @@ struct orgql_impl {
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( k >= k );
         BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= n );
         BOOST_ASSERT( size(tau) >= k );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );

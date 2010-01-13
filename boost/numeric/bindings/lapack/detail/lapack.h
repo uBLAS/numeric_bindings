@@ -1129,6 +1129,14 @@ void LAPACK_ZHETRS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
         fortran_int_t* info );
 
+// Value-type variants of hpcon
+void LAPACK_CHPCON( const char* uplo, const fortran_int_t* n, const void* ap,
+        const fortran_int_t* ipiv, const float* anorm, float* rcond,
+        void* work, fortran_int_t* info );
+void LAPACK_ZHPCON( const char* uplo, const fortran_int_t* n, const void* ap,
+        const fortran_int_t* ipiv, const double* anorm, double* rcond,
+        void* work, fortran_int_t* info );
+
 // Value-type variants of hprfs
 void LAPACK_CHPRFS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* nrhs, const void* ap, const void* afp,
@@ -1146,6 +1154,12 @@ void LAPACK_CHPTRF( const char* uplo, const fortran_int_t* n, void* ap,
         fortran_int_t* ipiv, fortran_int_t* info );
 void LAPACK_ZHPTRF( const char* uplo, const fortran_int_t* n, void* ap,
         fortran_int_t* ipiv, fortran_int_t* info );
+
+// Value-type variants of hptri
+void LAPACK_CHPTRI( const char* uplo, const fortran_int_t* n, void* ap,
+        const fortran_int_t* ipiv, void* work, fortran_int_t* info );
+void LAPACK_ZHPTRI( const char* uplo, const fortran_int_t* n, void* ap,
+        const fortran_int_t* ipiv, void* work, fortran_int_t* info );
 
 // Value-type variants of hptrs
 void LAPACK_CHPTRS( const char* uplo, const fortran_int_t* n,
@@ -1273,26 +1287,6 @@ void LAPACK_ZPBTRS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* ldab, void* b, const fortran_int_t* ldb,
         fortran_int_t* info );
 
-// Value-type variants of pftrf
-void LAPACK_SPFTRF( const char* transr, const char* uplo,
-        const fortran_int_t* n, float* a, fortran_int_t* info );
-void LAPACK_DPFTRF( const char* transr, const char* uplo,
-        const fortran_int_t* n, double* a, fortran_int_t* info );
-void LAPACK_CPFTRF( const char* transr, const char* uplo,
-        const fortran_int_t* n, void* a, fortran_int_t* info );
-void LAPACK_ZPFTRF( const char* transr, const char* uplo,
-        const fortran_int_t* n, void* a, fortran_int_t* info );
-
-// Value-type variants of pftri
-void LAPACK_SPFTRI( const char* transr, const char* uplo,
-        const fortran_int_t* n, float* a, fortran_int_t* info );
-void LAPACK_DPFTRI( const char* transr, const char* uplo,
-        const fortran_int_t* n, double* a, fortran_int_t* info );
-void LAPACK_CPFTRI( const char* transr, const char* uplo,
-        const fortran_int_t* n, void* a, fortran_int_t* info );
-void LAPACK_ZPFTRI( const char* transr, const char* uplo,
-        const fortran_int_t* n, void* a, fortran_int_t* info );
-
 // Value-type variants of pftrs
 void LAPACK_SPFTRS( const char* transr, const char* uplo,
         const fortran_int_t* n, const fortran_int_t* nrhs, const float* a,
@@ -1395,6 +1389,31 @@ void LAPACK_ZPOTRS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
         void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
+// Value-type variants of ppcon
+void LAPACK_SPPCON( const char* uplo, const fortran_int_t* n, const float* ap,
+        const float* anorm, float* rcond, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DPPCON( const char* uplo, const fortran_int_t* n,
+        const double* ap, const double* anorm, double* rcond, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPPCON( const char* uplo, const fortran_int_t* n, const void* ap,
+        const float* anorm, float* rcond, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZPPCON( const char* uplo, const fortran_int_t* n, const void* ap,
+        const double* anorm, double* rcond, void* work, double* rwork,
+        fortran_int_t* info );
+
+// Value-type variants of ppequ
+void LAPACK_SPPEQU( const char* uplo, const fortran_int_t* n, const float* ap,
+        float* s, float* scond, float* amax, fortran_int_t* info );
+void LAPACK_DPPEQU( const char* uplo, const fortran_int_t* n,
+        const double* ap, double* s, double* scond, double* amax,
+        fortran_int_t* info );
+void LAPACK_CPPEQU( const char* uplo, const fortran_int_t* n, const void* ap,
+        float* s, float* scond, float* amax, fortran_int_t* info );
+void LAPACK_ZPPEQU( const char* uplo, const fortran_int_t* n, const void* ap,
+        double* s, double* scond, double* amax, fortran_int_t* info );
+
 // Value-type variants of pprfs
 void LAPACK_SPPRFS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* nrhs, const float* ap, const float* afp,
@@ -1425,6 +1444,16 @@ void LAPACK_DPPTRF( const char* uplo, const fortran_int_t* n, double* ap,
 void LAPACK_CPPTRF( const char* uplo, const fortran_int_t* n, void* ap,
         fortran_int_t* info );
 void LAPACK_ZPPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* info );
+
+// Value-type variants of pptri
+void LAPACK_SPPTRI( const char* uplo, const fortran_int_t* n, float* ap,
+        fortran_int_t* info );
+void LAPACK_DPPTRI( const char* uplo, const fortran_int_t* n, double* ap,
+        fortran_int_t* info );
+void LAPACK_CPPTRI( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* info );
+void LAPACK_ZPPTRI( const char* uplo, const fortran_int_t* n, void* ap,
         fortran_int_t* info );
 
 // Value-type variants of pptrs
@@ -1479,6 +1508,21 @@ void LAPACK_ZPTTRS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* nrhs, const double* d, const void* e, void* b,
         const fortran_int_t* ldb, fortran_int_t* info );
 
+// Value-type variants of spcon
+void LAPACK_SSPCON( const char* uplo, const fortran_int_t* n, const float* ap,
+        const fortran_int_t* ipiv, const float* anorm, float* rcond,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DSPCON( const char* uplo, const fortran_int_t* n,
+        const double* ap, const fortran_int_t* ipiv, const double* anorm,
+        double* rcond, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_CSPCON( const char* uplo, const fortran_int_t* n, const void* ap,
+        const fortran_int_t* ipiv, const float* anorm, float* rcond,
+        void* work, fortran_int_t* info );
+void LAPACK_ZSPCON( const char* uplo, const fortran_int_t* n, const void* ap,
+        const fortran_int_t* ipiv, const double* anorm, double* rcond,
+        void* work, fortran_int_t* info );
+
 // Value-type variants of sprfs
 void LAPACK_SSPRFS( const char* uplo, const fortran_int_t* n,
         const fortran_int_t* nrhs, const float* ap, const float* afp,
@@ -1510,6 +1554,16 @@ void LAPACK_CSPTRF( const char* uplo, const fortran_int_t* n, void* ap,
         fortran_int_t* ipiv, fortran_int_t* info );
 void LAPACK_ZSPTRF( const char* uplo, const fortran_int_t* n, void* ap,
         fortran_int_t* ipiv, fortran_int_t* info );
+
+// Value-type variants of sptri
+void LAPACK_SSPTRI( const char* uplo, const fortran_int_t* n, float* ap,
+        const fortran_int_t* ipiv, float* work, fortran_int_t* info );
+void LAPACK_DSPTRI( const char* uplo, const fortran_int_t* n, double* ap,
+        const fortran_int_t* ipiv, double* work, fortran_int_t* info );
+void LAPACK_CSPTRI( const char* uplo, const fortran_int_t* n, void* ap,
+        const fortran_int_t* ipiv, void* work, fortran_int_t* info );
+void LAPACK_ZSPTRI( const char* uplo, const fortran_int_t* n, void* ap,
+        const fortran_int_t* ipiv, void* work, fortran_int_t* info );
 
 // Value-type variants of sptrs
 void LAPACK_SSPTRS( const char* uplo, const fortran_int_t* n,
@@ -1677,15 +1731,19 @@ void LAPACK_ZTBTRS( const char* uplo, const char* trans, const char* diag,
         const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
         void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
-// Value-type variants of tftri
-void LAPACK_STFTRI( const char* transr, const char* uplo, const char* diag,
-        const fortran_int_t* n, float* a, fortran_int_t* info );
-void LAPACK_DTFTRI( const char* transr, const char* uplo, const char* diag,
-        const fortran_int_t* n, double* a, fortran_int_t* info );
-void LAPACK_CTFTRI( const char* transr, const char* uplo, const char* diag,
-        const fortran_int_t* n, void* a, fortran_int_t* info );
-void LAPACK_ZTFTRI( const char* transr, const char* uplo, const char* diag,
-        const fortran_int_t* n, void* a, fortran_int_t* info );
+// Value-type variants of tpcon
+void LAPACK_STPCON( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const float* ap, float* rcond, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DTPCON( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const double* ap, double* rcond, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CTPCON( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const void* ap, float* rcond, void* work,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZTPCON( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const void* ap, double* rcond, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of tprfs
 void LAPACK_STPRFS( const char* uplo, const char* trans, const char* diag,
@@ -1820,6 +1878,12 @@ void LAPACK_ZHETRD( const char* uplo, const fortran_int_t* n, void* a,
         const fortran_int_t* lda, double* d, double* e, void* tau, void* work,
         const fortran_int_t* lwork, fortran_int_t* info );
 
+// Value-type variants of hptrd
+void LAPACK_CHPTRD( const char* uplo, const fortran_int_t* n, void* ap,
+        float* d, float* e, void* tau, fortran_int_t* info );
+void LAPACK_ZHPTRD( const char* uplo, const fortran_int_t* n, void* ap,
+        double* d, double* e, void* tau, fortran_int_t* info );
+
 // Value-type variants of laebz
 void LAPACK_SLAEBZ( const fortran_int_t* ijob, const fortran_int_t* nitmax,
         const fortran_int_t* n, const fortran_int_t* mmax,
@@ -1912,6 +1976,12 @@ void LAPACK_DSBTRD( const char* vect, const char* uplo,
         const fortran_int_t* n, const fortran_int_t* kd, double* ab,
         const fortran_int_t* ldab, double* d, double* e, double* q,
         const fortran_int_t* ldq, double* work, fortran_int_t* info );
+
+// Value-type variants of sptrd
+void LAPACK_SSPTRD( const char* uplo, const fortran_int_t* n, float* ap,
+        float* d, float* e, float* tau, fortran_int_t* info );
+void LAPACK_DSPTRD( const char* uplo, const fortran_int_t* n, double* ap,
+        double* d, double* e, double* tau, fortran_int_t* info );
 
 // Value-type variants of stebz
 void LAPACK_SSTEBZ( const char* range, const char* order,
@@ -4205,6 +4275,16 @@ void LAPACK_CLANTB( const char* norm, const char* uplo, const char* diag,
 void LAPACK_ZLANTB( const char* norm, const char* uplo, const char* diag,
         const fortran_int_t* n, const fortran_int_t* k, const void* ab,
         const fortran_int_t* ldab, double* work );
+
+// Value-type variants of lantp
+void LAPACK_SLANTP( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const float* ap, float* work );
+void LAPACK_DLANTP( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const double* ap, double* work );
+void LAPACK_CLANTP( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const void* ap, float* work );
+void LAPACK_ZLANTP( const char* norm, const char* uplo, const char* diag,
+        const fortran_int_t* n, const void* ap, double* work );
 
 // Value-type variants of lantr
 void LAPACK_SLANTR( const char* norm, const char* uplo, const char* diag,

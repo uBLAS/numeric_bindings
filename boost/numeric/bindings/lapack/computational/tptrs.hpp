@@ -50,13 +50,14 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs, const float* ap,
-        float* b, const fortran_int_t ldb ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const float* ap, float* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_STPTRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, &info );
+    LAPACK_STPTRS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, &info );
     return info;
 }
 
@@ -65,13 +66,14 @@ inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs, const double* ap,
-        double* b, const fortran_int_t ldb ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const double* ap, double* b,
+        const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_DTPTRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, &info );
+    LAPACK_DTPTRS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, &info );
     return info;
 }
 
@@ -80,14 +82,14 @@ inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs,
-        const std::complex<float>* ap, std::complex<float>* b,
-        const fortran_int_t ldb ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<float>* ap,
+        std::complex<float>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_CTPTRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, &info );
+    LAPACK_CTPTRS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, &info );
     return info;
 }
 
@@ -96,14 +98,14 @@ inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-template< typename Trans, typename Diag >
-inline std::ptrdiff_t tptrs( const char uplo, Trans, Diag,
-        const fortran_int_t n, const fortran_int_t nrhs,
-        const std::complex<double>* ap, std::complex<double>* b,
-        const fortran_int_t ldb ) {
+template< typename UpLo, typename Trans, typename Diag >
+inline std::ptrdiff_t tptrs( UpLo, Trans, Diag, const fortran_int_t n,
+        const fortran_int_t nrhs, const std::complex<double>* ap,
+        std::complex<double>* b, const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_ZTPTRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
-            Diag >::value, &n, &nrhs, ap, b, &ldb, &info );
+    LAPACK_ZTPTRS( &lapack_option< UpLo >::value, &lapack_option<
+            Trans >::value, &lapack_option< Diag >::value, &n, &nrhs, ap, b,
+            &ldb, &info );
     return info;
 }
 
@@ -126,20 +128,22 @@ struct tptrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, MatrixB& b ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(ap) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tptrs( uplo, trans(), diag(), n, size_column(b),
-                begin_value(ap), begin_value(b), stride_major(b) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        return detail::tptrs( uplo(), trans(), diag(), size_column(ap),
+                size_column(b), begin_value(ap), begin_value(b),
+                stride_major(b) );
     }
 
 };
@@ -159,10 +163,9 @@ struct tptrs_impl {
 // * MatrixB&
 //
 template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t tptrs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, MatrixB& b ) {
-    return tptrs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b );
+inline std::ptrdiff_t tptrs( const MatrixAP& ap, MatrixB& b ) {
+    return tptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            b );
 }
 
 //
@@ -170,10 +173,9 @@ inline std::ptrdiff_t tptrs( const char uplo, const fortran_int_t n,
 // * const MatrixB&
 //
 template< typename MatrixAP, typename MatrixB >
-inline std::ptrdiff_t tptrs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const MatrixB& b ) {
-    return tptrs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, b );
+inline std::ptrdiff_t tptrs( const MatrixAP& ap, const MatrixB& b ) {
+    return tptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            b );
 }
 
 } // namespace lapack

@@ -48,12 +48,14 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t hptrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<float>* ap,
         const fortran_int_t* ipiv, std::complex<float>* b,
         const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_CHPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
+    LAPACK_CHPTRS( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -62,12 +64,14 @@ inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t hptrs( UpLo, const fortran_int_t n,
         const fortran_int_t nrhs, const std::complex<double>* ap,
         const fortran_int_t* ipiv, std::complex<double>* b,
         const fortran_int_t ldb ) {
     fortran_int_t info(0);
-    LAPACK_ZHPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
+    LAPACK_ZHPTRS( &lapack_option< UpLo >::value, &n, &nrhs, ap, ipiv, b,
+            &ldb, &info );
     return info;
 }
 
@@ -90,21 +94,23 @@ struct hptrs_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-    static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
-            const MatrixAP& ap, const VectorIPIV& ipiv, MatrixB& b ) {
+    static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
+            MatrixB& b ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(ap) >= n*(n+1)/2 );
-        BOOST_ASSERT( size(ipiv) >= n );
+        BOOST_ASSERT( size(ipiv) >= size_column(ap) );
+        BOOST_ASSERT( size_column(ap) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::hptrs( uplo, n, size_column(b), begin_value(ap),
-                begin_value(ipiv), begin_value(b), stride_major(b) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        return detail::hptrs( uplo(), size_column(ap), size_column(b),
+                begin_value(ap), begin_value(ipiv), begin_value(b),
+                stride_major(b) );
     }
 
 };
@@ -124,10 +130,10 @@ struct hptrs_impl {
 // * MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const VectorIPIV& ipiv, MatrixB& b ) {
-    return hptrs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, ipiv, b );
+inline std::ptrdiff_t hptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
+        MatrixB& b ) {
+    return hptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 //
@@ -135,10 +141,10 @@ inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
 // * const MatrixB&
 //
 template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-inline std::ptrdiff_t hptrs( const char uplo, const fortran_int_t n,
-        const MatrixAP& ap, const VectorIPIV& ipiv, const MatrixB& b ) {
-    return hptrs_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            n, ap, ipiv, b );
+inline std::ptrdiff_t hptrs( const MatrixAP& ap, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    return hptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
+            ipiv, b );
 }
 
 } // namespace lapack

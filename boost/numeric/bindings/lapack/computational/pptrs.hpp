@@ -121,20 +121,21 @@ struct pptrs_impl {
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename VectorAP, typename MatrixB >
-    static std::ptrdiff_t invoke( const fortran_int_t n,
-            const VectorAP& ap, MatrixB& b ) {
+    template< typename MatrixAP, typename MatrixB >
+    static std::ptrdiff_t invoke( const MatrixAP& ap, MatrixB& b ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
-                typename value< VectorAP >::type >::type,
+                typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size_column(ap) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pptrs( uplo(), n, size_column(b), begin_value(ap),
-                begin_value(b), stride_major(b) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        return detail::pptrs( uplo(), size_column(ap), size_column(b),
+                begin_value(ap), begin_value(b), stride_major(b) );
     }
 
 };
@@ -153,10 +154,9 @@ struct pptrs_impl {
 // Overloaded function for pptrs. Its overload differs for
 // * MatrixB&
 //
-template< typename VectorAP, typename MatrixB >
-inline std::ptrdiff_t pptrs( const fortran_int_t n,
-        const VectorAP& ap, MatrixB& b ) {
-    return pptrs_impl< typename value< VectorAP >::type >::invoke( n, ap,
+template< typename MatrixAP, typename MatrixB >
+inline std::ptrdiff_t pptrs( const MatrixAP& ap, MatrixB& b ) {
+    return pptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
             b );
 }
 
@@ -164,10 +164,9 @@ inline std::ptrdiff_t pptrs( const fortran_int_t n,
 // Overloaded function for pptrs. Its overload differs for
 // * const MatrixB&
 //
-template< typename VectorAP, typename MatrixB >
-inline std::ptrdiff_t pptrs( const fortran_int_t n,
-        const VectorAP& ap, const MatrixB& b ) {
-    return pptrs_impl< typename value< VectorAP >::type >::invoke( n, ap,
+template< typename MatrixAP, typename MatrixB >
+inline std::ptrdiff_t pptrs( const MatrixAP& ap, const MatrixB& b ) {
+    return pptrs_impl< typename value< MatrixAP >::type >::invoke( ap,
             b );
 }
 

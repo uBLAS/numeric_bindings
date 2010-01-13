@@ -184,6 +184,7 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixW >
     static std::ptrdiff_t invoke( const fortran_int_t nb, MatrixA& a,
             VectorE& e, VectorTAU& tau, MatrixW& w ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<

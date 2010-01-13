@@ -115,6 +115,7 @@ struct sptrf_impl {
     //
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixAP& ap, VectorIPIV& ipiv ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
         BOOST_ASSERT( size_column(ap) >= 0 );

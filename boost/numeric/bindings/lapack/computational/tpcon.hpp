@@ -11,11 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TBCON_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TBCON_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TPCON_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TPCON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/detail/array.hpp>
@@ -34,7 +33,7 @@
 #include <boost/utility/enable_if.hpp>
 
 //
-// The LAPACK-backend for tbcon is the netlib-compatible backend.
+// The LAPACK-backend for tpcon is the netlib-compatible backend.
 //
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
@@ -56,13 +55,12 @@ namespace detail {
 // * float value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
-        const fortran_int_t n, const fortran_int_t kd, const float* ab,
-        const fortran_int_t ldab, float& rcond, float* work,
+inline std::ptrdiff_t tpcon( const char norm, UpLo, Diag,
+        const fortran_int_t n, const float* ap, float& rcond, float* work,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
-    LAPACK_STBCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
-            Diag >::value, &n, &kd, ab, &ldab, &rcond, work, iwork, &info );
+    LAPACK_STPCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
+            Diag >::value, &n, ap, &rcond, work, iwork, &info );
     return info;
 }
 
@@ -72,13 +70,12 @@ inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
 // * double value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
-        const fortran_int_t n, const fortran_int_t kd, const double* ab,
-        const fortran_int_t ldab, double& rcond, double* work,
+inline std::ptrdiff_t tpcon( const char norm, UpLo, Diag,
+        const fortran_int_t n, const double* ap, double& rcond, double* work,
         fortran_int_t* iwork ) {
     fortran_int_t info(0);
-    LAPACK_DTBCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
-            Diag >::value, &n, &kd, ab, &ldab, &rcond, work, iwork, &info );
+    LAPACK_DTPCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
+            Diag >::value, &n, ap, &rcond, work, iwork, &info );
     return info;
 }
 
@@ -88,13 +85,12 @@ inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
 // * complex<float> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
-        const fortran_int_t n, const fortran_int_t kd,
-        const std::complex<float>* ab, const fortran_int_t ldab, float& rcond,
+inline std::ptrdiff_t tpcon( const char norm, UpLo, Diag,
+        const fortran_int_t n, const std::complex<float>* ap, float& rcond,
         std::complex<float>* work, float* rwork ) {
     fortran_int_t info(0);
-    LAPACK_CTBCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
-            Diag >::value, &n, &kd, ab, &ldab, &rcond, work, rwork, &info );
+    LAPACK_CTPCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
+            Diag >::value, &n, ap, &rcond, work, rwork, &info );
     return info;
 }
 
@@ -104,13 +100,12 @@ inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
 // * complex<double> value-type.
 //
 template< typename UpLo, typename Diag >
-inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
-        const fortran_int_t n, const fortran_int_t kd,
-        const std::complex<double>* ab, const fortran_int_t ldab,
-        double& rcond, std::complex<double>* work, double* rwork ) {
+inline std::ptrdiff_t tpcon( const char norm, UpLo, Diag,
+        const fortran_int_t n, const std::complex<double>* ap, double& rcond,
+        std::complex<double>* work, double* rwork ) {
     fortran_int_t info(0);
-    LAPACK_ZTBCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
-            Diag >::value, &n, &kd, ab, &ldab, &rcond, work, rwork, &info );
+    LAPACK_ZTPCON( &norm, &lapack_option< UpLo >::value, &lapack_option<
+            Diag >::value, &n, ap, &rcond, work, rwork, &info );
     return info;
 }
 
@@ -118,16 +113,16 @@ inline std::ptrdiff_t tbcon( const char norm, UpLo, Diag,
 
 //
 // Value-type based template class. Use this class if you need a type
-// for dispatching to tbcon.
+// for dispatching to tpcon.
 //
 template< typename Value, typename Enable = void >
-struct tbcon_impl {};
+struct tpcon_impl {};
 
 //
 // This implementation is enabled if Value is a real type.
 //
 template< typename Value >
-struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
+struct tpcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
@@ -138,24 +133,19 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAB, typename WORK, typename IWORK >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, detail::workspace2< WORK,
-            IWORK > work ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        BOOST_ASSERT( kd >= 0 );
+    template< typename MatrixAP, typename WORK, typename IWORK >
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            real_type& rcond, detail::workspace2< WORK, IWORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(ab) ));
+                min_size_iwork( size_column(ap) ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= kd+1 );
-        return detail::tbcon( norm, uplo(), diag(), size_column(ab), kd,
-                begin_value(ab), stride_major(ab), rcond,
-                begin_value(work.select(real_type())),
+                size_column(ap) ));
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::tpcon( norm, uplo(), diag(), size_column(ap),
+                begin_value(ap), rcond, begin_value(work.select(real_type())),
                 begin_value(work.select(fortran_int_t())) );
     }
 
@@ -166,16 +156,16 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        typedef typename result_of::diag_tag< MatrixAB >::type diag;
+    template< typename MatrixAP >
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            real_type& rcond, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(ab) ) );
-        return invoke( norm, kd, ab, rcond, workspace( tmp_work, tmp_iwork ) );
+                min_size_iwork( size_column(ap) ) );
+        return invoke( norm, ap, rcond, workspace( tmp_work, tmp_iwork ) );
     }
 
     //
@@ -185,12 +175,12 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        return invoke( norm, kd, ab, rcond, minimal_workspace() );
+    template< typename MatrixAP >
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            real_type& rcond, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
+        return invoke( norm, ap, rcond, minimal_workspace() );
     }
 
     //
@@ -214,7 +204,7 @@ struct tbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
 // This implementation is enabled if Value is a complex type.
 //
 template< typename Value >
-struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
+struct tpcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
@@ -225,23 +215,19 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // * Deduces the required arguments for dispatching to LAPACK, and
     // * Asserts that most arguments make sense.
     //
-    template< typename MatrixAB, typename WORK, typename RWORK >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, detail::workspace2< WORK,
-            RWORK > work ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        BOOST_ASSERT( kd >= 0 );
+    template< typename MatrixAP, typename WORK, typename RWORK >
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            real_type& rcond, detail::workspace2< WORK, RWORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(ab) ));
+                size_column(ap) ));
         BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= kd+1 );
-        return detail::tbcon( norm, uplo(), diag(), size_column(ab), kd,
-                begin_value(ab), stride_major(ab), rcond,
+                size_column(ap) ));
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        return detail::tpcon( norm, uplo(), diag(), size_column(ap),
+                begin_value(ap), rcond,
                 begin_value(work.select(value_type())),
                 begin_value(work.select(real_type())) );
     }
@@ -253,16 +239,16 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member function
     // * Enables the unblocked algorithm (BLAS level 2)
     //
-    template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, minimal_workspace work ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        typedef typename result_of::diag_tag< MatrixAB >::type diag;
+    template< typename MatrixAP >
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            real_type& rcond, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                size_column(ap) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(ab) ) );
-        return invoke( norm, kd, ab, rcond, workspace( tmp_work, tmp_rwork ) );
+                size_column(ap) ) );
+        return invoke( norm, ap, rcond, workspace( tmp_work, tmp_rwork ) );
     }
 
     //
@@ -272,12 +258,12 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     //   invoke static member
     // * Enables the blocked algorithm (BLAS level 3)
     //
-    template< typename MatrixAB >
-    static std::ptrdiff_t invoke( const char norm, const fortran_int_t kd,
-            const MatrixAB& ab, real_type& rcond, optimal_workspace work ) {
-        typedef typename result_of::data_side< MatrixAB >::type uplo;
-        typedef typename result_of::diag_tag< MatrixAB >::type diag;
-        return invoke( norm, kd, ab, rcond, minimal_workspace() );
+    template< typename MatrixAP >
+    static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
+            real_type& rcond, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        typedef typename result_of::diag_tag< MatrixAP >::type diag;
+        return invoke( norm, ap, rcond, minimal_workspace() );
     }
 
     //
@@ -302,33 +288,33 @@ struct tbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // Functions for direct use. These functions are overloaded for temporaries,
 // so that wrapped types can still be passed and used for write-access. In
 // addition, if applicable, they are overloaded for user-defined workspaces.
-// Calls to these functions are passed to the tbcon_impl classes. In the 
+// Calls to these functions are passed to the tpcon_impl classes. In the 
 // documentation, most overloads are collapsed to avoid a large number of
 // prototypes which are very similar.
 //
 
 //
-// Overloaded function for tbcon. Its overload differs for
+// Overloaded function for tpcon. Its overload differs for
 // * User-defined workspace
 //
-template< typename MatrixAB, typename Workspace >
-inline std::ptrdiff_t tbcon( const char norm, const fortran_int_t kd,
-        const MatrixAB& ab, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond, Workspace work ) {
-    return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            kd, ab, rcond, work );
+template< typename MatrixAP, typename Workspace >
+inline std::ptrdiff_t tpcon( const char norm, const MatrixAP& ap,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond, Workspace work ) {
+    return tpcon_impl< typename value< MatrixAP >::type >::invoke( norm,
+            ap, rcond, work );
 }
 
 //
-// Overloaded function for tbcon. Its overload differs for
+// Overloaded function for tpcon. Its overload differs for
 // * Default workspace-type (optimal)
 //
-template< typename MatrixAB >
-inline std::ptrdiff_t tbcon( const char norm, const fortran_int_t kd,
-        const MatrixAB& ab, typename remove_imaginary< typename value<
-        MatrixAB >::type >::type& rcond ) {
-    return tbcon_impl< typename value< MatrixAB >::type >::invoke( norm,
-            kd, ab, rcond, optimal_workspace() );
+template< typename MatrixAP >
+inline std::ptrdiff_t tpcon( const char norm, const MatrixAP& ap,
+        typename remove_imaginary< typename value<
+        MatrixAP >::type >::type& rcond ) {
+    return tpcon_impl< typename value< MatrixAP >::type >::invoke( norm,
+            ap, rcond, optimal_workspace() );
 }
 
 } // namespace lapack

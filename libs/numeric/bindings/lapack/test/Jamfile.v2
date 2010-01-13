@@ -47,10 +47,10 @@ alias bindings-lapack-tests :
     [ run ublas_getrf_getrs.cc : 20 ]
     [ run ublas_getrf_getrs1.cpp ]
     [ run ublas_hetrf_hetrs.cc ]
-#    [ run ublas_hptrf_hptrs.cc ]
+    [ run ublas_hptrf_hptrs.cc ]
     [ run ublas_potrf_potrs.cc ]
-#    [ run ublas_pptrf_pptrs.cc ]
-#    [ run ublas_sptrf_sptrs.cc : 20 ]
+    [ run ublas_pptrf_pptrs.cc ]
+    [ run ublas_sptrf_sptrs.cc : 20 ]
     [ run ublas_sytrf_sytrs.cc : 20 ]
     [ run ublas_gbsv.cpp ]
 

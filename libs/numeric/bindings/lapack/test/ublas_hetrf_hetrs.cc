@@ -12,13 +12,15 @@
 #include <boost/numeric/bindings/lapack/computational/hetrs.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/lower.hpp>
+#include <boost/numeric/bindings/upper.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 using std::size_t; 
 using std::cin;
@@ -77,7 +79,7 @@ int main() {
 
   int ierr = lapack::hetrf (hcal, ipiv); 
   if (ierr == 0) {
-    lapack::hetrs (traits::matrix_uplo_tag(hcal), hcal, ipiv, cbl);
+    lapack::hetrs ( hcal, ipiv, cbl);
     print_m (cbl, "cxl"); 
   }
   else 
@@ -90,7 +92,7 @@ int main() {
 
   ierr = lapack::hetrf (hcau, ipiv, lapack::workspace(cwork)); 
   if (ierr == 0) {
-    lapack::hetrs (traits::matrix_uplo_tag(hcau), hcau, ipiv, cbu); 
+    lapack::hetrs ( hcau, ipiv, cbu); 
     print_v (ipiv, "ipiv"); 
     cout << endl; 
     print_m (cbu, "cxu"); 
@@ -123,7 +125,7 @@ int main() {
   cherml_t hcal2 (cal2);
   ierr = lapack::hetrf (hcal2, ipiv); 
   if (ierr == 0) {
-    lapack::hetrs ('L', cal2, ipiv, cbl2); 
+    lapack::hetrs ( bindings::lower( cal2 ), ipiv, cbl2); 
     print_m (cbl2, "cxl2"); 
   }
   else 
@@ -134,7 +136,7 @@ int main() {
   chermu_t hcau2 (cau2);
   ierr = lapack::hetrf (hcau2, ipiv, lapack::workspace(cwork)); 
   if (ierr == 0) {
-    lapack::hetrs ('U', cau2, ipiv, cbu2); 
+    lapack::hetrs ( bindings::upper( cau2 ), ipiv, cbu2); 
     print_v (ipiv, "ipiv"); 
     cout << endl; 
     print_m (cbu2, "cxu"); 

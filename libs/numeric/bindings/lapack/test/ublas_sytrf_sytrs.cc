@@ -10,14 +10,16 @@
 #include <boost/numeric/bindings/lapack/computational/sytri.hpp>
 #include <boost/numeric/bindings/lapack/computational/sytrs.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/lower.hpp>
+#include <boost/numeric/bindings/upper.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 using std::size_t; 
 using std::cin;
@@ -101,9 +103,9 @@ int main (int argc, char **argv) {
   int err = lapack::sytrf (sal, ipiv);  
   if (err == 0) {
     symml_t isal (sal);
-    lapack::sytrs (traits::matrix_uplo_tag(sal), sal, ipiv, bl); 
+    lapack::sytrs ( sal, ipiv, bl); 
     print_m (bl, "xl"); 
-    lapack::sytri (traits::matrix_uplo_tag(isal), isal, ipiv);
+    lapack::sytri ( isal, ipiv);
     print_m (isal, "isal"); 
   } 
   cout << endl; 
@@ -111,9 +113,9 @@ int main (int argc, char **argv) {
   err = lapack::sytrf (sau, ipiv);  
   if (err == 0) {
     symmu_t isau (sau);
-    lapack::sytrs (traits::matrix_uplo_tag(sau), sau, ipiv, bu); 
+    lapack::sytrs ( sau, ipiv, bu); 
     print_m (bu, "xu"); 
-    lapack::sytri (traits::matrix_uplo_tag(isau), isau, ipiv);
+    lapack::sytri ( isau, ipiv);
     print_m (isau, "isau"); 
   } 
   else 
@@ -140,7 +142,7 @@ int main (int argc, char **argv) {
   symml_t sal1 (al1);
   err = lapack::sytrf (sal1, ipiv);
   if (err == 0) {
-    lapack::sytrs ('L', al1, ipiv, bl1); 
+    lapack::sytrs ( bindings::lower( al1 ), ipiv, bl1); 
     print_m (al1, "al1 factored"); 
     cout << endl; 
     print_v (ipiv, "ipiv"); 
@@ -168,7 +170,7 @@ int main (int argc, char **argv) {
   symmu_t sau1 (au1);
   err = lapack::sytrf (sau1, ipiv);
   if (err == 0) {
-    lapack::sytrs ('U', au1, ipiv, bu1); 
+    lapack::sytrs ( bindings::upper( au1 ), ipiv, bu1); 
     print_m (au1, "au1 factored"); 
     cout << endl; 
     print_v (ipiv, "ipiv"); 
@@ -214,9 +216,9 @@ int main (int argc, char **argv) {
   int ierr = lapack::sytrf (scal, ipiv); 
   if (ierr == 0) {
     csymml_t iscal (scal);
-    lapack::sytrs (traits::matrix_uplo_tag(scal), scal, ipiv, cbl); 
+    lapack::sytrs ( scal, ipiv, cbl); 
     print_m (cbl, "cxl"); 
-    lapack::sytri (traits::matrix_uplo_tag(iscal), iscal, ipiv);
+    lapack::sytri ( iscal, ipiv);
     print_m (iscal, "iscal"); 
   }
   else 
@@ -239,11 +241,11 @@ int main (int argc, char **argv) {
   ierr = lapack::sytrf (scau, ipiv);
   if (ierr == 0) {
     csymmu_t iscau (scau);
-    lapack::sytrs (traits::matrix_uplo_tag(scau), scau, ipiv, cbu); 
+    lapack::sytrs ( scau, ipiv, cbu); 
     print_v (ipiv, "ipiv"); 
     cout << endl; 
     print_m (cbu, "cxu"); 
-    lapack::sytri (traits::matrix_uplo_tag(iscau), iscau, ipiv);
+    lapack::sytri ( iscau, ipiv);
     print_m (iscau, "iscau"); 
   }
   else 

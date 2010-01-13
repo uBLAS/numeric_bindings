@@ -48,10 +48,10 @@ namespace detail {
 // * netlib-compatible LAPACK backend (the default), and
 // * float value-type.
 //
-inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
-        float* ap ) {
+template< typename UpLo >
+inline std::ptrdiff_t pptri( UpLo, const fortran_int_t n, float* ap ) {
     fortran_int_t info(0);
-    LAPACK_SPPTRI( &uplo, &n, ap, &info );
+    LAPACK_SPPTRI( &lapack_option< UpLo >::value, &n, ap, &info );
     return info;
 }
 
@@ -60,10 +60,10 @@ inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * double value-type.
 //
-inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
-        double* ap ) {
+template< typename UpLo >
+inline std::ptrdiff_t pptri( UpLo, const fortran_int_t n, double* ap ) {
     fortran_int_t info(0);
-    LAPACK_DPPTRI( &uplo, &n, ap, &info );
+    LAPACK_DPPTRI( &lapack_option< UpLo >::value, &n, ap, &info );
     return info;
 }
 
@@ -72,10 +72,11 @@ inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<float> value-type.
 //
-inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t pptri( UpLo, const fortran_int_t n,
         std::complex<float>* ap ) {
     fortran_int_t info(0);
-    LAPACK_CPPTRI( &uplo, &n, ap, &info );
+    LAPACK_CPPTRI( &lapack_option< UpLo >::value, &n, ap, &info );
     return info;
 }
 
@@ -84,10 +85,11 @@ inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
 // * netlib-compatible LAPACK backend (the default), and
 // * complex<double> value-type.
 //
-inline std::ptrdiff_t pptri( const char uplo, const fortran_int_t n,
+template< typename UpLo >
+inline std::ptrdiff_t pptri( UpLo, const fortran_int_t n,
         std::complex<double>* ap ) {
     fortran_int_t info(0);
-    LAPACK_ZPPTRI( &uplo, &n, ap, &info );
+    LAPACK_ZPPTRI( &lapack_option< UpLo >::value, &n, ap, &info );
     return info;
 }
 
@@ -110,10 +112,11 @@ struct pptri_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixAP >
-    static std::ptrdiff_t invoke( const char uplo, MatrixAP& ap ) {
+    static std::ptrdiff_t invoke( MatrixAP& ap ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
         BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::pptri( uplo, size_column(ap), begin_value(ap) );
+        return detail::pptri( uplo(), size_column(ap), begin_value(ap) );
     }
 
 };
@@ -133,9 +136,8 @@ struct pptri_impl {
 // * MatrixAP&
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t pptri( const char uplo, MatrixAP& ap ) {
-    return pptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap );
+inline std::ptrdiff_t pptri( MatrixAP& ap ) {
+    return pptri_impl< typename value< MatrixAP >::type >::invoke( ap );
 }
 
 //
@@ -143,9 +145,8 @@ inline std::ptrdiff_t pptri( const char uplo, MatrixAP& ap ) {
 // * const MatrixAP&
 //
 template< typename MatrixAP >
-inline std::ptrdiff_t pptri( const char uplo, const MatrixAP& ap ) {
-    return pptri_impl< typename value< MatrixAP >::type >::invoke( uplo,
-            ap );
+inline std::ptrdiff_t pptri( const MatrixAP& ap ) {
+    return pptri_impl< typename value< MatrixAP >::type >::invoke( ap );
 }
 
 } // namespace lapack

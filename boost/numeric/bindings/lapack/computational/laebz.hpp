@@ -110,6 +110,7 @@ struct laebz_impl {
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
             fortran_int_t& mout, MatrixNAB& nab, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -130,24 +131,26 @@ struct laebz_impl {
                 typename value< VectorNVAL >::type >::type,
                 typename remove_const< typename value<
                 MatrixNAB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorNVAL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixNAB >::value) );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n );
-        BOOST_ASSERT( size(e2) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( stride_major(ab) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                stride_major(ab) ));
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        return detail::laebz( ijob, nitmax, n, stride_major(ab), minp, nbmin,
-                abstol, reltol, pivmin, begin_value(d), begin_value(e),
-                begin_value(e2), begin_value(nval), begin_value(ab),
-                begin_value(c), mout, begin_value(nab),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorNVAL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixNAB >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n );
+        BOOST_ASSERT( bindings::size(e2) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::stride_major(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::stride_major(ab) ));
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        return detail::laebz( ijob, nitmax, n, bindings::stride_major(ab),
+                minp, nbmin, abstol, reltol, pivmin, bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(e2),
+                bindings::begin_value(nval), bindings::begin_value(ab),
+                bindings::begin_value(c), mout, bindings::begin_value(nab),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -167,10 +170,11 @@ struct laebz_impl {
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
             fortran_int_t& mout, MatrixNAB& nab, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                stride_major(ab) ) );
+                bindings::stride_major(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( stride_major(ab) ) );
+                min_size_iwork( bindings::stride_major(ab) ) );
         return invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin,
                 d, e, e2, nval, ab, c, mout, nab, workspace( tmp_work,
                 tmp_iwork ) );
@@ -193,6 +197,7 @@ struct laebz_impl {
             const real_type pivmin, const VectorD& d, const VectorE& e,
             const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
             fortran_int_t& mout, MatrixNAB& nab, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin,
                 d, e, e2, nval, ab, c, mout, nab, minimal_workspace() );
     }

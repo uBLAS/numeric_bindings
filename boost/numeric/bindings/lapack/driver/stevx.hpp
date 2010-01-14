@@ -106,6 +106,7 @@ struct stevx_impl {
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -118,26 +119,30 @@ struct stevx_impl {
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= std::max< std::ptrdiff_t >(1,n-1) );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( n ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= std::max< std::ptrdiff_t >(1,n-1) );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::stevx( jobz, range, n, begin_value(d), begin_value(e),
-                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(ifail) );
+        return detail::stevx( jobz, range, n, bindings::begin_value(d),
+                bindings::begin_value(e), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(ifail) );
     }
 
     //
@@ -155,6 +160,7 @@ struct stevx_impl {
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
@@ -177,6 +183,7 @@ struct stevx_impl {
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z,
                 ifail, minimal_workspace() );
     }

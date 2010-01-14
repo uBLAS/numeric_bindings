@@ -133,6 +133,7 @@ struct gghrd_impl {
     static std::ptrdiff_t invoke( const char compq, const char compz,
             const fortran_int_t ilo, MatrixA& a, MatrixB& b, MatrixQ& q,
             MatrixZ& z ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -145,25 +146,31 @@ struct gghrd_impl {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gghrd( compq, compz, size_column(a), ilo,
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(q),
-                stride_major(q), begin_value(z), stride_major(z) );
+        return detail::gghrd( compq, compz, bindings::size_column(a), ilo,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(z),
+                bindings::stride_major(z) );
     }
 
 };

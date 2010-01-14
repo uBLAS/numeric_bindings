@@ -136,6 +136,7 @@ struct latrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixW >
     static std::ptrdiff_t invoke( const fortran_int_t nb, MatrixA& a,
             VectorE& e, VectorTAU& tau, MatrixW& w ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -149,18 +150,21 @@ struct latrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixW >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixW >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(w) == 1 || stride_minor(w) == 1 );
-        BOOST_ASSERT( stride_major(a) >= (ERROR) );
-        BOOST_ASSERT( stride_major(w) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::latrd( uplo(), size_column(a), nb, begin_value(a),
-                stride_major(a), begin_value(e), begin_value(tau),
-                begin_value(w), stride_major(w) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixW >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(w) == 1 ||
+                bindings::stride_minor(w) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= (ERROR) );
+        BOOST_ASSERT( bindings::stride_major(w) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::latrd( uplo(), bindings::size_column(a), nb,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(e), bindings::begin_value(tau),
+                bindings::begin_value(w), bindings::stride_major(w) );
     }
 
 };
@@ -184,6 +188,7 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixW >
     static std::ptrdiff_t invoke( const fortran_int_t nb, MatrixA& a,
             VectorE& e, VectorTAU& tau, MatrixW& w ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -193,19 +198,22 @@ struct latrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixW >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixW >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(w) == 1 || stride_minor(w) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(w) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::latrd( uplo(), size_column(a), nb, begin_value(a),
-                stride_major(a), begin_value(e), begin_value(tau),
-                begin_value(w), stride_major(w) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixW >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(w) == 1 ||
+                bindings::stride_minor(w) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(w) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::latrd( uplo(), bindings::size_column(a), nb,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(e), bindings::begin_value(tau),
+                bindings::begin_value(w), bindings::stride_major(w) );
     }
 
 };

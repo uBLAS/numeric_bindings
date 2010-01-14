@@ -105,6 +105,7 @@ struct unmqr_impl {
     static std::ptrdiff_t invoke( const char side, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -114,22 +115,27 @@ struct unmqr_impl {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size(tau) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( side, bindings::size_row(c),
+                bindings::size_column(c) ));
+        BOOST_ASSERT( bindings::size_column(c) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_row(c) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size(tau) >= size(tau) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( side,
-                size_row(c), size_column(c) ));
-        BOOST_ASSERT( size_column(c) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_row(c) >= 0 );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
-                size_row(c)) );
-        return detail::unmqr( side, trans(), size_row(c), size_column(c),
-                size(tau), begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())) );
+        return detail::unmqr( side, trans(), bindings::size_row(c),
+                bindings::size_column(c), bindings::size(tau),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau), bindings::begin_value(c),
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())) );
     }
 
     //
@@ -142,9 +148,10 @@ struct unmqr_impl {
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
-                size_row(c), size_column(c) ) );
+                bindings::size_row(c), bindings::size_column(c) ) );
         return invoke( side, a, tau, c, workspace( tmp_work ) );
     }
 
@@ -158,11 +165,14 @@ struct unmqr_impl {
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const MatrixA& a,
             const VectorTAU& tau, MatrixC& c, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
-        detail::unmqr( side, trans(), size_row(c), size_column(c),
-                size(tau), begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c), &opt_size_work, -1 );
+        detail::unmqr( side, trans(), bindings::size_row(c),
+                bindings::size_column(c), bindings::size(tau),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau), bindings::begin_value(c),
+                bindings::stride_major(c), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( side, a, tau, c, workspace( tmp_work ) );

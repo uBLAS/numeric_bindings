@@ -135,7 +135,9 @@ struct asum_impl {
     //
     template< typename VectorX >
     static return_type invoke( const VectorX& x ) {
-        return detail::asum( size(x), begin_value(x), stride(x) );
+        namespace bindings = ::boost::numeric::bindings;
+        return detail::asum( bindings::size(x),
+                bindings::begin_value(x), bindings::stride(x) );
     }
 };
 

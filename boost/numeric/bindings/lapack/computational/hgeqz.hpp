@@ -154,6 +154,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixH >::type >::type,
                 typename remove_const< typename value<
@@ -178,32 +179,38 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixH >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixH >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixH >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHAR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHAI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(h) ));
+        BOOST_ASSERT( bindings::size_column(h) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(h) == 1 ||
+                bindings::stride_minor(h) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( job == 'E' || job == 'S' );
-        BOOST_ASSERT( size(alphar) >= size_column(h) );
-        BOOST_ASSERT( size(beta) >= size_column(h) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(h) ));
-        BOOST_ASSERT( size_column(h) >= 0 );
-        BOOST_ASSERT( size_minor(h) == 1 || stride_minor(h) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::hgeqz( job, compq, compz, size_column(h), ilo,
-                size_column(h), begin_value(h), stride_major(h),
-                begin_value(t), stride_major(t), begin_value(alphar),
-                begin_value(alphai), begin_value(beta), begin_value(q),
-                stride_major(q), begin_value(z), stride_major(z),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        return detail::hgeqz( job, compq, compz, bindings::size_column(h),
+                ilo, bindings::size_column(h), bindings::begin_value(h),
+                bindings::stride_major(h), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(alphar),
+                bindings::begin_value(alphai), bindings::begin_value(beta),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -221,8 +228,9 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(h) ) );
+                bindings::size_column(h) ) );
         return invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q,
                 z, workspace( tmp_work ) );
     }
@@ -242,12 +250,15 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::hgeqz( job, compq, compz, size_column(h), ilo,
-                size_column(h), begin_value(h), stride_major(h),
-                begin_value(t), stride_major(t), begin_value(alphar),
-                begin_value(alphai), begin_value(beta), begin_value(q),
-                stride_major(q), begin_value(z), stride_major(z),
+        detail::hgeqz( job, compq, compz, bindings::size_column(h), ilo,
+                bindings::size_column(h), bindings::begin_value(h),
+                bindings::stride_major(h), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(alphar),
+                bindings::begin_value(alphai), bindings::begin_value(beta),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(z), bindings::stride_major(z),
                 &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
@@ -286,6 +297,7 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
             MatrixZ& z, detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixH >::type >::type,
                 typename remove_const< typename value<
@@ -306,34 +318,40 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixH >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixH >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixH >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size(alpha) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(h) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(h) ));
+        BOOST_ASSERT( bindings::size_column(h) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(h) == 1 ||
+                bindings::stride_minor(h) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( job == 'E' || job == 'S' );
-        BOOST_ASSERT( size(alpha) >= size_column(h) );
-        BOOST_ASSERT( size(beta) >= size_column(h) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(h) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(h) ));
-        BOOST_ASSERT( size_column(h) >= 0 );
-        BOOST_ASSERT( size_minor(h) == 1 || stride_minor(h) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::hgeqz( job, compq, compz, size_column(h), ilo,
-                size_column(h), begin_value(h), stride_major(h),
-                begin_value(t), stride_major(t), begin_value(alpha),
-                begin_value(beta), begin_value(q), stride_major(q),
-                begin_value(z), stride_major(z),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::hgeqz( job, compq, compz, bindings::size_column(h),
+                ilo, bindings::size_column(h), bindings::begin_value(h),
+                bindings::stride_major(h), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(alpha),
+                bindings::begin_value(beta), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(z),
+                bindings::stride_major(z),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -349,10 +367,11 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
             MatrixZ& z, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(h) ) );
+                bindings::size_column(h) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(h) ) );
+                bindings::size_column(h) ) );
         return invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -370,15 +389,18 @@ struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char compz, const fortran_int_t ilo, MatrixH& h,
             MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
             MatrixZ& z, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(h) ) );
-        detail::hgeqz( job, compq, compz, size_column(h), ilo,
-                size_column(h), begin_value(h), stride_major(h),
-                begin_value(t), stride_major(t), begin_value(alpha),
-                begin_value(beta), begin_value(q), stride_major(q),
-                begin_value(z), stride_major(z), &opt_size_work, -1,
-                begin_value(tmp_rwork) );
+                bindings::size_column(h) ) );
+        detail::hgeqz( job, compq, compz, bindings::size_column(h), ilo,
+                bindings::size_column(h), bindings::begin_value(h),
+                bindings::stride_major(h), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(alpha),
+                bindings::begin_value(beta), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(z),
+                bindings::stride_major(z), &opt_size_work, -1,
+                bindings::begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z,

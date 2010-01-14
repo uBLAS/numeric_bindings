@@ -140,8 +140,9 @@ struct rotmg_impl {
     template< typename VectorDPARAM >
     static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
             const real_type y1, VectorDPARAM& dparam ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDPARAM >::value) );
-        detail::rotmg( d1, d2, x1, y1, begin_value(dparam) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDPARAM >::value) );
+        detail::rotmg( d1, d2, x1, y1, bindings::begin_value(dparam) );
     }
 };
 

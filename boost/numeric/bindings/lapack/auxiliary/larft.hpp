@@ -120,6 +120,7 @@ struct larft_impl {
     static std::ptrdiff_t invoke( const char direct, const char storev,
             const fortran_int_t n, const fortran_int_t k, MatrixV& v,
             const VectorTAU& tau, MatrixT& t ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixV >::type >::type,
                 typename remove_const< typename value<
@@ -128,19 +129,21 @@ struct larft_impl {
                 typename value< MatrixV >::type >::type,
                 typename remove_const< typename value<
                 MatrixT >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= k );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::stride_major(t) >= k );
         BOOST_ASSERT( direct == 'F' || direct == 'B' );
         BOOST_ASSERT( k >= 1 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(tau) >= k );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
         BOOST_ASSERT( storev == 'C' || storev == 'R' );
-        BOOST_ASSERT( stride_major(t) >= k );
-        return detail::larft( direct, storev, n, k, begin_value(v),
-                stride_major(v), begin_value(tau), begin_value(t),
-                stride_major(t) );
+        return detail::larft( direct, storev, n, k, bindings::begin_value(v),
+                bindings::stride_major(v), bindings::begin_value(tau),
+                bindings::begin_value(t), bindings::stride_major(t) );
     }
 
 };

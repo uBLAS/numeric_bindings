@@ -174,6 +174,7 @@ struct her2k_impl {
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type invoke( const value_type alpha, const MatrixA& a,
             const MatrixB& b, const real_type beta, MatrixC& c ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::data_side< MatrixC >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -183,14 +184,18 @@ struct her2k_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        detail::her2k( order(), uplo(), trans(), size_column(c),
-                size_column(a), alpha, begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), beta, begin_value(c),
-                stride_major(c) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        detail::her2k( order(), uplo(), trans(),
+                bindings::size_column(c), bindings::size_column(a), alpha,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), beta,
+                bindings::begin_value(c), bindings::stride_major(c) );
     }
 };
 

@@ -100,6 +100,7 @@ struct bdsdc_impl {
             const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
             MatrixVT& vt, VectorQ& q, VectorIQ& iq, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -116,26 +117,30 @@ struct bdsdc_impl {
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 VectorQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIQ >::value) );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( n ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( compq, n ));
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vt) == 1 ||
+                bindings::stride_minor(vt) == 1 );
         BOOST_ASSERT( compq == 'N' || compq == 'P' || compq == 'I' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( compq,
-                n ));
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(vt) == 1 || stride_minor(vt) == 1 );
-        return detail::bdsdc( uplo, compq, n, begin_value(d), begin_value(e),
-                begin_value(u), stride_major(u), begin_value(vt),
-                stride_major(vt), begin_value(q), begin_value(iq),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::bdsdc( uplo, compq, n, bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(u),
+                bindings::stride_major(u), bindings::begin_value(vt),
+                bindings::stride_major(vt), bindings::begin_value(q),
+                bindings::begin_value(iq),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -150,6 +155,7 @@ struct bdsdc_impl {
     static std::ptrdiff_t invoke( const char uplo, const char compq,
             const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
             MatrixVT& vt, VectorQ& q, VectorIQ& iq, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( compq,
                 n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -170,6 +176,7 @@ struct bdsdc_impl {
     static std::ptrdiff_t invoke( const char uplo, const char compq,
             const fortran_int_t n, VectorD& d, VectorE& e, MatrixU& u,
             MatrixVT& vt, VectorQ& q, VectorIQ& iq, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, compq, n, d, e, u, vt, q, iq,
                 minimal_workspace() );
     }

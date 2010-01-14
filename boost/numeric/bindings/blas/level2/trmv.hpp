@@ -244,6 +244,7 @@ struct trmv_impl {
     //
     template< typename MatrixA, typename VectorX >
     static return_type invoke( const MatrixA& a, VectorX& x ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
@@ -251,11 +252,13 @@ struct trmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
         detail::trmv( order(), uplo(), trans(), diag(),
-                size_column_op(a, trans()), begin_value(a), stride_major(a),
-                begin_value(x), stride(x) );
+                bindings::size_column_op(a, trans()),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(x), bindings::stride(x) );
     }
 };
 

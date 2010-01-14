@@ -85,15 +85,17 @@ struct sterf_impl {
     template< typename VectorD, typename VectorE >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorD& d,
             VectorE& e ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 VectorE >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(e) >= n-1 );
-        return detail::sterf( n, begin_value(d), begin_value(e) );
+        return detail::sterf( n, bindings::begin_value(d),
+                bindings::begin_value(e) );
     }
 
 };

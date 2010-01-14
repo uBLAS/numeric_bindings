@@ -111,11 +111,12 @@ struct sdot_impl {
     static return_type invoke( const std::ptrdiff_t n, const VectorSX& sx,
             const std::ptrdiff_t incx, const VectorSY& sy,
             const std::ptrdiff_t incy ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorSX >::type >::type, typename remove_const<
                 typename value< VectorSY >::type >::type >::value) );
-        return detail::sdot( n, begin_value(sx), incx, begin_value(sy),
-                incy );
+        return detail::sdot( n, bindings::begin_value(sx), incx,
+                bindings::begin_value(sy), incy );
     }
 };
 

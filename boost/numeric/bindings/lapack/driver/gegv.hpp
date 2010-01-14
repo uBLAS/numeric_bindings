@@ -149,6 +149,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -173,34 +174,41 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHAR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHAI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' );
         BOOST_ASSERT( jobvr == 'N' || jobvr == 'V' );
-        BOOST_ASSERT( size(alphar) >= size_column(a) );
-        BOOST_ASSERT( size(beta) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(alphar), begin_value(alphai), begin_value(beta),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        return detail::gegv( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(alphar), bindings::begin_value(alphai),
+                bindings::begin_value(beta), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -217,8 +225,9 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr,
                 workspace( tmp_work ) );
     }
@@ -237,12 +246,15 @@ struct gegv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(alphar), begin_value(alphai), begin_value(beta),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), &opt_size_work, -1 );
+        detail::gegv( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(alphar), bindings::begin_value(alphai),
+                bindings::begin_value(beta), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr,
@@ -280,6 +292,7 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVL& vl, MatrixVR& vr, detail::workspace2< WORK,
             RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -300,36 +313,42 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_ASSERT( bindings::size(alpha) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(beta) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' );
         BOOST_ASSERT( jobvr == 'N' || jobvr == 'V' );
-        BOOST_ASSERT( size(alpha) >= size_column(a) );
-        BOOST_ASSERT( size(beta) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(alpha), begin_value(beta), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::gegv( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(alpha), bindings::begin_value(beta),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -344,10 +363,11 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVL& vl, MatrixVR& vr, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -364,14 +384,17 @@ struct gegv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVL& vl, MatrixVR& vr, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
-        detail::gegv( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(alpha), begin_value(beta), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr),
-                &opt_size_work, -1, begin_value(tmp_rwork) );
+                bindings::size_column(a) ) );
+        detail::gegv( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(alpha), bindings::begin_value(beta),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                &opt_size_work, -1, bindings::begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr,

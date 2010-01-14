@@ -129,24 +129,27 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAU, typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_ASSERT( size(tau) >= size_row(a) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= size_row(a) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::tzrzf( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(tau),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::tzrzf( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -159,6 +162,7 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( a, tau, workspace( tmp_work ) );
@@ -174,9 +178,11 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::tzrzf( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(tau), &opt_size_work, -1 );
+        detail::tzrzf( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, tau, workspace( tmp_work ) );
@@ -209,24 +215,27 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAU, typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_ASSERT( size(tau) >= size_row(a) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= size_row(a) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::tzrzf( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(tau),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::tzrzf( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())) );
     }
 
     //
@@ -239,6 +248,7 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( a, tau, workspace( tmp_work ) );
@@ -254,9 +264,11 @@ struct tzrzf_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorTAU& tau,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
-        detail::tzrzf( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(tau), &opt_size_work, -1 );
+        detail::tzrzf( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, tau, workspace( tmp_work ) );

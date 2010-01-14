@@ -145,6 +145,7 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
@@ -153,25 +154,29 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorSELECT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSELECT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(t) ));
+        BOOST_ASSERT( bindings::size_column(t) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(t) ));
-        BOOST_ASSERT( size_column(t) >= 0 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        return detail::trevc( side, howmny, begin_value(select),
-                size_column(t), begin_value(t), stride_major(t),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), mm, m,
-                begin_value(work.select(real_type())) );
+        return detail::trevc( side, howmny, bindings::begin_value(select),
+                bindings::size_column(t), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), mm, m,
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -187,8 +192,9 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(t) ) );
+                bindings::size_column(t) ) );
         return invoke( side, howmny, select, t, vl, vr, mm, m,
                 workspace( tmp_work ) );
     }
@@ -206,6 +212,7 @@ struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, howmny, select, t, vl, vr, mm, m,
                 minimal_workspace() );
     }
@@ -240,6 +247,7 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
@@ -248,28 +256,32 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(t) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(t) ));
+        BOOST_ASSERT( bindings::size_column(t) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(t) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(t) ));
-        BOOST_ASSERT( size_column(t) >= 0 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        return detail::trevc( side, howmny, begin_value(select),
-                size_column(t), begin_value(t), stride_major(t),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), mm, m,
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::trevc( side, howmny, bindings::begin_value(select),
+                bindings::size_column(t), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), mm, m,
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -285,10 +297,11 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(t) ) );
+                bindings::size_column(t) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(t) ) );
+                bindings::size_column(t) ) );
         return invoke( side, howmny, select, t, vl, vr, mm, m,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -306,6 +319,7 @@ struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
             MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, howmny, select, t, vl, vr, mm, m,
                 minimal_workspace() );
     }

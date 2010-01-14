@@ -266,6 +266,7 @@ struct symm_impl {
     static return_type invoke( const char side, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const value_type beta,
             MatrixC& c ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
@@ -274,15 +275,19 @@ struct symm_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        detail::symm( order(), side, uplo(), size_row(c),
-                size_column(c), alpha, begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), beta, begin_value(c),
-                stride_major(c) );
+        detail::symm( order(), side, uplo(), bindings::size_row(c),
+                bindings::size_column(c), alpha, bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), beta, bindings::begin_value(c),
+                bindings::stride_major(c) );
     }
 };
 

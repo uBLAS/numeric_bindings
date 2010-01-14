@@ -125,19 +125,22 @@ struct gebal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char job, MatrixA& a,
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorSCALE& scale ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorSCALE >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSCALE >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gebal( job, size_column(a), begin_value(a),
-                stride_major(a), ilo, ihi, begin_value(scale) );
+        return detail::gebal( job, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), ilo, ihi,
+                bindings::begin_value(scale) );
     }
 
 };
@@ -161,15 +164,18 @@ struct gebal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char job, MatrixA& a,
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorSCALE& scale ) {
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorSCALE >::value) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSCALE >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gebal( job, size_column(a), begin_value(a),
-                stride_major(a), ilo, ihi, begin_value(scale) );
+        return detail::gebal( job, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), ilo, ihi,
+                bindings::begin_value(scale) );
     }
 
 };

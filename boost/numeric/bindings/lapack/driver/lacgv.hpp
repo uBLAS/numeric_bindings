@@ -87,9 +87,10 @@ struct lacgv_impl {
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
             const fortran_int_t incx ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 0 );
-        return detail::lacgv( n, begin_value(x), incx );
+        return detail::lacgv( n, bindings::begin_value(x), incx );
     }
 
 };

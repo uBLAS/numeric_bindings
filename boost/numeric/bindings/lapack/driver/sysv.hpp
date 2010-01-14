@@ -143,28 +143,33 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work());
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::sysv( uplo(), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work());
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::sysv( uplo(), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -177,6 +182,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work() );
         return invoke( a, ipiv, b, workspace( tmp_work ) );
@@ -192,11 +198,14 @@ struct sysv_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
-        detail::sysv( uplo(), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b), &opt_size_work, -1 );
+        detail::sysv( uplo(), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, ipiv, b, workspace( tmp_work ) );
@@ -230,28 +239,33 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work());
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::sysv( uplo(), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work());
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::sysv( uplo(), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())) );
     }
 
     //
@@ -264,6 +278,7 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work() );
         return invoke( a, ipiv, b, workspace( tmp_work ) );
@@ -279,11 +294,14 @@ struct sysv_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
-        detail::sysv( uplo(), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b), &opt_size_work, -1 );
+        detail::sysv( uplo(), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, ipiv, b, workspace( tmp_work ) );

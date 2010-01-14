@@ -268,6 +268,7 @@ struct trmm_impl {
     template< typename MatrixA, typename MatrixB >
     static return_type invoke( const char side, const value_type alpha,
             const MatrixA& a, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixB >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type transa;
@@ -275,13 +276,16 @@ struct trmm_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
         detail::trmm( order(), side, uplo(), transa(), diag(),
-                size_row(b), size_column(b), alpha, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b) );
+                bindings::size_row(b), bindings::size_column(b), alpha,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b) );
     }
 };
 

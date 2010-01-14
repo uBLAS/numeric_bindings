@@ -131,20 +131,25 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( const char side, const VectorV& v,
             const real_type tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorV >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( side, bindings::size_column(c),
+                bindings::size_row(c) ));
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( side,
-                size_column(c), size_row(c) ));
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
-                size_row(c)) );
-        return detail::larf( side, size_row(c), size_column(c),
-                begin_value(v), stride(v), tau, begin_value(c),
-                stride_major(c), begin_value(work.select(real_type())) );
+        return detail::larf( side, bindings::size_row(c),
+                bindings::size_column(c), bindings::begin_value(v),
+                bindings::stride(v), tau, bindings::begin_value(c),
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -157,8 +162,9 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const VectorV& v,
             const real_type tau, MatrixC& c, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
-                size_column(c), size_row(c) ) );
+                bindings::size_column(c), bindings::size_row(c) ) );
         return invoke( side, v, tau, c, workspace( tmp_work ) );
     }
 
@@ -172,6 +178,7 @@ struct larf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const VectorV& v,
             const real_type tau, MatrixC& c, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, v, tau, c, minimal_workspace() );
     }
 
@@ -204,20 +211,25 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char side, const VectorV& v,
             const value_type tau, MatrixC& c, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorV >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( side, bindings::size_column(c),
+                bindings::size_row(c) ));
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( side,
-                size_column(c), size_row(c) ));
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
-                size_row(c)) );
-        return detail::larf( side, size_row(c), size_column(c),
-                begin_value(v), stride(v), tau, begin_value(c),
-                stride_major(c), begin_value(work.select(value_type())) );
+        return detail::larf( side, bindings::size_row(c),
+                bindings::size_column(c), bindings::begin_value(v),
+                bindings::stride(v), tau, bindings::begin_value(c),
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -230,8 +242,9 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const VectorV& v,
             const value_type tau, MatrixC& c, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( side,
-                size_column(c), size_row(c) ) );
+                bindings::size_column(c), bindings::size_row(c) ) );
         return invoke( side, v, tau, c, workspace( tmp_work ) );
     }
 
@@ -245,6 +258,7 @@ struct larf_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     template< typename VectorV, typename MatrixC >
     static std::ptrdiff_t invoke( const char side, const VectorV& v,
             const value_type tau, MatrixC& c, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, v, tau, c, minimal_workspace() );
     }
 

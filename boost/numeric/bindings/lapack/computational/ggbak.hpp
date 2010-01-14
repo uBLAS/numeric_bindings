@@ -136,6 +136,7 @@ struct ggbak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t ilo, const fortran_int_t ihi,
             const VectorLSCALE& lscale, const VectorRSCALE& rscale,
             MatrixV& v ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorLSCALE >::type >::type,
                 typename remove_const< typename value<
@@ -144,19 +145,21 @@ struct ggbak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorLSCALE >::type >::type,
                 typename remove_const< typename value<
                 MatrixV >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_ASSERT( bindings::size(lscale) >= bindings::size_row(v) );
+        BOOST_ASSERT( bindings::size(rscale) >= bindings::size_row(v) );
+        BOOST_ASSERT( bindings::size_column(v) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::size_row(v) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(v)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( size(lscale) >= size_row(v) );
-        BOOST_ASSERT( size(rscale) >= size_row(v) );
-        BOOST_ASSERT( size_column(v) >= 0 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
-        BOOST_ASSERT( size_row(v) >= 0 );
-        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
-                size_row(v)) );
-        return detail::ggbak( job, side, size_row(v), ilo, ihi,
-                begin_value(lscale), begin_value(rscale), size_column(v),
-                begin_value(v), stride_major(v) );
+        return detail::ggbak( job, side, bindings::size_row(v), ilo, ihi,
+                bindings::begin_value(lscale), bindings::begin_value(rscale),
+                bindings::size_column(v), bindings::begin_value(v),
+                bindings::stride_major(v) );
     }
 
 };
@@ -181,23 +184,26 @@ struct ggbak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t ilo, const fortran_int_t ihi,
             const VectorLSCALE& lscale, const VectorRSCALE& rscale,
             MatrixV& v ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorLSCALE >::type >::type,
                 typename remove_const< typename value<
                 VectorRSCALE >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_ASSERT( bindings::size(lscale) >= bindings::size_row(v) );
+        BOOST_ASSERT( bindings::size(rscale) >= bindings::size_row(v) );
+        BOOST_ASSERT( bindings::size_column(v) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::size_row(v) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(v)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( size(lscale) >= size_row(v) );
-        BOOST_ASSERT( size(rscale) >= size_row(v) );
-        BOOST_ASSERT( size_column(v) >= 0 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
-        BOOST_ASSERT( size_row(v) >= 0 );
-        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
-                size_row(v)) );
-        return detail::ggbak( job, side, size_row(v), ilo, ihi,
-                begin_value(lscale), begin_value(rscale), size_column(v),
-                begin_value(v), stride_major(v) );
+        return detail::ggbak( job, side, bindings::size_row(v), ilo, ihi,
+                bindings::begin_value(lscale), bindings::begin_value(rscale),
+                bindings::size_column(v), bindings::begin_value(v),
+                bindings::stride_major(v) );
     }
 
 };

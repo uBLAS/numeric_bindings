@@ -124,6 +124,7 @@ struct largv_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorX, typename VectorY, typename VectorC >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
             VectorY& y, VectorC& c ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorX >::type >::type,
                 typename remove_const< typename value<
@@ -132,14 +133,16 @@ struct largv_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorX >::type >::type,
                 typename remove_const< typename value<
                 VectorC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( size(c) >= 1+(n-1)*stride(c) );
-        BOOST_ASSERT( size(x) >= 1+(n-1)*stride(x) );
-        BOOST_ASSERT( size(y) >= 1+(n-1)*stride(y) );
-        return detail::largv( n, begin_value(x), stride(x), begin_value(y),
-                stride(y), begin_value(c), stride(c) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bindings::size(c) >= 1+(n-1)*bindings::stride(c) );
+        BOOST_ASSERT( bindings::size(x) >= 1+(n-1)*bindings::stride(x) );
+        BOOST_ASSERT( bindings::size(y) >= 1+(n-1)*bindings::stride(y) );
+        return detail::largv( n, bindings::begin_value(x),
+                bindings::stride(x), bindings::begin_value(y),
+                bindings::stride(y), bindings::begin_value(c),
+                bindings::stride(c) );
     }
 
 };
@@ -162,18 +165,21 @@ struct largv_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorX, typename VectorY, typename VectorC >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorX& x,
             VectorY& y, VectorC& c ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorX >::type >::type,
                 typename remove_const< typename value<
                 VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( size(c) >= 1+(n-1)*stride(c) );
-        BOOST_ASSERT( size(x) >= 1+(n-1)*stride(x) );
-        BOOST_ASSERT( size(y) >= 1+(n-1)*stride(y) );
-        return detail::largv( n, begin_value(x), stride(x), begin_value(y),
-                stride(y), begin_value(c), stride(c) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bindings::size(c) >= 1+(n-1)*bindings::stride(c) );
+        BOOST_ASSERT( bindings::size(x) >= 1+(n-1)*bindings::stride(x) );
+        BOOST_ASSERT( bindings::size(y) >= 1+(n-1)*bindings::stride(y) );
+        return detail::largv( n, bindings::begin_value(x),
+                bindings::stride(x), bindings::begin_value(y),
+                bindings::stride(y), bindings::begin_value(c),
+                bindings::stride(c) );
     }
 
 };

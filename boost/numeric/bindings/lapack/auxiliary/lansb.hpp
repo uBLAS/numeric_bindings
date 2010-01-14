@@ -127,16 +127,20 @@ struct lansb_impl {
     template< typename MatrixAB, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
-        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+1 );
-        return detail::lansb( norm, uplo(), size_column(ab),
-                bandwidth_lower(ab), begin_value(ab), stride_major(ab),
-                begin_value(work.select(real_type())) );
+        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                bindings::bandwidth_lower(ab)+1 );
+        return detail::lansb( norm, uplo(), bindings::size_column(ab),
+                bindings::bandwidth_lower(ab), bindings::begin_value(ab),
+                bindings::stride_major(ab),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -149,6 +153,7 @@ struct lansb_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -165,6 +170,7 @@ struct lansb_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( norm, ab, minimal_workspace() );
     }

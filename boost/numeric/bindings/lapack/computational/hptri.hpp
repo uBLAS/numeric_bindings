@@ -94,14 +94,16 @@ struct hptri_impl {
     template< typename MatrixAP, typename VectorIPIV, typename WORK >
     static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_ASSERT( size(ipiv) >= size_column(ap) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::hptri( uplo(), size_column(ap), begin_value(ap),
-                begin_value(ipiv), begin_value(work.select(value_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::hptri( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(ipiv),
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -114,9 +116,10 @@ struct hptri_impl {
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         return invoke( ap, ipiv, workspace( tmp_work ) );
     }
 
@@ -130,6 +133,7 @@ struct hptri_impl {
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixAP& ap, const VectorIPIV& ipiv,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( ap, ipiv, minimal_workspace() );
     }

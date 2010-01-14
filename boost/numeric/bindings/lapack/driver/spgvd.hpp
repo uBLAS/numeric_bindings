@@ -101,6 +101,7 @@ struct spgvd_impl {
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -114,24 +115,26 @@ struct spgvd_impl {
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixBP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixBP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( jobz, bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( jobz, bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( jobz, size_column(ap) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( jobz,
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::spgvd( itype, jobz, uplo(), size_column(ap),
-                begin_value(ap), begin_value(bp), begin_value(w),
-                begin_value(z), stride_major(z),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())) );
+        return detail::spgvd( itype, jobz, uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(bp),
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -146,11 +149,12 @@ struct spgvd_impl {
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( jobz, size_column(ap) ) );
+                min_size_iwork( jobz, bindings::size_column(ap) ) );
         return invoke( itype, jobz, ap, bp, w, z, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -167,12 +171,14 @@ struct spgvd_impl {
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::spgvd( itype, jobz, uplo(), size_column(ap),
-                begin_value(ap), begin_value(bp), begin_value(w),
-                begin_value(z), stride_major(z), &opt_size_work, -1,
+        detail::spgvd( itype, jobz, uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(bp),
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), &opt_size_work, -1,
                 &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );

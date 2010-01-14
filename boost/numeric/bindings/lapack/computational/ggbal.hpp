@@ -137,6 +137,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -149,24 +150,27 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorRSCALE >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorLSCALE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorRSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorLSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRSCALE >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::ggbal( job, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), ilo, ihi,
-                begin_value(lscale), begin_value(rscale),
-                begin_value(work.select(real_type())) );
+        return detail::ggbal( job, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), ilo, ihi,
+                bindings::begin_value(lscale), bindings::begin_value(rscale),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -182,6 +186,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
@@ -201,6 +206,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 minimal_workspace() );
     }
@@ -235,6 +241,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorLSCALE >::type >::type,
                 typename remove_const< typename value<
@@ -243,24 +250,27 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorLSCALE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorRSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorLSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRSCALE >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::ggbal( job, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), ilo, ihi,
-                begin_value(lscale), begin_value(rscale),
-                begin_value(work.select(real_type())) );
+        return detail::ggbal( job, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), ilo, ihi,
+                bindings::begin_value(lscale), bindings::begin_value(rscale),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -276,6 +286,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
@@ -295,6 +306,7 @@ struct ggbal_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ilo, fortran_int_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( job, a, b, ilo, ihi, lscale, rscale,
                 minimal_workspace() );
     }

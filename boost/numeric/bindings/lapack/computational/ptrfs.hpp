@@ -145,6 +145,7 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorE& e, const VectorDF& df, const VectorEF& ef,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -173,26 +174,33 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 VectorBERR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
+        BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(df) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(ef) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(berr) >= size_column(b) );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(df) >= n );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(ef) >= n-1 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::ptrfs( n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(df), begin_value(ef),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), begin_value(ferr), begin_value(berr),
-                begin_value(work.select(real_type())) );
+        return detail::ptrfs( n, bindings::size_column(b),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(df), bindings::begin_value(ef),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(x), bindings::stride_major(x),
+                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -209,6 +217,7 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorE& e, const VectorDF& df, const VectorEF& ef,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         return invoke( n, d, e, df, ef, b, x, ferr, berr,
                 workspace( tmp_work ) );
@@ -228,6 +237,7 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorE& e, const VectorDF& df, const VectorEF& ef,
             const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, e, df, ef, b, x, ferr, berr,
                 minimal_workspace() );
     }
@@ -265,6 +275,7 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorEF& ef, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, detail::workspace2< WORK,
             RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -289,28 +300,36 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< VectorE >::type >::type,
                 typename remove_const< typename value<
                 MatrixX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
+        BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(df) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(ef) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( n ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(berr) >= size_column(b) );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(df) >= n );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(ef) >= n-1 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::ptrfs( uplo, n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(df), begin_value(ef),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), begin_value(ferr), begin_value(berr),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::ptrfs( uplo, n, bindings::size_column(b),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(df), bindings::begin_value(ef),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(x), bindings::stride_major(x),
+                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -327,6 +346,7 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorD& d, const VectorE& e, const VectorDF& df,
             const VectorEF& ef, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
         return invoke( uplo, n, d, e, df, ef, b, x, ferr, berr,
@@ -347,6 +367,7 @@ struct ptrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorD& d, const VectorE& e, const VectorDF& df,
             const VectorEF& ef, const MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, n, d, e, df, ef, b, x, ferr, berr,
                 minimal_workspace() );
     }

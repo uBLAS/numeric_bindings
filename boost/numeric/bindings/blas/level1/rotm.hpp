@@ -141,17 +141,18 @@ struct rotm_impl {
     static return_type invoke( const std::ptrdiff_t n, VectorX& x,
             const std::ptrdiff_t incx, VectorY& y,
             const std::ptrdiff_t incy, VectorPARAM& param ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorPARAM >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorPARAM >::value) );
-        detail::rotm( n, begin_value(x), incx, begin_value(y), incy,
-                begin_value(param) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorPARAM >::value) );
+        detail::rotm( n, bindings::begin_value(x), incx,
+                bindings::begin_value(y), incy, bindings::begin_value(param) );
     }
 };
 

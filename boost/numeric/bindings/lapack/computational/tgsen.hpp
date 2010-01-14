@@ -167,6 +167,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
             real_type& pr, VectorDIF& dif, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -195,39 +196,47 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorDIF >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDIF >::value) );
-        BOOST_ASSERT( size(alphai) >= size_column(a) );
-        BOOST_ASSERT( size(alphar) >= size_column(a) );
-        BOOST_ASSERT( size(select) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHAR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHAI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDIF >::value) );
+        BOOST_ASSERT( bindings::size(alphai) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(alphar) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(select) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::tgsen( ijob, wantq, wantz, begin_value(select),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(alphar),
-                begin_value(alphai), begin_value(beta), begin_value(q),
-                stride_major(q), begin_value(z), stride_major(z), m, pl, pr,
-                begin_value(dif), begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::tgsen( ijob, wantq, wantz,
+                bindings::begin_value(select), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(alphar), bindings::begin_value(alphai),
+                bindings::begin_value(beta), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(z),
+                bindings::stride_major(z), m, pl, pr,
+                bindings::begin_value(dif),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -246,6 +255,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
             real_type& pr, VectorDIF& dif, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -270,14 +280,18 @@ struct tgsen_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixQ& q, MatrixZ& z, fortran_int_t& m, real_type& pl,
             real_type& pr, VectorDIF& dif, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::tgsen( ijob, wantq, wantz, begin_value(select),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(alphar),
-                begin_value(alphai), begin_value(beta), begin_value(q),
-                stride_major(q), begin_value(z), stride_major(z), m, pl, pr,
-                begin_value(dif), &opt_size_work, -1, &opt_size_iwork, -1 );
+        detail::tgsen( ijob, wantq, wantz, bindings::begin_value(select),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(alphar),
+                bindings::begin_value(alphai), bindings::begin_value(beta),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(z), bindings::stride_major(z), m, pl,
+                pr, bindings::begin_value(dif), &opt_size_work, -1,
+                &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -328,6 +342,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
             VectorDIF& dif, detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -348,37 +363,44 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDIF >::value) );
-        BOOST_ASSERT( size(alpha) >= size_column(a) );
-        BOOST_ASSERT( size(select) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorALPHA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDIF >::value) );
+        BOOST_ASSERT( bindings::size(alpha) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(select) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::tgsen( ijob, wantq, wantz, begin_value(select),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(alpha),
-                begin_value(beta), begin_value(q), stride_major(q),
-                begin_value(z), stride_major(z), m, pl, pr, begin_value(dif),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::tgsen( ijob, wantq, wantz,
+                bindings::begin_value(select), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(alpha), bindings::begin_value(beta),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(z), bindings::stride_major(z), m, pl,
+                pr, bindings::begin_value(dif),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -397,6 +419,7 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
             VectorDIF& dif, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -421,14 +444,18 @@ struct tgsen_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             fortran_int_t& m, real_type& pl, real_type& pr,
             VectorDIF& dif, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::tgsen( ijob, wantq, wantz, begin_value(select),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(alpha),
-                begin_value(beta), begin_value(q), stride_major(q),
-                begin_value(z), stride_major(z), m, pl, pr, begin_value(dif),
-                &opt_size_work, -1, &opt_size_iwork, -1 );
+        detail::tgsen( ijob, wantq, wantz, bindings::begin_value(select),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(alpha),
+                bindings::begin_value(beta), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(z),
+                bindings::stride_major(z), m, pl, pr,
+                bindings::begin_value(dif), &opt_size_work, -1,
+                &opt_size_iwork, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(

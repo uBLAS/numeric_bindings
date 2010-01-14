@@ -143,6 +143,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -155,33 +156,40 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVT >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
+        BOOST_ASSERT( bindings::size(s) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( minmn ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_row(a),
+                bindings::size_column(a), jobz, minmn ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vt) == 1 ||
+                bindings::stride_minor(vt) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
         BOOST_ASSERT( jobz == 'A' || jobz == 'S' || jobz == 'O' ||
                 jobz == 'N' );
-        BOOST_ASSERT( size(s) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( minmn ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_row(a), size_column(a), jobz, minmn ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(vt) == 1 || stride_minor(vt) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::gesdd( jobz, size_row(a), size_column(a),
-                begin_value(a), stride_major(a), begin_value(s),
-                begin_value(u), stride_major(u), begin_value(vt),
-                stride_major(vt), begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::gesdd( jobz, bindings::size_row(a),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(s),
+                bindings::begin_value(u), bindings::stride_major(u),
+                bindings::begin_value(vt), bindings::stride_major(vt),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -195,10 +203,12 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_row(a), size_column(a), jobz, minmn ) );
+                bindings::size_row(a), bindings::size_column(a), jobz,
+                minmn ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn ) );
         return invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_iwork ) );
@@ -215,6 +225,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( jobz, a, s, u, vt, minimal_workspace() );
     }
 
@@ -264,6 +275,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, detail::workspace3< WORK, RWORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -272,36 +284,43 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVT >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
+        BOOST_ASSERT( bindings::size(s) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( minmn ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( minmn, jobz ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_row(a),
+                bindings::size_column(a), jobz, minmn ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vt) == 1 ||
+                bindings::stride_minor(vt) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
         BOOST_ASSERT( jobz == 'A' || jobz == 'S' || jobz == 'O' ||
                 jobz == 'N' );
-        BOOST_ASSERT( size(s) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( minmn ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( minmn,
-                jobz ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_row(a), size_column(a), jobz, minmn ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(vt) == 1 || stride_minor(vt) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::gesdd( jobz, size_row(a), size_column(a),
-                begin_value(a), stride_major(a), begin_value(s),
-                begin_value(u), stride_major(u), begin_value(vt),
-                stride_major(vt), begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::gesdd( jobz, bindings::size_row(a),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(s),
+                bindings::begin_value(u), bindings::stride_major(u),
+                bindings::begin_value(vt), bindings::stride_major(vt),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -315,10 +334,12 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_row(a), size_column(a), jobz, minmn ) );
+                bindings::size_row(a), bindings::size_column(a), jobz,
+                minmn ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -338,6 +359,7 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixVT >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorS& s,
             MatrixU& u, MatrixVT& vt, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         integer_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         value_type opt_size_work;
@@ -345,11 +367,13 @@ struct gesdd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn ) );
-        detail::gesdd( jobz, size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(s), begin_value(u),
-                stride_major(u), begin_value(vt), stride_major(vt),
-                &opt_size_work, -1, begin_value(tmp_rwork),
-                begin_value(tmp_iwork) );
+        detail::gesdd( jobz, bindings::size_row(a),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(s),
+                bindings::begin_value(u), bindings::stride_major(u),
+                bindings::begin_value(vt), bindings::stride_major(vt),
+                &opt_size_work, -1, bindings::begin_value(tmp_rwork),
+                bindings::begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobz, a, s, u, vt, workspace( tmp_work, tmp_rwork,

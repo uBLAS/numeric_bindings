@@ -138,21 +138,23 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename WORK, typename IWORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             real_type& rcond, detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(a) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::trcon( norm, uplo(), diag(), size_column(a),
-                begin_value(a), stride_major(a), rcond,
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::trcon( norm, uplo(), diag(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), rcond,
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -165,12 +167,13 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(a) ) );
+                min_size_iwork( bindings::size_column(a) ) );
         return invoke( norm, a, rcond, workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -184,6 +187,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         return invoke( norm, a, rcond, minimal_workspace() );
@@ -224,21 +228,23 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename WORK, typename RWORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             real_type& rcond, detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::trcon( norm, uplo(), diag(), size_column(a),
-                begin_value(a), stride_major(a), rcond,
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::trcon( norm, uplo(), diag(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), rcond,
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -251,12 +257,13 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( norm, a, rcond, workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -270,6 +277,7 @@ struct trcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         return invoke( norm, a, rcond, minimal_workspace() );

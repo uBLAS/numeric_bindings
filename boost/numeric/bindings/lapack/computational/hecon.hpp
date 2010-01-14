@@ -99,17 +99,20 @@ struct hecon_impl {
     static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        BOOST_ASSERT( size(ipiv) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::hecon( uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(ipiv), anorm, rcond,
-                begin_value(work.select(value_type())) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::hecon( uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(ipiv), anorm, rcond,
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -122,9 +125,10 @@ struct hecon_impl {
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( a, ipiv, anorm, rcond, workspace( tmp_work ) );
     }
 
@@ -138,6 +142,7 @@ struct hecon_impl {
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixA& a, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         return invoke( a, ipiv, anorm, rcond, minimal_workspace() );
     }

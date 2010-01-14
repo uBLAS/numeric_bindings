@@ -103,32 +103,36 @@ struct hegv_impl {
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixA& a, MatrixB& b, VectorW& w,
             detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::hegv( itype, jobz, uplo(), size_column(a),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(w),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::hegv( itype, jobz, uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(w),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -142,11 +146,12 @@ struct hegv_impl {
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixA& a, MatrixB& b, VectorW& w,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( itype, jobz, a, b, w, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -162,14 +167,16 @@ struct hegv_impl {
     static std::ptrdiff_t invoke( const fortran_int_t itype,
             const char jobz, MatrixA& a, MatrixB& b, VectorW& w,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
-        detail::hegv( itype, jobz, uplo(), size_column(a),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(w), &opt_size_work, -1,
-                begin_value(tmp_rwork) );
+                bindings::size_column(a) ) );
+        detail::hegv( itype, jobz, uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(w), &opt_size_work, -1,
+                bindings::begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( itype, jobz, a, b, w, workspace( tmp_work,

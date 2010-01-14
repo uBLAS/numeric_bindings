@@ -134,6 +134,7 @@ struct labrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename MatrixY >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -158,29 +159,34 @@ struct labrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixY >::value) );
-        BOOST_ASSERT( size(d) >= size_column(a) );
-        BOOST_ASSERT( size(e) >= size_column(a) );
-        BOOST_ASSERT( size(taup) >= size_column(a) );
-        BOOST_ASSERT( size(tauq) >= size_column(a) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( size_minor(y) == 1 || stride_minor(y) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(x) >= size_row(a) );
-        BOOST_ASSERT( stride_major(y) >= size_column(a) );
-        return detail::labrd( size_row(a), size_column(a), size_column(a),
-                begin_value(a), stride_major(a), begin_value(d),
-                begin_value(e), begin_value(tauq), begin_value(taup),
-                begin_value(x), stride_major(x), begin_value(y),
-                stride_major(y) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAUQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAUP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixY >::value) );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(taup) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(tauq) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::size_minor(y) == 1 ||
+                bindings::stride_minor(y) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(x) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::stride_major(y) >= bindings::size_column(a) );
+        return detail::labrd( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(tauq),
+                bindings::begin_value(taup), bindings::begin_value(x),
+                bindings::stride_major(x), bindings::begin_value(y),
+                bindings::stride_major(y) );
     }
 
 };
@@ -205,6 +211,7 @@ struct labrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename MatrixY >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -225,31 +232,36 @@ struct labrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixY >::value) );
-        BOOST_ASSERT( size(d) >= size_column(a) );
-        BOOST_ASSERT( size(e) >= size_column(a) );
-        BOOST_ASSERT( size(taup) >= size_column(a) );
-        BOOST_ASSERT( size(tauq) >= size_column(a) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( size_minor(y) == 1 || stride_minor(y) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(y) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::labrd( size_row(a), size_column(a), size_column(a),
-                begin_value(a), stride_major(a), begin_value(d),
-                begin_value(e), begin_value(tauq), begin_value(taup),
-                begin_value(x), stride_major(x), begin_value(y),
-                stride_major(y) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAUQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAUP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixY >::value) );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(e) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(taup) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(tauq) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::size_minor(y) == 1 ||
+                bindings::stride_minor(y) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(y) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::labrd( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(tauq),
+                bindings::begin_value(taup), bindings::begin_value(x),
+                bindings::stride_major(x), bindings::begin_value(y),
+                bindings::stride_major(y) );
     }
 
 };

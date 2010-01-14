@@ -160,6 +160,7 @@ struct spr2_impl {
     template< typename VectorX, typename VectorY, typename MatrixAP >
     static return_type invoke( const real_type alpha, const VectorX& x,
             const VectorY& y, MatrixAP& ap ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
@@ -168,10 +169,11 @@ struct spr2_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixAP >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        detail::spr2( order(), uplo(), size_column(ap), alpha,
-                begin_value(x), stride(x), begin_value(y), stride(y),
-                begin_value(ap) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        detail::spr2( order(), uplo(), bindings::size_column(ap), alpha,
+                bindings::begin_value(x), bindings::stride(x),
+                bindings::begin_value(y), bindings::stride(y),
+                bindings::begin_value(ap) );
     }
 };
 

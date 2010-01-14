@@ -117,6 +117,7 @@ struct gtsv_impl {
             typename MatrixB >
     static std::ptrdiff_t invoke( const fortran_int_t n, VectorDL& dl,
             VectorD& d, VectorDU& du, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorDL >::type >::type,
                 typename remove_const< typename value<
@@ -129,20 +130,23 @@ struct gtsv_impl {
                 typename value< VectorDL >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(dl) >= n-1 );
+        BOOST_ASSERT( bindings::size(du) >= n-1 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(dl) >= n-1 );
-        BOOST_ASSERT( size(du) >= n-1 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::gtsv( n, size_column(b), begin_value(dl),
-                begin_value(d), begin_value(du), begin_value(b),
-                stride_major(b) );
+        return detail::gtsv( n, bindings::size_column(b),
+                bindings::begin_value(dl), bindings::begin_value(d),
+                bindings::begin_value(du), bindings::begin_value(b),
+                bindings::stride_major(b) );
     }
 
 };

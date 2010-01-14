@@ -117,19 +117,23 @@ struct gbtrf_impl {
     //
     template< typename MatrixAB, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixAB& ab, VectorIPIV& ipiv ) {
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( size(ipiv) >= std::min< std::ptrdiff_t >(size_row(ab),
-                size_column(ab)) );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_row(ab) >= 0 );
-        BOOST_ASSERT( stride_major(ab) >= 2 );
-        return detail::gbtrf( size_row(ab), size_column(ab),
-                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(ipiv) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::size(ipiv) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(ab),
+                bindings::size_column(ab)) );
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_row(ab) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= 2 );
+        return detail::gbtrf( bindings::size_row(ab),
+                bindings::size_column(ab), bindings::bandwidth_lower(ab),
+                bindings::bandwidth_upper(ab), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(ipiv) );
     }
 
 };

@@ -118,14 +118,18 @@ struct pbstf_impl {
     //
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( MatrixAB& ab ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbstf( uplo(), size_column(ab), bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
+        return detail::pbstf( uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab) );
     }
 
 };

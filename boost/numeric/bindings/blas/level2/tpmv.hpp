@@ -243,6 +243,7 @@ struct tpmv_impl {
     //
     template< typename MatrixAP, typename VectorX >
     static return_type invoke( const MatrixAP& ap, VectorX& x ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename detail::default_order< MatrixAP >::type order;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::trans_tag< MatrixAP, order >::type trans;
@@ -250,10 +251,11 @@ struct tpmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
         detail::tpmv( order(), uplo(), trans(), diag(),
-                size_column_op(ap, trans()), begin_value(ap), begin_value(x),
-                stride(x) );
+                bindings::size_column_op(ap, trans()),
+                bindings::begin_value(ap), bindings::begin_value(x),
+                bindings::stride(x) );
     }
 };
 

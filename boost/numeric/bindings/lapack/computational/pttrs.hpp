@@ -126,6 +126,7 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorD, typename VectorE, typename MatrixB >
     static std::ptrdiff_t invoke( const fortran_int_t n, const VectorD& d,
             const VectorE& e, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -134,15 +135,18 @@ struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pttrs( n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(b), stride_major(b) );
+        return detail::pttrs( n, bindings::size_column(b),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(b), bindings::stride_major(b) );
     }
 
 };
@@ -165,18 +169,22 @@ struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorD, typename VectorE, typename MatrixB >
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             const VectorD& d, const VectorE& e, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorE >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::pttrs( uplo, n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(b), stride_major(b) );
+        return detail::pttrs( uplo, n, bindings::size_column(b),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(b), bindings::stride_major(b) );
     }
 
 };

@@ -118,12 +118,13 @@ struct tptri_impl {
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( MatrixAP& ap ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         typedef typename result_of::diag_tag< MatrixAP >::type diag;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::tptri( uplo(), diag(), size_column(ap),
-                begin_value(ap) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::tptri( uplo(), diag(), bindings::size_column(ap),
+                bindings::begin_value(ap) );
     }
 
 };

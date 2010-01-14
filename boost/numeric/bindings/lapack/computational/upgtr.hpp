@@ -96,6 +96,7 @@ struct upgtr_impl {
     static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
             const VectorTAU& tau, MatrixQ& q, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorAP >::type >::type,
                 typename remove_const< typename value<
@@ -104,18 +105,21 @@ struct upgtr_impl {
                 typename value< VectorAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_ASSERT( size(ap) >= size_column(q)*(size_column(q)+1)/2 );
-        BOOST_ASSERT( size(tau) >= size_column(q)-1 );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(q) ));
-        BOOST_ASSERT( size_column(q) >= 0 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( stride_major(q) >= std::max< std::ptrdiff_t >(1,
-                size_column(q)) );
-        return detail::upgtr( uplo, size_column(q), begin_value(ap),
-                begin_value(tau), begin_value(q), stride_major(q),
-                begin_value(work.select(value_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bindings::size(ap) >=
+                bindings::size_column(q)*(bindings::size_column(q)+1)/2 );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size_column(q)-1 );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(q) ));
+        BOOST_ASSERT( bindings::size_column(q) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::stride_major(q) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(q)) );
+        return detail::upgtr( uplo, bindings::size_column(q),
+                bindings::begin_value(ap), bindings::begin_value(tau),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -128,8 +132,9 @@ struct upgtr_impl {
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
     static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
             const VectorTAU& tau, MatrixQ& q, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(q) ) );
+                bindings::size_column(q) ) );
         return invoke( uplo, ap, tau, q, workspace( tmp_work ) );
     }
 
@@ -143,6 +148,7 @@ struct upgtr_impl {
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
     static std::ptrdiff_t invoke( const char uplo, const VectorAP& ap,
             const VectorTAU& tau, MatrixQ& q, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, ap, tau, q, minimal_workspace() );
     }
 

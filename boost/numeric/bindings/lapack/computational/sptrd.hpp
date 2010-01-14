@@ -91,6 +91,7 @@ struct sptrd_impl {
             typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixAP& ap, VectorD& d, VectorE& e,
             VectorTAU& tau ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -104,15 +105,16 @@ struct sptrd_impl {
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_ASSERT( size(d) >= size_column(ap) );
-        BOOST_ASSERT( size(tau) >= size_column(ap)-1 );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::sptrd( uplo(), size_column(ap), begin_value(ap),
-                begin_value(d), begin_value(e), begin_value(tau) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column(ap) );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size_column(ap)-1 );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::sptrd( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(tau) );
     }
 
 };

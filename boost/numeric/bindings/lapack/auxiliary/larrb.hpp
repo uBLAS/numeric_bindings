@@ -106,6 +106,7 @@ struct larrb_impl {
             VectorWGAP& wgap, VectorWERR& werr, const real_type pivmin,
             const real_type spdiam, const fortran_int_t twist,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -122,22 +123,24 @@ struct larrb_impl {
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 VectorWERR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWGAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWERR >::value) );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(lld) >= n-1 );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(werr) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWGAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWERR >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(lld) >= n-1 );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(werr) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        return detail::larrb( n, begin_value(d), begin_value(lld), ifirst,
-                ilast, rtol1, rtol2, offset, begin_value(w),
-                begin_value(wgap), begin_value(werr),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())), pivmin, spdiam,
-                twist );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        return detail::larrb( n, bindings::begin_value(d),
+                bindings::begin_value(lld), ifirst, ilast, rtol1, rtol2,
+                offset, bindings::begin_value(w), bindings::begin_value(wgap),
+                bindings::begin_value(werr),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                pivmin, spdiam, twist );
     }
 
     //
@@ -156,6 +159,7 @@ struct larrb_impl {
             VectorWGAP& wgap, VectorWERR& werr, const real_type pivmin,
             const real_type spdiam, const fortran_int_t twist,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
@@ -180,6 +184,7 @@ struct larrb_impl {
             VectorWGAP& wgap, VectorWERR& werr, const real_type pivmin,
             const real_type spdiam, const fortran_int_t twist,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, lld, ifirst, ilast, rtol1, rtol2, offset, w,
                 wgap, werr, pivmin, spdiam, twist, minimal_workspace() );
     }

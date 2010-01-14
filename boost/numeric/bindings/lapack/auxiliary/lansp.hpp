@@ -118,12 +118,14 @@ struct lansp_impl {
     template< typename MatrixAP, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::lansp( norm, uplo(), size_column(ap), begin_value(ap),
-                begin_value(work.select(real_type())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::lansp( norm, uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -136,6 +138,7 @@ struct lansp_impl {
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -152,6 +155,7 @@ struct lansp_impl {
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( const char norm, const MatrixAP& ap,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( norm, ap, minimal_workspace() );
     }

@@ -102,27 +102,31 @@ struct gejsv_impl {
             const char jobv, const char jobr, const char jobt,
             const char jobp, MatrixA& a, const fortran_int_t lwork,
             detail::workspace5< SVA, U, V, WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(real_type())) >=
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_sva( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(real_type())) >=
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_u( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(real_type())) >=
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
                 min_size_v( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::gejsv( joba, jobu, jobv, jobr, jobt, jobp, size_row(a),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(work.select(real_type())), begin_value(u),
-                stride_major(u), begin_value(v), stride_major(v),
-                begin_value(work.select(real_type())), lwork,
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::gejsv( joba, jobu, jobv, jobr, jobt, jobp,
+                bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(u), bindings::stride_major(u),
+                bindings::begin_value(v), bindings::stride_major(v),
+                bindings::begin_value(work.select(real_type())), lwork,
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -137,6 +141,7 @@ struct gejsv_impl {
             const char jobv, const char jobr, const char jobt,
             const char jobp, MatrixA& a, const fortran_int_t lwork,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array<
                 real_type > tmp_sva( min_size_sva( $CALL_MIN_SIZE ) );
         bindings::detail::array<
@@ -163,6 +168,7 @@ struct gejsv_impl {
             const char jobv, const char jobr, const char jobt,
             const char jobp, MatrixA& a, const fortran_int_t lwork,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( joba, jobu, jobv, jobr, jobt, jobp, a, lwork,
                 minimal_workspace() );
     }

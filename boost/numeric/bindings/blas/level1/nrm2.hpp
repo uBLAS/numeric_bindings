@@ -135,7 +135,9 @@ struct nrm2_impl {
     //
     template< typename VectorX >
     static return_type invoke( const VectorX& x ) {
-        return detail::nrm2( size(x), begin_value(x), stride(x) );
+        namespace bindings = ::boost::numeric::bindings;
+        return detail::nrm2( bindings::size(x),
+                bindings::begin_value(x), bindings::stride(x) );
     }
 };
 

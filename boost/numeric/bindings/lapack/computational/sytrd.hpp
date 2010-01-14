@@ -98,6 +98,7 @@ struct sytrd_impl {
             typename VectorTAU, typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAU& tau, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -111,21 +112,25 @@ struct sytrd_impl {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_ASSERT( size(d) >= size_column(a) );
-        BOOST_ASSERT( size(tau) >= size_column(a)-1 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work());
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::sytrd( uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(d), begin_value(e),
-                begin_value(tau), begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(tau) >= bindings::size_column(a)-1 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work());
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::sytrd( uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(tau),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -139,6 +144,7 @@ struct sytrd_impl {
             typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAU& tau, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work() );
         return invoke( a, d, e, tau, workspace( tmp_work ) );
@@ -155,11 +161,13 @@ struct sytrd_impl {
             typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorD& d, VectorE& e,
             VectorTAU& tau, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
-        detail::sytrd( uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(d), begin_value(e),
-                begin_value(tau), &opt_size_work, -1 );
+        detail::sytrd( uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(tau), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, d, e, tau, workspace( tmp_work ) );

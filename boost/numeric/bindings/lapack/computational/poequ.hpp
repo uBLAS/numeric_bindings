@@ -122,17 +122,20 @@ struct poequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorS >
     static std::ptrdiff_t invoke( const MatrixA& a, VectorS& s,
             real_type& scond, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::poequ( size_column(a), begin_value(a), stride_major(a),
-                begin_value(s), scond, amax );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::poequ( bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(s), scond, amax );
     }
 
 };
@@ -155,13 +158,16 @@ struct poequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorS >
     static std::ptrdiff_t invoke( const MatrixA& a, VectorS& s,
             real_type& scond, real_type& amax ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::poequ( size_column(a), begin_value(a), stride_major(a),
-                begin_value(s), scond, amax );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::poequ( bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(s), scond, amax );
     }
 
 };

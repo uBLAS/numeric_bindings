@@ -150,6 +150,7 @@ struct spsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -171,31 +172,35 @@ struct spsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 VectorBERR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAFP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAFP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
+        BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(ap)) );
+        BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(ap)) );
         BOOST_ASSERT( fact == 'F' || fact == 'N' );
-        BOOST_ASSERT( size(berr) >= size_column(b) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(ap) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(ap)) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                size_column(ap)) );
-        return detail::spsvx( fact, uplo(), size_column(ap), size_column(b),
-                begin_value(ap), begin_value(afp), begin_value(ipiv),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), rcond, begin_value(ferr), begin_value(berr),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::spsvx( fact, uplo(), bindings::size_column(ap),
+                bindings::size_column(b), bindings::begin_value(ap),
+                bindings::begin_value(afp), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(x), bindings::stride_major(x), rcond,
+                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -212,11 +217,12 @@ struct spsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(ap) ) );
+                min_size_iwork( bindings::size_column(ap) ) );
         return invoke( fact, ap, afp, ipiv, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -235,6 +241,7 @@ struct spsvx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( fact, ap, afp, ipiv, b, x, rcond, ferr, berr,
                 minimal_workspace() );
@@ -279,6 +286,7 @@ struct spsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorFERR >::type >::type,
@@ -296,31 +304,35 @@ struct spsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAFP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAFP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorFERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorBERR >::value) );
+        BOOST_ASSERT( bindings::size(berr) >= bindings::size_column(b) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(ap)) );
+        BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(ap)) );
         BOOST_ASSERT( fact == 'F' || fact == 'N' );
-        BOOST_ASSERT( size(berr) >= size_column(b) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(ap) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(ap)) );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                size_column(ap)) );
-        return detail::spsvx( fact, uplo(), size_column(ap), size_column(b),
-                begin_value(ap), begin_value(afp), begin_value(ipiv),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), rcond, begin_value(ferr), begin_value(berr),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::spsvx( fact, uplo(), bindings::size_column(ap),
+                bindings::size_column(b), bindings::begin_value(ap),
+                bindings::begin_value(afp), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(x), bindings::stride_major(x), rcond,
+                bindings::begin_value(ferr), bindings::begin_value(berr),
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -337,11 +349,12 @@ struct spsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         return invoke( fact, ap, afp, ipiv, b, x, rcond, ferr, berr,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -360,6 +373,7 @@ struct spsvx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
             real_type& rcond, VectorFERR& ferr, VectorBERR& berr,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( fact, ap, afp, ipiv, b, x, rcond, ferr, berr,
                 minimal_workspace() );

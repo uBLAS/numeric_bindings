@@ -106,6 +106,7 @@ struct stebz_impl {
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit, detail::workspace2<
             WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -118,24 +119,26 @@ struct stebz_impl {
                 typename value< VectorIBLOCK >::type >::type,
                 typename remove_const< typename value<
                 VectorISPLIT >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIBLOCK >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorISPLIT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIBLOCK >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISPLIT >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(isplit) >= n );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( n ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( order == 'B' || order == 'E' );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(isplit) >= n );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
         return detail::stebz( range, order, n, vl, vu, il, iu, abstol,
-                begin_value(d), begin_value(e), m, nsplit, begin_value(w),
-                begin_value(iblock), begin_value(isplit),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+                bindings::begin_value(d), bindings::begin_value(e), m, nsplit,
+                bindings::begin_value(w), bindings::begin_value(iblock),
+                bindings::begin_value(isplit),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -154,6 +157,7 @@ struct stebz_impl {
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
@@ -177,6 +181,7 @@ struct stebz_impl {
             fortran_int_t& m, fortran_int_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m,
                 nsplit, w, iblock, isplit, minimal_workspace() );
     }

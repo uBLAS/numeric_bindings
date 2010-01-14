@@ -100,28 +100,31 @@ struct syevd_impl {
             typename IWORK >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorW& w,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorW >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( jobz, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( jobz, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( jobz, size_column(a) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( jobz,
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::syevd( jobz, uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(w),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())) );
+        return detail::syevd( jobz, uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(w),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -134,11 +137,12 @@ struct syevd_impl {
     template< typename MatrixA, typename VectorW >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorW& w,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobz,
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( jobz, size_column(a) ) );
+                min_size_iwork( jobz, bindings::size_column(a) ) );
         return invoke( jobz, a, w, workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -152,12 +156,14 @@ struct syevd_impl {
     template< typename MatrixA, typename VectorW >
     static std::ptrdiff_t invoke( const char jobz, MatrixA& a, VectorW& w,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::syevd( jobz, uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(w), &opt_size_work, -1,
-                &opt_size_iwork, -1 );
+        detail::syevd( jobz, uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(w), &opt_size_work, -1, &opt_size_iwork,
+                -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(

@@ -122,8 +122,10 @@ struct larfg_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, real_type& alpha,
             VectorX& x, real_type& tau ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        return detail::larfg( n, alpha, begin_value(x), stride(x), tau );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        return detail::larfg( n, alpha, bindings::begin_value(x),
+                bindings::stride(x), tau );
     }
 
 };
@@ -146,8 +148,10 @@ struct larfg_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t n, value_type& alpha,
             VectorX& x, value_type& tau ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        return detail::larfg( n, alpha, begin_value(x), stride(x), tau );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        return detail::larfg( n, alpha, bindings::begin_value(x),
+                bindings::stride(x), tau );
     }
 
 };

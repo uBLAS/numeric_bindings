@@ -103,6 +103,7 @@ struct trsen_impl {
             const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             fortran_int_t& m, real_type& s, real_type& sep,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
@@ -111,25 +112,28 @@ struct trsen_impl {
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
                 VectorW >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_ASSERT( bindings::size(select) >= bindings::size_column(t) );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(t) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(t) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
         BOOST_ASSERT( compq == 'V' || compq == 'N' );
         BOOST_ASSERT( job == 'N' || job == 'E' || job == 'V' || job == 'B' );
-        BOOST_ASSERT( size(select) >= size_column(t) );
-        BOOST_ASSERT( size(w) >= size_column(t) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(t) >= 0 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        return detail::trsen( job, compq, begin_value(select), size_column(t),
-                begin_value(t), stride_major(t), begin_value(q),
-                stride_major(q), begin_value(w), m, s, sep,
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())) );
+        return detail::trsen( job, compq, bindings::begin_value(select),
+                bindings::size_column(t), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(w), m, s,
+                sep, bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())) );
     }
 
     //
@@ -145,6 +149,7 @@ struct trsen_impl {
             const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             fortran_int_t& m, real_type& s, real_type& sep,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( job, compq, select, t, q, w, m, s, sep,
@@ -164,11 +169,13 @@ struct trsen_impl {
             const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             fortran_int_t& m, real_type& s, real_type& sep,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
-        detail::trsen( job, compq, begin_value(select), size_column(t),
-                begin_value(t), stride_major(t), begin_value(q),
-                stride_major(q), begin_value(w), m, s, sep, &opt_size_work,
-                -1 );
+        detail::trsen( job, compq, bindings::begin_value(select),
+                bindings::size_column(t), bindings::begin_value(t),
+                bindings::stride_major(t), bindings::begin_value(q),
+                bindings::stride_major(q), bindings::begin_value(w), m, s,
+                sep, &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( job, compq, select, t, q, w, m, s, sep,

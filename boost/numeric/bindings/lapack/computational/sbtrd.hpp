@@ -99,6 +99,7 @@ struct sbtrd_impl {
             typename MatrixQ, typename WORK >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -112,23 +113,28 @@ struct sbtrd_impl {
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size(d) >= size_column(ab) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_column(ab) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'V' || vect == 'U' );
-        return detail::sbtrd( vect, uplo(), size_column(ab), bandwidth(ab,
-                uplo()), begin_value(ab), stride_major(ab), begin_value(d),
-                begin_value(e), begin_value(q), stride_major(q),
-                begin_value(work.select(real_type())) );
+        return detail::sbtrd( vect, uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(q),
+                bindings::stride_major(q),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -142,9 +148,10 @@ struct sbtrd_impl {
             typename MatrixQ >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         return invoke( vect, ab, d, e, q, workspace( tmp_work ) );
     }
 
@@ -159,6 +166,7 @@ struct sbtrd_impl {
             typename MatrixQ >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( vect, ab, d, e, q, minimal_workspace() );
     }

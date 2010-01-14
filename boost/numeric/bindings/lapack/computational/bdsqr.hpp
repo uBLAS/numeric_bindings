@@ -143,6 +143,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -159,27 +160,33 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n, bindings::size_column(vt),
+                bindings::size_row(u), bindings::size_column(c) ));
+        BOOST_ASSERT( bindings::size_column(c) >= 0 );
+        BOOST_ASSERT( bindings::size_column(vt) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vt) == 1 ||
+                bindings::stride_minor(vt) == 1 );
+        BOOST_ASSERT( bindings::size_row(u) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(u) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(u)) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n,
-                size_column(vt), size_row(u), size_column(c) ));
-        BOOST_ASSERT( size_column(c) >= 0 );
-        BOOST_ASSERT( size_column(vt) >= 0 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(vt) == 1 || stride_minor(vt) == 1 );
-        BOOST_ASSERT( size_row(u) >= 0 );
-        BOOST_ASSERT( stride_major(u) >= std::max< std::ptrdiff_t >(1,
-                size_row(u)) );
-        return detail::bdsqr( uplo, n, size_column(vt), size_row(u),
-                size_column(c), begin_value(d), begin_value(e),
-                begin_value(vt), stride_major(vt), begin_value(u),
-                stride_major(u), begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())) );
+        return detail::bdsqr( uplo, n, bindings::size_column(vt),
+                bindings::size_row(u), bindings::size_column(c),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(vt), bindings::stride_major(vt),
+                bindings::begin_value(u), bindings::stride_major(u),
+                bindings::begin_value(c), bindings::stride_major(c),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -194,8 +201,10 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
-                size_column(vt), size_row(u), size_column(c) ) );
+                bindings::size_column(vt), bindings::size_row(u),
+                bindings::size_column(c) ) );
         return invoke( uplo, n, d, e, vt, u, c, workspace( tmp_work ) );
     }
 
@@ -211,6 +220,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, n, d, e, vt, u, c, minimal_workspace() );
     }
 
@@ -248,6 +258,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
             detail::workspace1< RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -260,27 +271,33 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixVT >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( n, bindings::size_column(vt),
+                bindings::size_row(u), bindings::size_column(c) ));
+        BOOST_ASSERT( bindings::size_column(c) >= 0 );
+        BOOST_ASSERT( bindings::size_column(vt) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vt) == 1 ||
+                bindings::stride_minor(vt) == 1 );
+        BOOST_ASSERT( bindings::size_row(u) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(u) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(u)) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n,
-                size_column(vt), size_row(u), size_column(c) ));
-        BOOST_ASSERT( size_column(c) >= 0 );
-        BOOST_ASSERT( size_column(vt) >= 0 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(vt) == 1 || stride_minor(vt) == 1 );
-        BOOST_ASSERT( size_row(u) >= 0 );
-        BOOST_ASSERT( stride_major(u) >= std::max< std::ptrdiff_t >(1,
-                size_row(u)) );
-        return detail::bdsqr( uplo, n, size_column(vt), size_row(u),
-                size_column(c), begin_value(d), begin_value(e),
-                begin_value(vt), stride_major(vt), begin_value(u),
-                stride_major(u), begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())) );
+        return detail::bdsqr( uplo, n, bindings::size_column(vt),
+                bindings::size_row(u), bindings::size_column(c),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(vt), bindings::stride_major(vt),
+                bindings::begin_value(u), bindings::stride_major(u),
+                bindings::begin_value(c), bindings::stride_major(c),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -295,8 +312,10 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n,
-                size_column(vt), size_row(u), size_column(c) ) );
+                bindings::size_column(vt), bindings::size_row(u),
+                bindings::size_column(c) ) );
         return invoke( uplo, n, d, e, vt, u, c, workspace( tmp_rwork ) );
     }
 
@@ -312,6 +331,7 @@ struct bdsqr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, n, d, e, vt, u, c, minimal_workspace() );
     }
 

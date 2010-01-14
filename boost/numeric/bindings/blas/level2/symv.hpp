@@ -165,6 +165,7 @@ struct symv_impl {
     template< typename MatrixA, typename VectorX, typename VectorY >
     static return_type invoke( const real_type alpha, const MatrixA& a,
             const VectorX& x, const real_type beta, VectorY& y ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
@@ -173,11 +174,13 @@ struct symv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        detail::symv( order(), uplo(), size_column(a), alpha,
-                begin_value(a), stride_major(a), begin_value(x), stride(x),
-                beta, begin_value(y), stride(y) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        detail::symv( order(), uplo(), bindings::size_column(a), alpha,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(x), bindings::stride(x), beta,
+                bindings::begin_value(y), bindings::stride(y) );
     }
 };
 

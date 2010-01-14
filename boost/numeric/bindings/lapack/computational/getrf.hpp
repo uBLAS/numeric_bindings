@@ -181,17 +181,21 @@ struct getrf_impl {
     //
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv ) {
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_ASSERT( size(ipiv) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::getrf( order(), size_row(a), size_column(a),
-                begin_value(a), stride_major(a), begin_value(ipiv) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_ASSERT( bindings::size(ipiv) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::getrf( order(), bindings::size_row(a),
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(ipiv) );
     }
 
 };

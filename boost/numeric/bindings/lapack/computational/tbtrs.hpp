@@ -133,6 +133,7 @@ struct tbtrs_impl {
     template< typename MatrixAB, typename MatrixB >
     static std::ptrdiff_t invoke( const fortran_int_t kd,
             const MatrixAB& ab, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         typedef typename result_of::trans_tag< MatrixAB, order >::type trans;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
@@ -140,18 +141,22 @@ struct tbtrs_impl {
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_column_op(ab, trans()) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= kd+1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column_op(ab, trans())) );
         BOOST_ASSERT( kd >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_column_op(ab, trans()) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= kd+1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column_op(ab, trans())) );
-        return detail::tbtrs( uplo(), trans(), diag(), size_column_op(ab,
-                trans()), kd, size_column(b), begin_value(ab),
-                stride_major(ab), begin_value(b), stride_major(b) );
+        return detail::tbtrs( uplo(), trans(), diag(),
+                bindings::size_column_op(ab, trans()), kd,
+                bindings::size_column(b), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(b),
+                bindings::stride_major(b) );
     }
 
 };

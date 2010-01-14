@@ -195,8 +195,10 @@ struct scal_impl {
     //
     template< typename VectorX >
     static return_type invoke( const value_type a, VectorX& x ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        detail::scal( size(x), a, begin_value(x), stride(x) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        detail::scal( bindings::size(x), a, bindings::begin_value(x),
+                bindings::stride(x) );
     }
 };
 

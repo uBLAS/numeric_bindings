@@ -100,6 +100,7 @@ struct sbgst_impl {
             typename WORK >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
             const MatrixBB& bb, MatrixX& x, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -109,23 +110,30 @@ struct sbgst_impl {
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(bb) == 1 ||
+                bindings::stride_minor(bb) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
+        BOOST_ASSERT( bindings::stride_major(bb) >= bindings::bandwidth(bb,
+                uplo())+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'V' );
-        return detail::sbgst( vect, uplo(), size_column(ab), bandwidth(ab,
-                uplo()), bandwidth(bb, uplo()), begin_value(ab),
-                stride_major(ab), begin_value(bb), stride_major(bb),
-                begin_value(x), stride_major(x),
-                begin_value(work.select(real_type())) );
+        return detail::sbgst( vect, uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::bandwidth(bb,
+                uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(bb),
+                bindings::stride_major(bb), bindings::begin_value(x),
+                bindings::stride_major(x),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -138,9 +146,10 @@ struct sbgst_impl {
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
             const MatrixBB& bb, MatrixX& x, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         return invoke( vect, ab, bb, x, workspace( tmp_work ) );
     }
 
@@ -154,6 +163,7 @@ struct sbgst_impl {
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
     static std::ptrdiff_t invoke( const char vect, MatrixAB& ab,
             const MatrixBB& bb, MatrixX& x, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( vect, ab, bb, x, minimal_workspace() );
     }

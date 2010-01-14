@@ -116,6 +116,7 @@ struct sygvx_impl {
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -129,30 +130,38 @@ struct sygvx_impl {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( n ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::sygvx( itype, jobz, range, uplo(), n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), vl, vu, il,
-                iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(ifail) );
+        return detail::sygvx( itype, jobz, range, uplo(), n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), vl, vu,
+                il, iu, abstol, m, bindings::begin_value(w),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(ifail) );
     }
 
     //
@@ -170,6 +179,7 @@ struct sygvx_impl {
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -193,15 +203,18 @@ struct sygvx_impl {
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
-        detail::sygvx( itype, jobz, range, uplo(), n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b), vl, vu, il,
-                iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), &opt_size_work, -1, begin_value(tmp_iwork),
-                begin_value(ifail) );
+        detail::sygvx( itype, jobz, range, uplo(), n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), vl, vu,
+                il, iu, abstol, m, bindings::begin_value(w),
+                bindings::begin_value(z), bindings::stride_major(z),
+                &opt_size_work, -1, bindings::begin_value(tmp_iwork),
+                bindings::begin_value(ifail) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m,

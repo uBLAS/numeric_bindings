@@ -139,11 +139,13 @@ struct dot_impl {
     //
     template< typename VectorX, typename VectorY >
     static return_type invoke( const VectorX& x, const VectorY& y ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        return detail::dot( size(x), begin_value(x), stride(x),
-                begin_value(y), stride(y) );
+        return detail::dot( bindings::size(x),
+                bindings::begin_value(x), bindings::stride(x),
+                bindings::begin_value(y), bindings::stride(y) );
     }
 };
 

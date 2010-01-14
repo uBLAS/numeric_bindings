@@ -89,12 +89,13 @@ struct hptrf_impl {
     //
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixAP& ap, VectorIPIV& ipiv ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::hptrf( uplo(), size_column(ap), begin_value(ap),
-                begin_value(ipiv) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::hptrf( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(ipiv) );
     }
 
 };

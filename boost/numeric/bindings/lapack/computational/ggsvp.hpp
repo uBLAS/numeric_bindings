@@ -161,6 +161,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
             MatrixU& u, MatrixV& v, MatrixQ& q, detail::workspace3< IWORK,
             TAU, WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -177,40 +178,49 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_tau( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a),
+                bindings::size_row(a), bindings::size_row(b) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::size_row(b) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(b)) );
         BOOST_ASSERT( jobq == 'Q' || jobq == 'N' );
         BOOST_ASSERT( jobu == 'U' || jobu == 'N' );
         BOOST_ASSERT( jobv == 'V' || jobv == 'N' );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(a) ));
-        BOOST_ASSERT( size(work.select(real_type())) >=
-                min_size_tau( size_column(a) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(a), size_row(a), size_row(b) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( size_row(b) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
-        return detail::ggsvp( jobu, jobv, jobq, size_row(a), size_row(b),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), tola, tolb, k, l,
-                begin_value(u), stride_major(u), begin_value(v),
-                stride_major(v), begin_value(q), stride_major(q),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(real_type())) );
+        return detail::ggsvp( jobu, jobv, jobq, bindings::size_row(a),
+                bindings::size_row(b), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), tola,
+                tolb, k, l, bindings::begin_value(u),
+                bindings::stride_major(u), bindings::begin_value(v),
+                bindings::stride_major(v), bindings::begin_value(q),
+                bindings::stride_major(q),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -226,12 +236,14 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
             MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(a) ) );
+                min_size_iwork( bindings::size_column(a) ) );
         bindings::detail::array<
-                real_type > tmp_tau( min_size_tau( size_column(a) ) );
+                real_type > tmp_tau( min_size_tau( bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(a), size_row(a), size_row(b) ) );
+                bindings::size_column(a), bindings::size_row(a),
+                bindings::size_row(b) ) );
         return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 workspace( tmp_iwork, tmp_tau, tmp_work ) );
     }
@@ -249,6 +261,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
             MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 minimal_workspace() );
     }
@@ -302,6 +315,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
             MatrixU& u, MatrixV& v, MatrixQ& q, detail::workspace4< IWORK,
             RWORK, TAU, WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -318,43 +332,52 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixU >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixU >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_tau( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a),
+                bindings::size_row(a), bindings::size_row(b) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(u) == 1 ||
+                bindings::stride_minor(u) == 1 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::size_row(b) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(b)) );
         BOOST_ASSERT( jobq == 'Q' || jobq == 'N' );
         BOOST_ASSERT( jobu == 'U' || jobu == 'N' );
         BOOST_ASSERT( jobv == 'V' || jobv == 'N' );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(a) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >=
-                min_size_tau( size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a), size_row(a), size_row(b) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(u) == 1 || stride_minor(u) == 1 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( size_row(b) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
-        return detail::ggsvp( jobu, jobv, jobq, size_row(a), size_row(b),
-                size_column(a), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), tola, tolb, k, l,
-                begin_value(u), stride_major(u), begin_value(v),
-                stride_major(v), begin_value(q), stride_major(q),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(value_type())) );
+        return detail::ggsvp( jobu, jobv, jobq, bindings::size_row(a),
+                bindings::size_row(b), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b), tola,
+                tolb, k, l, bindings::begin_value(u),
+                bindings::stride_major(u), bindings::begin_value(v),
+                bindings::stride_major(v), bindings::begin_value(q),
+                bindings::stride_major(q),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -370,14 +393,16 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
             MatrixU& u, MatrixV& v, MatrixQ& q, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(a) ) );
+                min_size_iwork( bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array<
-                value_type > tmp_tau( min_size_tau( size_column(a) ) );
+                value_type > tmp_tau( min_size_tau( bindings::size_column(a) ) );
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a), size_row(a), size_row(b) ) );
+                bindings::size_column(a), bindings::size_row(a),
+                bindings::size_row(b) ) );
         return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 workspace( tmp_iwork, tmp_rwork, tmp_tau, tmp_work ) );
     }
@@ -395,6 +420,7 @@ struct ggsvp_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const char jobq, MatrixA& a, MatrixB& b, const real_type tola,
             const real_type tolb, fortran_int_t& k, fortran_int_t& l,
             MatrixU& u, MatrixV& v, MatrixQ& q, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q,
                 minimal_workspace() );
     }

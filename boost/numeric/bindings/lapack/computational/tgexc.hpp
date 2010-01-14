@@ -145,6 +145,7 @@ struct tgexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const logical_t wantq, const logical_t wantz,
             MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             fortran_int_t& ifst, fortran_int_t& ilst ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -157,27 +158,32 @@ struct tgexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::tgexc( wantq, wantz, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(q), stride_major(q), begin_value(z),
-                stride_major(z), ifst, ilst,
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::tgexc( wantq, wantz, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(z), bindings::stride_major(z), ifst,
+                ilst, bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
 };
@@ -203,6 +209,7 @@ struct tgexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             const fortran_int_t ifst, fortran_int_t& ilst,
             detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -215,23 +222,29 @@ struct tgexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::tgexc( wantq, wantz, size_column(a), begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(q), stride_major(q), begin_value(z),
-                stride_major(z), ifst, ilst );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::tgexc( wantq, wantz, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(q), bindings::stride_major(q),
+                bindings::begin_value(z), bindings::stride_major(z), ifst,
+                ilst );
     }
 
     //
@@ -247,6 +260,7 @@ struct tgexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             const fortran_int_t ifst, fortran_int_t& ilst,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
 $SETUP_MIN_WORKARRAYS_POST
         return invoke( wantq, wantz, a, b, q, z, ifst, ilst,
                 workspace( $TMP_WORKARRAYS ) );
@@ -265,6 +279,7 @@ $SETUP_MIN_WORKARRAYS_POST
             MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             const fortran_int_t ifst, fortran_int_t& ilst,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
 $OPT_WORKSPACE_FUNC
     }
 

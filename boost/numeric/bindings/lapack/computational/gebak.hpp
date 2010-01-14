@@ -129,22 +129,24 @@ struct gebak_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char job, const char side,
             const fortran_int_t ilo, const fortran_int_t ihi,
             const VectorSCALE& scale, MatrixV& v ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorSCALE >::type >::type,
                 typename remove_const< typename value<
                 MatrixV >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_ASSERT( bindings::size(scale) >= bindings::size_row(v) );
+        BOOST_ASSERT( bindings::size_column(v) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::size_row(v) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(v)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( size(scale) >= size_row(v) );
-        BOOST_ASSERT( size_column(v) >= 0 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
-        BOOST_ASSERT( size_row(v) >= 0 );
-        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
-                size_row(v)) );
-        return detail::gebak( job, side, size_row(v), ilo, ihi,
-                begin_value(scale), size_column(v), begin_value(v),
-                stride_major(v) );
+        return detail::gebak( job, side, bindings::size_row(v), ilo, ihi,
+                bindings::begin_value(scale), bindings::size_column(v),
+                bindings::begin_value(v), bindings::stride_major(v) );
     }
 
 };
@@ -168,18 +170,20 @@ struct gebak_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char job, const char side,
             const fortran_int_t ilo, const fortran_int_t ihi,
             const VectorSCALE& scale, MatrixV& v ) {
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixV >::value) );
+        BOOST_ASSERT( bindings::size(scale) >= bindings::size_row(v) );
+        BOOST_ASSERT( bindings::size_column(v) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(v) == 1 ||
+                bindings::stride_minor(v) == 1 );
+        BOOST_ASSERT( bindings::size_row(v) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(v)) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( size(scale) >= size_row(v) );
-        BOOST_ASSERT( size_column(v) >= 0 );
-        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
-        BOOST_ASSERT( size_row(v) >= 0 );
-        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
-                size_row(v)) );
-        return detail::gebak( job, side, size_row(v), ilo, ihi,
-                begin_value(scale), size_column(v), begin_value(v),
-                stride_major(v) );
+        return detail::gebak( job, side, bindings::size_row(v), ilo, ihi,
+                bindings::begin_value(scale), bindings::size_column(v),
+                bindings::begin_value(v), bindings::stride_major(v) );
     }
 
 };

@@ -140,6 +140,7 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorD, typename VectorX, typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
             VectorD& d, VectorX& x, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -156,29 +157,34 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_ASSERT( size(c) >= size_row(a) );
-        BOOST_ASSERT( size(d) >= size_row(b) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_row(a), size_column(a), size_row(b) ));
-        BOOST_ASSERT( size(x) >= size_column(a) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
-        return detail::gglse( size_row(a), size_column(a), size_row(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(c), begin_value(d),
-                begin_value(x), begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_ASSERT( bindings::size(c) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_row(b) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_row(a),
+                bindings::size_column(a), bindings::size_row(b) ));
+        BOOST_ASSERT( bindings::size(x) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(b)) );
+        return detail::gglse( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_row(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::begin_value(d), bindings::begin_value(x),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -192,8 +198,10 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
             VectorD& d, VectorX& x, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_row(a), size_column(a), size_row(b) ) );
+                bindings::size_row(a), bindings::size_column(a),
+                bindings::size_row(b) ) );
         return invoke( a, b, c, d, x, workspace( tmp_work ) );
     }
 
@@ -208,11 +216,14 @@ struct gglse_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
             VectorD& d, VectorX& x, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::gglse( size_row(a), size_column(a), size_row(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(c), begin_value(d),
-                begin_value(x), &opt_size_work, -1 );
+        detail::gglse( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_row(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::begin_value(d), bindings::begin_value(x),
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, b, c, d, x, workspace( tmp_work ) );
@@ -247,6 +258,7 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorD, typename VectorX, typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
             VectorD& d, VectorX& x, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -263,29 +275,34 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_ASSERT( size(c) >= size_row(a) );
-        BOOST_ASSERT( size(d) >= size_row(b) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_row(a), size_column(a), size_row(b) ));
-        BOOST_ASSERT( size(x) >= size_column(a) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_row(b)) );
-        return detail::gglse( size_row(a), size_column(a), size_row(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(c), begin_value(d),
-                begin_value(x), begin_value(work.select(value_type())),
-                size(work.select(value_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_ASSERT( bindings::size(c) >= bindings::size_row(a) );
+        BOOST_ASSERT( bindings::size(d) >= bindings::size_row(b) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_row(a),
+                bindings::size_column(a), bindings::size_row(b) ));
+        BOOST_ASSERT( bindings::size(x) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(b)) );
+        return detail::gglse( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_row(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::begin_value(d), bindings::begin_value(x),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())) );
     }
 
     //
@@ -299,8 +316,10 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
             VectorD& d, VectorX& x, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_row(a), size_column(a), size_row(b) ) );
+                bindings::size_row(a), bindings::size_column(a),
+                bindings::size_row(b) ) );
         return invoke( a, b, c, d, x, workspace( tmp_work ) );
     }
 
@@ -315,11 +334,14 @@ struct gglse_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename VectorD, typename VectorX >
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorC& c,
             VectorD& d, VectorX& x, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
-        detail::gglse( size_row(a), size_column(a), size_row(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(c), begin_value(d),
-                begin_value(x), &opt_size_work, -1 );
+        detail::gglse( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_row(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::begin_value(d), bindings::begin_value(x),
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, b, c, d, x, workspace( tmp_work ) );

@@ -144,6 +144,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -152,9 +153,9 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
@@ -162,27 +163,33 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 std::ptrdiff_t >( static_cast<std::ptrdiff_t>(std::log(
                 static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
                 1))/std::log(2.0)) + 1, 0 );
-        BOOST_ASSERT( size(s) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_ASSERT( bindings::size(s) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( minmn, nlvl ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( minmn,
-                smlsiz, nlvl, size_column(b) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,std::max<
-                std::ptrdiff_t >(size_row(a),size_column(a))) );
-        return detail::gelsd( size_row(a), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(s), rcond, rank,
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( minmn, smlsiz, nlvl,
+                bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                std::max< std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a))) );
+        return detail::gelsd( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(s), rcond,
+                rank, bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -196,6 +203,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
@@ -204,7 +212,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
                 1))/std::log(2.0)) + 1, 0 );
         bindings::detail::array< real_type > tmp_work( min_size_work( minmn,
-                smlsiz, nlvl, size_column(b) ) );
+                smlsiz, nlvl, bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn, nlvl ) );
         return invoke( a, b, s, rcond, rank, workspace( tmp_work,
@@ -222,6 +230,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
@@ -232,10 +241,11 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn, nlvl ) );
-        detail::gelsd( size_row(a), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(s), rcond, rank, &opt_size_work,
-                -1, begin_value(tmp_iwork) );
+        detail::gelsd( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(s), rcond,
+                rank, &opt_size_work, -1, bindings::begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, b, s, rcond, rank, workspace( tmp_work,
@@ -285,13 +295,14 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
@@ -299,30 +310,37 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 std::ptrdiff_t >( static_cast<std::ptrdiff_t>(std::log(
                 static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
                 1))/std::log(2.0)) + 1, 0 );
-        BOOST_ASSERT( size(s) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_ASSERT( bindings::size(s) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( minmn, nlvl ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( minmn,
-                smlsiz, nlvl, size_column(b) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a), minmn, size_column(b) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,std::max<
-                std::ptrdiff_t >(size_row(a),size_column(a))) );
-        return detail::gelsd( size_row(a), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(s), rcond, rank,
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( minmn, smlsiz, nlvl,
+                bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a), minmn,
+                bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                std::max< std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a))) );
+        return detail::gelsd( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(s), rcond,
+                rank, bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -336,6 +354,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
@@ -344,9 +363,9 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
                 1))/std::log(2.0)) + 1, 0 );
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a), minmn, size_column(b) ) );
+                bindings::size_column(a), minmn, bindings::size_column(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
-                smlsiz, nlvl, size_column(b) ) );
+                smlsiz, nlvl, bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn, nlvl ) );
         return invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork,
@@ -364,6 +383,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
@@ -373,13 +393,15 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 1))/std::log(2.0)) + 1, 0 );
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
-                smlsiz, nlvl, size_column(b) ) );
+                smlsiz, nlvl, bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn, nlvl ) );
-        detail::gelsd( size_row(a), size_column(a), size_column(b),
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(s), rcond, rank, &opt_size_work,
-                -1, begin_value(tmp_rwork), begin_value(tmp_iwork) );
+        detail::gelsd( bindings::size_row(a), bindings::size_column(a),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(s), rcond,
+                rank, &opt_size_work, -1, bindings::begin_value(tmp_rwork),
+                bindings::begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork,

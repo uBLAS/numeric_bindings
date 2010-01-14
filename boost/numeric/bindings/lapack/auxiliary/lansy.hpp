@@ -119,15 +119,18 @@ struct lansy_impl {
     template< typename MatrixA, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max<
-                std::ptrdiff_t >(size_column(a),1) );
-        return detail::lansy( norm, uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(work.select(real_type())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max<
+                std::ptrdiff_t >(bindings::size_column(a),1) );
+        return detail::lansy( norm, uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -140,6 +143,7 @@ struct lansy_impl {
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -156,6 +160,7 @@ struct lansy_impl {
     template< typename MatrixA >
     static std::ptrdiff_t invoke( const char norm, const MatrixA& a,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         return invoke( norm, a, minimal_workspace() );
     }

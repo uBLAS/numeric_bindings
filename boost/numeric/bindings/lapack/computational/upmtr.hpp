@@ -103,6 +103,7 @@ struct upmtr_impl {
     static std::ptrdiff_t invoke( const char side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorAP >::type >::type,
                 typename remove_const< typename value<
@@ -111,19 +112,21 @@ struct upmtr_impl {
                 typename value< VectorAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(c) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_row(c) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(c) >= 0 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_row(c) >= 0 );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
-                size_row(c)) );
-        return detail::upmtr( side, uplo, trans(), size_row(c),
-                size_column(c), begin_value(ap), begin_value(tau),
-                begin_value(c), stride_major(c),
-                begin_value(work.select(value_type())) );
+        return detail::upmtr( side, uplo, trans(), bindings::size_row(c),
+                bindings::size_column(c), bindings::begin_value(ap),
+                bindings::begin_value(tau), bindings::begin_value(c),
+                bindings::stride_major(c),
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -137,6 +140,7 @@ struct upmtr_impl {
     static std::ptrdiff_t invoke( const char side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( side, uplo, ap, tau, c, workspace( tmp_work ) );
@@ -153,6 +157,7 @@ struct upmtr_impl {
     static std::ptrdiff_t invoke( const char side, const char uplo,
             const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, uplo, ap, tau, c, minimal_workspace() );
     }
 

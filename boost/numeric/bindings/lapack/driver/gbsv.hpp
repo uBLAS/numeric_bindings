@@ -122,27 +122,31 @@ struct gbsv_impl {
     //
     template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( size(ipiv) >= size_column(ab) );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= 2 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(ab)) );
-        return detail::gbsv( size_column(ab), bandwidth_lower(ab),
-                bandwidth_upper(ab), size_column(b), begin_value(ab),
-                stride_major(ab), begin_value(ipiv), begin_value(b),
-                stride_major(b) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ab) );
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= 2 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(ab)) );
+        return detail::gbsv( bindings::size_column(ab),
+                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
+                bindings::size_column(b), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b) );
     }
 
 };

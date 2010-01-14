@@ -154,6 +154,7 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -166,29 +167,31 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorISUPPZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISUPPZ >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( n, jobz ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n, jobz ));
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n, jobz ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n,
-                jobz ));
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
-                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(isuppz),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())) );
+        return detail::stegr( jobz, range, n, bindings::begin_value(d),
+                bindings::begin_value(e), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), bindings::begin_value(isuppz),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -206,6 +209,7 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -229,12 +233,14 @@ struct stegr_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
-                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(isuppz), &opt_size_work, -1,
-                &opt_size_iwork, -1 );
+        detail::stegr( jobz, range, n, bindings::begin_value(d),
+                bindings::begin_value(e), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), bindings::begin_value(isuppz),
+                &opt_size_work, -1, &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -295,6 +301,7 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -303,29 +310,31 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 VectorW >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorISUPPZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISUPPZ >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( n, jobz ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n, jobz ));
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( n, jobz ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n,
-                jobz ));
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
-                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(isuppz),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())) );
+        return detail::stegr( jobz, range, n, bindings::begin_value(d),
+                bindings::begin_value(e), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), bindings::begin_value(isuppz),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())) );
     }
 
     //
@@ -343,6 +352,7 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -366,12 +376,14 @@ struct stegr_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t il, const fortran_int_t iu,
             const real_type abstol, fortran_int_t& m, VectorW& w,
             MatrixZ& z, VectorISUPPZ& isuppz, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
-        detail::stegr( jobz, range, n, begin_value(d), begin_value(e),
-                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
-                stride_major(z), begin_value(isuppz), &opt_size_work, -1,
-                &opt_size_iwork, -1 );
+        detail::stegr( jobz, range, n, bindings::begin_value(d),
+                bindings::begin_value(e), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z), bindings::begin_value(isuppz),
+                &opt_size_work, -1, &opt_size_iwork, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(

@@ -129,25 +129,29 @@ struct trexc_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixT, typename MatrixQ >
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             fortran_int_t& ifst, fortran_int_t& ilst ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
                 MatrixQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(t) ));
+        BOOST_ASSERT( bindings::size_column(t) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::stride_major(q) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
         BOOST_ASSERT( compq == 'V' || compq == 'N' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(t) ));
-        BOOST_ASSERT( size_column(t) >= 0 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( stride_major(q) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        return detail::trexc( compq, size_column(t), begin_value(t),
-                stride_major(t), begin_value(q), stride_major(q), ifst, ilst,
-                begin_value(work.select(real_type())) );
+        return detail::trexc( compq, bindings::size_column(t),
+                bindings::begin_value(t), bindings::stride_major(t),
+                bindings::begin_value(q), bindings::stride_major(q), ifst,
+                ilst, bindings::begin_value(work.select(real_type())) );
     }
 
 };
@@ -171,22 +175,27 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
             detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixT >::type >::type,
                 typename remove_const< typename value<
                 MatrixQ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bindings::size_column(t) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(t) == 1 ||
+                bindings::stride_minor(t) == 1 );
+        BOOST_ASSERT( bindings::stride_major(q) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
+        BOOST_ASSERT( bindings::stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(t)) );
         BOOST_ASSERT( compq == 'V' || compq == 'N' );
-        BOOST_ASSERT( size_column(t) >= 0 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
-        BOOST_ASSERT( stride_major(q) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
-                size_column(t)) );
-        return detail::trexc( compq, size_column(t), begin_value(t),
-                stride_major(t), begin_value(q), stride_major(q), ifst, ilst );
+        return detail::trexc( compq, bindings::size_column(t),
+                bindings::begin_value(t), bindings::stride_major(t),
+                bindings::begin_value(q), bindings::stride_major(q), ifst,
+                ilst );
     }
 
     //
@@ -200,6 +209,7 @@ struct trexc_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
 $SETUP_MIN_WORKARRAYS_POST
         return invoke( compq, t, q, ifst, ilst, workspace( $TMP_WORKARRAYS ) );
     }
@@ -215,6 +225,7 @@ $SETUP_MIN_WORKARRAYS_POST
     static std::ptrdiff_t invoke( const char compq, MatrixT& t, MatrixQ& q,
             const fortran_int_t ifst, const fortran_int_t ilst,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
 $OPT_WORKSPACE_FUNC
     }
 

@@ -130,26 +130,30 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorJPVT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_ASSERT( size(tau) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::geqp3( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(jpvt), begin_value(tau),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorJPVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::geqp3( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(jpvt), bindings::begin_value(tau),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -162,8 +166,9 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( a, jpvt, tau, workspace( tmp_work ) );
     }
 
@@ -177,9 +182,11 @@ struct geqp3_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::geqp3( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(jpvt), begin_value(tau),
+        detail::geqp3( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(jpvt), bindings::begin_value(tau),
                 &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
@@ -214,29 +221,33 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             typename WORK, typename RWORK >
     static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorJPVT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorTAU >::value) );
-        BOOST_ASSERT( size(tau) >= std::min< std::ptrdiff_t >(size_row(a),
-                size_column(a)) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::geqp3( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(jpvt), begin_value(tau),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorJPVT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorTAU >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= std::min<
+                std::ptrdiff_t >(bindings::size_row(a),
+                bindings::size_column(a)) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::geqp3( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(jpvt), bindings::begin_value(tau),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -249,10 +260,11 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( a, jpvt, tau, workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -266,12 +278,14 @@ struct geqp3_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorJPVT, typename VectorTAU >
     static std::ptrdiff_t invoke( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
-        detail::geqp3( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(jpvt), begin_value(tau),
-                &opt_size_work, -1, begin_value(tmp_rwork) );
+                bindings::size_column(a) ) );
+        detail::geqp3( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(jpvt), bindings::begin_value(tau),
+                &opt_size_work, -1, bindings::begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, jpvt, tau, workspace( tmp_work, tmp_rwork ) );

@@ -97,14 +97,15 @@ struct hpcon_impl {
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_ASSERT( size(ipiv) >= size_column(ap) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::hpcon( uplo(), size_column(ap), begin_value(ap),
-                begin_value(ipiv), anorm, rcond,
-                begin_value(work.select(value_type())) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::hpcon( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(ipiv), anorm,
+                rcond, bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -117,9 +118,10 @@ struct hpcon_impl {
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         return invoke( ap, ipiv, anorm, rcond, workspace( tmp_work ) );
     }
 
@@ -133,6 +135,7 @@ struct hpcon_impl {
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );
     }

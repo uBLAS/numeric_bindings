@@ -140,6 +140,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
             fortran_int_t& rank, detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -148,27 +149,30 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
             std::log(static_cast<real_type>(n)/static_cast<real_type>(smlsiz+
                     1)) /
             std::log(static_cast<real_type>(2.)) ) + 1 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n, nlvl ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n,
-                smlsiz, nlvl, size_column(b) ));
-        BOOST_ASSERT( size_column(b) >= 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::lalsd( uplo, smlsiz, n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(b), stride_major(b), rcond, rank,
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n, smlsiz, nlvl, bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size_column(b) >= 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( n >= 0 );
+        return detail::lalsd( uplo, smlsiz, n, bindings::size_column(b),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(b), bindings::stride_major(b), rcond,
+                rank, bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -183,13 +187,14 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
             fortran_int_t& rank, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
             std::log(static_cast<real_type>(n)/static_cast<real_type>(smlsiz+
                     1)) /
             std::log(static_cast<real_type>(2.)) ) + 1 );
         bindings::detail::array< real_type > tmp_work( min_size_work( n,
-                smlsiz, nlvl, size_column(b) ) );
+                smlsiz, nlvl, bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n, nlvl ) );
         return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
@@ -208,6 +213,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
             fortran_int_t& rank, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 minimal_workspace() );
     }
@@ -256,35 +262,39 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
             fortran_int_t& rank, detail::workspace3< WORK, RWORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 VectorE >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
             std::log(static_cast<real_type>(std::min<
                     std::ptrdiff_t >(traits::matrix_size2(b),n))/
             static_cast<real_type>(smlsiz+1)) /
             std::log(static_cast<real_type>(2.))) + 1 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n, nlvl ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n,
-                smlsiz, nlvl, size_column(b) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n,
-                size_column(b) ));
-        BOOST_ASSERT( size_column(b) >= 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::lalsd( uplo, smlsiz, n, size_column(b), begin_value(d),
-                begin_value(e), begin_value(b), stride_major(b), rcond, rank,
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( n, smlsiz, nlvl, bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( n, bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size_column(b) >= 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( n >= 0 );
+        return detail::lalsd( uplo, smlsiz, n, bindings::size_column(b),
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(b), bindings::stride_major(b), rcond,
+                rank, bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -299,6 +309,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
             fortran_int_t& rank, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         std::ptrdiff_t nlvl = std::max< std::ptrdiff_t >( 0,
                 static_cast<std::ptrdiff_t>(
             std::log(static_cast<real_type>(std::min<
@@ -306,9 +317,9 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             static_cast<real_type>(smlsiz+1)) /
             std::log(static_cast<real_type>(2.))) + 1 );
         bindings::detail::array< value_type > tmp_work( min_size_work( n,
-                size_column(b) ) );
+                bindings::size_column(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n,
-                smlsiz, nlvl, size_column(b) ) );
+                smlsiz, nlvl, bindings::size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n, nlvl ) );
         return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
@@ -327,6 +338,7 @@ struct lalsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t smlsiz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixB& b, const real_type rcond,
             fortran_int_t& rank, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, smlsiz, n, d, e, b, rcond, rank,
                 minimal_workspace() );
     }

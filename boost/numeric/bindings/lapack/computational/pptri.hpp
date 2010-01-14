@@ -113,10 +113,12 @@ struct pptri_impl {
     //
     template< typename MatrixAP >
     static std::ptrdiff_t invoke( MatrixAP& ap ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::pptri( uplo(), size_column(ap), begin_value(ap) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::pptri( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap) );
     }
 
 };

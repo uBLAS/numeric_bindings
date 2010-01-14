@@ -131,16 +131,18 @@ struct lantb_impl {
     static std::ptrdiff_t invoke( const char norm, const char uplo,
             const fortran_int_t k, const MatrixAB& ab, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= k+1 );
         BOOST_ASSERT( k >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= k+1 );
-        return detail::lantb( norm, uplo, diag(), size_column(ab), k,
-                begin_value(ab), stride_major(ab),
-                begin_value(work.select(real_type())) );
+        return detail::lantb( norm, uplo, diag(), bindings::size_column(ab),
+                k, bindings::begin_value(ab), bindings::stride_major(ab),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -154,6 +156,7 @@ struct lantb_impl {
     static std::ptrdiff_t invoke( const char norm, const char uplo,
             const fortran_int_t k, const MatrixAB& ab,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -171,6 +174,7 @@ struct lantb_impl {
     static std::ptrdiff_t invoke( const char norm, const char uplo,
             const fortran_int_t k, const MatrixAB& ab,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::diag_tag< MatrixAB >::type diag;
         return invoke( norm, uplo, k, ab, minimal_workspace() );
     }

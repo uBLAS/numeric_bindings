@@ -138,6 +138,7 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo, const char normin,
             const MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -148,16 +149,20 @@ struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorCNORM >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorCNORM >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorCNORM >::value) );
+        BOOST_ASSERT( bindings::size(x) >= bindings::size_column_op(a,
+                trans()) );
+        BOOST_ASSERT( bindings::size_column_op(a, trans()) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= ?MAX );
         BOOST_ASSERT( normin == 'Y' || normin == 'N' );
-        BOOST_ASSERT( size(x) >= size_column_op(a, trans()) );
-        BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= ?MAX );
-        return detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
-                trans()), begin_value(a), stride_major(a), begin_value(x),
-                scale, begin_value(cnorm) );
+        return detail::latrs( uplo, trans(), diag(), normin,
+                bindings::size_column_op(a, trans()),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(x), scale,
+                bindings::begin_value(cnorm) );
     }
 
 };
@@ -181,22 +186,27 @@ struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo, const char normin,
             const MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorCNORM >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorCNORM >::value) );
+        BOOST_ASSERT( bindings::size(x) >= bindings::size_column_op(a,
+                trans()) );
+        BOOST_ASSERT( bindings::size_column_op(a, trans()) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= ?MAX );
         BOOST_ASSERT( normin == 'Y' || normin == 'N' );
-        BOOST_ASSERT( size(x) >= size_column_op(a, trans()) );
-        BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= ?MAX );
-        return detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
-                trans()), begin_value(a), stride_major(a), begin_value(x),
-                scale, begin_value(cnorm) );
+        return detail::latrs( uplo, trans(), diag(), normin,
+                bindings::size_column_op(a, trans()),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(x), scale,
+                bindings::begin_value(cnorm) );
     }
 
 };

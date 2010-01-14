@@ -137,17 +137,18 @@ struct spcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_ASSERT( size(ipiv) >= size_column(ap) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(ap) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::spcon( uplo(), size_column(ap), begin_value(ap),
-                begin_value(ipiv), anorm, rcond,
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::spcon( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(ipiv), anorm,
+                rcond, bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -160,11 +161,12 @@ struct spcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(ap) ) );
+                min_size_iwork( bindings::size_column(ap) ) );
         return invoke( ap, ipiv, anorm, rcond, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -179,6 +181,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );
     }
@@ -219,14 +222,15 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_ASSERT( size(ipiv) >= size_column(ap) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::spcon( uplo(), size_column(ap), begin_value(ap),
-                begin_value(ipiv), anorm, rcond,
-                begin_value(work.select(value_type())) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(ap) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::spcon( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(ipiv), anorm,
+                rcond, bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -239,9 +243,10 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         return invoke( ap, ipiv, anorm, rcond, workspace( tmp_work ) );
     }
 
@@ -255,6 +260,7 @@ struct spcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename VectorIPIV >
     static std::ptrdiff_t invoke( const MatrixAP& ap, const VectorIPIV& ipiv,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( ap, ipiv, anorm, rcond, minimal_workspace() );
     }

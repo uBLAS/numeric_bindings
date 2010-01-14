@@ -166,18 +166,22 @@ struct herk_impl {
     template< typename MatrixA, typename MatrixC >
     static return_type invoke( const real_type alpha, const MatrixA& a,
             const real_type beta, MatrixC& c ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixC >::type order;
         typedef typename result_of::data_side< MatrixC >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        detail::herk( order(), uplo(), trans(), size_column(c),
-                size_column(a), alpha, begin_value(a), stride_major(a), beta,
-                begin_value(c), stride_major(c) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        detail::herk( order(), uplo(), trans(),
+                bindings::size_column(c), bindings::size_column(a), alpha,
+                bindings::begin_value(a), bindings::stride_major(a), beta,
+                bindings::begin_value(c), bindings::stride_major(c) );
     }
 };
 

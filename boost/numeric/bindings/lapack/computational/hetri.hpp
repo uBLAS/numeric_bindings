@@ -96,18 +96,21 @@ struct hetri_impl {
     template< typename MatrixA, typename VectorIPIV, typename WORK >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( size(ipiv) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::hetri( uplo(), size_column(a), begin_value(a),
-                stride_major(a), begin_value(ipiv),
-                begin_value(work.select(value_type())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
+        return detail::hetri( uplo(), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(ipiv),
+                bindings::begin_value(work.select(value_type())) );
     }
 
     //
@@ -120,9 +123,10 @@ struct hetri_impl {
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( a, ipiv, workspace( tmp_work ) );
     }
 
@@ -136,6 +140,7 @@ struct hetri_impl {
     template< typename MatrixA, typename VectorIPIV >
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         return invoke( a, ipiv, minimal_workspace() );
     }

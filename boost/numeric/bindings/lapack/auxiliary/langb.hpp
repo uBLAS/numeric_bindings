@@ -120,17 +120,21 @@ struct langb_impl {
     template< typename MatrixAB, typename WORK >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             detail::workspace1< WORK > work ) {
-        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
-                bandwidth_upper(ab)+1 );
-        return detail::langb( norm, size_column(ab), bandwidth_lower(ab),
-                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
-                begin_value(work.select(real_type())) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
+                1 );
+        return detail::langb( norm, bindings::size_column(ab),
+                bindings::bandwidth_lower(ab), bindings::bandwidth_upper(ab),
+                bindings::begin_value(ab), bindings::stride_major(ab),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -143,6 +147,7 @@ struct langb_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( norm, ab, workspace( tmp_work ) );
@@ -158,6 +163,7 @@ struct langb_impl {
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char norm, const MatrixAB& ab,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( norm, ab, minimal_workspace() );
     }
 

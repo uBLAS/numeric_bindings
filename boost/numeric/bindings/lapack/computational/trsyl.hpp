@@ -140,6 +140,7 @@ struct trsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t isgn, const fortran_int_t m,
             const fortran_int_t n, const MatrixA& a, const MatrixB& b,
             MatrixC& c, real_type& scale ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -148,20 +149,27 @@ struct trsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                m) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                m) );
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,m) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( trana == 'N' || trana == 'T' || trana == 'C' );
         BOOST_ASSERT( tranb == 'N' || tranb == 'T' || tranb == 'C' );
-        return detail::trsyl( trana, tranb, isgn, m, n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), scale );
+        return detail::trsyl( trana, tranb, isgn, m, n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(c), bindings::stride_major(c), scale );
     }
 
 };
@@ -186,6 +194,7 @@ struct trsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t isgn, const fortran_int_t m,
             const fortran_int_t n, const MatrixA& a, const MatrixB& b,
             MatrixC& c, real_type& scale ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -194,20 +203,27 @@ struct trsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                m) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                m) );
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,m) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( trana == 'N' || trana == 'C' );
         BOOST_ASSERT( tranb == 'N' || tranb == 'C' );
-        return detail::trsyl( trana, tranb, isgn, m, n, begin_value(a),
-                stride_major(a), begin_value(b), stride_major(b),
-                begin_value(c), stride_major(c), scale );
+        return detail::trsyl( trana, tranb, isgn, m, n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(c), bindings::stride_major(c), scale );
     }
 
 };

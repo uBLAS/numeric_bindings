@@ -133,6 +133,7 @@ struct rotg_impl {
     //
     static return_type invoke( real_type& a, real_type& b, real_type& c,
             real_type& s ) {
+        namespace bindings = ::boost::numeric::bindings;
         detail::rotg( a, b, c, s );
     }
 };

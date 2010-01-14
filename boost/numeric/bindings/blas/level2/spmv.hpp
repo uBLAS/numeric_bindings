@@ -163,6 +163,7 @@ struct spmv_impl {
     template< typename MatrixAP, typename VectorX, typename VectorY >
     static return_type invoke( const real_type alpha, const MatrixAP& ap,
             const VectorX& x, const real_type beta, VectorY& y ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixAP >::type order;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
@@ -171,10 +172,11 @@ struct spmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
-        detail::spmv( order(), uplo(), size_column(ap), alpha,
-                begin_value(ap), begin_value(x), stride(x), beta,
-                begin_value(y), stride(y) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorY >::value) );
+        detail::spmv( order(), uplo(), bindings::size_column(ap), alpha,
+                bindings::begin_value(ap), bindings::begin_value(x),
+                bindings::stride(x), beta, bindings::begin_value(y),
+                bindings::stride(y) );
     }
 };
 

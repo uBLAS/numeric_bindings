@@ -157,6 +157,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -177,30 +178,37 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorDIF >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDIF >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDIF >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tgsna( job, howmny, begin_value(select), n,
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(vl), stride_major(vl),
-                begin_value(vr), stride_major(vr), begin_value(s),
-                begin_value(dif), mm, m,
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::tgsna( job, howmny, bindings::begin_value(select), n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                bindings::begin_value(s), bindings::begin_value(dif), mm, m,
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -219,6 +227,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -243,15 +252,17 @@ struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( $CALL_MIN_SIZE ) );
-        detail::tgsna( job, howmny, begin_value(select), n,
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(vl), stride_major(vl),
-                begin_value(vr), stride_major(vr), begin_value(s),
-                begin_value(dif), mm, m, &opt_size_work, -1,
-                begin_value(tmp_iwork) );
+        detail::tgsna( job, howmny, bindings::begin_value(select), n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                bindings::begin_value(s), bindings::begin_value(dif), mm, m,
+                &opt_size_work, -1, bindings::begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
@@ -299,6 +310,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorS >::type >::type,
                 typename remove_const< typename value<
@@ -315,30 +327,37 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDIF >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorDIF >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::tgsna( job, howmny, begin_value(select), n,
-                begin_value(a), stride_major(a), begin_value(b),
-                stride_major(b), begin_value(vl), stride_major(vl),
-                begin_value(vr), stride_major(vr), begin_value(s),
-                begin_value(dif), mm, m,
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::tgsna( job, howmny, bindings::begin_value(select), n,
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                bindings::begin_value(s), bindings::begin_value(dif), mm, m,
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -357,6 +376,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -381,6 +401,7 @@ struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixVR& vr, VectorS& s, VectorDIF& dif,
             const fortran_int_t mm, fortran_int_t& m,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m,
                 minimal_workspace() );
     }

@@ -151,6 +151,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, detail::workspace3< WORK,
             IWORK, BWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -163,35 +164,39 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVS >::value) );
+        BOOST_ASSERT( bindings::size(wi) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(a), sense ));
+        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
+                bindings::size_column(a), sort ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a), sense ));
+        BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vs) == 1 ||
+                bindings::stride_minor(vs) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvs == 'N' || jobvs == 'V' );
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
-        BOOST_ASSERT( size(wi) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(a), sense ));
-        BOOST_ASSERT( size(work.select(bool())) >= min_size_bwork(
-                size_column(a), sort ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(a), sense ));
-        BOOST_ASSERT( size(wr) >= size_column(a) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vs) == 1 || stride_minor(vs) == 1 );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::geesx( jobvs, sort, select, sense, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(wr),
-                begin_value(wi), begin_value(vs), stride_major(vs), rconde,
-                rcondv, begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                size(work.select(fortran_int_t())),
-                begin_value(work.select(bool())) );
+        return detail::geesx( jobvs, sort, select, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), sdim, bindings::begin_value(wr),
+                bindings::begin_value(wi), bindings::begin_value(vs),
+                bindings::stride_major(vs), rconde, rcondv,
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::size(work.select(fortran_int_t())),
+                bindings::begin_value(work.select(bool())) );
     }
 
     //
@@ -207,12 +212,13 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(a), sense ) );
+                bindings::size_column(a), sense ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(a), sense ) );
+                min_size_iwork( bindings::size_column(a), sense ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
+                bindings::size_column(a), sort ) );
         return invoke( jobvs, sort, select, sense, a, sdim, wr, wi, vs,
                 rconde, rcondv, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
@@ -230,15 +236,17 @@ struct geesx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         fortran_int_t opt_size_iwork;
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
-        detail::geesx( jobvs, sort, select, sense, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(wr),
-                begin_value(wi), begin_value(vs), stride_major(vs), rconde,
-                rcondv, &opt_size_work, -1, &opt_size_iwork, -1,
-                begin_value(tmp_bwork) );
+                bindings::size_column(a), sort ) );
+        detail::geesx( jobvs, sort, select, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), sdim, bindings::begin_value(wr),
+                bindings::begin_value(wi), bindings::begin_value(vs),
+                bindings::stride_major(vs), rconde, rcondv, &opt_size_work,
+                -1, &opt_size_iwork, -1, bindings::begin_value(tmp_bwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -306,6 +314,7 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, detail::workspace3< WORK,
             RWORK, BWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -314,32 +323,35 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVS >::value) );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
+                bindings::size_column(a), sort ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a), sense ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vs) == 1 ||
+                bindings::stride_minor(vs) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvs == 'N' || jobvs == 'V' );
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
-        BOOST_ASSERT( size(w) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(bool())) >= min_size_bwork(
-                size_column(a), sort ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a), sense ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vs) == 1 || stride_minor(vs) == 1 );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::geesx( jobvs, sort, select, sense, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(w),
-                begin_value(vs), stride_major(vs), rconde, rcondv,
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(bool())) );
+        return detail::geesx( jobvs, sort, select, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), sdim, bindings::begin_value(w),
+                bindings::begin_value(vs), bindings::stride_major(vs), rconde,
+                rcondv, bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(bool())) );
     }
 
     //
@@ -354,12 +366,13 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a), sense ) );
+                bindings::size_column(a), sense ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
+                bindings::size_column(a), sort ) );
         return invoke( jobvs, sort, select, sense, a, sdim, w, vs, rconde,
                 rcondv, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
@@ -376,16 +389,18 @@ struct geesx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             logical_t* select, const char sense, MatrixA& a,
             fortran_int_t& sdim, VectorW& w, MatrixVS& vs,
             real_type& rconde, real_type& rcondv, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
-        detail::geesx( jobvs, sort, select, sense, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(w),
-                begin_value(vs), stride_major(vs), rconde, rcondv,
-                &opt_size_work, -1, begin_value(tmp_rwork),
-                begin_value(tmp_bwork) );
+                bindings::size_column(a), sort ) );
+        detail::geesx( jobvs, sort, select, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), sdim, bindings::begin_value(w),
+                bindings::begin_value(vs), bindings::stride_major(vs), rconde,
+                rcondv, &opt_size_work, -1, bindings::begin_value(tmp_rwork),
+                bindings::begin_value(tmp_bwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvs, sort, select, sense, a, sdim, w, vs, rconde,

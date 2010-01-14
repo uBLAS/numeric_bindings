@@ -104,6 +104,7 @@ struct hbgv_impl {
             typename MatrixZ, typename WORK, typename RWORK >
     static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
             VectorW& w, MatrixZ& z, detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -113,29 +114,36 @@ struct hbgv_impl {
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixBB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( bandwidth(bb, uplo()) >= 0 );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixBB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth(bb, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(bb) == 1 ||
+                bindings::stride_minor(bb) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
+        BOOST_ASSERT( bindings::stride_major(bb) >= bindings::bandwidth(bb,
+                uplo())+1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(ab) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
-        return detail::hbgv( jobz, uplo(), size_column(ab), bandwidth(ab,
-                uplo()), bandwidth(bb, uplo()), begin_value(ab),
-                stride_major(ab), begin_value(bb), stride_major(bb),
-                begin_value(w), begin_value(z), stride_major(z),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::hbgv( jobz, uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::bandwidth(bb,
+                uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(bb),
+                bindings::stride_major(bb), bindings::begin_value(w),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -149,11 +157,12 @@ struct hbgv_impl {
             typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
             VectorW& w, MatrixZ& z, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         return invoke( jobz, ab, bb, w, z, workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -168,6 +177,7 @@ struct hbgv_impl {
             typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, MatrixAB& ab, MatrixBB& bb,
             VectorW& w, MatrixZ& z, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( jobz, ab, bb, w, z, minimal_workspace() );
     }

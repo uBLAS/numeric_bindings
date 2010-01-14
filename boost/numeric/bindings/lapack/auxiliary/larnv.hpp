@@ -111,11 +111,13 @@ struct larnv_impl {
     template< typename VectorISEED, typename VectorX >
     static std::ptrdiff_t invoke( const fortran_int_t idist,
             VectorISEED& iseed, const fortran_int_t n, VectorX& x ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorISEED >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
-        BOOST_ASSERT( size(iseed) >= 4 );
-        BOOST_ASSERT( size(x) >= n );
-        return detail::larnv( idist, begin_value(iseed), n, begin_value(x) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISEED >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorX >::value) );
+        BOOST_ASSERT( bindings::size(iseed) >= 4 );
+        BOOST_ASSERT( bindings::size(x) >= n );
+        return detail::larnv( idist, bindings::begin_value(iseed), n,
+                bindings::begin_value(x) );
     }
 
 };

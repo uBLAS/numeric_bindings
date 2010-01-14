@@ -96,20 +96,24 @@ struct unghr_impl {
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixA& a, const VectorTAU& tau, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorTAU >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                n) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(tau) >= n-1 );
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::unghr( n, ilo, ihi, begin_value(a), stride_major(a),
-                begin_value(tau), begin_value(work.select(value_type())),
-                size(work.select(value_type())) );
+        return detail::unghr( n, ilo, ihi, bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(tau),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())) );
     }
 
     //
@@ -123,6 +127,7 @@ struct unghr_impl {
     static std::ptrdiff_t invoke( const fortran_int_t n,
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixA& a, const VectorTAU& tau, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         return invoke( n, ilo, ihi, a, tau, workspace( tmp_work ) );
@@ -139,9 +144,11 @@ struct unghr_impl {
     static std::ptrdiff_t invoke( const fortran_int_t n,
             const fortran_int_t ilo, const fortran_int_t ihi,
             MatrixA& a, const VectorTAU& tau, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
-        detail::unghr( n, ilo, ihi, begin_value(a), stride_major(a),
-                begin_value(tau), &opt_size_work, -1 );
+        detail::unghr( n, ilo, ihi, bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(tau),
+                &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( n, ilo, ihi, a, tau, workspace( tmp_work ) );

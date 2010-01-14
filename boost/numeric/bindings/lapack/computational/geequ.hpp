@@ -124,6 +124,7 @@ struct geequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixA, typename VectorR, typename VectorC >
     static std::ptrdiff_t invoke( const MatrixA& a, VectorR& r, VectorC& c,
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -132,15 +133,17 @@ struct geequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::geequ( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(r), begin_value(c), rowcnd,
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::geequ( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(r), bindings::begin_value(c), rowcnd,
                 colcnd, amax );
     }
 
@@ -164,19 +167,22 @@ struct geequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixA, typename VectorR, typename VectorC >
     static std::ptrdiff_t invoke( const MatrixA& a, VectorR& r, VectorC& c,
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorR >::type >::type,
                 typename remove_const< typename value<
                 VectorC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_row(a) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_row(a)) );
-        return detail::geequ( size_row(a), size_column(a), begin_value(a),
-                stride_major(a), begin_value(r), begin_value(c), rowcnd,
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_row(a) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(a)) );
+        return detail::geequ( bindings::size_row(a), bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(r), bindings::begin_value(c), rowcnd,
                 colcnd, amax );
     }
 

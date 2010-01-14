@@ -125,22 +125,25 @@ struct spsv_impl {
     //
     template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
     static std::ptrdiff_t invoke( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixB >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                size_column(ap)) );
-        return detail::spsv( uplo(), size_column(ap), size_column(b),
-                begin_value(ap), begin_value(ipiv), begin_value(b),
-                stride_major(b) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(ap)) );
+        return detail::spsv( uplo(), bindings::size_column(ap),
+                bindings::size_column(b), bindings::begin_value(ap),
+                bindings::begin_value(ipiv), bindings::begin_value(b),
+                bindings::stride_major(b) );
     }
 
 };

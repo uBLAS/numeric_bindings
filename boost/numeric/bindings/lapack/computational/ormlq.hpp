@@ -101,6 +101,7 @@ struct ormlq_impl {
     static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -110,23 +111,28 @@ struct ormlq_impl {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bindings::size(tau) >= k );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( side, bindings::size_row(c),
+                bindings::size_column(c) ));
+        BOOST_ASSERT( bindings::size_column(c) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_row(c) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                k) );
+        BOOST_ASSERT( bindings::stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_row(c)) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( size(tau) >= k );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( side,
-                size_row(c), size_column(c) ));
-        BOOST_ASSERT( size_column(c) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_row(c) >= 0 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,k) );
-        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
-                size_row(c)) );
-        return detail::ormlq( side, trans(), size_row(c), size_column(c), k,
-                begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        return detail::ormlq( side, trans(), bindings::size_row(c),
+                bindings::size_column(c), k, bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(tau),
+                bindings::begin_value(c), bindings::stride_major(c),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -140,9 +146,10 @@ struct ormlq_impl {
     static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work( side,
-                size_row(c), size_column(c) ) );
+                bindings::size_row(c), bindings::size_column(c) ) );
         return invoke( side, k, a, tau, c, workspace( tmp_work ) );
     }
 
@@ -157,11 +164,14 @@ struct ormlq_impl {
     static std::ptrdiff_t invoke( const char side, const fortran_int_t k,
             const MatrixA& a, const VectorTAU& tau, MatrixC& c,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
-        detail::ormlq( side, trans(), size_row(c), size_column(c), k,
-                begin_value(a), stride_major(a), begin_value(tau),
-                begin_value(c), stride_major(c), &opt_size_work, -1 );
+        detail::ormlq( side, trans(), bindings::size_row(c),
+                bindings::size_column(c), k, bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(tau),
+                bindings::begin_value(c), bindings::stride_major(c),
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( side, k, a, tau, c, workspace( tmp_work ) );

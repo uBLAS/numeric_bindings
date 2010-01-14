@@ -161,6 +161,7 @@ struct ger_impl {
     template< typename VectorX, typename VectorY, typename MatrixA >
     static return_type invoke( const real_type alpha, const VectorX& x,
             const VectorY& y, MatrixA& a ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
@@ -168,11 +169,14 @@ struct ger_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        detail::ger( order(), size_row(a), size_column(a), alpha,
-                begin_value(x), stride(x), begin_value(y), stride(y),
-                begin_value(a), stride_major(a) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        detail::ger( order(), bindings::size_row(a),
+                bindings::size_column(a), alpha, bindings::begin_value(x),
+                bindings::stride(x), bindings::begin_value(y),
+                bindings::stride(y), bindings::begin_value(a),
+                bindings::stride_major(a) );
     }
 };
 

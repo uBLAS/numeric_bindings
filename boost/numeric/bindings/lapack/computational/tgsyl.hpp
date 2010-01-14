@@ -166,6 +166,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -187,27 +188,36 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixF >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixF >::value) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column_op(a, trans()), size_column(b) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_minor(d) == 1 || stride_minor(d) == 1 );
-        BOOST_ASSERT( size_minor(e) == 1 || stride_minor(e) == 1 );
-        BOOST_ASSERT( size_minor(f) == 1 || stride_minor(f) == 1 );
-        return detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
-                size_column(b), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(c),
-                stride_major(c), begin_value(d), stride_major(d),
-                begin_value(e), stride_major(e), begin_value(f),
-                stride_major(f), scale, dif,
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixF >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_minor(d) == 1 ||
+                bindings::stride_minor(d) == 1 );
+        BOOST_ASSERT( bindings::size_minor(e) == 1 ||
+                bindings::stride_minor(e) == 1 );
+        BOOST_ASSERT( bindings::size_minor(f) == 1 ||
+                bindings::stride_minor(f) == 1 );
+        return detail::tgsyl( trans(), ijob, bindings::size_column_op(a,
+                trans()), bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::stride_major(c), bindings::begin_value(d),
+                bindings::stride_major(d), bindings::begin_value(e),
+                bindings::stride_major(e), bindings::begin_value(f),
+                bindings::stride_major(f), scale, dif,
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -223,11 +233,13 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
+                min_size_iwork( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ) );
         return invoke( ijob, a, b, c, d, e, f, scale, dif,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -245,17 +257,21 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
-        detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
-                size_column(b), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(c),
-                stride_major(c), begin_value(d), stride_major(d),
-                begin_value(e), stride_major(e), begin_value(f),
-                stride_major(f), scale, dif, &opt_size_work, -1,
-                begin_value(tmp_iwork) );
+                min_size_iwork( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ) );
+        detail::tgsyl( trans(), ijob, bindings::size_column_op(a,
+                trans()), bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::stride_major(c), bindings::begin_value(d),
+                bindings::stride_major(d), bindings::begin_value(e),
+                bindings::stride_major(e), bindings::begin_value(f),
+                bindings::stride_major(f), scale, dif, &opt_size_work, -1,
+                bindings::begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( ijob, a, b, c, d, e, f, scale, dif,
@@ -302,6 +318,7 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
@@ -323,27 +340,36 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixF >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixF >::value) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column_op(a, trans()), size_column(b) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
-        BOOST_ASSERT( size_minor(d) == 1 || stride_minor(d) == 1 );
-        BOOST_ASSERT( size_minor(e) == 1 || stride_minor(e) == 1 );
-        BOOST_ASSERT( size_minor(f) == 1 || stride_minor(f) == 1 );
-        return detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
-                size_column(b), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(c),
-                stride_major(c), begin_value(d), stride_major(d),
-                begin_value(e), stride_major(e), begin_value(f),
-                stride_major(f), scale, dif,
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixC >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixF >::value) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(c) == 1 ||
+                bindings::stride_minor(c) == 1 );
+        BOOST_ASSERT( bindings::size_minor(d) == 1 ||
+                bindings::stride_minor(d) == 1 );
+        BOOST_ASSERT( bindings::size_minor(e) == 1 ||
+                bindings::stride_minor(e) == 1 );
+        BOOST_ASSERT( bindings::size_minor(f) == 1 ||
+                bindings::stride_minor(f) == 1 );
+        return detail::tgsyl( trans(), ijob, bindings::size_column_op(a,
+                trans()), bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::stride_major(c), bindings::begin_value(d),
+                bindings::stride_major(d), bindings::begin_value(e),
+                bindings::stride_major(e), bindings::begin_value(f),
+                bindings::stride_major(f), scale, dif,
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -359,11 +385,13 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
+                min_size_iwork( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ) );
         return invoke( ijob, a, b, c, d, e, f, scale, dif,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -381,17 +409,21 @@ struct tgsyl_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const MatrixA& a, const MatrixB& b, MatrixC& c, const MatrixD& d,
             const MatrixE& e, MatrixF& f, real_type& scale, real_type& dif,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         value_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column_op(a, trans()), size_column(b) ) );
-        detail::tgsyl( trans(), ijob, size_column_op(a, trans()),
-                size_column(b), begin_value(a), stride_major(a),
-                begin_value(b), stride_major(b), begin_value(c),
-                stride_major(c), begin_value(d), stride_major(d),
-                begin_value(e), stride_major(e), begin_value(f),
-                stride_major(f), scale, dif, &opt_size_work, -1,
-                begin_value(tmp_iwork) );
+                min_size_iwork( bindings::size_column_op(a, trans()),
+                bindings::size_column(b) ) );
+        detail::tgsyl( trans(), ijob, bindings::size_column_op(a,
+                trans()), bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(b),
+                bindings::stride_major(b), bindings::begin_value(c),
+                bindings::stride_major(c), bindings::begin_value(d),
+                bindings::stride_major(d), bindings::begin_value(e),
+                bindings::stride_major(e), bindings::begin_value(f),
+                bindings::stride_major(f), scale, dif, &opt_size_work, -1,
+                bindings::begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( ijob, a, b, c, d, e, f, scale, dif,

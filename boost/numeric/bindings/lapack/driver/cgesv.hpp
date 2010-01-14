@@ -84,6 +84,7 @@ struct cgesv_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             detail::workspace3< WORK, SWORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -92,32 +93,38 @@ struct cgesv_impl {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
-        BOOST_ASSERT( size(ipiv) >= stride_major(work) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                stride_major(work) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_swork(
-                stride_major(work), size_column(b) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                $CALL_MIN_SIZE ));
-        BOOST_ASSERT( size_column(b) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
-        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                stride_major(work)) );
-        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
-                stride_major(work)) );
-        BOOST_ASSERT( stride_major(work) >= 0 );
-        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
-                stride_major(work)) );
-        return detail::cgesv( stride_major(work), size_column(b),
-                begin_value(a), stride_major(a), begin_value(ipiv),
-                begin_value(b), stride_major(b), begin_value(x),
-                stride_major(x), begin_value(work),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), iter );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixX >::value) );
+        BOOST_ASSERT( bindings::size(ipiv) >= bindings::stride_major(work) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::stride_major(work) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_swork( bindings::stride_major(work),
+                bindings::size_column(b) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        BOOST_ASSERT( bindings::size_column(b) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(b) == 1 ||
+                bindings::stride_minor(b) == 1 );
+        BOOST_ASSERT( bindings::size_minor(x) == 1 ||
+                bindings::stride_minor(x) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::stride_major(work)) );
+        BOOST_ASSERT( bindings::stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                bindings::stride_major(work)) );
+        BOOST_ASSERT( bindings::stride_major(work) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                bindings::stride_major(work)) );
+        return detail::cgesv( bindings::stride_major(work),
+                bindings::size_column(b), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(ipiv),
+                bindings::begin_value(b), bindings::stride_major(b),
+                bindings::begin_value(x), bindings::stride_major(x),
+                bindings::begin_value(work),
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())), iter );
     }
 
     //
@@ -132,12 +139,13 @@ struct cgesv_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         bindings::detail::array< value_type > tmp_swork( min_size_swork(
-                stride_major(work), size_column(b) ) );
+                bindings::stride_major(work), bindings::size_column(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                stride_major(work) ) );
+                bindings::stride_major(work) ) );
         return invoke( a, ipiv, b, x, iter, workspace( tmp_work, tmp_swork,
                 tmp_rwork ) );
     }
@@ -154,6 +162,7 @@ struct cgesv_impl {
     static std::ptrdiff_t invoke( MatrixA& a, VectorIPIV& ipiv,
             const MatrixB& b, MatrixX& x, fortran_int_t& iter,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( a, ipiv, b, x, iter, minimal_workspace() );
     }
 

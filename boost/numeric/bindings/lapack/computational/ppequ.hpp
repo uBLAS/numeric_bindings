@@ -130,15 +130,17 @@ struct ppequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAP, typename VectorS >
     static std::ptrdiff_t invoke( const MatrixAP& ap, VectorS& s,
             real_type& scond, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::ppequ( uplo(), size_column(ap), begin_value(ap),
-                begin_value(s), scond, amax );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::ppequ( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(s), scond,
+                amax );
     }
 
 };
@@ -161,11 +163,13 @@ struct ppequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAP, typename VectorS >
     static std::ptrdiff_t invoke( const MatrixAP& ap, VectorS& s,
             real_type& scond, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
-        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        return detail::ppequ( uplo(), size_column(ap), begin_value(ap),
-                begin_value(s), scond, amax );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorS >::value) );
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        return detail::ppequ( uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(s), scond,
+                amax );
     }
 
 };

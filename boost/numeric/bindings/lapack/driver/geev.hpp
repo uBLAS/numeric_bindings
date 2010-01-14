@@ -142,6 +142,7 @@ struct geev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
             MatrixVR& vr, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -158,28 +159,33 @@ struct geev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_ASSERT( bindings::size(wi) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( jobvl, jobvr, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' );
         BOOST_ASSERT( jobvr == 'N' || jobvr == 'V' );
-        BOOST_ASSERT( size(wi) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( jobvl,
-                jobvr, size_column(a) ));
-        BOOST_ASSERT( size(wr) >= size_column(a) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::geev( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(wr), begin_value(wi),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), begin_value(work.select(real_type())),
-                size(work.select(real_type())) );
+        return detail::geev( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(wr), bindings::begin_value(wi),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())) );
     }
 
     //
@@ -194,8 +200,9 @@ struct geev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
             MatrixVR& vr, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( jobvl,
-                jobvr, size_column(a) ) );
+                jobvr, bindings::size_column(a) ) );
         return invoke( jobvl, jobvr, a, wr, wi, vl, vr,
                 workspace( tmp_work ) );
     }
@@ -212,11 +219,14 @@ struct geev_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorWR& wr, VectorWI& wi, MatrixVL& vl,
             MatrixVR& vr, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
-        detail::geev( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(wr), begin_value(wi),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), &opt_size_work, -1 );
+        detail::geev( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(wr), bindings::begin_value(wi),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr),
+                &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvl, jobvr, a, wr, wi, vl, vr,
@@ -256,6 +266,7 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr,
             detail::workspace2< WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -268,29 +279,34 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' );
         BOOST_ASSERT( jobvr == 'N' || jobvr == 'V' );
-        BOOST_ASSERT( size(w) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::geev( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(w), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::geev( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(w), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -305,10 +321,11 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( jobvl, jobvr, a, w, vl, vr, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -325,13 +342,16 @@ struct geev_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvl, const char jobvr,
             MatrixA& a, VectorW& w, MatrixVL& vl, MatrixVR& vr,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
-        detail::geev( jobvl, jobvr, size_column(a), begin_value(a),
-                stride_major(a), begin_value(w), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr),
-                &opt_size_work, -1, begin_value(tmp_rwork) );
+                bindings::size_column(a) ) );
+        detail::geev( jobvl, jobvr, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a),
+                bindings::begin_value(w), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), &opt_size_work, -1,
+                bindings::begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvl, jobvr, a, w, vl, vr, workspace( tmp_work,

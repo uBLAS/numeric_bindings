@@ -136,18 +136,22 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             const real_type anorm, real_type& rcond, detail::workspace2< WORK,
             IWORK > work ) {
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(ab) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        return detail::pbcon( uplo, size_column(ab), bandwidth(ab, uplo()),
-                begin_value(ab), stride_major(ab), anorm, rcond,
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
+        return detail::pbcon( uplo, bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), anorm, rcond,
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -160,10 +164,11 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(ab) ) );
+                min_size_iwork( bindings::size_column(ab) ) );
         return invoke( uplo, ab, anorm, rcond, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -178,6 +183,7 @@ struct pbcon_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, ab, anorm, rcond, minimal_workspace() );
     }
 
@@ -217,18 +223,22 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             const real_type anorm, real_type& rcond, detail::workspace2< WORK,
             RWORK > work ) {
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(ab) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
-        return detail::pbcon( uplo, size_column(ab), bandwidth_upper(ab),
-                begin_value(ab), stride_major(ab), anorm, rcond,
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        namespace bindings = ::boost::numeric::bindings;
+        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                bindings::bandwidth_upper(ab)+1 );
+        return detail::pbcon( uplo, bindings::size_column(ab),
+                bindings::bandwidth_upper(ab), bindings::begin_value(ab),
+                bindings::stride_major(ab), anorm, rcond,
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -241,10 +251,11 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             const real_type anorm, real_type& rcond, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         return invoke( uplo, ab, anorm, rcond, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -259,6 +270,7 @@ struct pbcon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAB >
     static std::ptrdiff_t invoke( const char uplo, const MatrixAB& ab,
             const real_type anorm, real_type& rcond, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( uplo, ab, anorm, rcond, minimal_workspace() );
     }
 

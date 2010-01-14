@@ -161,6 +161,7 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, detail::workspace2<
             WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -189,14 +190,32 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorRCONDV >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorSCALE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorRCONDE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorRCONDV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRCONDE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRCONDV >::value) );
+        BOOST_ASSERT( bindings::size(rconde) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(rcondv) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(wi) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( sense, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( sense, jobvl, jobvr,
+                bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( balanc == 'N' || balanc == 'P' || balanc == 'S' ||
                 balanc == 'B' );
         BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' || jobvl == 'E' ||
@@ -205,28 +224,17 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 jobvr == 'B' );
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
-        BOOST_ASSERT( size(rconde) >= size_column(a) );
-        BOOST_ASSERT( size(rcondv) >= size_column(a) );
-        BOOST_ASSERT( size(wi) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( sense, size_column(a) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( sense,
-                jobvl, jobvr, size_column(a) ));
-        BOOST_ASSERT( size(wr) >= size_column(a) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
-                begin_value(a), stride_major(a), begin_value(wr),
-                begin_value(wi), begin_value(vl), stride_major(vl),
-                begin_value(vr), stride_major(vr), ilo, ihi,
-                begin_value(scale), abnrm, begin_value(rconde),
-                begin_value(rcondv), begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        return detail::geevx( balanc, jobvl, jobvr, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(wr),
+                bindings::begin_value(wi), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), ilo, ihi,
+                bindings::begin_value(scale), abnrm,
+                bindings::begin_value(rconde), bindings::begin_value(rcondv),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -245,10 +253,11 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( sense,
-                jobvl, jobvr, size_column(a) ) );
+                jobvl, jobvr, bindings::size_column(a) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( sense, size_column(a) ) );
+                min_size_iwork( sense, bindings::size_column(a) ) );
         return invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo,
                 ihi, scale, abnrm, rconde, rcondv, workspace( tmp_work,
                 tmp_iwork ) );
@@ -270,16 +279,19 @@ struct geevx_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( sense, size_column(a) ) );
-        detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
-                begin_value(a), stride_major(a), begin_value(wr),
-                begin_value(wi), begin_value(vl), stride_major(vl),
-                begin_value(vr), stride_major(vr), ilo, ihi,
-                begin_value(scale), abnrm, begin_value(rconde),
-                begin_value(rcondv), &opt_size_work, -1,
-                begin_value(tmp_iwork) );
+                min_size_iwork( sense, bindings::size_column(a) ) );
+        detail::geevx( balanc, jobvl, jobvr, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(wr),
+                bindings::begin_value(wi), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), ilo, ihi,
+                bindings::begin_value(scale), abnrm,
+                bindings::begin_value(rconde), bindings::begin_value(rcondv),
+                &opt_size_work, -1, bindings::begin_value(tmp_iwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo,
@@ -339,6 +351,7 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, detail::workspace2<
             WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorSCALE >::type >::type,
                 typename remove_const< typename value<
@@ -359,13 +372,29 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorSCALE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorRCONDE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorRCONDV >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSCALE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRCONDE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorRCONDV >::value) );
+        BOOST_ASSERT( bindings::size(rconde) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(rcondv) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( sense, bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( balanc == 'N' || balanc == 'P' || balanc == 'S' ||
                 balanc == 'B' );
         BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' || jobvl == 'E' ||
@@ -374,27 +403,16 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 jobvr == 'B' );
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
-        BOOST_ASSERT( size(rconde) >= size_column(a) );
-        BOOST_ASSERT( size(rcondv) >= size_column(a) );
-        BOOST_ASSERT( size(w) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( sense,
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
-                begin_value(a), stride_major(a), begin_value(w),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), ilo, ihi, begin_value(scale), abnrm,
-                begin_value(rconde), begin_value(rcondv),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())) );
+        return detail::geevx( balanc, jobvl, jobvr, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(w),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr), ilo,
+                ihi, bindings::begin_value(scale), abnrm,
+                bindings::begin_value(rconde), bindings::begin_value(rcondv),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -413,10 +431,11 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work( sense,
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         return invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi,
                 scale, abnrm, rconde, rcondv, workspace( tmp_work,
                 tmp_rwork ) );
@@ -438,15 +457,18 @@ struct geevx_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             fortran_int_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
-        detail::geevx( balanc, jobvl, jobvr, sense, size_column(a),
-                begin_value(a), stride_major(a), begin_value(w),
-                begin_value(vl), stride_major(vl), begin_value(vr),
-                stride_major(vr), ilo, ihi, begin_value(scale), abnrm,
-                begin_value(rconde), begin_value(rcondv), &opt_size_work, -1,
-                begin_value(tmp_rwork) );
+                bindings::size_column(a) ) );
+        detail::geevx( balanc, jobvl, jobvr, sense,
+                bindings::size_column(a), bindings::begin_value(a),
+                bindings::stride_major(a), bindings::begin_value(w),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr), ilo,
+                ihi, bindings::begin_value(scale), abnrm,
+                bindings::begin_value(rconde), bindings::begin_value(rcondv),
+                &opt_size_work, -1, bindings::begin_value(tmp_rwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi,

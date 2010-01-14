@@ -156,15 +156,18 @@ struct syr_impl {
     template< typename VectorX, typename MatrixA >
     static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        detail::syr( order(), uplo(), size_column(a), alpha,
-                begin_value(x), stride(x), begin_value(a), stride_major(a) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        detail::syr( order(), uplo(), bindings::size_column(a), alpha,
+                bindings::begin_value(x), bindings::stride(x),
+                bindings::begin_value(a), bindings::stride_major(a) );
     }
 };
 

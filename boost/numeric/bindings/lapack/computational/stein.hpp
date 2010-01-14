@@ -143,6 +143,7 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -163,24 +164,28 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorIBLOCK >::type >::type,
                 typename remove_const< typename value<
                 VectorIFAIL >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(isplit) >= n );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(isplit) >= n );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(z) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::stein( n, begin_value(d), begin_value(e), m,
-                begin_value(w), begin_value(iblock), begin_value(isplit),
-                begin_value(z), stride_major(z),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(ifail) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(z) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( n >= 0 );
+        return detail::stein( n, bindings::begin_value(d),
+                bindings::begin_value(e), m, bindings::begin_value(w),
+                bindings::begin_value(iblock), bindings::begin_value(isplit),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(ifail) );
     }
 
     //
@@ -197,6 +202,7 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
@@ -218,6 +224,7 @@ struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 minimal_workspace() );
     }
@@ -262,6 +269,7 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
             MatrixZ& z, VectorIFAIL& ifail, detail::workspace2< WORK,
             IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -278,24 +286,28 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< VectorIBLOCK >::type >::type,
                 typename remove_const< typename value<
                 VectorIFAIL >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(isplit) >= n );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(isplit) >= n );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(z) >= std::max< std::ptrdiff_t >(1,n) );
-        return detail::stein( n, begin_value(d), begin_value(e), m,
-                begin_value(w), begin_value(iblock), begin_value(isplit),
-                begin_value(z), stride_major(z),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(ifail) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(z) >= std::max< std::ptrdiff_t >(1,
+                n) );
+        BOOST_ASSERT( n >= 0 );
+        return detail::stein( n, bindings::begin_value(d),
+                bindings::begin_value(e), m, bindings::begin_value(w),
+                bindings::begin_value(iblock), bindings::begin_value(isplit),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(ifail) );
     }
 
     //
@@ -312,6 +324,7 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
             MatrixZ& z, VectorIFAIL& ifail, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
@@ -333,6 +346,7 @@ struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const VectorE& e, const fortran_int_t m, const VectorW& w,
             const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
             MatrixZ& z, VectorIFAIL& ifail, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( n, d, e, m, w, iblock, isplit, z, ifail,
                 minimal_workspace() );
     }

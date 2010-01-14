@@ -152,6 +152,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t mm, fortran_int_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixH >::type >::type,
                 typename remove_const< typename value<
@@ -172,33 +173,38 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< VectorIFAILL >::type >::type,
                 typename remove_const< typename value<
                 VectorIFAILR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorSELECT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAILL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAILR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorSELECT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAILL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAILR >::value) );
+        BOOST_ASSERT( bindings::size(select) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(wi) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(h), ?2 ));
+        BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size_column(h) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(h) == 1 ||
+                bindings::stride_minor(h) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(h) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
         BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
         BOOST_ASSERT( initv == 'N' || initv == 'U' );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
-        BOOST_ASSERT( size(select) >= size_column(h) );
-        BOOST_ASSERT( size(wi) >= size_column(h) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(h), ?2 ));
-        BOOST_ASSERT( size(wr) >= size_column(h) );
-        BOOST_ASSERT( size_column(h) >= 0 );
-        BOOST_ASSERT( size_minor(h) == 1 || stride_minor(h) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(h) >= std::max< std::ptrdiff_t >(1,
-                size_column(h)) );
-        return detail::hsein( side, eigsrc, initv, begin_value(select),
-                size_column(h), begin_value(h), stride_major(h),
-                begin_value(wr), begin_value(wi), begin_value(vl),
-                stride_major(vl), begin_value(vr), stride_major(vr), mm, m,
-                begin_value(work.select(real_type())), begin_value(ifaill),
-                begin_value(ifailr) );
+        return detail::hsein( side, eigsrc, initv,
+                bindings::begin_value(select), bindings::size_column(h),
+                bindings::begin_value(h), bindings::stride_major(h),
+                bindings::begin_value(wr), bindings::begin_value(wi),
+                bindings::begin_value(vl), bindings::stride_major(vl),
+                bindings::begin_value(vr), bindings::stride_major(vr), mm, m,
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(ifaill), bindings::begin_value(ifailr) );
     }
 
     //
@@ -217,8 +223,9 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t mm, fortran_int_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(h), ?2 ) );
+                bindings::size_column(h), ?2 ) );
         return invoke( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
                 ifaill, ifailr, workspace( tmp_work ) );
     }
@@ -239,6 +246,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
             const fortran_int_t mm, fortran_int_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
                 ifaill, ifailr, minimal_workspace() );
     }
@@ -276,6 +284,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t mm, fortran_int_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, detail::workspace2<
             WORK, RWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorIFAILL >::type >::type,
                 typename remove_const< typename value<
@@ -292,34 +301,39 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 typename value< MatrixH >::type >::type,
                 typename remove_const< typename value<
                 MatrixVR >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAILL >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAILR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAILL >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAILR >::value) );
+        BOOST_ASSERT( bindings::size(select) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(h) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(h) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(h) ));
+        BOOST_ASSERT( bindings::size_column(h) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(h) == 1 ||
+                bindings::stride_minor(h) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vl) == 1 ||
+                bindings::stride_minor(vl) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vr) == 1 ||
+                bindings::stride_minor(vr) == 1 );
+        BOOST_ASSERT( bindings::stride_major(h) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(h)) );
         BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
         BOOST_ASSERT( initv == 'N' || initv == 'U' );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
-        BOOST_ASSERT( size(select) >= size_column(h) );
-        BOOST_ASSERT( size(w) >= size_column(h) );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(h) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(h) ));
-        BOOST_ASSERT( size_column(h) >= 0 );
-        BOOST_ASSERT( size_minor(h) == 1 || stride_minor(h) == 1 );
-        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
-        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
-        BOOST_ASSERT( stride_major(h) >= std::max< std::ptrdiff_t >(1,
-                size_column(h)) );
-        return detail::hsein( side, eigsrc, initv, begin_value(select),
-                size_column(h), begin_value(h), stride_major(h),
-                begin_value(w), begin_value(vl), stride_major(vl),
-                begin_value(vr), stride_major(vr), mm, m,
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())), begin_value(ifaill),
-                begin_value(ifailr) );
+        return detail::hsein( side, eigsrc, initv,
+                bindings::begin_value(select), bindings::size_column(h),
+                bindings::begin_value(h), bindings::stride_major(h),
+                bindings::begin_value(w), bindings::begin_value(vl),
+                bindings::stride_major(vl), bindings::begin_value(vr),
+                bindings::stride_major(vr), mm, m,
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(ifaill), bindings::begin_value(ifailr) );
     }
 
     //
@@ -338,10 +352,11 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t mm, fortran_int_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(h) ) );
+                bindings::size_column(h) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(h) ) );
+                bindings::size_column(h) ) );
         return invoke( side, eigsrc, initv, select, h, w, vl, vr, mm, m,
                 ifaill, ifailr, workspace( tmp_work, tmp_rwork ) );
     }
@@ -362,6 +377,7 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
             const fortran_int_t mm, fortran_int_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( side, eigsrc, initv, select, h, w, vl, vr, mm, m,
                 ifaill, ifailr, minimal_workspace() );
     }

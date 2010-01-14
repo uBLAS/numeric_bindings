@@ -96,6 +96,7 @@ struct spev_impl {
             typename WORK >
     static std::ptrdiff_t invoke( const char jobz, MatrixAP& ap, VectorW& w,
             MatrixZ& z, detail::workspace1< WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAP >::type >::type,
@@ -105,17 +106,19 @@ struct spev_impl {
                 typename value< MatrixAP >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(ap) ));
+        BOOST_ASSERT( bindings::size_column(ap) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(ap) ));
-        BOOST_ASSERT( size_column(ap) >= 0 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::spev( jobz, uplo(), size_column(ap), begin_value(ap),
-                begin_value(w), begin_value(z), stride_major(z),
-                begin_value(work.select(real_type())) );
+        return detail::spev( jobz, uplo(), bindings::size_column(ap),
+                bindings::begin_value(ap), bindings::begin_value(w),
+                bindings::begin_value(z), bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -128,9 +131,10 @@ struct spev_impl {
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, MatrixAP& ap, VectorW& w,
             MatrixZ& z, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(ap) ) );
+                bindings::size_column(ap) ) );
         return invoke( jobz, ap, w, z, workspace( tmp_work ) );
     }
 
@@ -144,6 +148,7 @@ struct spev_impl {
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, MatrixAP& ap, VectorW& w,
             MatrixZ& z, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAP >::type uplo;
         return invoke( jobz, ap, w, z, minimal_workspace() );
     }

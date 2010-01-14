@@ -144,6 +144,7 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
             VectorWR& wr, VectorWI& wi, MatrixVS& vs, detail::workspace2<
             WORK, BWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -156,29 +157,32 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWI >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWI >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVS >::value) );
+        BOOST_ASSERT( bindings::size(wi) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
+                bindings::size_column(a), sort ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(wr) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vs) == 1 ||
+                bindings::stride_minor(vs) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvs == 'N' || jobvs == 'V' );
-        BOOST_ASSERT( size(wi) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(bool())) >= min_size_bwork(
-                size_column(a), sort ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size(wr) >= size_column(a) );
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vs) == 1 || stride_minor(vs) == 1 );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gees( jobvs, sort, select, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(wr),
-                begin_value(wi), begin_value(vs), stride_major(vs),
-                begin_value(work.select(real_type())),
-                size(work.select(real_type())),
-                begin_value(work.select(bool())) );
+        return detail::gees( jobvs, sort, select, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), sdim,
+                bindings::begin_value(wr), bindings::begin_value(wi),
+                bindings::begin_value(vs), bindings::stride_major(vs),
+                bindings::begin_value(work.select(real_type())),
+                bindings::size(work.select(real_type())),
+                bindings::begin_value(work.select(bool())) );
     }
 
     //
@@ -194,10 +198,11 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
             VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
+                bindings::size_column(a), sort ) );
         return invoke( jobvs, sort, select, a, sdim, wr, wi, vs,
                 workspace( tmp_work, tmp_bwork ) );
     }
@@ -215,13 +220,15 @@ struct gees_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
             VectorWR& wr, VectorWI& wi, MatrixVS& vs,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         real_type opt_size_work;
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
-        detail::gees( jobvs, sort, select, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(wr),
-                begin_value(wi), begin_value(vs), stride_major(vs),
-                &opt_size_work, -1, begin_value(tmp_bwork) );
+                bindings::size_column(a), sort ) );
+        detail::gees( jobvs, sort, select, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), sdim,
+                bindings::begin_value(wr), bindings::begin_value(wi),
+                bindings::begin_value(vs), bindings::stride_major(vs),
+                &opt_size_work, -1, bindings::begin_value(tmp_bwork) );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvs, sort, select, a, sdim, wr, wi, vs,
@@ -270,6 +277,7 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
             VectorW& w, MatrixVS& vs, detail::workspace3< WORK, RWORK,
             BWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
@@ -278,30 +286,33 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 MatrixVS >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixVS >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixVS >::value) );
+        BOOST_ASSERT( bindings::size(w) >= bindings::size_column(a) );
+        BOOST_ASSERT( bindings::size(work.select(bool())) >= min_size_bwork(
+                bindings::size_column(a), sort ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(a) ));
+        BOOST_ASSERT( bindings::size_column(a) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(a) == 1 ||
+                bindings::stride_minor(a) == 1 );
+        BOOST_ASSERT( bindings::size_minor(vs) == 1 ||
+                bindings::stride_minor(vs) == 1 );
+        BOOST_ASSERT( bindings::stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                bindings::size_column(a)) );
         BOOST_ASSERT( jobvs == 'N' || jobvs == 'V' );
-        BOOST_ASSERT( size(w) >= size_column(a) );
-        BOOST_ASSERT( size(work.select(bool())) >= min_size_bwork(
-                size_column(a), sort ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(a) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(a) ));
-        BOOST_ASSERT( size_column(a) >= 0 );
-        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
-        BOOST_ASSERT( size_minor(vs) == 1 || stride_minor(vs) == 1 );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
-        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
-                size_column(a)) );
-        return detail::gees( jobvs, sort, select, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(w),
-                begin_value(vs), stride_major(vs),
-                begin_value(work.select(value_type())),
-                size(work.select(value_type())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(bool())) );
+        return detail::gees( jobvs, sort, select, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), sdim,
+                bindings::begin_value(w), bindings::begin_value(vs),
+                bindings::stride_major(vs),
+                bindings::begin_value(work.select(value_type())),
+                bindings::size(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(bool())) );
     }
 
     //
@@ -315,12 +326,13 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
             VectorW& w, MatrixVS& vs, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
+                bindings::size_column(a), sort ) );
         return invoke( jobvs, sort, select, a, sdim, w, vs,
                 workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
@@ -336,15 +348,18 @@ struct gees_impl< Value, typename boost::enable_if< is_complex< Value > >::type 
     static std::ptrdiff_t invoke( const char jobvs, const char sort,
             logical_t* select, MatrixA& a, fortran_int_t& sdim,
             VectorW& w, MatrixVS& vs, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         value_type opt_size_work;
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(a) ) );
+                bindings::size_column(a) ) );
         bindings::detail::array< bool > tmp_bwork( min_size_bwork(
-                size_column(a), sort ) );
-        detail::gees( jobvs, sort, select, size_column(a),
-                begin_value(a), stride_major(a), sdim, begin_value(w),
-                begin_value(vs), stride_major(vs), &opt_size_work, -1,
-                begin_value(tmp_rwork), begin_value(tmp_bwork) );
+                bindings::size_column(a), sort ) );
+        detail::gees( jobvs, sort, select, bindings::size_column(a),
+                bindings::begin_value(a), bindings::stride_major(a), sdim,
+                bindings::begin_value(w), bindings::begin_value(vs),
+                bindings::stride_major(vs), &opt_size_work, -1,
+                bindings::begin_value(tmp_rwork),
+                bindings::begin_value(tmp_bwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( jobvs, sort, select, a, sdim, w, vs,

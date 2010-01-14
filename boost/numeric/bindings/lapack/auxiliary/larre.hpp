@@ -114,6 +114,7 @@ struct larre_impl {
             VectorWERR& werr, VectorWGAP& wgap, VectorIBLOCK& iblock,
             VectorINDEXW& indexw, VectorGERS& gers, real_type& pivmin,
             detail::workspace2< WORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -146,36 +147,39 @@ struct larre_impl {
                 typename value< VectorISPLIT >::type >::type,
                 typename remove_const< typename value<
                 VectorINDEXW >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE2 >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorISPLIT >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWERR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorWGAP >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIBLOCK >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorINDEXW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorGERS >::value) );
-        BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(d) >= n );
-        BOOST_ASSERT( size(e) >= n );
-        BOOST_ASSERT( size(e2) >= n );
-        BOOST_ASSERT( size(gers) >= 2*n );
-        BOOST_ASSERT( size(indexw) >= n );
-        BOOST_ASSERT( size(isplit) >= n );
-        BOOST_ASSERT( size(w) >= n );
-        BOOST_ASSERT( size(werr) >= n );
-        BOOST_ASSERT( size(wgap) >= n );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE2 >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorISPLIT >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWERR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorWGAP >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIBLOCK >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorINDEXW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorGERS >::value) );
+        BOOST_ASSERT( bindings::size(d) >= n );
+        BOOST_ASSERT( bindings::size(e) >= n );
+        BOOST_ASSERT( bindings::size(e2) >= n );
+        BOOST_ASSERT( bindings::size(gers) >= 2*n );
+        BOOST_ASSERT( bindings::size(indexw) >= n );
+        BOOST_ASSERT( bindings::size(isplit) >= n );
+        BOOST_ASSERT( bindings::size(w) >= n );
+        BOOST_ASSERT( bindings::size(werr) >= n );
+        BOOST_ASSERT( bindings::size(wgap) >= n );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        return detail::larre( range, n, vl, vu, il, iu, begin_value(d),
-                begin_value(e), begin_value(e2), rtol1, rtol2, spltol, nsplit,
-                begin_value(isplit), m, begin_value(w), begin_value(werr),
-                begin_value(wgap), begin_value(iblock), begin_value(indexw),
-                begin_value(gers), pivmin,
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())) );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
+        return detail::larre( range, n, vl, vu, il, iu,
+                bindings::begin_value(d), bindings::begin_value(e),
+                bindings::begin_value(e2), rtol1, rtol2, spltol, nsplit,
+                bindings::begin_value(isplit), m, bindings::begin_value(w),
+                bindings::begin_value(werr), bindings::begin_value(wgap),
+                bindings::begin_value(iblock), bindings::begin_value(indexw),
+                bindings::begin_value(gers), pivmin,
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())) );
     }
 
     //
@@ -198,6 +202,7 @@ struct larre_impl {
             VectorWERR& werr, VectorWGAP& wgap, VectorIBLOCK& iblock,
             VectorINDEXW& indexw, VectorGERS& gers, real_type& pivmin,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( n ) );
@@ -226,6 +231,7 @@ struct larre_impl {
             VectorWERR& werr, VectorWGAP& wgap, VectorIBLOCK& iblock,
             VectorINDEXW& indexw, VectorGERS& gers, real_type& pivmin,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( range, n, vl, vu, il, iu, d, e, e2, rtol1, rtol2,
                 spltol, nsplit, isplit, m, w, werr, wgap, iblock, indexw,
                 gers, pivmin, minimal_workspace() );

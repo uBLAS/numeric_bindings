@@ -119,6 +119,7 @@ struct hbgvx_impl {
             const fortran_int_t iu, const real_type abstol,
             fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
@@ -132,38 +133,47 @@ struct hbgvx_impl {
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixBB >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
-        BOOST_ASSERT( bandwidth(ab, uplo()) >= 0 );
-        BOOST_ASSERT( bandwidth(bb, uplo()) >= 0 );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixBB >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorIFAIL >::value) );
+        BOOST_ASSERT( bindings::bandwidth(ab, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth(bb, uplo()) >= 0 );
+        BOOST_ASSERT( bindings::size(work.select(fortran_int_t())) >=
+                min_size_iwork( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_rwork( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size(work.select(value_type())) >=
+                min_size_work( bindings::size_column(ab) ));
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_minor(bb) == 1 ||
+                bindings::stride_minor(bb) == 1 );
+        BOOST_ASSERT( bindings::size_minor(q) == 1 ||
+                bindings::stride_minor(q) == 1 );
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
+        BOOST_ASSERT( bindings::stride_major(ab) >= bindings::bandwidth(ab,
+                uplo())+1 );
+        BOOST_ASSERT( bindings::stride_major(bb) >= bindings::bandwidth(bb,
+                uplo())+1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
-                min_size_iwork( size_column(ab) ));
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
-                size_column(ab) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
-                size_column(ab) ));
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_minor(bb) == 1 || stride_minor(bb) == 1 );
-        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth(ab, uplo())+1 );
-        BOOST_ASSERT( stride_major(bb) >= bandwidth(bb, uplo())+1 );
-        return detail::hbgvx( jobz, range, uplo(), size_column(ab),
-                bandwidth(ab, uplo()), bandwidth(bb, uplo()), begin_value(ab),
-                stride_major(ab), begin_value(bb), stride_major(bb),
-                begin_value(q), stride_major(q), vl, vu, il, iu, abstol, m,
-                begin_value(w), begin_value(z), stride_major(z),
-                begin_value(work.select(value_type())),
-                begin_value(work.select(real_type())),
-                begin_value(work.select(fortran_int_t())),
-                begin_value(ifail) );
+        return detail::hbgvx( jobz, range, uplo(), bindings::size_column(ab),
+                bindings::bandwidth(ab, uplo()), bindings::bandwidth(bb,
+                uplo()), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(bb),
+                bindings::stride_major(bb), bindings::begin_value(q),
+                bindings::stride_major(q), vl, vu, il, iu, abstol, m,
+                bindings::begin_value(w), bindings::begin_value(z),
+                bindings::stride_major(z),
+                bindings::begin_value(work.select(value_type())),
+                bindings::begin_value(work.select(real_type())),
+                bindings::begin_value(work.select(fortran_int_t())),
+                bindings::begin_value(ifail) );
     }
 
     //
@@ -181,13 +191,14 @@ struct hbgvx_impl {
             const fortran_int_t iu, const real_type abstol,
             fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         bindings::detail::array< value_type > tmp_work( min_size_work(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
-                size_column(ab) ) );
+                bindings::size_column(ab) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
-                min_size_iwork( size_column(ab) ) );
+                min_size_iwork( bindings::size_column(ab) ) );
         return invoke( jobz, range, ab, bb, q, vl, vu, il, iu, abstol, m, w,
                 z, ifail, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
@@ -207,6 +218,7 @@ struct hbgvx_impl {
             const fortran_int_t iu, const real_type abstol,
             fortran_int_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         typedef typename result_of::data_side< MatrixAB >::type uplo;
         return invoke( jobz, range, ab, bb, q, vl, vu, il, iu, abstol, m, w,
                 z, ifail, minimal_workspace() );

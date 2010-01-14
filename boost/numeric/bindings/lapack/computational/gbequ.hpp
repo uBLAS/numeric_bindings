@@ -133,6 +133,7 @@ struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     template< typename MatrixAB, typename VectorR, typename VectorC >
     static std::ptrdiff_t invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
@@ -141,19 +142,22 @@ struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixAB >::type >::type,
                 typename remove_const< typename value<
                 VectorC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_row(ab) >= 0 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
-                bandwidth_upper(ab)+1 );
-        return detail::gbequ( size_row(ab), size_column(ab),
-                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(r), begin_value(c), rowcnd,
-                colcnd, amax );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_row(ab) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
+                1 );
+        return detail::gbequ( bindings::size_row(ab),
+                bindings::size_column(ab), bindings::bandwidth_lower(ab),
+                bindings::bandwidth_upper(ab), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(r),
+                bindings::begin_value(c), rowcnd, colcnd, amax );
     }
 
 };
@@ -176,23 +180,27 @@ struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     template< typename MatrixAB, typename VectorR, typename VectorC >
     static std::ptrdiff_t invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
             real_type& rowcnd, real_type& colcnd, real_type& amax ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorR >::type >::type,
                 typename remove_const< typename value<
                 VectorC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorR >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
-        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
-        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
-        BOOST_ASSERT( size_column(ab) >= 0 );
-        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
-        BOOST_ASSERT( size_row(ab) >= 0 );
-        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
-                bandwidth_upper(ab)+1 );
-        return detail::gbequ( size_row(ab), size_column(ab),
-                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
-                stride_major(ab), begin_value(r), begin_value(c), rowcnd,
-                colcnd, amax );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorR >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bindings::bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bindings::bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_column(ab) >= 0 );
+        BOOST_ASSERT( bindings::size_minor(ab) == 1 ||
+                bindings::stride_minor(ab) == 1 );
+        BOOST_ASSERT( bindings::size_row(ab) >= 0 );
+        BOOST_ASSERT( bindings::stride_major(ab) >=
+                bindings::bandwidth_lower(ab)+bindings::bandwidth_upper(ab)+
+                1 );
+        return detail::gbequ( bindings::size_row(ab),
+                bindings::size_column(ab), bindings::bandwidth_lower(ab),
+                bindings::bandwidth_upper(ab), bindings::begin_value(ab),
+                bindings::stride_major(ab), bindings::begin_value(r),
+                bindings::begin_value(c), rowcnd, colcnd, amax );
     }
 
 };

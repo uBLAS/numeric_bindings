@@ -91,6 +91,7 @@ struct stev_impl {
     static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixZ& z, detail::workspace1<
             WORK > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
@@ -99,17 +100,20 @@ struct stev_impl {
                 typename value< VectorD >::type >::type,
                 typename remove_const< typename value<
                 MatrixZ >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (bindings::is_mutable< MatrixZ >::value) );
+        BOOST_ASSERT( bindings::size(e) >= n-1 );
+        BOOST_ASSERT( bindings::size(work.select(real_type())) >=
+                min_size_work( n ));
+        BOOST_ASSERT( bindings::size_minor(z) == 1 ||
+                bindings::stride_minor(z) == 1 );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( size(e) >= n-1 );
-        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
-        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
-        return detail::stev( jobz, n, begin_value(d), begin_value(e),
-                begin_value(z), stride_major(z),
-                begin_value(work.select(real_type())) );
+        return detail::stev( jobz, n, bindings::begin_value(d),
+                bindings::begin_value(e), bindings::begin_value(z),
+                bindings::stride_major(z),
+                bindings::begin_value(work.select(real_type())) );
     }
 
     //
@@ -122,6 +126,7 @@ struct stev_impl {
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixZ& z, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         return invoke( jobz, n, d, e, z, workspace( tmp_work ) );
     }
@@ -136,6 +141,7 @@ struct stev_impl {
     template< typename VectorD, typename VectorE, typename MatrixZ >
     static std::ptrdiff_t invoke( const char jobz, const fortran_int_t n,
             VectorD& d, VectorE& e, MatrixZ& z, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         return invoke( jobz, n, d, e, z, minimal_workspace() );
     }
 

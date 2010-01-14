@@ -164,19 +164,19 @@ def call_c_type( name, properties ):
 def call_level0_type( name, properties, arg_map ):
   result = ''
   if properties[ 'type' ] == 'matrix':
-    result = "begin_value(" + name.lower() + ")"
+    result = "$NAMESPACEbegin_value(" + name.lower() + ")"
   elif properties[ 'type' ] == 'vector':
     my_name = name.lower()
     if 'workspace' in properties[ 'io' ]:
       my_name = 'work.select(' + workspace_type( name, properties ) + '())'
-    result = "begin_value(" + my_name + ")"
+    result = "$NAMESPACEbegin_value(" + my_name + ")"
   elif properties.has_key( 'trait_type' ):
     if properties[ 'trait_type' ] == 'lda':
       #
       # stride_major is equal to stride_column or stride_row, whatever the orientation
       # of the library is.
       # 
-      result = "stride_major(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+      result = "$NAMESPACEstride_major(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
       #result = "traits::leading_dimension(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
 
     #
@@ -184,48 +184,48 @@ def call_level0_type( name, properties, arg_map ):
     # 
     if properties[ 'trait_type' ] == 'num_columns':
       if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-        result = "size_column(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+        result = "$NAMESPACEsize_column(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
       else:
-        result = "size_column_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEsize_column_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
     #
     # number of rows is only valid if there's no option to transposing
     # 
     if properties[ 'trait_type' ] == 'num_rows':
       if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-        result = "size_row(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+        result = "$NAMESPACEsize_row(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
       else:
-        result = "size_row_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEsize_row_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
 
     if properties[ 'trait_type' ] == 'num_sub':
       if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-        result = "bandwidth_lower(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEbandwidth_lower(" +  properties[ 'trait_of' ][ 0 ].lower() + \
             ")"
       else:
-        result = "bandwidth_lower_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEbandwidth_lower_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
 
     if properties[ 'trait_type' ] == 'num_super':
       if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-        result = "bandwidth_upper(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEbandwidth_upper(" +  properties[ 'trait_of' ][ 0 ].lower() + \
             ")"
       else:
-        result = "bandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEbandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
     if properties[ 'trait_type' ] == 'num_super_uplo' or \
        properties[ 'trait_type' ] == 'num_sub_uplo':
-        result = "bandwidth(" + properties[ 'trait_of' ][ 0 ].lower() + \
+        result = "$NAMESPACEbandwidth(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", uplo())"
 
     #
     # The number of columns of op( A )
     #
     if properties[ 'trait_type' ] == 'trans_num_columns':
-      result = "size_column(" + properties[ 'trait_of' ][1].lower() + ")"
+      result = "$NAMESPACEsize_column(" + properties[ 'trait_of' ][1].lower() + ")"
       #result = "(" + properties[ 'trait_of' ][ 0 ][0].lower() + "=='N' ? " + \
                #"num_columns(" + properties[ 'trait_of' ][ 0 ][1].lower() + ") : " + \
                #"num_rows(" + properties[ 'trait_of' ][ 0 ][1].lower() + "))"
@@ -235,10 +235,10 @@ def call_level0_type( name, properties, arg_map ):
       if 'workspace' in referring_to_properties[ 'io' ]:
         my_name = 'work.select(' + workspace_type( properties[ 'trait_of' ][ 0 ].lower(), referring_to_properties ) + \
                   '())'
-      result = "size(" + my_name + ")"
+      result = "$NAMESPACEsize(" + my_name + ")"
       #result = "data_side(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
     if properties[ 'trait_type' ] == 'stride':
-      result = "stride(" + properties[ 'trait_of' ][ 0 ][0].lower() + ")"
+      result = "$NAMESPACEstride(" + properties[ 'trait_of' ][ 0 ][0].lower() + ")"
 
     if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
       result = name.lower() + "()"
@@ -462,21 +462,21 @@ def level1_assert( name, properties, arg_map ):
     min_workspace_call = min_workspace_call_type( name, properties, arg_map )
     if min_workspace_call == None:
       min_workspace_call = '$CALL_MIN_SIZE'
-    result += [ 'BOOST_ASSERT( size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
+    result += [ 'BOOST_ASSERT( $NAMESPACEsize(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
                 'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));' ]
 
   # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ) and \
        properties[ 'type' ] == 'vector':
-    result += [ "BOOST_ASSERT( size(" + call_level1_type( name, properties ) + ") >= " + \
+    result += [ "BOOST_ASSERT( $NAMESPACEsize(" + call_level1_type( name, properties ) + ") >= " + \
       expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );' ]
 
   if properties[ 'type' ] == 'matrix' and \
      call_level1_type( name, properties ) != None and \
      'ref_lda' in properties:
     result += [ "BOOST_ASSERT( " + \
-        "size_minor(" + call_level1_type( name, properties ) +") == 1 || " + \
-        "stride_minor(" + call_level1_type( name, properties ) +") == 1 );"
+        "$NAMESPACEsize_minor(" + call_level1_type( name, properties ) +") == 1 || " + \
+        "$NAMESPACEstride_minor(" + call_level1_type( name, properties ) +") == 1 );"
     ]
 
   return result
@@ -564,7 +564,7 @@ def opt_workspace_query_type( name, properties, arg_map ):
     if properties.has_key( 'workspace_query_by' ):
       result = '&opt_size_' + name.lower();
     else:
-      result = 'begin_value(tmp_' + name.lower() + ')'
+      result = '$NAMESPACEbegin_value(tmp_' + name.lower() + ')'
   else:
     result = call_level0_type( name, properties, arg_map )
   return result

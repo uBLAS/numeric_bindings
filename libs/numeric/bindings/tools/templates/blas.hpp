@@ -129,6 +129,7 @@ $INCLUDE_TEMPLATES
     //
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {
+        namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
         $STATIC_ASSERTS
         $ASSERTS

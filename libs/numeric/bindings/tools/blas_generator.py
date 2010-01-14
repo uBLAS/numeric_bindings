@@ -272,7 +272,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       if 'output' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ]:
         for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'output' ]:
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
-            assert_line = 'BOOST_STATIC_ASSERT( (is_mutable< ' + \
+            assert_line = 'BOOST_STATIC_ASSERT( ($NAMESPACEis_mutable< ' + \
                 info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
@@ -402,6 +402,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
     result = result.replace( '$INTEGER_TYPE', netlib.generic_integer_type )
     result = result.replace( '$LIBRARY_INT_TYPE', netlib.generic_integer_type )
+    result = result.replace( '$NAMESPACE', "bindings::" )
     result = result.replace( 'template<  >', '' )
     result = result.replace( '\n\n\n', '\n\n' )
     result = result.replace( "\n    \n", "\n" )

@@ -158,6 +158,7 @@ $TEMPLATE[level1_workspace]
     //
     template< $TYPES, $WORKSPACE_TYPENAMES >
     static $INTEGER_TYPE invoke( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+        namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
         $STATIC_ASSERTS
         $INIT_USER_DEFINED_VARIABLES
@@ -174,6 +175,7 @@ $TEMPLATE[level1_workspace]
     //
     template< $TYPES >
     static $INTEGER_TYPE invoke( $LEVEL1, minimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
         $INIT_USER_DEFINED_VARIABLES
 $SETUP_MIN_WORKARRAYS_POST
@@ -189,6 +191,7 @@ $SETUP_MIN_WORKARRAYS_POST
     //
     template< $TYPES >
     static $INTEGER_TYPE invoke( $LEVEL1, optimal_workspace work ) {
+        namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
 $OPT_WORKSPACE_FUNC
     }
@@ -249,6 +252,7 @@ $TEMPLATE[level1_noworkspace]
     //
     template< $TYPES >
     static $INTEGER_TYPE invoke( $LEVEL1 ) {
+        namespace bindings = ::boost::numeric::bindings;
         $TYPEDEFS
         $STATIC_ASSERTS
         $ASSERTS

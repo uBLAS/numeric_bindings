@@ -32,16 +32,16 @@ struct adaptor< ublas::vector< T, Alloc >, Id, Enable > {
         mpl::pair< tag::stride_type<1>, tag::contiguous >
     > property_map;
 
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size();
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size();
     }
 
-    static value_type* begin_value( Id& t ) {
-        return bindings::begin_value( t.data() );
+    static value_type* begin_value( Id& id ) {
+        return bindings::begin_value( id.data() );
     }
 
-    static value_type* end_value( Id& t ) {
-        return bindings::end_value( t.data() );
+    static value_type* end_value( Id& id ) {
+        return bindings::end_value( id.data() );
     }
 
 };

@@ -37,7 +37,7 @@ struct apply_real {
     typedef typename bindings::value< MatrixA >::type value_type;
     bindings::detail::array<value_type> wr(bindings::size(w));
     bindings::detail::array<value_type> wi(bindings::size(w));
-    integer_t info = lapack::gees_2( jobvs, sort, select, a, sdim, wr, wi, vs, work );
+    integer_t info = lapack::gees( jobvs, sort, select, a, sdim, wr, wi, vs, work );
     traits::detail::interlace(bindings::begin_value(wr),
                               bindings::begin_value(wr)+bindings::size(w),
                               bindings::begin_value(wi),

@@ -214,7 +214,8 @@ $COMMENTS
 // * User-defined workspace
 //
 template< $TYPES, typename Workspace >
-inline $INTEGER_TYPE $groupname( $LEVEL2, Workspace work ) {
+inline typename boost::enable_if< detail::is_workspace< Workspace >, $INTEGER_TYPE >::type
+$groupname( $LEVEL2, Workspace work ) {
     return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
 }
 
@@ -224,7 +225,8 @@ $COMMENTS
 // * Default workspace-type (optimal)
 //
 template< $TYPES >
-inline $INTEGER_TYPE $groupname( $LEVEL2 ) {
+inline typename boost::disable_if< detail::is_workspace< $LAST_TYPENAME >, $INTEGER_TYPE >::type
+$groupname( $LEVEL2 ) {
     return $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
 }
 $TEMPLATE[setup_min_workspace]

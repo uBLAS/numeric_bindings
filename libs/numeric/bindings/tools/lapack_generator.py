@@ -361,6 +361,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       # generate the word "matrix" or "vector", to select the right traits
       first_typename_datatype = first_typename[0:6].lower()
       level2_template = level2_template.replace( "$FIRST_TYPENAME", first_typename )
+      level2_template = level2_template.replace( "$LAST_TYPENAME", level1_type_arg_list[-1][9:] )
       level2_template = level2_template.replace( "$TYPEOF_FIRST_TYPENAME", first_typename_datatype )
       level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level2_template = level2_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
